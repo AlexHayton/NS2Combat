@@ -34,6 +34,10 @@ function CombatPlayingTeam:OnLoad()
     
     ClassHooker:SetClassCreatedIn("PointGiverMixin", "lua/PointGiverMixin.lua")
     self:PostHookClassFunction("PointGiverMixin", "OnKill", "OnKill_Hook")
+    
+    ClassHooker:SetClassCreatedIn("Hive", "lua/Hive.lua")
+    self:ReplaceClassFunction("Hive", "GenerateEggSpawns", "GenerateEggSpawns_Hook")
+    self:ReplaceClassFunction("Hive", "SpawnEgg", "SpawnEgg_Hook")
 
    
     
@@ -92,11 +96,7 @@ function CombatPlayingTeam:MarineTeamUpdate_Hook(self, timePassed)
     
     // Update distress beacon mask
     self:UpdateGameMasks(timePassed)
-    
-    if self.ipsToConstruct > 0 then
-        self:SpawnInfantryPortals(self:GetInitialTechPoint())
-    end
-    
+   
     if GetGamerules():GetGameStarted() then
       
     end
@@ -124,7 +124,8 @@ function CombatPlayingTeam:PutPlayerInRespawnQueue_Hook(self, player, time)
 
             end
     
-        player:GetTeam():ReplaceRespawnPlayer(player, nil, nil)
+        local newPlayer = player:GetTeam():ReplaceRespawnPlayer(player, nil, nil)        
+        
         return success
 end
 
@@ -140,11 +141,32 @@ function CombatPlayingTeam:OnKill_Hook(self, damage, attacker, doer, point, dire
     end    
         
 
-    if (pointOwner and self:isa("Player")) then        
-            pointOwner:AddXp(XpList[self.combatTable.lvl][4])
+   if (pointOwner and self:isa("Player")) then
+            if (XpList[self.combatTable]) then
+                pointOwner:AddXp(XpList[self.combatTable.lvl][4])
+            else
+                // if enemy dont got a combatTable, get standard Value for Lvl 1
+                pointOwner:AddXp(XpList[1][4])
+            end
     end
 
 end
+
+
+//___________________
+// Hooks Hive
+//___________________
+
+
+// No eggs will be spawned
+function CombatPlayingTeam:GenerateEggSpawns_Hook(self)
+// Do nothing
+end
+
+ function CombatPlayingTeam:SpawnEgg_Hook(self)
+ // Do nithing
+ end
+
 
 
 if(hotreload) then

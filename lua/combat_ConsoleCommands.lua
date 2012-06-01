@@ -16,44 +16,23 @@ function OnCommandSpendLvl(client, type)
     local player = client:GetControllingPlayer() 
         
     if type then
-         if player:isa("Marine") then
-            for i,v in ipairs(UpsList.Marine.Weapons) do 
-                // do a WeaponUpgrade
-                if v == type then
-                    // Call the UpgradeFunction              
-                    player:CoCheckUpgradeWeapon(type)                    
-                    break
-                end
-            end
-            
-            for i,v in ipairs(UpsList.Marine.others) do 
-                // do another up
-                if v == type then
-                    // Call the UpgradeFunction              
-                    player:CoCheckUpgradeOther(type)                    
-                    break
-                end
+        if player:isa("Marine") then
+        
+            if UpsList.Marine[type] then             
+                    player:CoCheckUpgrade_Marine(type)   
             end
             
         elseif player:isa("Alien") then
-            for i,v in ipairs(UpsList.Alien) do 
-                // type is valid
-                if v == type then
-                    // Call the UpgradeFunction
-                    player:CoCheckUpgrade(type)
-                    break
-                else 
-                    Shared.Message(type .. " is no vaild Upgrade")
-                end
+        
+            if UpsList.Alien[type] then             
+                    player:CoCheckUpgrade_Alien(type)   
             end
+            
         end
     else
         Shared.Message("No type defined, usage is: co_spendlvl type")
     end
-        
-    
-    
-
+   
 end
 
 function OnCommandAddXp(client, amount)
@@ -71,20 +50,47 @@ end
 function OnCommandShowXp(client)
 
         local player = client:GetControllingPlayer()        
-        print(player:GetXp())
+        Print(player:GetXp())
 
 end
 
 function OnCommandShowLvl(client)
 
         local player = client:GetControllingPlayer()        
-        print(player:GetLvl())
+        Print(player:GetLvl())
 
 end
- 
+
+function OnCommandTestMsg(client, message)
+
+    local player = client:GetControllingPlayer() 
+    local worldmessage = BuildWorldTextMessage(message, player:GetOrigin())
+
+
+
+
+    //for index, marine in ipairs(GetEntitiesForTeam("Player", player:GetTeamNumber())) do
+        Server.SendNetworkMessage(player, "WorldText", worldmessage, true) 
+    //end 
+end
+
+function OnCommandStuck(client)
+
+local player = client:GetControllingPlayer()
+player:SetOrigin( player:GetOrigin()+ Vector(0, 2, 0))
+
+end
+
  
 Event.Hook("Console_co_spendlvl",                OnCommandSpendLvl)
 
 Event.Hook("Console_co_addxp",                OnCommandAddXp)
 Event.Hook("Console_co_showxp",                OnCommandShowXp)
 Event.Hook("Console_co_showlvl",                OnCommandShowLvl)
+
+Event.Hook("Console_testmsg",                OnCommandTestMsg)
+
+
+
+
+Event.Hook("Console_/stuck",                OnCommandStuck)

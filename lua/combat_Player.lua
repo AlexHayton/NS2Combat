@@ -21,9 +21,19 @@ function CombatPlayer:OnLoad()
    
     ClassHooker:SetClassCreatedIn("Player", "lua/Player.lua") 
     self:PostHookClassFunction("Player", "Reset", "Reset_Hook")
-    self:PostHookClassFunction("Player", "CopyPlayerDataFrom", "CopyPlayerDataFrom_Hook")    
+    self:PostHookClassFunction("Player", "CopyPlayerDataFrom", "CopyPlayerDataFrom_Hook") 
+    
+    ClassHooker:SetClassCreatedIn("Marine", "lua/Marine.lua") 
+    self:ReplaceClassFunction("Marine", "OnKill", "MarineOnKill_Hook") 
+    self:ReplaceClassFunction("Marine", "Drop", "Drop_Hook")    
+
+   
     
 end
+
+//___________________
+// Hooks Player
+//___________________
 
 // Implement lvl and XP
 function CombatPlayer:Reset_Hook(self)
@@ -42,9 +52,37 @@ end
 function CombatPlayer:CopyPlayerDataFrom_Hook(self, player)    
 
     self.combatTable = player.combatTable
+    // Give the ups back
+    self:GiveUpsBack()
     
 end
 
+
+//___________________
+// Hooks Marine
+//___________________
+
+// Dont' drop Weapons after getting killed
+function CombatPlayer:MarineOnKill_Hook(self, damage, attacker, doer, point, direction)
+
+    Player.OnKill(self, damage, attacker, doer, point, direction)
+    self:PlaySound(Marine.kDieSoundName)
+    
+    // Don't play alert if we suicide
+    if player ~= self then
+        self:GetTeam():TriggerAlert(kTechId.MarineAlertSoldierLost, self)
+    end
+    
+    // Remember our squad and position on death so we can beam back to them
+    self.lastSquad = self:GetSquad()
+    self.originOnDeath = self:GetOrigin()
+end
+
+// Weapons can't be dropped anymore
+function CombatPlayer:Drop_Hook(self, weapon, ignoreDropTimeLimit, ignoreReplacementWeapon)
+// just do nothing
+
+end
 
 
 if(hotreload) then
