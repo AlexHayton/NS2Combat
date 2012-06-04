@@ -22,7 +22,7 @@ function CombatPlayingTeam:OnLoad()
     ClassHooker:SetClassCreatedIn("PlayingTeam", "lua/PlayingTeam.lua") 
     self:ReplaceClassFunction("PlayingTeam", "SpawnInitialStructures", "SpawnInitialStructures_Hook")
     self:ReplaceClassFunction("PlayingTeam", "SpawnResourceTower", "SpawnResourceTower_Hook")
-    //self:PostHookClassFunction("PlayingTeam", "GetHasTeamLost", "GetHasTeamLost_Hook", PassHookHandle)
+    self:ReplaceClassFunction("PlayingTeam", "GetHasTeamLost", "GetHasTeamLost_Hook")
     
     ClassHooker:SetClassCreatedIn("MarineTeam", "lua/MarineTeam.lua") 
     self:ReplaceClassFunction("MarineTeam", "SpawnInitialStructures", "MarineTeamSpawnInitialStructures_Hook")
@@ -47,13 +47,27 @@ end
 // Hooks Playing Team
 //___________________
 
-/*function CombatPlayingTeam:GetHasTeamLost_Hook(handle, self)
-// original function returns true or fals, I want to check if that true is OK
-  if(handle:GetReturn() == someValue) then
-    handle:SetReturn(someOtherValue)
-  end
+function CombatPlayingTeam:GetHasTeamLost_Hook(handle, self)
+    // Don't bother with the original - we just set our own logic here.
+    
+	if(GetGamerules():GetGameStarted() and not Shared.GetCheatsEnabled()) then
+    
+        // Team can't respawn or last Command Station or Hive destroyed
+        local abilityToRespawn = self:GetHasAbilityToRespawn()
+        local numCommandStructures = self:GetNumCommandStructures()
+        
+        if  ( numCommandStructures == 0 ) or
+            ( self:GetNumPlayers() == 0 ) then
+            
+            return true
+            
+        end
+            
+    end
+
+    return false
+
 end
-*/
 
 function CombatPlayingTeam:SpawnInitialStructures_Hook(self, techPoint)
     // Dont Spawn RTS or Cysts
