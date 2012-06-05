@@ -25,9 +25,8 @@ function CombatPlayingTeam:OnLoad()
     self:ReplaceClassFunction("PlayingTeam", "GetHasTeamLost", "GetHasTeamLost_Hook")
     
     ClassHooker:SetClassCreatedIn("MarineTeam", "lua/MarineTeam.lua") 
-    self:ReplaceClassFunction("MarineTeam", "SpawnInitialStructures", "MarineTeamSpawnInitialStructures_Hook")
-    self:ReplaceClassFunction("MarineTeam", "SpawnInfantryPortals", "MaineTeamSpawnInfantryPortals_Hook")
-    self:ReplaceClassFunction("MarineTeam", "Update", "MarineTeamUpdate_Hook")
+    self:ReplaceClassFunction("MarineTeam", "SpawnInfantryPortals", "MarineTeamSpawnInfantryPortals_Hook")
+	self:ReplaceClassFunction("MarineTeam", "Update", "MarineTeamUpdate_Hook")
     
     ClassHooker:SetClassCreatedIn("Team", "lua/Team.lua") 
     self:ReplaceClassFunction("Team", "PutPlayerInRespawnQueue", "PutPlayerInRespawnQueue_Hook")
@@ -50,7 +49,8 @@ end
 function CombatPlayingTeam:GetHasTeamLost_Hook(handle, self)
     // Don't bother with the original - we just set our own logic here.
     
-	if(GetGamerules():GetGameStarted() and not Shared.GetCheatsEnabled()) then
+	// You can lose with cheats on (testing purposes)
+	if(GetGamerules():GetGameStarted()) then
     
         // Team can't respawn or last Command Station or Hive destroyed
         local abilityToRespawn = self:GetHasAbilityToRespawn()
@@ -80,6 +80,12 @@ function CombatPlayingTeam:SpawnInitialStructures_Hook(self, techPoint)
     if commandStructure:isa("Hive") then
         commandStructure:SetFirstLogin()
     end
+	
+	// Set the command station to be occupied.
+	if commandStructure:isa("CommandStation") then
+		commandStructure.occupied = true
+		//commandStructure:UpdateCommanderLogin(true)
+	end
     
 end
 
@@ -92,13 +98,38 @@ end
 // Hooks MarineTeam
 //___________________
 
-function CombatPlayingTeam:MarineTeamSpawnInitialStructures_Hook(self, techPoint)
-    PlayingTeam.SpawnInitialStructures(self, techPoint)
-    // ToDo: Spaw Armory, too
-end
+function CombatPlayingTeam:MarineTeamSpawnInfantryPortals_Hook(self, techPoint)
+    // Don't Spawn an IP, make an armory instead!
+	//CombatPlayingTeam:CombatSpawnArmory_Hook(self, techPoint)
+	
+	// spawn initial Armory for marine team
 
-function CombatPlayingTeam:MaineTeamSpawnInfantryPortals_Hook(self, techPoint)
-    // No IPS
+    local techPointOrigin = techPoint:GetOrigin() + Vector(0, 2, 0)
+    
+    for i = 1, 50 do
+    
+        if self.ipsToConstruct == 0 then
+            break
+        end    
+
+        local origin = CalculateRandomSpawn(nil, techPointOrigin, kTechId.Armory, true, kInfantryPortalMinSpawnDistance * 1, kInfantryPortalMinSpawnDistance * 2.5, 3)
+  
+        if origin then
+        
+            origin = origin - Vector(0, 0.1, 0)
+
+            local armory = CreateEntity(Armory.kMapName, origin, self:GetTeamNumber())
+            
+            SetRandomOrientation(armory)
+            
+            armory:SetConstructionComplete() 
+            
+            self.ipsToConstruct = self.ipsToConstruct - 1
+            
+        end
+    
+    end
+
 end
 
 // Don't Check for IPS

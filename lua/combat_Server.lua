@@ -18,12 +18,14 @@ Script.Load("lua/fsfod_scripts.lua")
 Script.Load("lua/combat_PlayingTeam.lua")
 Script.Load("lua/combat_Balance.lua")
 Script.Load("lua/combat_Player.lua")
+Script.Load("lua/combat_CommandStation.lua")
 
 
 // Calling the Hook classes
 CombatPlayingTeam:OnLoad()
 CombatBalance:OnLoad()
 CombatPlayer:OnLoad()
+CombatCommandStation:OnLoad()
 
 // Load the normal Ns2 Server Scripts
 Script.Load("lua/Server.lua")
