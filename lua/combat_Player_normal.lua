@@ -48,6 +48,13 @@ UpsList.Marine["dmg3"] = {kTechId.Weapons3, "dmg2", 1, "tech"}
 UpsList.Marine["arm1"] = {kTechId.Armor1, nil, 1, "tech"}
 UpsList.Marine["arm2"] = {kTechId.Armor2, "arm1", 1, "tech"}
 UpsList.Marine["arm3"] = {kTechId.Armor3, "arm2", 1, "tech"}
+
+// need new functions for this
+//UpsList.Marine["motion"] = {"MotionTracking", nil, 1, "tech"}
+//UpsList.Marine["scanner"] = {"ScannerSweep", nil, 1, "tech"}
+//UpsList.Marine["cat"] = {"CatPack", nil, 1, "tech"}
+//UpsList.Marine["resup"] = {"Resuply", nil, 1, "tech"}
+
 // Class
 UpsList.Marine["jp"] = {JetpackMarine.kMapName, "arm2", 2, "class"}
 // if the exo is rdy
@@ -163,11 +170,14 @@ function Player:CoCheckUpgrade_Marine(upgrade, respawning)
                 if doUpgrade then
                     if neededOtherUp then
                         Shared.Message("You need " .. neededOtherUp .. " first")
+                        self:SendDirectMessage("You need " .. neededOtherUp .. " first")
                     else
                         Shared.Message("No free Lvl, you need at last ".. neededLvl .. " free Lvl")
+                        self:SendDirectMessage("No free Lvl, you need at last ".. neededLvl .. " free Lvl")
                     end
                 else
                     Shared.Message("You already own that Upgrade")
+                    self:SendDirectMessage("You already own that Upgrade")
                 end
             end        
         end
