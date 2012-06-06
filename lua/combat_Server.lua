@@ -21,19 +21,27 @@ Script.Load("lua/combat_Player.lua")
 Script.Load("lua/combat_CommandStation.lua")
 
 
+
+
 // Calling the Hook classes
 CombatPlayingTeam:OnLoad()
 CombatBalance:OnLoad()
 CombatPlayer:OnLoad()
 CombatCommandStation:OnLoad()
 
+
+
 // Load the normal Ns2 Server Scripts
 Script.Load("lua/Server.lua")
 
 
+
+
 // new functions, no hooks
+Script.Load("lua/combat_Chat.lua")
 Script.Load("lua/combat_Player_normal.lua")
 Script.Load("lua/combat_ConsoleCommands.lua")
+
 
 
 ClassHooker:OnLuaFullyLoaded()

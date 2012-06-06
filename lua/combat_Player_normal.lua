@@ -48,6 +48,13 @@ UpsList.Marine["dmg3"] = {kTechId.Weapons3, "dmg2", 1, "tech"}
 UpsList.Marine["arm1"] = {kTechId.Armor1, nil, 1, "tech"}
 UpsList.Marine["arm2"] = {kTechId.Armor2, "arm1", 1, "tech"}
 UpsList.Marine["arm3"] = {kTechId.Armor3, "arm2", 1, "tech"}
+
+// need new functions for this
+//UpsList.Marine["motion"] = {"MotionTracking", nil, 1, "tech"}
+//UpsList.Marine["scanner"] = {"ScannerSweep", nil, 1, "tech"}
+//UpsList.Marine["cat"] = {"CatPack", nil, 1, "tech"}
+//UpsList.Marine["resup"] = {"Resuply", nil, 1, "tech"}
+
 // Class
 UpsList.Marine["jp"] = {JetpackMarine.kMapName, "arm2", 2, "class"}
 // if the exo is rdy
@@ -92,9 +99,9 @@ function GetIsPrimaryWeapon(kMapName)
 end
      
 // Do Upgrade, called by console, type and team is checked and is valid
-// ToDo: what happens if I wanna have another weapon
+// ToDo: what happens if I wanna have another weapon -> erase other weapon ot of the personal table
 // ToDo: do i have everything necessery?
-function Player:CoCheckUpgrade_Marine(upgrade)
+function Player:CoCheckUpgrade_Marine(upgrade, respawning)
     
     local doUpgrade = false
     
@@ -102,123 +109,156 @@ function Player:CoCheckUpgrade_Marine(upgrade)
     
         local type = UpsList.Marine[upgrade][4]
         local neededLvl = UpsList.Marine[upgrade][3]
+        local neededOtherUp = UpsList.Marine[upgrade][2]
         local kMapName =  UpsList.Marine[upgrade][1]
         doUpgrade = true
 
         // do i have the Up already?
         if self.combatTable then
             for number, entry in ipairs(self.combatTable.techtree) do
+            
+                // do the up needs other ups??
+                if neededOtherUp then
+                    if entry == neededOtherUp then
+                    // we got the needed Update
+                        neededOtherUp = nil
+                    end
+                end
+            
                 if entry == upgrade then
                    doUpgrade = false
                 end
             end
-        end
-        
-        if (self.combatTable.lvlfree >=  neededLvl and doUpgrade) then
-        
+                     
+            if ((self.combatTable.lvlfree >=  neededLvl and doUpgrade and not neededOtherUp) or respawning) then
+            
 
-            // check type(weapon, class, tech)
-            if type == "weapon" then
-            
-                if self:GetIsAlive() then
-                    Player.InitWeapons(self)
-                    
-                    // if primary weapon, destroy old (only rifle)                
-                    if GetIsPrimaryWeapon(kMapName) then
-                        local weapon = self:GetWeaponInHUDSlot(1)
-                        self:RemoveWeapon(weapon)
-                        DestroyEntity(weapon)
-                    end
-                    
-                    self:GiveItem(kMapName)
-                end       
-            
-            elseif type == "tech" then
-                // works fine fore rines, bot not for aliens
-                self:GetTechTree():GiveUpgrade(kMapName)
+                // check type(weapon, class, tech)
+                if type == "weapon" then
                 
-            elseif type == "class" then
-                if self:GetIsAlive() then
-                    self:Replace(kMapName, self:GetTeamNumber(), false)                
+                    if self:GetIsAlive() or self:isa("Marine") then
+                        Player.InitWeapons(self)
+                        
+                        // if primary weapon, destroy old (only rifle)                
+                        if GetIsPrimaryWeapon(kMapName) then
+                            local weapon = self:GetWeaponInHUDSlot(1)
+                            self:RemoveWeapon(weapon)
+                            DestroyEntity(weapon)
+                        end
+                        
+                        self:GiveItem(kMapName)
+                    end       
+                
+                elseif type == "tech" then
+                    // ToDo: There's still a bug, everbody get my tech
+                    self:GetTechTree():GiveUpgrade(kMapName)
+                    
+                elseif type == "class" then
+                    if self:GetIsAlive() then
+                        self:Replace(kMapName, self:GetTeamNumber(), false)                
+                    end
                 end
-            end
 
-            // insert the up to the personal techtree
-            table.insert(self.combatTable.techtree, upgrade)
-            // subtract the needed lvl
-            self.combatTable.lvlfree = self.combatTable.lvlfree -  neededLvl
-          
-        else
-            if doUpgrade then
-                Shared.Message("No free Lvl")
+                if not respawning then
+                    // insert the up to the personal techtree
+                    table.insert(self.combatTable.techtree, upgrade)
+                    // subtract the needed lvl
+                    self.combatTable.lvlfree = self.combatTable.lvlfree -  neededLvl
+                end
+              
             else
-                Shared.Message("You already own that Upgrade")
-            end
-    end
-    
+                if doUpgrade then
+                    if neededOtherUp then
+                        Shared.Message("You need " .. neededOtherUp .. " first")
+                        self:SendDirectMessage("You need " .. neededOtherUp .. " first")
+                    else
+                        Shared.Message("No free Lvl, you need at last ".. neededLvl .. " free Lvl")
+                        self:SendDirectMessage("No free Lvl, you need at last ".. neededLvl .. " free Lvl")
+                    end
+                else
+                    Shared.Message("You already own that Upgrade")
+                    self:SendDirectMessage("You already own that Upgrade")
+                end
+            end        
+        end
     end
 end
 
 // Special treatment for alien evolutions (eggs etc.)
 
 //ToDo: there is a bug where aliens cant get tech, cara etc.
-function Player:CoCheckUpgrade_Alien(upgrade)
+function Player:CoCheckUpgrade_Alien(upgrade, respawning)
 
     local doUpgrade = false
-    // this is special for aliens, cause the need to evolve
-    // when the evovle progress failed, this bool is false
-    local upgradeOK = true
     
     if UpsList.Alien[upgrade] then
     
         local type = UpsList.Alien[upgrade][4]
         local neededLvl = UpsList.Alien[upgrade][3]
+        local neededOtherUp = UpsList.Alien[upgrade][2]
         local kMapName =  UpsList.Alien[upgrade][1]
         doUpgrade = true
+        // this is needed if there is no room for an egg
+        upgradeOK = true
 
         // do i have the Up already?
         if self.combatTable then
             for number, entry in ipairs(self.combatTable.techtree) do
+            
+                // do the up needs other ups??
+                if neededOtherUp then
+                    if entry == neededOtherUp then
+                    // we got the needed Update
+                        neededOtherUp = nil
+                    end
+                end
+            
                 if entry == upgrade then
                    doUpgrade = false
                 end
             end
-        end
-    
-        if (self.combatTable.lvlfree >=  neededLvl and doUpgrade) then
+                     
+            if ((self.combatTable.lvlfree >=  neededLvl and doUpgrade and not neededOtherUp) or respawning) then
 
                     
-            if type == "tech" then
-                if self:GetIsAlive() then
-                    //self:GetTechTree():GiveUpgrade(kMapName)
-                    upgradeOK = self:CoEvolve(kMapName)
-                    if upgradeOK then
-                        success = self:GiveUpgrade(kMapName)
+                if type == "tech" then
+                    if self:GetIsAlive() then
+                        //self:GetTechTree():GiveUpgrade(kMapName)
+                        upgradeOK = self:CoEvolve(kMapName)
+                        if upgradeOK then
+                            success = self:GiveUpgrade(kMapName)
+                        end
+                    end
+                    
+                elseif type == "class" then
+                    if self:GetIsAlive() then
+                        //self:Replace(kMapName, self:GetTeamNumber(), false)  
+                        upgradeOK = self:CoEvolve(kMapName)            
                     end
                 end
-                
-            elseif type == "class" then
-                if self:GetIsAlive() then
-                    //self:Replace(kMapName, self:GetTeamNumber(), false)  
-                    upgradeOK = self:CoEvolve(kMapName)            
+         
+                if not respawning then
+                    if  upgradeOK then
+                        // insert the up to the personal techtree
+                        table.insert(self.combatTable.techtree, upgrade)
+                        // subtrate the needed lvl
+                        self.combatTable.lvlfree = self.combatTable.lvlfree - neededLvl
+                    else
+                        Shared.Message("Upgrade failed")  
+                    end  
                 end
-            end
-            
-            if upgradeOK then
-                // insert the up to the personal techtree
-                table.insert(self.combatTable.techtree, upgrade)
-                // subtrate the needed lvl
-                self.combatTable.lvlfree = self.combatTable.lvlfree - neededLvl
-            else
-                Shared.Message("Upgrade failed")  
-            end            
           
-        else
-            if doUpgrade then
-                Shared.Message("No free Lvl")
             else
-                Shared.Message("You already own that Upgrade")
-            end
+                if doUpgrade then
+                    if neededOtherUp then
+                        Shared.Message("You need " .. neededOtherUp .. " first")
+                    else
+                        Shared.Message("No free Lvl, you need at last ".. neededLvl .. " free Lvl")
+                    end
+                else
+                    Shared.Message("You already own that Upgrade")
+                end
+            end        
         end
     end
 end
@@ -281,9 +321,20 @@ function Player:CoEvolve(techId)
 end
 
 
+// Gimme my Ups back, called from "CopyPlayerData" 
 function Player:GiveUpsBack()
-    if self.combatTable then    
-        //self.combatTable.techtree
+    if self.combatTable then          
+        if self:isa("Marine") then  
+            // do it for every up in the table      
+            for i, entry in pairs(self.combatTable.techtree) do 
+                self:CoCheckUpgrade_Marine(entry, true) 
+            end
+        elseif self:isa("Alien") then
+            for i, entry in pairs(self.combatTable.techtree) do 
+                // TODO: just get lvl back when you got a other class
+                //self:CoCheckUpgrade_Alien(entry, true)   
+            end
+        end            
     end
 end
 
@@ -316,15 +367,26 @@ end
 function Player:AddXp(amount)
 
     if amount and (self:GetLvl() < 10 )  then
-        if self:GetXp() then        
+        if self:GetXp() and self.combatTable then        
             self.combatTable.xp = self.combatTable.xp + amount
+            self:CheckLvlUp(self.combatTable.xp) 
         else
+            // due to a bug, we need to set the combatTable here (calling replace_hook doesn't work
+            self.combatTable = {}  
+            self.combatTable.xp = 0
+            self.combatTable.lvl = 1
+            self.combatTable.lvlfree = 0
+            
+            self.combatTable.techtree = {}
+            
+            // save every Update in the personal techtree            
             self.combatTable.xp = amount
+            self:CheckLvlUp(self.combatTable.xp) 
         end     
     else
         // Max Lvl reached
     end        
-    self:CheckLvlUp(self.combatTable.xp)    
+       
 end
 
 
