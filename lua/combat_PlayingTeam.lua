@@ -46,14 +46,12 @@ end
 // Hooks Playing Team
 //___________________
 
-function CombatPlayingTeam:GetHasTeamLost_Hook(handle, self)
+function CombatPlayingTeam:GetHasTeamLost_Hook(self, handle)
     // Don't bother with the original - we just set our own logic here.
-    
 	// You can lose with cheats on (testing purposes)
 	if(GetGamerules():GetGameStarted()) then
     
         // Team can't respawn or last Command Station or Hive destroyed
-        local abilityToRespawn = self:GetHasAbilityToRespawn()
         local numCommandStructures = self:GetNumCommandStructures()
         
         if  ( numCommandStructures == 0 ) or
