@@ -70,7 +70,7 @@ UpsList.Alien ["onos"] = {kTechId.Onos, "fade", 2, "class"}
 // Tech
 UpsList.Alien ["tier2"] = {kTechId.Augmentation, nil, 1, "tech"}
 UpsList.Alien ["tier3"] = {kTechId.AlienArmor3, "tier2", 1, "tech"}
-UpsList.Alien ["carapace"] = {kTechId.CarapaceTech, nil , 1, "tech"}
+UpsList.Alien ["carapace"] = {kTechId.Carapace, nil , 1, "tech"}
 UpsList.Alien ["regen"] = {kTechId.Regeneration, nil , 1, "tech"}
 UpsList.Alien ["silence"] = {kTechId.Silence, nil , 1, "tech"}
 UpsList.Alien ["camo"] = {kTechId.Camouflage, nil , 1, "tech"}
@@ -192,7 +192,7 @@ function Player:CoCheckUpgrade_Alien(upgrade, respawning)
     local doUpgrade = false
     
     if UpsList.Alien[upgrade] then
-    
+  
         local type = UpsList.Alien[upgrade][4]
         local neededLvl = UpsList.Alien[upgrade][3]
         local neededOtherUp = UpsList.Alien[upgrade][2]
@@ -226,7 +226,7 @@ function Player:CoCheckUpgrade_Alien(upgrade, respawning)
                         //self:GetTechTree():GiveUpgrade(kMapName)
                         upgradeOK = self:CoEvolve(kMapName)
                         if upgradeOK then
-                            success = self:GiveUpgrade(kMapName)
+                            success = self:GetTechTree():GiveUpgrade(kMapName)
                         end
                     end
                     
@@ -244,7 +244,8 @@ function Player:CoCheckUpgrade_Alien(upgrade, respawning)
                         // subtrate the needed lvl
                         self.combatTable.lvlfree = self.combatTable.lvlfree - neededLvl
                     else
-                        Shared.Message("Upgrade failed")  
+                        Shared.Message("Upgrade failed") 
+                        self:SendDirectMessage("Upgrade failed") 
                     end  
                 end
           
@@ -252,11 +253,14 @@ function Player:CoCheckUpgrade_Alien(upgrade, respawning)
                 if doUpgrade then
                     if neededOtherUp then
                         Shared.Message("You need " .. neededOtherUp .. " first")
+                        self:SendDirectMessage("You need " .. neededOtherUp .. " first")
                     else
                         Shared.Message("No free Lvl, you need at last ".. neededLvl .. " free Lvl")
+                        self:SendDirectMessage("No free Lvl, you need at last ".. neededLvl .. " free Lvl")
                     end
                 else
                     Shared.Message("You already own that Upgrade")
+                    self:SendDirectMessage("You already own that Upgrade")
                 end
             end        
         end
@@ -367,7 +371,11 @@ end
 function Player:AddXp(amount)
 
     if amount and (self:GetLvl() < 10 )  then
-        if self:GetXp() and self.combatTable then        
+        if self:GetXp() and self.combatTable then 
+
+            // For testing the xp System
+            self:SendDirectMessage(amount .. " XP gained")       
+            
             self.combatTable.xp = self.combatTable.xp + amount
             self:CheckLvlUp(self.combatTable.xp) 
         else
@@ -392,7 +400,7 @@ end
 
 function Player:CheckLvlUp(xp)
 //ToDo: Levels and XP System
-    if xp and (self:GetLvl() < 10 ) then
+    if xp and (self:GetLvl() < 10 ) then  
         
         if (xp >= XpList[self:GetLvl()+1][1]) then
         //Lvl UP
