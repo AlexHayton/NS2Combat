@@ -25,11 +25,14 @@ function CombatPlayer:OnLoad()
     
     ClassHooker:SetClassCreatedIn("Marine", "lua/Marine.lua") 
     self:ReplaceClassFunction("Marine", "OnKill", "MarineOnKill_Hook") 
-    self:ReplaceClassFunction("Marine", "Drop", "Drop_Hook")    
+    self:ReplaceClassFunction("Marine", "Drop", "Drop_Hook") 
+
+    self:ReplaceFunction("GetIsTechAvailable", "GetIsTechAvailable_Hook"   )
 
    
     
 end
+
 
 //___________________
 // Hooks Player
@@ -81,6 +84,18 @@ end
 // Weapons can't be dropped anymore
 function CombatPlayer:Drop_Hook(self, weapon, ignoreDropTimeLimit, ignoreReplacementWeapon)
 // just do nothing
+
+end
+
+
+//___________________
+// Hooks Alien_Upgrade
+//___________________
+
+// Hook GetIsTechAvailable so Aliens can get Ups Like cara, cele etc.
+function CombatPlayer:GetIsTechAvailable_Hook(self, teamNumber, techId)
+
+    return true
 
 end
 
