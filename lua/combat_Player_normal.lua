@@ -187,7 +187,7 @@ end
 // Special treatment for alien evolutions (eggs etc.)
 
 //ToDo: there is a bug where aliens cant get tech, cara etc.
-function Player:CoCheckUpgrade_Alien(upgrade, respawning)
+function Player:CoCheckUpgrade_Alien(upgrade, respawning, position)
 
     local doUpgrade = false
     
@@ -223,17 +223,27 @@ function Player:CoCheckUpgrade_Alien(upgrade, respawning)
                     
                 if type == "tech" then
                     if self:GetIsAlive() then
-                        //self:GetTechTree():GiveUpgrade(kMapName)
-                        upgradeOK = self:CoEvolve(kMapName)
-                        if upgradeOK then
+                        if respawning then
+                            // no evolving when respawning
                             success = self:GetTechTree():GiveUpgrade(kMapName)
+                        else    
+                            upgradeOK = self:CoEvolve(kMapName)
+                            if upgradeOK then
+                                //success = self:GetTechTree():GiveUpgrade(kMapName)
+                            end
                         end
                     end
                     
                 elseif type == "class" then
                     if self:GetIsAlive() then
-                        //self:Replace(kMapName, self:GetTeamNumber(), false)  
-                        upgradeOK = self:CoEvolve(kMapName)            
+                        if respawning then
+                            // Just gimme the Lvl back
+                            self.combatTable.lvlfree = self.combatTable.lvlfree + neededLvl
+                            table.remove(self.combatTable.techtree, position)
+                        else
+                            //self:Replace(kMapName, self:GetTeamNumber(), false)  
+                            upgradeOK = self:CoEvolve(kMapName)            
+                        end
                     end
                 end
          
@@ -336,10 +346,12 @@ function Player:GiveUpsBack()
         elseif self:isa("Alien") then
             for i, entry in pairs(self.combatTable.techtree) do 
                 // TODO: just get lvl back when you got a other class
-                //self:CoCheckUpgrade_Alien(entry, true)   
+                self:CoCheckUpgrade_Alien(entry, true, i)   
             end
         end            
     end
+    
+    self.isRespawning = false
 end
 
 

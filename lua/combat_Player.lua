@@ -54,9 +54,14 @@ end
 // Copy old lvl and XP when respawning 
 function CombatPlayer:CopyPlayerDataFrom_Hook(self, player)    
 
-    self.combatTable = player.combatTable
-    // Give the ups back
-    self:GiveUpsBack()
+    //if not self:GetIsAlive() and self:GetTeam() ~= "ReadyRoomTeam" then
+
+        self.combatTable = player.combatTable
+        // Give the ups back, but just when respawing
+        if player and player.isRespawning then
+              self:GiveUpsBack()
+        end
+    //end
     
 end
 

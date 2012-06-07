@@ -31,6 +31,7 @@ function OnCommandSpendLvl(client, type)
         end
     else
         Shared.Message("No type defined, usage is: co_spendlvl type")
+        player:SendDirectMessage("No type defined, usage is: co_spendlvl type")
     end
    
 end
@@ -78,6 +79,16 @@ function OnCommandStuck(client)
 
 local player = client:GetControllingPlayer()
 player:SetOrigin( player:GetOrigin()+ Vector(0, 2, 0))
+player:BuyMenu(nil)
+
+            
+            player.showingBuyMenu = true            
+            //MouseTracker_SetIsVisible(true, "ui/Cursor_MenuDefault.dds", true)
+    
+            // Play looping "active" sound while logged in
+            Shared.PlayPrivateSound(player, Armory.kResupplySound, player, 1.0, Vector(0, 0, 0))
+            
+           // MarineUI_SetHostStructure(self)
 
 end
 

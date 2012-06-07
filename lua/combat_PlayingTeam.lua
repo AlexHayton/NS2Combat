@@ -156,12 +156,14 @@ end
 function CombatPlayingTeam:PutPlayerInRespawnQueue_Hook(self, player, time)
 //Spawn, even if there is no IP
     player:GetTeam():RemovePlayerFromRespawnQueue(player)
+        player.isRespawning = true
       SendPlayersMessage({ player }, kTeamMessageTypes.Spawning)
             
             if Server then
                 
                 if player.SetSpectatorMode then
                     player:SetSpectatorMode(Spectator.kSpectatorMode.Following)
+
                 end         
                 
 
