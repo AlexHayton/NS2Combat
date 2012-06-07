@@ -56,7 +56,9 @@ UpsList.Marine["arm3"] = {kTechId.Armor3, "arm2", 1, "tech"}
 //UpsList.Marine["resup"] = {"Resuply", nil, 1, "tech"}
 
 // Class
-UpsList.Marine["jp"] = {JetpackMarine.kMapName, "arm2", 2, "class"}
+//UpsList.Marine["jp"] = {JetpackMarine.kMapName, "arm2", 2, "class"}
+// For Testing
+UpsList.Marine["jp"] = {JetpackMarine.kMapName, nil, 0, "class"}
 // if the exo is rdy
 //UpsList.Marine["exo"] = {JetpackMarine.kMapName, "arm2", 2, "class"} 
 
@@ -150,12 +152,18 @@ function Player:CoCheckUpgrade_Marine(upgrade, respawning)
                     end       
                 
                 elseif type == "tech" then
-                    // ToDo: There's still a bug, everbody get my tech
-                    self:GetTechTree():GiveUpgrade(kMapName)
+                    // ToDo: There's still a bug, everbody get my tech                    
+
+                    self:GetTechTree():GiveUpgrade(kMapName)  
                     
                 elseif type == "class" then
                     if self:GetIsAlive() then
-                        self:Replace(kMapName, self:GetTeamNumber(), false)                
+                        // can't replace somebody who's respawning at the moment, give him the class later
+                        if not respawning then
+                            self:Replace(kMapName, self:GetTeamNumber(), false)  
+                            self.combatTable.giveClassAfterRespawn = kMapName           
+
+                        end
                     end
                 end
 

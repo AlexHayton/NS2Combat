@@ -158,8 +158,8 @@ function CombatPlayingTeam:PutPlayerInRespawnQueue_Hook(self, player, time)
     player:GetTeam():RemovePlayerFromRespawnQueue(player)
         player.isRespawning = true
       SendPlayersMessage({ player }, kTeamMessageTypes.Spawning)
-            
-            if Server then
+
+           if Server then
                 
                 if player.SetSpectatorMode then
                     player:SetSpectatorMode(Spectator.kSpectatorMode.Following)
@@ -168,9 +168,12 @@ function CombatPlayingTeam:PutPlayerInRespawnQueue_Hook(self, player, time)
                 
 
             end
-    
-        local newPlayer = player:GetTeam():ReplaceRespawnPlayer(player, nil, nil)        
-        
+
+        if player.combatTable and player.combatTable.giveClassAfterRespawn then
+            local newPlayer = player:GetTeam():ReplaceRespawnPlayer(player, nil, nil, player.combatTable.giveClassAfterRespawn)
+        else
+            local newPlayer = player:GetTeam():ReplaceRespawnPlayer(player, nil, nil)        
+        end
         return success
 end
 
