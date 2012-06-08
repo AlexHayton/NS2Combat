@@ -30,6 +30,8 @@ XpList[7] = {1350 ,"Commander" ,"Slaughterer", 120}
 XpList[8] = {1750 ,"Major", "Eliminator", 130}
 XpList[9] = {2200 ,"Field Marshal", "Nightmare", 140}
 XpList[10] = {2700, "General", "Behemoth", 150}
+// Scores for structures
+XpList[99] =  20
 
 // List with possible Upgrades
 UpsList = {}

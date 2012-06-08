@@ -188,15 +188,19 @@ function CombatPlayingTeam:OnKill_Hook(self, damage, attacker, doer, point, dire
         pointOwner = pointOwner:GetOwner()
     end    
         
-
+    // Give Xp for Players
    if (pointOwner and self:isa("Player")) then
-            if (XpList[self.combatTable]) then
+            if self.combatTable then
                 pointOwner:AddXp(XpList[self.combatTable.lvl][4])
             else
                 // if enemy dont got a combatTable, get standard Value for Lvl 1
                 pointOwner:AddXp(XpList[1][4])
             end
+    else    
+    // Give XP for killing structures    
+        pointOwner:AddXp(XpList[99])
     end
+    
 
 end
 
