@@ -264,8 +264,8 @@ function Player:CoCheckUpgrade_Alien(upgrade, respawning, position)
                         // subtrate the needed lvl
                         self.combatTable.lvlfree = self.combatTable.lvlfree - neededLvl
                     else
-                        Shared.Message("Upgrade failed") 
-                        self:SendDirectMessage("Upgrade failed") 
+                        Shared.Message("Upgrade failed, maybe not enough room") 
+                        self:SendDirectMessage("Upgrade failed, maybe not enough room") 
                     end  
                 end
           

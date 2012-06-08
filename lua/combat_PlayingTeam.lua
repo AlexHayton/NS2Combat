@@ -37,6 +37,9 @@ function CombatPlayingTeam:OnLoad()
     ClassHooker:SetClassCreatedIn("Hive", "lua/Hive.lua")
     self:ReplaceClassFunction("Hive", "GenerateEggSpawns", "GenerateEggSpawns_Hook")
     self:ReplaceClassFunction("Hive", "SpawnEgg", "SpawnEgg_Hook")
+    
+    ClassHooker:SetClassCreatedIn("NS2Gamerules", "lua/NS2Gamerules.lua")
+    self:PostHookClassFunction("NS2Gamerules", "JoinTeam", "JoinTeam_Hook")
 
    
     
@@ -189,18 +192,19 @@ function CombatPlayingTeam:OnKill_Hook(self, damage, attacker, doer, point, dire
     end    
         
     // Give Xp for Players
-   if (pointOwner and self:isa("Player")) then
-            if self.combatTable then
-                pointOwner:AddXp(XpList[self.combatTable.lvl][4])
-            else
-                // if enemy dont got a combatTable, get standard Value for Lvl 1
-                pointOwner:AddXp(XpList[1][4])
-            end
-    else    
-    // Give XP for killing structures    
-        pointOwner:AddXp(XpList[99])
-    end
-    
+   if pointOwner then
+        if self:isa("Player") then
+                if self.combatTable then
+                    pointOwner:AddXp(XpList[self.combatTable.lvl][4])
+                else
+                    // if enemy dont got a combatTable, get standard Value for Lvl 1
+                    pointOwner:AddXp(XpList[1][4])
+                end
+        else    
+        // Give XP for killing structures    
+            pointOwner:AddXp(XpList[99])
+        end
+    end    
 
 end
 
@@ -219,6 +223,24 @@ end
  // Do nithing
  end
 
+
+//___________________
+// Hooks NS2Gamerules
+//___________________
+
+// Free the lvl when changing Teams
+function  CombatPlayingTeam:JoinTeam_Hook(self, player, newTeamNumber, force)
+
+    if player.combatTable then
+        if player.combatTable.techtree[1] then
+             // give the Lvl back
+            player.combatTable.lvlfree = player.combatTable.lvlfree +  player.combatTable.lvl - 1
+            // clear the techtree
+            player.combatTable.techtree = {}
+        end
+    end
+
+end
 
 
 if(hotreload) then
