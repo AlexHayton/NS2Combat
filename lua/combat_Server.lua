@@ -16,6 +16,8 @@ Script.Load("lua/fsfod_scripts.lua")
 
 // Loading the Hook classes
 Script.Load("lua/combat_PlayingTeam.lua")
+Script.Load("lua/combat_MarineTeam.lua")
+Script.Load("lua/combat_AlienTeam.lua")
 Script.Load("lua/combat_Balance.lua")
 Script.Load("lua/combat_Player.lua")
 Script.Load("lua/combat_CommandStation.lua")
