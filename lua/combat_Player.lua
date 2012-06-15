@@ -27,9 +27,7 @@ function CombatPlayer:OnLoad()
     self:ReplaceClassFunction("Marine", "OnKill", "MarineOnKill_Hook") 
     self:ReplaceClassFunction("Marine", "Drop", "Drop_Hook") 
 
-    self:ReplaceFunction("GetIsTechAvailable", "GetIsTechAvailable_Hook"   )
-
-   
+    self:ReplaceFunction("GetIsTechAvailable", "GetIsTechAvailable_Hook")
     
 end
 
@@ -54,12 +52,11 @@ end
 // Copy old lvl and XP when respawning 
 function CombatPlayer:CopyPlayerDataFrom_Hook(self, player)    
 
-        self.combatTable = player.combatTable
-        // Give the ups back, but just when respawing
-        if player and player.isRespawning then
-              self:GiveUpsBack()
-        end
-    //end
+	self.combatTable = player.combatTable
+	// Give the ups back, but just when respawing
+	if player and player.isRespawning then
+		  self:GiveUpsBack()
+	end
     
 end
 
@@ -82,11 +79,13 @@ function CombatPlayer:MarineOnKill_Hook(self, damage, attacker, doer, point, dir
     // Remember our squad and position on death so we can beam back to them
     self.lastSquad = self:GetSquad()
     self.originOnDeath = self:GetOrigin()
+	
 end
 
 // Weapons can't be dropped anymore
 function CombatPlayer:Drop_Hook(self, weapon, ignoreDropTimeLimit, ignoreReplacementWeapon)
-// just do nothing
+
+	// just do nothing
 
 end
 

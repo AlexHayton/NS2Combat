@@ -77,31 +77,36 @@ end
 
 function OnCommandStuck(client)
 
-local player = client:GetControllingPlayer()
-player:SetOrigin( player:GetOrigin()+ Vector(0, 2, 0))
-player:BuyMenu(nil)
-
-            
-            player.showingBuyMenu = true            
-            //MouseTracker_SetIsVisible(true, "ui/Cursor_MenuDefault.dds", true)
-    
-            // Play looping "active" sound while logged in
-            Shared.PlayPrivateSound(player, Armory.kResupplySound, player, 1.0, Vector(0, 0, 0))
-            
-           // MarineUI_SetHostStructure(self)
+	local player = client:GetControllingPlayer()
+	player:SetOrigin( player:GetOrigin()+ Vector(0, 4, 0))
+	
+	// TODO: Find the nearest wall and move us to the other side of it.
+	// AH: This is low priority for me.
 
 end
 
- 
-Event.Hook("Console_co_spendlvl",                OnCommandSpendLvl)
+function OnCommandStatus(client)
 
+	local player = client:GetControllingPlayer()
+	player:SendDirectMessage( "You are level " .. player:GetLvl() .. " with " .. player:GetXp() .. " XP. " .. (XpList[player:GetLvl() + 1][1] - player:GetXp()).. " XP to go!")
+	
+end
+
+function OnCommandHelp(client)
+
+	// Display a banner showing the available commands
+	local player = client:GetControllingPlayer()
+	player:SendDirectMessage("Available commands:")
+	player:SendDirectMessage("co_spendlvl - use this to buy upgrades")
+	player:SendDirectMessage("co_status - use this to show your level, xp and available upgrades")
+
+end
+
+Event.Hook("Console_co_help",                OnCommandHelp) 
+Event.Hook("Console_co_spendlvl",                OnCommandSpendLvl)
 Event.Hook("Console_co_addxp",                OnCommandAddXp)
 Event.Hook("Console_co_showxp",                OnCommandShowXp)
 Event.Hook("Console_co_showlvl",                OnCommandShowLvl)
-
+Event.Hook("Console_co_status",                OnCommandStatus) 
 Event.Hook("Console_testmsg",                OnCommandTestMsg)
-
-
-
-
 Event.Hook("Console_/stuck",                OnCommandStuck)
