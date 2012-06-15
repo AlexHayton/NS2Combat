@@ -2,8 +2,6 @@
 //
 //   	Combat Mod     
 //	Made by JimWest, 2012
-//
-//	Version 0.1
 //	
 //________________________________
 
@@ -20,18 +18,18 @@ Script.Load("lua/combat_MarineTeam.lua")
 Script.Load("lua/combat_AlienTeam.lua")
 Script.Load("lua/combat_Balance.lua")
 Script.Load("lua/combat_Player.lua")
-Script.Load("lua/combat_CommandStation.lua")
-
-
+Script.Load("lua/combat_CommandStructure.lua")
+Script.Load("lua/combat_Hive.lua")
 
 
 // Calling the Hook classes
 CombatPlayingTeam:OnLoad()
 CombatBalance:OnLoad()
 CombatPlayer:OnLoad()
-CombatCommandStation:OnLoad()
-
-
+CombatCommandStructure:OnLoad()
+CombatMarineTeam:OnLoad()
+CombatAlienTeam:OnLoad()
+CombatHive:OnLoad()
 
 // Load the normal Ns2 Server Scripts
 Script.Load("lua/Server.lua")

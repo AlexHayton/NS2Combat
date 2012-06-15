@@ -62,11 +62,11 @@ function CombatAlienTeam:InitTechTree_Hook(self)
     self.techTree:AddResearchNode(kTechId.BacterialReceptors,    kTechId.ShadeHive,           kTechId.None)
 	
 	// Tier 1 lifeforms
-    self.techTree:AddAction(kTechId.Skulk,                     kTechId.None,                kTechId.None)
+    /*self.techTree:AddAction(kTechId.Skulk,                     kTechId.None,                kTechId.None)
     self.techTree:AddAction(kTechId.Gorge,                     kTechId.None,                kTechId.None)
     self.techTree:AddAction(kTechId.Lerk,                      kTechId.None,                kTechId.None)
     self.techTree:AddAction(kTechId.Fade,                      kTechId.None,                kTechId.None)
-    self.techTree:AddAction(kTechId.Onos,                      kTechId.None,                kTechId.None)
+    self.techTree:AddAction(kTechId.Onos,                      kTechId.None,                kTechId.None)*/
     self.techTree:AddBuyNode(kTechId.Egg,                      kTechId.None,                kTechId.None)
     
     self.techTree:AddPlasmaManufactureNode(kTechId.GorgeEgg,          kTechId.None,                kTechId.None)

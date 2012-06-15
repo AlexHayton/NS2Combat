@@ -2,8 +2,6 @@
 //
 //   	Combat Mod     
 //	Made by JimWest, 2012
-//
-//	Version 0.1
 //	
 //________________________________
 
@@ -24,19 +22,11 @@ function CombatPlayingTeam:OnLoad()
     self:ReplaceClassFunction("PlayingTeam", "SpawnResourceTower", "SpawnResourceTower_Hook")
     self:ReplaceClassFunction("PlayingTeam", "GetHasTeamLost", "GetHasTeamLost_Hook")
     
-    ClassHooker:SetClassCreatedIn("MarineTeam", "lua/MarineTeam.lua") 
-    self:ReplaceClassFunction("MarineTeam", "SpawnInfantryPortals", "MarineTeamSpawnInfantryPortals_Hook")
-	self:ReplaceClassFunction("MarineTeam", "Update", "MarineTeamUpdate_Hook")
-    
     ClassHooker:SetClassCreatedIn("Team", "lua/Team.lua") 
     self:ReplaceClassFunction("Team", "PutPlayerInRespawnQueue", "PutPlayerInRespawnQueue_Hook")
     
     ClassHooker:SetClassCreatedIn("PointGiverMixin", "lua/PointGiverMixin.lua")
     self:PostHookClassFunction("PointGiverMixin", "OnKill", "OnKill_Hook")
-    
-    ClassHooker:SetClassCreatedIn("Hive", "lua/Hive.lua")
-    self:ReplaceClassFunction("Hive", "GenerateEggSpawns", "GenerateEggSpawns_Hook")
-    self:ReplaceClassFunction("Hive", "SpawnEgg", "SpawnEgg_Hook")
     
     ClassHooker:SetClassCreatedIn("NS2Gamerules", "lua/NS2Gamerules.lua")
     self:PostHookClassFunction("NS2Gamerules", "JoinTeam", "JoinTeam_Hook")
@@ -93,62 +83,6 @@ end
 function CombatPlayingTeam:SpawnResourceTower_Hook(self, techPoint)
     // No RTS!!
 end
-
-
-//___________________
-// Hooks MarineTeam
-//___________________
-
-function CombatPlayingTeam:MarineTeamSpawnInfantryPortals_Hook(self, techPoint)
-    // Don't Spawn an IP, make an armory instead!
-	//CombatPlayingTeam:CombatSpawnArmory_Hook(self, techPoint)
-	
-	// spawn initial Armory for marine team
-
-    local techPointOrigin = techPoint:GetOrigin() + Vector(0, 2, 0)
-    
-    for i = 1, 50 do
-    
-        if self.ipsToConstruct == 0 then
-            break
-        end    
-
-        local origin = CalculateRandomSpawn(nil, techPointOrigin, kTechId.Armory, true, kInfantryPortalMinSpawnDistance * 1, kInfantryPortalMinSpawnDistance * 2.5, 3)
-  
-        if origin then
-        
-            origin = origin - Vector(0, 0.1, 0)
-
-            local armory = CreateEntity(Armory.kMapName, origin, self:GetTeamNumber())
-            
-            SetRandomOrientation(armory)
-            
-            armory:SetConstructionComplete() 
-            
-            self.ipsToConstruct = self.ipsToConstruct - 1
-            
-        end
-    
-    end
-
-end
-
-// Don't Check for IPS
-function CombatPlayingTeam:MarineTeamUpdate_Hook(self, timePassed)
-
-    PlayingTeam.Update(self, timePassed)
-    
-    self:UpdateSquads(timePassed)
-    
-    // Update distress beacon mask
-    self:UpdateGameMasks(timePassed)
-   
-    if GetGamerules():GetGameStarted() then
-      
-    end
-    
-end
-
 
 //___________________
 // Hooks Team
@@ -208,22 +142,6 @@ function CombatPlayingTeam:OnKill_Hook(self, damage, attacker, doer, point, dire
 
 end
 
-
-//___________________
-// Hooks Hive
-//___________________
-
-
-// No eggs will be spawned
-function CombatPlayingTeam:GenerateEggSpawns_Hook(self)
-// Do nothing
-end
-
- function CombatPlayingTeam:SpawnEgg_Hook(self)
- // Do nithing
- end
-
-
 //___________________
 // Hooks NS2Gamerules
 //___________________
@@ -237,6 +155,7 @@ function  CombatPlayingTeam:JoinTeam_Hook(self, player, newTeamNumber, force)
             player.combatTable.lvlfree = player.combatTable.lvlfree +  player.combatTable.lvl - 1
             // clear the techtree
             player.combatTable.techtree = {}
+			player.resources = 999
         end
     end
 

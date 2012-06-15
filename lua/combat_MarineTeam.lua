@@ -19,6 +19,8 @@ function CombatMarineTeam:OnLoad()
 
     ClassHooker:SetClassCreatedIn("MarineTeam", "lua/MarineTeam.lua") 
 	self:ReplaceClassFunction("MarineTeam", "InitTechTree", "InitTechTree_Hook")
+	self:ReplaceClassFunction("MarineTeam", "SpawnInfantryPortals", "SpawnInfantryPortals_Hook")
+	self:ReplaceClassFunction("MarineTeam", "Update", "Update_Hook")
 	
 end
 
@@ -65,12 +67,12 @@ function CombatMarineTeam:InitTechTree_Hook(self)
     self.techTree:AddBuyNode(kTechId.RifleUpgrade, kTechId.RifleUpgradeTech, kTechId.None, kTechId.Rifle)
     
     self.techTree:AddMenu(kTechId.ArmsLabUpgradesMenu)
-    self.techTree:AddMenu(kTechId.ArmoryEquipmentMenu)
+    //self.techTree:AddMenu(kTechId.ArmoryEquipmentMenu)
     
     self.techTree:AddUpgradeNode(kTechId.AdvancedArmoryUpgrade,  kTechId.Armory,        kTechId.InfantryPortal)
     
-    self.techTree:AddResearchNode(kTechId.Armor1,                 kTechId.ArmsLab,              kTechId.None)
-    self.techTree:AddResearchNode(kTechId.Weapons1,               kTechId.ArmsLab,               kTechId.None)
+    self.techTree:AddResearchNode(kTechId.Armor1,                 kTechId.None,              kTechId.None)
+    self.techTree:AddResearchNode(kTechId.Weapons1,               kTechId.None,               kTechId.None)
     
     // Marine tier 2
     self.techTree:AddUpgradeNode(kTechId.AdvancedArmory,               kTechId.Armory,        kTechId.None)
@@ -91,6 +93,7 @@ function CombatMarineTeam:InitTechTree_Hook(self)
     
     // Weapon-specific
     self.techTree:AddResearchNode(kTechId.ShotgunTech,           kTechId.None,              kTechId.None)
+	self.techTree:AddBuyNode(kTechId.Shotgun,                    kTechId.ShotgunTech,         kTechId.Armory)
     
     self.techTree:AddResearchNode(kTechId.GrenadeLauncherTech,           kTechId.ShotgunTech,                   kTechId.None)
     self.techTree:AddBuyNode(kTechId.GrenadeLauncher,                    kTechId.GrenadeLauncherTech,             kTechId.None)
@@ -130,7 +133,7 @@ function CombatMarineTeam:InitTechTree_Hook(self)
     self.techTree:AddResearchNode(kTechId.Weapons3,               kTechId.Weapons2,            kTechId.None)
 
     // Jetpack
-    self.techTree:AddResearchNode(kTechId.JetpackTech,           kTechId.Armor2, kTechId.None)
+    self.techTree:AddResearchNode(kTechId.JetpackTech,           kTechId.None, kTechId.None)
     
     // TODO: Make jetpacks depend on ThreeCommandStations
     self.techTree:AddBuyNode(kTechId.Jetpack,                    kTechId.JetpackTech, kTechId.None)
@@ -138,7 +141,7 @@ function CombatMarineTeam:InitTechTree_Hook(self)
     self.techTree:AddResearchNode(kTechId.JetpackArmorTech,      kTechId.JetpackTech, kTechId.None)
     
     // Exoskeleton
-    self.techTree:AddResearchNode(kTechId.ExoskeletonTech,       kTechId.Armor2, kTechId.None)
+    self.techTree:AddResearchNode(kTechId.ExoskeletonTech,       kTechId.None, kTechId.None)
     self.techTree:AddBuyNode(kTechId.Exoskeleton,                kTechId.ExoskeletonTech, kTechId.None)
     self.techTree:AddResearchNode(kTechId.DualMinigunTech,       kTechId.ExoskeletonTech, kTechId.None)
     
@@ -150,6 +153,52 @@ function CombatMarineTeam:InitTechTree_Hook(self)
     self.techTree:SetComplete()
 	
 end
+
+//___________________
+// Hooks MarineTeam
+//___________________
+
+function CombatMarineTeam:SpawnInfantryPortals_Hook(self, techPoint)
+    // Don't Spawn an IP, make an armory instead!
+	// spawn initial Armory for marine team
+
+    local techPointOrigin = techPoint:GetOrigin() + Vector(0, 2, 0)
+    
+    for i = 1, 50 do
+    
+        if self.ipsToConstruct == 0 then
+            break
+        end    
+
+        local origin = CalculateRandomSpawn(nil, techPointOrigin, kTechId.Armory, true, kInfantryPortalMinSpawnDistance * 1, kInfantryPortalMinSpawnDistance * 2.5, 3)
+  
+        if origin then
+        
+            origin = origin - Vector(0, 0.1, 0)
+
+            local armory = CreateEntity(Armory.kMapName, origin, self:GetTeamNumber())
+            
+            SetRandomOrientation(armory)
+            
+            armory:SetConstructionComplete() 
+            
+            self.ipsToConstruct = self.ipsToConstruct - 1
+            
+        end
+    
+    end
+
+end
+
+// Don't Check for IPS
+function CombatMarineTeam:Update_Hook(self, timePassed)
+
+    PlayingTeam.Update(self, timePassed)
+    
+    self:UpdateSquads(timePassed)
+    
+end
+
 
 if(HotReload) then
     CombatMarineTeam:OnLoad()

@@ -2,28 +2,26 @@
 //
 //   	Combat Mod     
 //	Made by JimWest, 2012
-//
-//	Version 0.1
 //	
 //________________________________
 
-// combat_CommandStation.lua
+// combat_CommandStructure.lua
 
-if(not CombatCommandStation) then
-  CombatCommandStation = {}
+if(not CombatCommandStructure) then
+  CombatCommandStructure = {}
 end
 
 
-local HotReload = ClassHooker:Mixin("CombatCommandStation")
+local HotReload = ClassHooker:Mixin("CombatCommandStructure")
     
-function CombatCommandStation:OnLoad()
+function CombatCommandStructure:OnLoad()
 
     ClassHooker:SetClassCreatedIn("CommandStructure", "lua/CommandStructure.lua") 
     self:ReplaceClassFunction("CommandStructure", "UpdateCommanderLogin", "UpdateCommanderLogin_Hook")
 	
 end
 
-function CombatCommandStation:UpdateCommanderLogin_Hook(self, force)
+function CombatCommandStructure:UpdateCommanderLogin_Hook(self, force)
 
 	self.occupied = true
     self.commanderId = Entity.invalidId
