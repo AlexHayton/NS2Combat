@@ -148,7 +148,7 @@ end
 //___________________
 
 // Free the lvl when changing Teams
-function  CombatPlayingTeam:JoinTeam_Hook(self, player, newTeamNumber, force)
+function  CombatPlayingTeam:JoinTeam_Hook(entityself, player, newTeamNumber, force)
 
     if player.combatTable then
         if player.combatTable.techtree[1] then
@@ -157,8 +157,24 @@ function  CombatPlayingTeam:JoinTeam_Hook(self, player, newTeamNumber, force)
             // clear the techtree
             player.combatTable.techtree = {}
 			player.resources = 999
-        end
+		end
+    else
+        player.combatTable = {}  
+        player.combatTable.xp = 0
+        player.combatTable.lvl = 1
+        player.combatTable.lvlfree = 0
+        
+        // save every Update in the personal techtree
+        player.combatTable.techtree = {}
+        
+       if GetGamerules():GetGameStarted() then
+            // get AvgXp                  
+            player:AddXp(player:GetAvgXp(table.maxn(GetGamerules().team1.playerIds)))
+            // Priting the avg xp to the Server Console for testing
+            Print(player:GetAvgXp(table.maxn(GetGamerules().team1.playerIds)))
+        end    
     end
+
 
 end
 

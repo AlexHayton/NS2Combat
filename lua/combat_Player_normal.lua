@@ -44,6 +44,12 @@ XpValues["Hydra"] = 20
 XpValues["Clog"] = 20
 XpValues["Armory"] = 100
 
+// Tracking Lvl for Latejoiner
+XpList.allXp = 0
+
+// how much % from the avg xp can new player get
+avgXpAmount = 0.75
+
 // List with possible Upgrades
 UpsList = {}
 UpsList.Marine = {}
@@ -434,6 +440,9 @@ end
 function Player:CheckLvlUp(xp)
 //ToDo: Levels and XP System
     if xp and (self:GetLvl() < 10 ) then  
+    
+        // avgXp, add xp and how often the xp was changed
+        XpList.allXp = XpList.allXp  + xp
         
         if (xp >= XpList[self:GetLvl()+1][1]) then
         //Lvl UP
@@ -450,6 +459,18 @@ function Player:CheckLvlUp(xp)
             self:SendDirectMessage( self:GetXp() .. " XP: " .. (XpList[self.combatTable.lvl + 1][1] - self:GetXp()).. " XP missing")
         end     
     end
+end
+
+function Player:GetAvgXp(playerNumbers)
+
+    local avgXp = 0
+    
+    if XpList.allXp > 0 and playerNumbers > 0 then
+        avgXp =  math.floor((XpList.allXp /  playerNumbers) * avgXpAmount)   
+    end
+    
+    return avgXp
+
 end
 
 function Player:SendDirectMessage(message)
