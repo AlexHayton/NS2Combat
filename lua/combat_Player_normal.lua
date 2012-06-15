@@ -15,11 +15,11 @@
 //___________________
 
 
-// XP-List
-XpList = {}  
 
+// XP-List
 //Table for 
 //    LVL,  needed XP to reach, RineName, AlienName, givenXP to killer     
+XpList = {}  
 XpList[1] = {0,	"Private", "Hatchling", 60}
 XpList[2] = {100, "Private First Class" , "Xenoform", 70}
 XpList[3] = {250, "Corporal" ,"Minion", 80}
@@ -30,8 +30,19 @@ XpList[7] = {1350 ,"Commander" ,"Slaughterer", 120}
 XpList[8] = {1750 ,"Major", "Eliminator", 130}
 XpList[9] = {2200 ,"Field Marshal", "Nightmare", 140}
 XpList[10] = {2700, "General", "Behemoth", 150}
-// Scores for structures
-XpList[99] =  20
+
+// XP-Values
+// Scores for various creatures and structures.
+XpValues = {}
+XpValues["Marine"] = 100
+XpValues["Skulk"] = 100
+XpValues["Gorge"] = 100
+XpValues["Lerk"] = 100
+XpValues["Fade"] = 100
+XpValues["Onos"] = 100
+XpValues["Hydra"] = 20
+XpValues["Clog"] = 20
+XpValues["Armory"] = 100
 
 // List with possible Upgrades
 UpsList = {}
@@ -431,9 +442,12 @@ function Player:CheckLvlUp(xp)
             self.combatTable.lvlfree = self.combatTable.lvlfree + 1
             // ToDo find out if rine or Alien and do a different name
             self:SendDirectMessage(XpList[self:GetLvl()][2])       
-            self:SendDirectMessage( self:GetXp() .. " XP; " .. (XpList[self.combatTable.lvl + 1][1] - self:GetXp()).. " XP missing")
+			// Stop errors when you reach the max level.
+			if (self:GetLvl() < 10) then
+				self:SendDirectMessage( self:GetXp() .. " XP: " .. (XpList[self.combatTable.lvl + 1][1] - self:GetXp()).. " XP missing")
+			end
         else        
-            self:SendDirectMessage( self:GetXp() .. " XP; " .. (XpList[self.combatTable.lvl + 1][1] - self:GetXp()).. " XP missing")
+            self:SendDirectMessage( self:GetXp() .. " XP: " .. (XpList[self.combatTable.lvl + 1][1] - self:GetXp()).. " XP missing")
         end     
     end
 end

@@ -135,8 +135,9 @@ function CombatPlayingTeam:OnKill_Hook(self, damage, attacker, doer, point, dire
                     pointOwner:AddXp(XpList[1][4])
                 end
         else    
-        // Give XP for killing structures    
-            pointOwner:AddXp(XpList[99])
+		
+			// Give XP for killing structures
+            pointOwner:AddXp(XpValues[self:GetClassName()])
         end
     end    
 
