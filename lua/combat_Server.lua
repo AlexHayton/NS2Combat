@@ -45,8 +45,7 @@ Script.Load("lua/Server.lua")
 Script.Load("lua/combat_Chat.lua")
 Script.Load("lua/combat_Player_normal.lua")
 Script.Load("lua/combat_ConsoleCommands.lua")
+Script.Load("lua/combat_ExperienceData.lua")
 
 // Tell the class hooker that we've fully loaded.
 ClassHooker:OnLuaFullyLoaded()
-
-

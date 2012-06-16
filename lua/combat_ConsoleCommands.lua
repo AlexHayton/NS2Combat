@@ -86,7 +86,7 @@ end
 function OnCommandStatus(client)
 
 	local player = client:GetControllingPlayer()
-	player:SendDirectMessage( "You are level " .. player:GetLvl() .. " with " .. player:GetXp() .. " XP. " .. (XpList[player:GetLvl() + 1][1] - player:GetXp()).. " XP to go!")
+	player:SendDirectMessage( "You are level " .. player:GetLvl() .. " with " .. player:GetXp() .. " XP. " .. (XpList[player:GetLvl() + 1]["XP"] - player:GetXp()).. " XP to go!")
 	
 end
 

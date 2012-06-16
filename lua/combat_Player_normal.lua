@@ -2,8 +2,6 @@
 //
 //   	Combat Mod     
 //	Made by JimWest, 2012
-//
-//	Version 0.1
 //	
 //________________________________
 
@@ -13,97 +11,6 @@
 // New functions,
 // not hooked
 //___________________
-
-
-
-// XP-List
-//Table for 
-//    LVL,  needed XP to reach, RineName, AlienName, givenXP to killer     
-XpList = {}  
-XpList[1] = {0,	"Private", "Hatchling", 60}
-XpList[2] = {100, "Private First Class" , "Xenoform", 70}
-XpList[3] = {250, "Corporal" ,"Minion", 80}
-XpList[4] = {250, "Sergeant", "Ambusher", 90}
-XpList[5] = {700, "Lieutenant", "Attacker", 100}
-XpList[6] = {1000 ,"Captain" ,"Rampager", 110}
-XpList[7] = {1350 ,"Commander" ,"Slaughterer", 120}
-XpList[8] = {1750 ,"Major", "Eliminator", 130}
-XpList[9] = {2200 ,"Field Marshal", "Nightmare", 140}
-XpList[10] = {2700, "General", "Behemoth", 150}
-
-// XP-Values
-// Scores for various creatures and structures.
-XpValues = {}
-XpValues["Marine"] = 100
-XpValues["Skulk"] = 100
-XpValues["Gorge"] = 100
-XpValues["Lerk"] = 100
-XpValues["Fade"] = 100
-XpValues["Onos"] = 100
-XpValues["Hydra"] = 20
-XpValues["Clog"] = 20
-XpValues["Armory"] = 100
-
-// Tracking Lvl for Latejoiner
-XpList.allXp = 0
-
-// how much % from the avg xp can new player get
-avgXpAmount = 0.75
-
-// List with possible Upgrades
-UpsList = {}
-UpsList.Marine = {}
-// Table:        Type,   kMapName,  needs Up, need Lvl, Weapon or other
-//Weapons
-UpsList.Marine["mines"] = {Mine.kMapName, nil, 1, "weapon"}
-UpsList.Marine["welder"] = {Welder.kMapName, nil, 1, "weapon"}
-UpsList.Marine["sg"] = {Shotgun.kMapName, "dmg1", 1, "weapon"}
-UpsList.Marine["flame"] = {Flamethrower.kMapName, "sg", 1, "weapon"}
-UpsList.Marine["gl"] = {GrenadeLauncher.kMapName, "sg", 1, "weapon"}
-// Tech
-UpsList.Marine["dmg1"] = {kTechId.Weapons1, nil, 1, "tech"}
-UpsList.Marine["dmg2"] = {kTechId.Weapons2, "dmg1", 1, "tech"}
-UpsList.Marine["dmg3"] = {kTechId.Weapons3, "dmg2", 1, "tech"}
-UpsList.Marine["arm1"] = {kTechId.Armor1, nil, 1, "tech"}
-UpsList.Marine["arm2"] = {kTechId.Armor2, "arm1", 1, "tech"}
-UpsList.Marine["arm3"] = {kTechId.Armor3, "arm2", 1, "tech"}
-
-// need new functions for this
-//UpsList.Marine["motion"] = {"MotionTracking", nil, 1, "tech"}
-//UpsList.Marine["scanner"] = {"ScannerSweep", nil, 1, "tech"}
-//UpsList.Marine["cat"] = {"CatPack", nil, 1, "tech"}
-//UpsList.Marine["resup"] = {"Resuply", nil, 1, "tech"}
-
-// Class
-//UpsList.Marine["jp"] = {JetpackMarine.kMapName, "arm2", 2, "class"}
-// For Testing
-UpsList.Marine["jp"] = {JetpackMarine.kMapName, nil, 0, "class"}
-// if the exo is rdy
-//UpsList.Marine["exo"] = {JetpackMarine.kMapName, "arm2", 2, "class"} 
-
-UpsList.Alien = {}
-// Table:        Type,   kMapName,  needs Up, need Lvl, Weapon or other
-// Class
-UpsList.Alien ["gorge"] = {kTechId.Gorge, nil, 1, "class"}
-UpsList.Alien ["lerk"] = {kTechId.Lerk, "gorge", 1, "class"}
-UpsList.Alien ["fade"] = {kTechId.Fade, "gorge", 2, "class"}
-UpsList.Alien ["onos"] = {kTechId.Onos, "fade", 2, "class"}
-// Tech
-UpsList.Alien ["tier2"] = {kTechId.Augmentation, nil, 1, "tech"}
-UpsList.Alien ["tier3"] = {kTechId.AlienArmor3, "tier2", 1, "tech"}
-UpsList.Alien ["carapace"] = {kTechId.Carapace, nil , 1, "tech"}
-UpsList.Alien ["regen"] = {kTechId.Regeneration, nil , 1, "tech"}
-UpsList.Alien ["silence"] = {kTechId.Silence, nil , 1, "tech"}
-UpsList.Alien ["camo"] = {kTechId.Camouflage, nil , 1, "tech"}
-UpsList.Alien ["cele"] = {kTechId.Celerity, nil , 1, "tech"}
-
-// Change the GestateTime so every new Class takes the same time
-kSkulkGestateTime = 3
-kGorgeGestateTime = 3
-kLerkGestateTime = 3
-kFadeGestateTime = 3
-kOnosGestateTime = 3
-
 
 function GetIsPrimaryWeapon(kMapName)
     local isPrimary = false
@@ -444,19 +351,26 @@ function Player:CheckLvlUp(xp)
         // avgXp, add xp and how often the xp was changed
         XpList.allXp = XpList.allXp  + xp
         
-        if (xp >= XpList[self:GetLvl()+1][1]) then
-        //Lvl UP
+        if (xp >= XpList[self:GetLvl()+1]["XP"]) then
+			//Lvl UP
             self.combatTable.lvl =  self.combatTable.lvl + 1
             self:SendDirectMessage( "!! Level UP !! New Lvl: " .. self:GetLvl()) 
             self.combatTable.lvlfree = self.combatTable.lvlfree + 1
             // ToDo find out if rine or Alien and do a different name
-            self:SendDirectMessage(XpList[self:GetLvl()][2])       
-			// Stop errors when you reach the max level.
+			local RankName = ""
+			if (self:GetTeamNumber() == 1) then
+				RankName = XpList[self:GetLvl()]["MarineName"]
+			else
+				RankName = XpList[self:GetLvl()]["AlienName"]
+			end
+			self:SendDirectMessage(RankName)
+			
+			// Stop errors when you reach the max level
 			if (self:GetLvl() < 10) then
-				self:SendDirectMessage( self:GetXp() .. " XP: " .. (XpList[self.combatTable.lvl + 1][1] - self:GetXp()).. " XP missing")
+				self:SendDirectMessage( self:GetXp() .. " XP: " .. (XpList[self.combatTable.lvl + 1]["XP"] - self:GetXp()).. " XP missing")
 			end
         else        
-            self:SendDirectMessage( self:GetXp() .. " XP: " .. (XpList[self.combatTable.lvl + 1][1] - self:GetXp()).. " XP missing")
+            self:SendDirectMessage( self:GetXp() .. " XP: " .. (XpList[self.combatTable.lvl + 1]["XP"] - self:GetXp()).. " XP missing")
         end     
     end
 end
