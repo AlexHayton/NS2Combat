@@ -19,6 +19,7 @@ function CombatAlienTeam:OnLoad()
 
     ClassHooker:SetClassCreatedIn("AlienTeam", "lua/AlienTeam.lua") 
 	self:ReplaceClassFunction("AlienTeam", "InitTechTree", "InitTechTree_Hook")
+	self:ReplaceClassFunction("AlienTeam", "SpawnInitialStructures", "SpawnInitialStructures_Hook")
 	
 end
 
@@ -26,18 +27,13 @@ function CombatAlienTeam:InitTechTree_Hook(self)
 
 	PlayingTeam.InitTechTree(self)
 	
-	// Baseline 
-	self.techTree:AddBuildNode(kTechId.Hive,                      kTechId.None,                kTechId.None)
-	self.techTree:AddBuyNode(kTechId.Skulk,                     kTechId.None,                kTechId.None)
-	
-	// Add special alien menus
+    // Add special alien menus
     self.techTree:AddMenu(kTechId.MarkersMenu)
     self.techTree:AddMenu(kTechId.UpgradesMenu)
     self.techTree:AddMenu(kTechId.ShadePhantomMenu)
     self.techTree:AddMenu(kTechId.ShadePhantomStructuresMenu)
     self.techTree:AddMenu(kTechId.ShiftEcho)
-    self.techTree:AddMenu(kTechId.BasicLifeFormMenu)
-    self.techTree:AddMenu(kTechId.AdvancedLifeFormMenu)
+    self.techTree:AddMenu(kTechId.LifeFormMenu)
     
     self.techTree:AddPassive(kTechId.Infestation)
     
@@ -54,19 +50,49 @@ function CombatAlienTeam:InitTechTree_Hook(self)
     //self.techTree:AddOrder(kTechId.AlienDefend)
     self.techTree:AddOrder(kTechId.AlienConstruct)
     self.techTree:AddOrder(kTechId.Heal)
-    self.techTree:AddOrder(kTechId.SetTeleport)
-	
-	// infestation upgrades
+    
+    // Commander abilities
+    self.techTree:AddBuildNode(kTechId.Cyst,                kTechId.None,           kTechId.None)
+    self.techTree:AddTargetedActivation(kTechId.NutrientMist,     kTechId.None,           kTechId.None)
+    self.techTree:AddBuildNode(kTechId.InfestationSpike,    kTechId.None,           kTechId.None)
+    self.techTree:AddTargetedActivation(kTechId.EnzymeCloud,      kTechId.None,           kTechId.None)
+    self.techTree:AddAction(kTechId.Rupture,                      kTechId.None,           kTechId.None)
+           
+    // Hive types
+    self.techTree:AddBuildNode(kTechId.Hive,                    kTechId.None,           kTechId.None)
+    self.techTree:AddPassive(kTechId.HiveHeal)
+    self.techTree:AddBuildNode(kTechId.CragHive,                kTechId.Hive,                kTechId.None)
+    self.techTree:AddBuildNode(kTechId.ShadeHive,               kTechId.Hive,                kTechId.None)
+    self.techTree:AddBuildNode(kTechId.ShiftHive,               kTechId.Hive,                kTechId.None)
+    
+    self.techTree:AddUpgradeNode(kTechId.UpgradeToCragHive,     kTechId.Hive,                kTechId.None)
+    self.techTree:AddUpgradeNode(kTechId.UpgradeToShadeHive,    kTechId.Hive,                kTechId.None)
+    self.techTree:AddUpgradeNode(kTechId.UpgradeToShiftHive,    kTechId.Hive,                kTechId.None)
+    
+    // infestation upgrades
     self.techTree:AddResearchNode(kTechId.HealingBed,            kTechId.CragHive,            kTechId.None)
     self.techTree:AddResearchNode(kTechId.MucousMembrane,        kTechId.ShiftHive,           kTechId.None)
     self.techTree:AddResearchNode(kTechId.BacterialReceptors,    kTechId.ShadeHive,           kTechId.None)
-	
-	// Tier 1 lifeforms
-    /*self.techTree:AddAction(kTechId.Skulk,                     kTechId.None,                kTechId.None)
+    
+    // Tier 1
+    self.techTree:AddBuildNode(kTechId.Harvester,                 kTechId.None,                kTechId.None)
+    self.techTree:AddManufactureNode(kTechId.Drifter,             kTechId.None,                kTechId.None)
+    self.techTree:AddPassive(kTechId.DrifterCamouflage)
+
+    // Whips
+    self.techTree:AddBuildNode(kTechId.Whip,                      kTechId.None,                kTechId.None)
+    self.techTree:AddUpgradeNode(kTechId.EvolveBombard,             kTechId.None,                kTechId.None)
+
+    self.techTree:AddActivation(kTechId.WhipBombardCancel)
+    self.techTree:AddActivation(kTechId.WhipUnroot)
+    self.techTree:AddActivation(kTechId.WhipRoot)
+    
+    // Tier 1 lifeforms
+    self.techTree:AddAction(kTechId.Skulk,                     kTechId.None,                kTechId.None)
     self.techTree:AddAction(kTechId.Gorge,                     kTechId.None,                kTechId.None)
     self.techTree:AddAction(kTechId.Lerk,                      kTechId.None,                kTechId.None)
     self.techTree:AddAction(kTechId.Fade,                      kTechId.None,                kTechId.None)
-    self.techTree:AddAction(kTechId.Onos,                      kTechId.None,                kTechId.None)*/
+    self.techTree:AddAction(kTechId.Onos,                      kTechId.None,                kTechId.None)
     self.techTree:AddBuyNode(kTechId.Egg,                      kTechId.None,                kTechId.None)
     
     self.techTree:AddPlasmaManufactureNode(kTechId.GorgeEgg,          kTechId.None,                kTechId.None)
@@ -95,19 +121,18 @@ function CombatAlienTeam:InitTechTree_Hook(self)
     self.techTree:AddBuildNode(kTechId.Veil,                     kTechId.ShadeHive,        kTechId.None)
     self.techTree:AddUpgradeNode(kTechId.UpgradeSilenceVeil,     kTechId.ShadeHive,        kTechId.None)
     self.techTree:AddBuildNode(kTechId.SilenceVeil,              kTechId.ShadeHive,        kTechId.None)    
-    self.techTree:AddUpgradeNode(kTechId.UpgradeCamouflageVeil,  kTechId.ShadeHive,        kTechId.None) 
-    self.techTree:AddBuildNode(kTechId.CamouflageVeil,           kTechId.ShadeHive,        kTechId.None) 
+    self.techTree:AddUpgradeNode(kTechId.UpgradeAuraVeil,  kTechId.ShadeHive,        kTechId.None) 
+    self.techTree:AddBuildNode(kTechId.AuraVeil,           kTechId.ShadeHive,        kTechId.None) 
     
     // Crag
     self.techTree:AddUpgradeNode(kTechId.EvolveBabblers,          kTechId.Crag,          kTechId.None)
     self.techTree:AddPassive(kTechId.CragHeal)
-    self.techTree:AddActivation(kTechId.CragUmbra,                kTechId.None,          kTechId.None)
+    self.techTree:AddActivation(kTechId.HealWave,                kTechId.None,          kTechId.None)
     self.techTree:AddActivation(kTechId.CragBabblers,             kTechId.None,          kTechId.None)
 
     // Shift    
     self.techTree:AddUpgradeNode(kTechId.EvolveEcho,              kTechId.None,         kTechId.None)
-    self.techTree:AddActivation(kTechId.ShiftHatch,              kTechId.None,         kTechId.None)
-    self.techTree:AddResearchNode(kTechId.EchoTech,               kTechId.None,         kTechId.None)  
+    self.techTree:AddActivation(kTechId.ShiftHatch,               kTechId.None,         kTechId.None) 
     self.techTree:AddPassive(kTechId.ShiftEnergize,               kTechId.None,         kTechId.None)
     
     self.techTree:AddTargetedActivation(kTechId.TeleportHydra,       kTechId.None,         kTechId.None)
@@ -128,56 +153,73 @@ function CombatAlienTeam:InitTechTree_Hook(self)
     self.techTree:AddActivation(kTechId.ShadeInk,                 kTechId.None,         kTechId.None) 
 
     // Hallucinations
-    self.techTree:AddEnergyManufactureNode(kTechId.HallucinateDrifter,  kTechId.None,   kTechId.None)
-    self.techTree:AddEnergyManufactureNode(kTechId.HallucinateSkulk,    kTechId.None,   kTechId.None)
-    self.techTree:AddEnergyManufactureNode(kTechId.HallucinateGorge,    kTechId.None,   kTechId.None)
-    self.techTree:AddEnergyManufactureNode(kTechId.HallucinateLerk,     kTechId.None,   kTechId.None)
-    self.techTree:AddEnergyManufactureNode(kTechId.HallucinateFade,     kTechId.None,   kTechId.None)
-    self.techTree:AddEnergyManufactureNode(kTechId.HallucinateOnos,     kTechId.None,   kTechId.None)
+    self.techTree:AddManufactureNode(kTechId.HallucinateDrifter,  kTechId.None,   kTechId.None)
+    self.techTree:AddManufactureNode(kTechId.HallucinateSkulk,    kTechId.None,   kTechId.None)
+    self.techTree:AddManufactureNode(kTechId.HallucinateGorge,    kTechId.None,   kTechId.None)
+    self.techTree:AddManufactureNode(kTechId.HallucinateLerk,     kTechId.None,   kTechId.None)
+    self.techTree:AddManufactureNode(kTechId.HallucinateFade,     kTechId.None,   kTechId.None)
+    self.techTree:AddManufactureNode(kTechId.HallucinateOnos,     kTechId.None,   kTechId.None)
     
-    self.techTree:AddEnergyBuildNode(kTechId.HallucinateHive,           kTechId.None,           kTechId.None)
-    self.techTree:AddEnergyBuildNode(kTechId.HallucinateWhip,           kTechId.None,           kTechId.None)
-    self.techTree:AddEnergyBuildNode(kTechId.HallucinateShade,          kTechId.ShadeHive,      kTechId.None)
-    self.techTree:AddEnergyBuildNode(kTechId.HallucinateCrag,           kTechId.CragHive,       kTechId.None)
-    self.techTree:AddEnergyBuildNode(kTechId.HallucinateShift,          kTechId.ShiftHive,      kTechId.None)
-    self.techTree:AddEnergyBuildNode(kTechId.HallucinateHarvester,      kTechId.None,           kTechId.None)
-    self.techTree:AddEnergyBuildNode(kTechId.HallucinateHydra,          kTechId.None,           kTechId.None)
+    self.techTree:AddBuildNode(kTechId.HallucinateHive,           kTechId.None,           kTechId.None)
+    self.techTree:AddBuildNode(kTechId.HallucinateWhip,           kTechId.None,           kTechId.None)
+    self.techTree:AddBuildNode(kTechId.HallucinateShade,          kTechId.ShadeHive,      kTechId.None)
+    self.techTree:AddBuildNode(kTechId.HallucinateCrag,           kTechId.CragHive,       kTechId.None)
+    self.techTree:AddBuildNode(kTechId.HallucinateShift,          kTechId.ShiftHive,      kTechId.None)
+    self.techTree:AddBuildNode(kTechId.HallucinateHarvester,      kTechId.None,           kTechId.None)
+    self.techTree:AddBuildNode(kTechId.HallucinateHydra,          kTechId.None,           kTechId.None)
+    
+    self.techTree:AddSpecial(kTechId.TwoHives)
+    self.techTree:AddSpecial(kTechId.ThreeHives)
     
     // Tier 2
+    
     self.techTree:AddResearchNode(kTechId.Leap,            kTechId.None,              kTechId.None)
     self.techTree:AddResearchNode(kTechId.Spikes,            kTechId.None,              kTechId.None)
     self.techTree:AddResearchNode(kTechId.BileBomb,            kTechId.None,              kTechId.None)
     self.techTree:AddResearchNode(kTechId.Blink,            kTechId.None,              kTechId.None)
     self.techTree:AddResearchNode(kTechId.Stomp,            kTechId.None,              kTechId.None)
-    
-    self.techTree:AddSpecial(kTechId.TwoHives)
-    self.techTree:AddResearchNode(kTechId.AlienArmor2,           kTechId.TwoHives,             kTechId.None)
-    
+
     // Tier 3
+     
     self.techTree:AddResearchNode(kTechId.Xenocide,            kTechId.Leap,              kTechId.None)
     self.techTree:AddResearchNode(kTechId.Umbra,            kTechId.Spikes,              kTechId.None)
     self.techTree:AddResearchNode(kTechId.WebStalk,            kTechId.BileBomb,              kTechId.None)
     self.techTree:AddResearchNode(kTechId.Vortex,            kTechId.Blink,              kTechId.None)
-    self.techTree:AddResearchNode(kTechId.PrimalScream,            kTechId.Stomp,        kTechId.None)
-    
-    self.techTree:AddSpecial(kTechId.ThreeHives)    
-    self.techTree:AddResearchNode(kTechId.AlienArmor3,           kTechId.ThreeHives,           kTechId.None)
-    
+    self.techTree:AddResearchNode(kTechId.PrimalScream,            kTechId.Stomp,        kTechId.None)   
+
     // Global alien upgrades. Make sure the first prerequisite is the main tech required for it, as this is 
     // what is used to display research % in the alien evolve menu.
     // The second prerequisite is needed to determine the buy node unlocked when the upgrade is actually researched.
     self.techTree:AddBuyNode(kTechId.Carapace, kTechId.CarapaceShell, kTechId.None, kTechId.AllAliens)    
     self.techTree:AddBuyNode(kTechId.Regeneration, kTechId.RegenerationShell, kTechId.None, kTechId.AllAliens)
     self.techTree:AddBuyNode(kTechId.Silence, kTechId.SilenceVeil, kTechId.None, kTechId.AllAliens)
-    self.techTree:AddBuyNode(kTechId.Camouflage, kTechId.CamouflageVeil, kTechId.None, kTechId.AllAliens)
+    self.techTree:AddBuyNode(kTechId.Aura, kTechId.AuraVeil, kTechId.None, kTechId.AllAliens)
     self.techTree:AddBuyNode(kTechId.Celerity, kTechId.CeleritySpur, kTechId.None, kTechId.AllAliens)    
     self.techTree:AddBuyNode(kTechId.HyperMutation, kTechId.HyperMutationSpur, kTechId.None, kTechId.AllAliens)
     
     // Specific alien upgrades
     self.techTree:AddBuildNode(kTechId.Hydra,               kTechId.None,               kTechId.None)
     
+    
+    //self.techTree:AddBuyNode(kTechId.Sap, kTechId.SapTech, kTechId.TwoHives, kTechId.Fade)
+    
+    //self.techTree:AddResearchNode(kTechId.BoneShieldTech, kTechId.Crag, kTechId.TwoHives)
+    //self.techTree:AddBuyNode(kTechId.BoneShield, kTechId.BoneShieldTech, kTechId.None, kTechId.Onos)
+    
     self.techTree:SetComplete()
 	
+end
+
+// No cysts
+function CombatAlienTeam:SpawnInitialStructures_Hook(self, techPoint)
+
+    local tower, hive = PlayingTeam.SpawnInitialStructures(self, techPoint)
+    
+    hive:SetFirstLogin()
+    hive:SetInfestationFullyGrown()    
+   
+    return tower, hive
+    
 end
 
 if(HotReload) then

@@ -378,8 +378,13 @@ end
 function Player:GetAvgXp(playerNumbers)
 
     local avgXp = 0
+    local playerNumbers = table.maxn(GetGamerules().team1.playerIds) + table.maxn(GetGamerules().team2.playerIds)
     
-    if XpList.allXp > 0 and playerNumbers > 0 then
+    for i, player in ientitylist(Shared.GetEntitiesWithClassname("Player")) do      
+        avgXp = avgXp + playert:GetXp()
+    end
+    
+    if allXp > 0 and playerNumbers > 0 then
         avgXp =  math.floor((XpList.allXp /  playerNumbers) * avgXpAmount)   
     end
     

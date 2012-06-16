@@ -43,10 +43,10 @@ function CombatNS2Gamerules:JoinTeam_Hook(self, player, newTeamNumber, force)
         player.combatTable.techtree = {}
         
        if GetGamerules():GetGameStarted() then
-            // get AvgXp                  
-            player:AddXp(player:GetAvgXp(table.maxn(GetGamerules().team1.playerIds)))
+            // get AvgXp  
+            player:AddXp(player:GetAvgXp())
             // Priting the avg xp to the Server Console for testing
-            Print(player:GetAvgXp(table.maxn(GetGamerules().team1.playerIds)))
+            Print(player:GetAvgXp(player:GetAvgXp()))
         end    
     end
 

@@ -15,17 +15,13 @@ local HotReload = ClassHooker:Mixin("CombatHive")
     
 function CombatHive:OnLoad()
 
-    ClassHooker:SetClassCreatedIn("Hive", "lua/Hive.lua")
-    self:ReplaceClassFunction("Hive", "GenerateEggSpawns", "GenerateEggSpawns_Hook")
-    self:ReplaceClassFunction("Hive", "SpawnEgg", "SpawnEgg_Hook")
+    ClassHooker:SetClassCreatedIn("Hive", "lua/Hive_Server.lua")
 	
 end
 
 // No eggs will be spawned
-function CombatHive:GenerateEggSpawns_Hook(self)
-	// Do nothing
-end
 
-function CombatHive:SpawnEgg_Hook(self)
+
+//function CombatHive:SpawnEgg_Hook(self)
 	// Do nothing
-end
+//end

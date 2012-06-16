@@ -94,3 +94,6 @@ kGorgeGestateTime = 3
 kLerkGestateTime = 3
 kFadeGestateTime = 3
 kOnosGestateTime = 3
+
+// No eggs
+kAlienEggsPerHive = 0

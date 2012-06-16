@@ -19,7 +19,7 @@ function CombatPlayingTeam:OnLoad()
 
     ClassHooker:SetClassCreatedIn("PlayingTeam", "lua/PlayingTeam.lua") 
     self:ReplaceClassFunction("PlayingTeam", "SpawnInitialStructures", "SpawnInitialStructures_Hook")
-    self:ReplaceClassFunction("PlayingTeam", "SpawnResourceTower", "SpawnResourceTower_Hook")
+    //self:ReplaceClassFunction("PlayingTeam", "SpawnResourceTower", "SpawnResourceTower_Hook")
     self:ReplaceClassFunction("PlayingTeam", "GetHasTeamLost", "GetHasTeamLost_Hook")
     
 end
@@ -49,29 +49,40 @@ function CombatPlayingTeam:GetHasTeamLost_Hook(self, handle)
 
 end
 
+
+
 function CombatPlayingTeam:SpawnInitialStructures_Hook(self, techPoint)
     // Dont Spawn RTS or Cysts
         
     ASSERT(techPoint ~= nil)
 
     // Spawn hive/command station at team location
-    local commandStructure = self:SpawnCommandStructure(techPoint)
+    local commandStructure = techPoint:SpawnCommandStructure(self:GetTeamNumber())
+    assert(commandStructure ~= nil)
+    commandStructure:SetConstructionComplete()
     
-    if commandStructure:isa("Hive") then
-        commandStructure:SetFirstLogin()
-    end
+    // Use same align as tech point.
+    local techPointCoords = techPoint:GetCoords()
+    techPointCoords.origin = commandStructure:GetOrigin()
+    commandStructure:SetCoords(techPointCoords)
+    
+    //if commandStructure:isa("Hive") then
+      //  commandStructure:SetFirstLogin()
+    //end
 	
 	// Set the command station to be occupied.
 	if commandStructure:isa("CommandStation") then
 		commandStructure.occupied = true
 		//commandStructure:UpdateCommanderLogin(true)
 	end
+	
+	return tower, commandStructure
     
 end
 
-function CombatPlayingTeam:SpawnResourceTower_Hook(self, techPoint)
+//function CombatPlayingTeam:SpawnResourceTower_Hook(self, techPoint)
     // No RTS!!
-end
+//end
 
 if(hotreload) then
     CombatPlayingTeam:OnLoad()
