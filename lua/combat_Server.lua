@@ -22,7 +22,6 @@ Script.Load("lua/combat_Balance.lua")
 Script.Load("lua/combat_Player.lua")
 Script.Load("lua/combat_Marine.lua")
 Script.Load("lua/combat_CommandStructure.lua")
-Script.Load("lua/combat_Hive.lua")
 
 // Calling the Hook classes
 CombatNS2Gamerules:OnLoad()
@@ -34,7 +33,6 @@ CombatBalance:OnLoad()
 CombatPlayer:OnLoad()
 CombatMarine:OnLoad()
 CombatCommandStructure:OnLoad()
-CombatHive:OnLoad()
 
 // Load the normal Ns2 Server Scripts
 Script.Load("lua/Server.lua")
