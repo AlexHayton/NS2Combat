@@ -9,8 +9,6 @@
 
 // combat_ConsoleCommands.lua
 
-
-
 function OnCommandSpendLvl(client, type)
         
     local player = client:GetControllingPlayer() 
