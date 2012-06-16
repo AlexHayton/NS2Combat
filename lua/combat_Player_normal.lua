@@ -350,6 +350,7 @@ function Player:CheckLvlUp(xp)
        
         if (xp >= XpList[self:GetLvl()+1]["XP"]) then
 			//Lvl UP
+								
             self.combatTable.lvl =  self.combatTable.lvl + 1
             self:SendDirectMessage( "!! Level UP !! New Lvl: " .. self:GetLvl()) 
             self.combatTable.lvlfree = self.combatTable.lvlfree + 1
@@ -366,6 +367,15 @@ function Player:CheckLvlUp(xp)
 			if (self:GetLvl() < 10) then
 				self:SendDirectMessage( self:GetXp() .. " XP: " .. (XpList[self.combatTable.lvl + 1]["XP"] - self:GetXp()).. " XP missing")
 			end
+						
+            // make sure that we get every lvl we've earned
+			local restXp = 0
+            restXp = xp - XpList[self:GetLvl()+1]["XP"] 
+            
+            if restXp > 0 then
+                self:CheckLvlUp(restXp)
+			end
+			
         else        
             self:SendDirectMessage( self:GetXp() .. " XP: " .. (XpList[self.combatTable.lvl + 1]["XP"] - self:GetXp()).. " XP missing")
         end     
