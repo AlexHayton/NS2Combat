@@ -32,8 +32,8 @@ function CombatPointGiverMixin:OnKill_Hook(self, damage, attacker, doer, point, 
         pointOwner = pointOwner:GetOwner()
     end    
         
-    // Give Xp for Players
-   if pointOwner then
+    // Give Xp for Players - only when on opposing sides.
+   if pointOwner and (pointOwner:GetTeamNumber() ~= self:GetTeamNumber()) then
         if self:isa("Player") then
                 if self.combatTable then
                     pointOwner:AddXp(XpList[self.combatTable.lvl][4])
