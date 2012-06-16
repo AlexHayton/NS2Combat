@@ -42,11 +42,12 @@ function CombatNS2Gamerules:JoinTeam_Hook(self, player, newTeamNumber, force)
         // save every Update in the personal techtree
         player.combatTable.techtree = {}
         
+		// Give the player the average XP of all players on the server.
        if GetGamerules():GetGameStarted() then
-            // get AvgXp  
-            player:AddXp(player:GetAvgXp())
-            // Priting the avg xp to the Server Console for testing
-            Print(player:GetAvgXp(player:GetAvgXp()))
+            // get AvgXp 
+            player:AddXp(Experience_GetAvgXp())
+            // Printing the avg xp to the Server Console for testing
+            Print(Experience_GetAvgXp())
         end    
     end
 

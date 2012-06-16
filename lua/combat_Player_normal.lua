@@ -317,31 +317,35 @@ function Player:GetLvlFree()
 
 end
 
+function Player:CheckCombatData()
+
+	if not self.combatTable then
+		self.combatTable = {}  
+		self.combatTable.xp = 0
+		self.combatTable.lvl = 1
+		self.combatTable.lvlfree = 0
+		
+		self.combatTable.techtree = {}
+	end
+
+end
+
 function Player:AddXp(amount)
+	
+	self:CheckCombatData()
+	
+	// Make sure we don't go over the max XP.
+    if (self:GetXp() + amount) <= maxXp then
 
-    if amount and (self:GetLvl() < 10 )  then
-        if self:GetXp() and self.combatTable then 
+        // For testing the xp System
+        self:SendDirectMessage(amount .. " XP gained")       
+		// Add the Xp and check for any level up...
+		self.combatTable.xp = self.combatTable.xp + amount
+		self:CheckLvlUp(self.combatTable.xp) 
 
-            // For testing the xp System
-            self:SendDirectMessage(amount .. " XP gained")       
-            
-            self.combatTable.xp = self.combatTable.xp + amount
-            self:CheckLvlUp(self.combatTable.xp) 
-        else
-            // due to a bug, we need to set the combatTable here (calling replace_hook doesn't work
-            self.combatTable = {}  
-            self.combatTable.xp = 0
-            self.combatTable.lvl = 1
-            self.combatTable.lvlfree = 0
-            
-            self.combatTable.techtree = {}
-            
-            // save every Update in the personal techtree            
-            self.combatTable.xp = amount
-            self:CheckLvlUp(self.combatTable.xp) 
-        end     
     else
         // Max Lvl reached
+		self.combatTable.xp = maxXp
     end        
        
 end
@@ -383,25 +387,6 @@ function Player:CheckLvlUp(xp)
             self:SendDirectMessage( self:GetXp() .. " XP: " .. (XpList[self.combatTable.lvl + 1]["XP"] - self:GetXp()).. " XP missing")
         end     
     end
-end
-
-function Player:GetAvgXp()
-
-    local avgXp = 0
-    local allXp = 0
-    // the new joined player doesn't count here
-    local playerNumbers = table.maxn(GetGamerules().team1.playerIds) + table.maxn(GetGamerules().team2.playerIds) -1
-    
-    for i, player in ientitylist(Shared.GetEntitiesWithClassname("Player")) do      
-        allXp = allXp + (player:GetXp() or 0)
-    end
-    
-    if allXp > 0 and playerNumbers > 0 then
-        avgXp =  math.floor((allXp /  playerNumbers) * avgXpAmount)   
-    end
-    
-    return avgXp
-
 end
 
 function Player:SendDirectMessage(message)

@@ -22,6 +22,11 @@ XpList[8] = { Level=8, 		XP=1750, 	MarineName="Major", 				AlienName="Eliminator
 XpList[9] = { Level=9, 		XP=2200, 	MarineName="Field Marshal", 		AlienName="Nightmare", 		GivenXP=140}
 XpList[10] = { Level=10, 	XP=2700, 	MarineName="General", 				AlienName="Behemoth", 		GivenXP=150}
 
+// how much % from the avg xp can new player get
+avgXpAmount = 0.75
+maxRank = table.maxn(XpList)
+maxXp = XpList[maxRank]["XP"]
+
 // XP-Values
 // Scores for various creatures and structures.
 XpValues = {}
@@ -34,9 +39,6 @@ XpValues["Onos"] = 100
 XpValues["Hydra"] = 20
 XpValues["Clog"] = 20
 XpValues["Armory"] = 100
-
-// how much % from the avg xp can new player get
-avgXpAmount = 0.75
 
 // List with possible Upgrades
 UpsList = {}

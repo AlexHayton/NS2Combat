@@ -42,6 +42,7 @@ Script.Load("lua/combat_Chat.lua")
 Script.Load("lua/combat_Player_normal.lua")
 Script.Load("lua/combat_ConsoleCommands.lua")
 Script.Load("lua/combat_ExperienceData.lua")
+Script.Load("lua/combat_ExperienceFuncs.lua")
 
 // due to a bug, this needs to be loaded here
 Script.Load("lua/combat_PointGiverMixin.lua")
