@@ -9,20 +9,10 @@
 
 // combat_PointGiverMixin.lua
 
-if(not CombatPointGiverMixin) then
-  CombatPointGiverMixin = {}
-end
 
-local HotReload = ClassHooker:Mixin("CombatPointGiverMixin")
+// Could not be hooked cause no Class is created anymore, but with this it's just getting replaced
 
-function CombatPointGiverMixin:OnLoad()
-
-    ClassHooker:SetClassCreatedIn("PointGiverMixin", "lua/PointGiverMixin.lua")
-    self:PostHookClassFunction("PointGiverMixin", "OnKill", "OnKill_Hook")
-	
-end
-
-function CombatPointGiverMixin:OnKill_Hook(self, damage, attacker, doer, point, direction)
+function PointGiverMixin:OnKill(attacker, doer, point, direction)
 
     // Give XP to killer.
     local pointOwner = attacker
@@ -48,8 +38,4 @@ function CombatPointGiverMixin:OnKill_Hook(self, damage, attacker, doer, point, 
         end
     end    
 
-end
-
-if(HotReload) then
-    CombatPointGiverMixin:OnLoad()
 end

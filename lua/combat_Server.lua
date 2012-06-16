@@ -14,7 +14,6 @@ Script.Load("lua/fsfod_scripts.lua")
 // Loading the Hook classes
 // TODO: Maybe we don't need the OnLoad?
 Script.Load("lua/combat_NS2Gamerules.lua")
-Script.Load("lua/combat_PointGiverMixin.lua")
 Script.Load("lua/combat_Team.lua")
 Script.Load("lua/combat_PlayingTeam.lua")
 Script.Load("lua/combat_MarineTeam.lua")
@@ -27,7 +26,6 @@ Script.Load("lua/combat_Hive.lua")
 
 // Calling the Hook classes
 CombatNS2Gamerules:OnLoad()
-CombatPointGiverMixin:OnLoad()
 CombatTeam:OnLoad()
 CombatPlayingTeam:OnLoad()
 CombatMarineTeam:OnLoad()
@@ -46,6 +44,9 @@ Script.Load("lua/combat_Chat.lua")
 Script.Load("lua/combat_Player_normal.lua")
 Script.Load("lua/combat_ConsoleCommands.lua")
 Script.Load("lua/combat_ExperienceData.lua")
+
+// due to a bug, this needs to be loaded here
+Script.Load("lua/combat_PointGiverMixin.lua")
 
 // Tell the class hooker that we've fully loaded.
 ClassHooker:OnLuaFullyLoaded()

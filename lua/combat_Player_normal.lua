@@ -346,11 +346,8 @@ end
 
 function Player:CheckLvlUp(xp)
 //ToDo: Levels and XP System
-    if xp and (self:GetLvl() < 10 ) then  
-    
-        // avgXp, add xp and how often the xp was changed
-        XpList.allXp = XpList.allXp  + xp
-        
+    if xp and (self:GetLvl() < 10 ) then
+       
         if (xp >= XpList[self:GetLvl()+1]["XP"]) then
 			//Lvl UP
             self.combatTable.lvl =  self.combatTable.lvl + 1
@@ -375,17 +372,19 @@ function Player:CheckLvlUp(xp)
     end
 end
 
-function Player:GetAvgXp(playerNumbers)
+function Player:GetAvgXp()
 
     local avgXp = 0
-    local playerNumbers = table.maxn(GetGamerules().team1.playerIds) + table.maxn(GetGamerules().team2.playerIds)
+    local allXp = 0
+    // the new joined player doesn't count here
+    local playerNumbers = table.maxn(GetGamerules().team1.playerIds) + table.maxn(GetGamerules().team2.playerIds) -1
     
     for i, player in ientitylist(Shared.GetEntitiesWithClassname("Player")) do      
-        avgXp = avgXp + playert:GetXp()
+        allXp = allXp + (player:GetXp() or 0)
     end
     
     if allXp > 0 and playerNumbers > 0 then
-        avgXp =  math.floor((XpList.allXp /  playerNumbers) * avgXpAmount)   
+        avgXp =  math.floor((allXp /  playerNumbers) * avgXpAmount)   
     end
     
     return avgXp

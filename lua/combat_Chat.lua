@@ -37,9 +37,6 @@ end
 
 // we can't hook that cause it's a local function, so we just create a new one
 local function OnChatReceived(client, message)
-
-// All commands need to be in this list
-local combatCommands = {"co_spendlvl"}
     
     chatMessage = string.sub(message.message , 1, kMaxChatLength) 
     combatMessage = false

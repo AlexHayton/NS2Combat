@@ -35,9 +35,6 @@ XpValues["Hydra"] = 20
 XpValues["Clog"] = 20
 XpValues["Armory"] = 100
 
-// Tracking Lvl for Latejoiner
-XpList.allXp = 0
-
 // how much % from the avg xp can new player get
 avgXpAmount = 0.75
 

@@ -100,6 +100,9 @@ function OnCommandHelp(client)
 
 end
 
+// All commands that should be accessible via the need to be in this list
+combatCommands = {"co_spendlvl", "co_help", "co_status"}
+
 Event.Hook("Console_co_help",                OnCommandHelp) 
 Event.Hook("Console_co_spendlvl",                OnCommandSpendLvl)
 Event.Hook("Console_co_addxp",                OnCommandAddXp)
