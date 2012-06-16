@@ -86,8 +86,11 @@ function Player:CoCheckUpgrade_Marine(upgrade, respawning)
                     if self:GetIsAlive() then
                         // can't replace somebody who's respawning at the moment, give him the class later
                         if not respawning then
-                            self:Replace(kMapName, self:GetTeamNumber(), false)  
-                            self.combatTable.giveClassAfterRespawn = kMapName           
+                            // Jps get the lmg back, so get the old weapon (but only directly after up, after dying its all OK)
+                            // TODO; when EXO finished, what happen with it?
+                            
+                            self:GiveJetpack() 
+                            self.combatTable.giveClassAfterRespawn = kMapName
 
                         end
                     end
