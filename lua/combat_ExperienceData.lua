@@ -45,47 +45,45 @@ UpsList = {}
 UpsList.Marine = {}
 // Table:        Type,   kMapName,  needs Up, need Lvl, Weapon or other
 //Weapons
-UpsList.Marine["mines"] = {Mine.kMapName, nil, 1, "weapon"}
-UpsList.Marine["welder"] = {Welder.kMapName, nil, 1, "weapon"}
-UpsList.Marine["sg"] = {Shotgun.kMapName, "dmg1", 1, "weapon"}
-UpsList.Marine["flame"] = {Flamethrower.kMapName, "sg", 1, "weapon"}
-UpsList.Marine["gl"] = {GrenadeLauncher.kMapName, "sg", 1, "weapon"}
+UpsList.Marine["mines"] = {UpgradeName = Mine.kMapName, 		UpgradeTechId = kTechId.Mine, 				Requires = nil, Levels = 1, Type = "weapon"}
+UpsList.Marine["welder"] = {UpgradeName = Welder.kMapName, 		UpgradeTechId = kTechId.Welder,			 	Requires = nil, Levels = 1, Type = "weapon"}
+UpsList.Marine["sg"] = {UpgradeName = Shotgun.kMapName,			UpgradeTechId = kTechId.ShotgunTech, 			Requires = "dmg1", Levels = 1, Type = "weapon"}
+UpsList.Marine["flame"] = {UpgradeName = Flamethrower.kMapName, UpgradeTechId = kTechId.Flamethrower, 		Requires = "sg", Levels = 1, Type = "weapon"}
+UpsList.Marine["gl"] = {UpgradeName = GrenadeLauncher.kMapName, UpgradeTechId = kTechId.GrenadeLauncher, 	Requires = "sg", Levels = 1, Type = "weapon"}
 // Tech
-UpsList.Marine["dmg1"] = {kTechId.Weapons1, nil, 1, "tech"}
-UpsList.Marine["dmg2"] = {kTechId.Weapons2, "dmg1", 1, "tech"}
-UpsList.Marine["dmg3"] = {kTechId.Weapons3, "dmg2", 1, "tech"}
-UpsList.Marine["arm1"] = {kTechId.Armor1, nil, 1, "tech"}
-UpsList.Marine["arm2"] = {kTechId.Armor2, "arm1", 1, "tech"}
-UpsList.Marine["arm3"] = {kTechId.Armor3, "arm2", 1, "tech"}
+UpsList.Marine["dmg1"] = {UpgradeName = kTechId.Weapons1, 		UpgradeTechId = kTechId.Weapons1,			Requires = nil, Levels = 1, Type = "tech"}
+UpsList.Marine["dmg2"] = {UpgradeName = kTechId.Weapons2, 		UpgradeTechId = kTechId.Weapons2,			Requires = "dmg1", Levels = 1, Type = "tech"}
+UpsList.Marine["dmg3"] = {UpgradeName = kTechId.Weapons3, 		UpgradeTechId = kTechId.Weapons3, 			Requires = "dmg2", Levels = 1, Type = "tech"}
+UpsList.Marine["arm1"] = {UpgradeName = kTechId.Armor1, 		UpgradeTechId = kTechId.Armor1, 			Requires = nil, Levels = 1, Type = "tech"}
+UpsList.Marine["arm2"] = {UpgradeName = kTechId.Armor2, 		UpgradeTechId = kTechId.Armor2, 			Requires = "arm1", Levels = 1, Type = "tech"}
+UpsList.Marine["arm3"] = {UpgradeName = kTechId.Armor3, 		UpgradeTechId = kTechId.Armor3,				Requires = "arm2", Levels = 1, Type = "tech"}
 
-// need new functions for this
-//UpsList.Marine["motion"] = {"MotionTracking", nil, 1, "tech"}
-//UpsList.Marine["scanner"] = {"ScannerSweep", nil, 1, "tech"}
-//UpsList.Marine["cat"] = {"CatPack", nil, 1, "tech"}
-//UpsList.Marine["resup"] = {"Resuply", nil, 1, "tech"}
+// These will need some new kTechIds...
+UpsList.Marine["motion"] = {UpgradeName = nil, nil, nil, "tech"}
+UpsList.Marine["scanner"] = {UpgradeName = nil, nil, nil, "tech"}
+UpsList.Marine["cat"] = {UpgradeName = nil, nil, nil, "tech"}
+UpsList.Marine["resup"] = {UpgradeName = nil, nil, nil, "tech"}
 
-// Class
-//UpsList.Marine["jp"] = {JetpackMarine.kMapName, "arm2", 2, "class"}
-// For Testing
-UpsList.Marine["jp"] = {JetpackMarine.kMapName, nil, 0, "class"}
+// Suits for marines
+UpsList.Marine["jp"] = {UpgradeName = JetpackMarine.kMapName, 	UpgradeTechId = kTechId.Jetpack, 			Requires = "arm2", Levels = 2, Type = "class"}
 // if the exo is rdy
 //UpsList.Marine["exo"] = {JetpackMarine.kMapName, "arm2", 2, "class"} 
 
 UpsList.Alien = {}
 // Table:        Type,   kMapName,  needs Up, need Lvl, Weapon or other
 // Class
-UpsList.Alien ["gorge"] = {kTechId.Gorge, nil, 1, "class"}
-UpsList.Alien ["lerk"] = {kTechId.Lerk, "gorge", 1, "class"}
-UpsList.Alien ["fade"] = {kTechId.Fade, "gorge", 2, "class"}
-UpsList.Alien ["onos"] = {kTechId.Onos, "fade", 2, "class"}
+UpsList.Alien ["gorge"] = {UpgradeName = kTechId.Gorge, 		UpgradeTechId = kTechId.Gorge, 				Requires = nil, Levels = 1, Type = "class"}
+UpsList.Alien ["lerk"] = {UpgradeName = kTechId.Lerk, 			UpgradeTechId = kTechId.Lerk, 				Requires = "gorge", Levels = 1, Type = "class"}
+UpsList.Alien ["fade"] = {UpgradeName = kTechId.Fade, 			UpgradeTechId = kTechId.Fade, 				Requires = "gorge", Levels = 2, Type = "class"}
+UpsList.Alien ["onos"] = {UpgradeName = kTechId.Onos, 			UpgradeTechId = kTechId.Onos, 				Requires = "fade", Levels = 2, Type = "class"}
 // Tech
-UpsList.Alien ["tier2"] = {kTechId.Augmentation, nil, 1, "tech"}
-UpsList.Alien ["tier3"] = {kTechId.AlienArmor3, "tier2", 1, "tech"}
-UpsList.Alien ["carapace"] = {kTechId.Carapace, nil , 1, "tech"}
-UpsList.Alien ["regen"] = {kTechId.Regeneration, nil , 1, "tech"}
-UpsList.Alien ["silence"] = {kTechId.Silence, nil , 1, "tech"}
-UpsList.Alien ["camo"] = {kTechId.Camouflage, nil , 1, "tech"}
-UpsList.Alien ["cele"] = {kTechId.Celerity, nil , 1, "tech"}
+UpsList.Alien ["tier2"] = {UpgradeName = kTechId.Augmentation, 	UpgradeTechId = kTechId.Augmentation, 		Requires = nil, Levels = 1, Type = "tech"}
+UpsList.Alien ["tier3"] = {UpgradeName = kTechId.AlienArmor3,	UpgradeTechId = kTechId.AlienArmor3, 		Requires = "tier2", Levels = 1, Type = "tech"}
+UpsList.Alien ["carapace"] = {UpgradeName = kTechId.Carapace, 	UpgradeTechId = kTechId.Carapace, 			Requires = nil, Levels = 1, Type = "tech"}
+UpsList.Alien ["regen"] = {UpgradeName = kTechId.Regeneration,	UpgradeTechId = kTechId.Regeneration, 		Requires = nil, Levels = 1, Type = "tech"}
+UpsList.Alien ["silence"] = {UpgradeName = kTechId.Silence, 	UpgradeTechId = kTechId.Silence, 			Requires = nil, Levels = 1, Type = "tech"}
+UpsList.Alien ["camo"] = {UpgradeName = kTechId.Camouflage,	 	UpgradeTechId = kTechId.Camouflage,			Requires = nil, Levels = 1, Type = "tech"}
+UpsList.Alien ["cele"] = {UpgradeName = kTechId.Celerity, 		UpgradeTechId = kTechId.Celerity, 			Requires = nil, Levels = 1, Type = "tech"}
 
 // Change the GestateTime so every new Class takes the same time
 kSkulkGestateTime = 3

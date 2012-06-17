@@ -25,7 +25,11 @@ end
 // Free the lvl when changing Teams
 function CombatNS2Gamerules:JoinTeam_Hook(self, player, newTeamNumber, force)
 
-    if player.combatTable then
+	// Reinitialise the tech tree
+	player.combatTechTree = nil
+	player:CheckCombatData()
+	
+    if player.combatTable.lvl > 1 then
         if player.combatTable.techtree[1] then
              // give the Lvl back
             player.combatTable.lvlfree = player.combatTable.lvlfree +  player.combatTable.lvl - 1
@@ -34,15 +38,7 @@ function CombatNS2Gamerules:JoinTeam_Hook(self, player, newTeamNumber, force)
 			player.resources = 999
 		end
     else
-        player.combatTable = {}  
-        player.combatTable.xp = 0
-        player.combatTable.lvl = 1
-        player.combatTable.lvlfree = 0
-        
-        // save every Update in the personal techtree
-        player.combatTable.techtree = {}
-        
-		// Give the player the average XP of all players on the server.
+	   // Give the player the average XP of all players on the server.
        if GetGamerules():GetGameStarted() then
             // get AvgXp 
             player:AddXp(Experience_GetAvgXp())

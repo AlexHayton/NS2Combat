@@ -25,99 +25,120 @@ function GetIsPrimaryWeapon(kMapName)
     
     return isPrimary
 end
+
+function Player:ExecuteTechUpgrade(techId)
+
+	local techTree = self:GetTechTree()
+	local node = techTree:GetTechNode(techId)
+	if node == nil then
+    
+        Print("Player:ExecuteTechUpgrade(): Couldn't find tech node %d", researchId)
+        return false
+        
+    end
+    
+    node:SetResearched(true)
+	node.available = true
+	techTree:SetTechNodeChanged(node)
+	techTree:ComputeAvailability()
+	
+	if techId == kTechId.Armor1 or techId == kTechId.Armor2 or techId == kTechId.Armor3 then
+		self:UpdateArmorAmount()
+	end
+
+end
      
 // Do Upgrade, called by console, type and team is checked and is valid
-// ToDo: what happens if I wanna have another weapon -> erase other weapon ot of the personal table
+// ToDo: what happens if I wanna have another weapon -> use last chosen weapon
 // ToDo: do i have everything necessery?
 function Player:CoCheckUpgrade_Marine(upgrade, respawning)
     
     local doUpgrade = false
+	self:CheckCombatData()
     
     if UpsList.Marine[upgrade] then
     
-        local type = UpsList.Marine[upgrade][4]
-        local neededLvl = UpsList.Marine[upgrade][3]
-        local neededOtherUp = UpsList.Marine[upgrade][2]
-        local kMapName =  UpsList.Marine[upgrade][1]
+        local type = UpsList.Marine[upgrade]["Type"]
+        local neededLvl = UpsList.Marine[upgrade]["Levels"]
+        local neededOtherUp = UpsList.Marine[upgrade]["Requires"]
+        local kMapName = UpsList.Marine[upgrade]["UpgradeName"]
+		local kTechId = UpsList.Marine[upgrade]["UpgradeTechId"]
         doUpgrade = true
 
         // do i have the Up already?
-        if self.combatTable then
-            for number, entry in ipairs(self.combatTable.techtree) do
-            
-                // do the up needs other ups??
-                if neededOtherUp then
-                    if entry == neededOtherUp then
-                    // we got the needed Update
-                        neededOtherUp = nil
-                    end
-                end
-            
-                if entry == upgrade then
-                   doUpgrade = false
-                end
-            end
-                     
-            if ((self.combatTable.lvlfree >=  neededLvl and doUpgrade and not neededOtherUp) or respawning) then
-            
+		for number, entry in ipairs(self.combatTable.techtree) do
+		
+			// do the up needs other ups??
+			if neededOtherUp then
+				if entry == neededOtherUp then
+				// we got the needed Update
+					neededOtherUp = nil
+				end
+			end
+		
+			if entry == upgrade then
+			   doUpgrade = false
+			end
+		end
+				 
+		if ((self.combatTable.lvlfree >=  neededLvl and doUpgrade and not neededOtherUp) or respawning) then
 
-                // check type(weapon, class, tech)
-                if type == "weapon" then
-                
-                    if self:GetIsAlive() or self:isa("Marine") then
-                        Player.InitWeapons(self)
-                        
-                        // if primary weapon, destroy old (only rifle)                
-                        if GetIsPrimaryWeapon(kMapName) then
-                            local weapon = self:GetWeaponInHUDSlot(1)
-                            self:RemoveWeapon(weapon)
-                            DestroyEntity(weapon)
-                        end
-                        
-                        self:GiveItem(kMapName)
-                    end       
-                
-                elseif type == "tech" then
-                    // ToDo: There's still a bug, everbody get my tech                    
+			// check type(weapon, class, tech)
+			if type == "weapon" then
+			
+				if self:GetIsAlive() or self:isa("Marine") then
+					Player.InitWeapons(self)
+					
+					// if primary weapon, destroy old (only rifle)                
+					if GetIsPrimaryWeapon(kMapName) then
+						local weapon = self:GetWeaponInHUDSlot(1)
+						self:RemoveWeapon(weapon)
+						DestroyEntity(weapon)
+					end
+					
+					self:GiveItem(kMapName)
+					self:ExecuteTechUpgrade(kTechId)
+				end       
+			
+			elseif type == "tech" then
+				// ToDo: There's still a bug, everbody get my tech                    
+				self:ExecuteTechUpgrade(kTechId)
+				
+			elseif type == "class" then
+				if self:GetIsAlive() then
+					// can't replace somebody who's respawning at the moment, give him the class later
+					if not respawning then
+						// Jps get the lmg back, so get the old weapon (but only directly after up, after dying its all OK)
+						// TODO; when EXO finished, what happen with it?
+						
+						self:GiveJetpack() 
+						self.combatTable.giveClassAfterRespawn = kMapName
+						self:ExecuteTechUpgrade(kTechId)
+					end
+				end
+			end
 
-                    self:GetTechTree():GiveUpgrade(kMapName)  
-                    
-                elseif type == "class" then
-                    if self:GetIsAlive() then
-                        // can't replace somebody who's respawning at the moment, give him the class later
-                        if not respawning then
-                            // Jps get the lmg back, so get the old weapon (but only directly after up, after dying its all OK)
-                            // TODO; when EXO finished, what happen with it?
-                            
-                            self:GiveJetpack() 
-                            self.combatTable.giveClassAfterRespawn = kMapName
-
-                        end
-                    end
-                end
-
-                if not respawning then
-                    // insert the up to the personal techtree
-                    table.insert(self.combatTable.techtree, upgrade)
-                    // subtract the needed lvl
-                    self.combatTable.lvlfree = self.combatTable.lvlfree -  neededLvl
-                end
-              
-            else
-                if doUpgrade then
-                    if neededOtherUp then
-                        Shared.Message("You need " .. neededOtherUp .. " first")
-                        self:SendDirectMessage("You need " .. neededOtherUp .. " first")
-                    else
-                        Shared.Message("No free Lvl, you need at last ".. neededLvl .. " free Lvl")
-                        self:SendDirectMessage("No free Lvl, you need at last ".. neededLvl .. " free Lvl")
-                    end
-                else
-                    Shared.Message("You already own that Upgrade")
-                    self:SendDirectMessage("You already own that Upgrade")
-                end
-            end        
-        end
+			if not respawning then
+				// insert the up to the personal techtree
+				table.insert(self.combatTable.techtree, upgrade)
+				// subtract the needed lvl
+				self.combatTable.lvlfree = self.combatTable.lvlfree -  neededLvl
+			end
+		  
+		else
+			if doUpgrade then
+				if neededOtherUp then
+					Shared.Message("You need " .. neededOtherUp .. " first")
+					self:SendDirectMessage("You need " .. neededOtherUp .. " first")
+				else
+					Shared.Message("No free Lvl, you need at last ".. neededLvl .. " free Lvl")
+					self:SendDirectMessage("No free Lvl, you need at last ".. neededLvl .. " free Lvl")
+				end
+			else
+				Shared.Message("You already own that Upgrade")
+				self:SendDirectMessage("You already own that Upgrade")
+			end
+		end        
     end
 end
 
@@ -127,90 +148,92 @@ end
 function Player:CoCheckUpgrade_Alien(upgrade, respawning, position)
 
     local doUpgrade = false
+	self:CheckCombatData()
     
     if UpsList.Alien[upgrade] then
   
-        local type = UpsList.Alien[upgrade][4]
-        local neededLvl = UpsList.Alien[upgrade][3]
-        local neededOtherUp = UpsList.Alien[upgrade][2]
-        local kMapName =  UpsList.Alien[upgrade][1]
+        local type = UpsList.Alien[upgrade]["Type"]
+        local neededLvl = UpsList.Alien[upgrade]["Levels"]
+        local neededOtherUp = UpsList.Alien[upgrade]["Requires"]
+        local kMapName = UpsList.Alien[upgrade]["UpgradeName"]
+		local kTechId = UpsList.Alien[upgrade]["UpgradeTechId"]
         doUpgrade = true
         // this is needed if there is no room for an egg
         upgradeOK = true
 
         // do i have the Up already?
-        if self.combatTable then
-            for number, entry in ipairs(self.combatTable.techtree) do
-            
-                // do the up needs other ups??
-                if neededOtherUp then
-                    if entry == neededOtherUp then
-                    // we got the needed Update
-                        neededOtherUp = nil
-                    end
-                end
-            
-                if entry == upgrade then
-                   doUpgrade = false
-                end
-            end
-                     
-            if ((self.combatTable.lvlfree >=  neededLvl and doUpgrade and not neededOtherUp) or respawning) then
+		for number, entry in ipairs(self.combatTable.techtree) do
+		
+			// do the up needs other ups??
+			if neededOtherUp then
+				if entry == neededOtherUp then
+				// we got the needed Update
+					neededOtherUp = nil
+				end
+			end
+		
+			if entry == upgrade then
+			   doUpgrade = false
+			end
+		end
+				 
+		if ((self.combatTable.lvlfree >=  neededLvl and doUpgrade and not neededOtherUp) or respawning) then
 
-                    
-                if type == "tech" then
-                    if self:GetIsAlive() then
-                        if respawning then
-                            // no evolving when respawning
-                            success = self:GetTechTree():GiveUpgrade(kMapName)
-                        else    
-                            upgradeOK = self:CoEvolve(kMapName)
-                            if upgradeOK then
-                                //success = self:GetTechTree():GiveUpgrade(kMapName)
-                            end
-                        end
-                    end
-                    
-                elseif type == "class" then
-                    if self:GetIsAlive() then
-                        if respawning then
-                            // Just gimme the Lvl back
-                            self.combatTable.lvlfree = self.combatTable.lvlfree + neededLvl
-                            table.remove(self.combatTable.techtree, position)
-                        else
-                            //self:Replace(kMapName, self:GetTeamNumber(), false)  
-                            upgradeOK = self:CoEvolve(kMapName)            
-                        end
-                    end
-                end
-         
-                if not respawning then
-                    if  upgradeOK then
-                        // insert the up to the personal techtree
-                        table.insert(self.combatTable.techtree, upgrade)
-                        // subtrate the needed lvl
-                        self.combatTable.lvlfree = self.combatTable.lvlfree - neededLvl
-                    else
-                        Shared.Message("Upgrade failed, maybe not enough room") 
-                        self:SendDirectMessage("Upgrade failed, maybe not enough room") 
-                    end  
-                end
-          
-            else
-                if doUpgrade then
-                    if neededOtherUp then
-                        Shared.Message("You need " .. neededOtherUp .. " first")
-                        self:SendDirectMessage("You need " .. neededOtherUp .. " first")
-                    else
-                        Shared.Message("No free Lvl, you need at last ".. neededLvl .. " free Lvl")
-                        self:SendDirectMessage("No free Lvl, you need at last ".. neededLvl .. " free Lvl")
-                    end
-                else
-                    Shared.Message("You already own that Upgrade")
-                    self:SendDirectMessage("You already own that Upgrade")
-                end
-            end        
-        end
+				
+			if type == "tech" then
+				if self:GetIsAlive() then
+					if respawning then
+						// no evolving when respawning
+						success = self:GetTechTree():GiveUpgrade(kMapName)
+						self:ExecuteTechUpgrade(kTechId)
+					else    
+						upgradeOK = self:CoEvolve(kMapName)
+						if upgradeOK then
+							//success = self:GetTechTree():GiveUpgrade(kMapName)
+						end
+					end
+				end
+				
+			elseif type == "class" then
+				if self:GetIsAlive() then
+					if respawning then
+						// Just gimme the Lvl back
+						self.combatTable.lvlfree = self.combatTable.lvlfree + neededLvl
+						table.remove(self.combatTable.techtree, position)
+					else
+						//self:Replace(kMapName, self:GetTeamNumber(), false)  
+						self:ExecuteTechUpgrade(kTechId)
+						upgradeOK = self:CoEvolve(kMapName)            
+					end
+				end
+			end
+	 
+			if not respawning then
+				if  upgradeOK then
+					// insert the up to the personal techtree
+					table.insert(self.combatTable.techtree, upgrade)
+					// subtrate the needed lvl
+					self.combatTable.lvlfree = self.combatTable.lvlfree - neededLvl
+				else
+					Shared.Message("Upgrade failed, maybe not enough room") 
+					self:SendDirectMessage("Upgrade failed, maybe not enough room") 
+				end  
+			end
+	  
+		else
+			if doUpgrade then
+				if neededOtherUp then
+					Shared.Message("You need " .. neededOtherUp .. " first")
+					self:SendDirectMessage("You need " .. neededOtherUp .. " first")
+				else
+					Shared.Message("No free Lvl, you need at last ".. neededLvl .. " free Lvl")
+					self:SendDirectMessage("No free Lvl, you need at last ".. neededLvl .. " free Lvl")
+				end
+			else
+				Shared.Message("You already own that Upgrade")
+				self:SendDirectMessage("You already own that Upgrade")
+			end
+		end        
     end
 end
 
@@ -241,8 +264,8 @@ function Player:CoEvolve(techId)
     local position = self:GetOrigin()
     
     if self:GetIsOnGround() and
-   GetHasRoomForCapsule(eggExtents, position + Vector(0, eggExtents.y + Embryo.kEvolveSpawnOffset, 0), CollisionRep.Default, physicsMask, self) and
-   GetHasRoomForCapsule(newAlienExtents, position + Vector(0, newAlienExtents.y + Embryo.kEvolveSpawnOffset, 0), CollisionRep.Default, physicsMask, self) then
+		GetHasRoomForCapsule(eggExtents, position + Vector(0, eggExtents.y + Embryo.kEvolveSpawnOffset, 0), CollisionRep.Default, physicsMask, self) and
+		GetHasRoomForCapsule(newAlienExtents, position + Vector(0, newAlienExtents.y + Embryo.kEvolveSpawnOffset, 0), CollisionRep.Default, physicsMask, self) then
       
         local newPlayer = self:Replace(Embryo.kMapName)
         position.y = position.y + Embryo.kEvolveSpawnOffset
@@ -274,19 +297,20 @@ end
 
 // Gimme my Ups back, called from "CopyPlayerData" 
 function Player:GiveUpsBack()
-    if self.combatTable then          
-        if self:isa("Marine") then  
-            // do it for every up in the table      
-            for i, entry in pairs(self.combatTable.techtree) do 
-                self:CoCheckUpgrade_Marine(entry, true) 
-            end
-        elseif self:isa("Alien") then
-            for i, entry in pairs(self.combatTable.techtree) do 
-                // TODO: just get lvl back when you got a other class
-                self:CoCheckUpgrade_Alien(entry, true, i)   
-            end
-        end            
-    end
+    
+	self:CheckCombatData()
+	
+	if self:isa("Marine") then  
+		// do it for every up in the table      
+		for i, entry in pairs(self.combatTable.techtree) do 
+			self:CoCheckUpgrade_Marine(entry, true) 
+		end
+	elseif self:isa("Alien") then
+		for i, entry in pairs(self.combatTable.techtree) do 
+			// TODO: just get lvl back when you got a other class
+			self:CoCheckUpgrade_Alien(entry, true, i)   
+		end
+	end            
     
     self.isRespawning = false
 end
@@ -317,8 +341,18 @@ function Player:GetLvlFree()
 
 end
 
+function Player:ClearCombatData()
+
+	// Blow away the old combatTable amd combatTechTree then re-run the check
+	self.combatTable = nil
+	self.combatTechTree = nil
+	self:CheckCombatData()
+
+end
+
 function Player:CheckCombatData()
 
+	// Initialise the Combat Tech Tree
 	if not self.combatTable then
 		self.combatTable = {}  
 		self.combatTable.xp = 0
@@ -326,6 +360,19 @@ function Player:CheckCombatData()
 		self.combatTable.lvlfree = 0
 		
 		self.combatTable.techtree = {}
+	end
+	
+	if not self.combatTechTree then
+			
+		// Also create a personal version of the tech tree.
+	    local team = self:GetTeam()
+		if team ~= nil and team:isa("PlayingTeam") then
+			self.techTree = TechTree()
+			self.techTree:CopyDataFrom(team:GetTechTree())
+			self.techTree:ComputeAvailability()
+			self.sendTechTreeBase = true
+		end
+	
 	end
 
 end

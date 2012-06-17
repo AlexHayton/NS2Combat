@@ -13,6 +13,7 @@ Script.Load("lua/fsfod_scripts.lua")
 
 // Loading the Hook classes
 // TODO: Maybe we don't need the OnLoad?
+Script.Load("lua/combat_TechTreeHooks.lua")
 Script.Load("lua/combat_NS2Gamerules.lua")
 Script.Load("lua/combat_Team.lua")
 Script.Load("lua/combat_PlayingTeam.lua")
@@ -24,6 +25,7 @@ Script.Load("lua/combat_Marine.lua")
 Script.Load("lua/combat_CommandStructure.lua")
 
 // Calling the Hook classes
+CombatTechTree:OnLoad()
 CombatNS2Gamerules:OnLoad()
 CombatTeam:OnLoad()
 CombatPlayingTeam:OnLoad()
@@ -38,6 +40,8 @@ CombatCommandStructure:OnLoad()
 Script.Load("lua/Server.lua")
 
 // new functions, no hooks
+Script.Load("lua/combat_TechTree.lua")
+Script.Load("lua/combat_TechNode.lua")
 Script.Load("lua/combat_Chat.lua")
 Script.Load("lua/combat_Player_normal.lua")
 Script.Load("lua/combat_ConsoleCommands.lua")

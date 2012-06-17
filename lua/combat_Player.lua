@@ -20,6 +20,7 @@ function CombatPlayer:OnLoad()
     ClassHooker:SetClassCreatedIn("Player", "lua/Player.lua") 
     self:PostHookClassFunction("Player", "Reset", "Reset_Hook")
     self:PostHookClassFunction("Player", "CopyPlayerDataFrom", "CopyPlayerDataFrom_Hook") 
+	self:PostHookClassFunction("Player", "GetTechTree", "GetTechTree_Hook") 
 
     self:ReplaceFunction("GetIsTechAvailable", "GetIsTechAvailable_Hook")
     
@@ -28,13 +29,8 @@ end
 // Implement lvl and XP
 function CombatPlayer:Reset_Hook(self)
   
-    self.combatTable = {}  
-    self.combatTable.xp = 0
-    self.combatTable.lvl = 1
-    self.combatTable.lvlfree = 0
-    
-    // save every Update in the personal techtree
-    self.combatTable.techtree = {}
+	// Initialise the Combat Data.
+	self:CheckCombatData()
     
 end
 
@@ -47,6 +43,14 @@ function CombatPlayer:CopyPlayerDataFrom_Hook(self, player)
 		  self:GiveUpsBack()
 	end
     
+end
+
+function CombatPlayer:GetTechTree_Hook(self)
+
+	self:CheckCombatData()
+	
+    return self.combatTechTree
+
 end
 
 //___________________
