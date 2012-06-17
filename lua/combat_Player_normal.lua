@@ -126,18 +126,15 @@ function Player:CoCheckUpgrade_Marine(upgrade, respawning)
 			end
 		  
 		else
-			if doUpgrade then
-				if neededOtherUp then
-					Shared.Message("You need " .. neededOtherUp .. " first")
-					self:SendDirectMessage("You need " .. neededOtherUp .. " first")
-				else
-					Shared.Message("No free Lvl, you need at last ".. neededLvl .. " free Lvl")
-					self:SendDirectMessage("No free Lvl, you need at last ".. neededLvl .. " free Lvl")
-				end
-			else
-				Shared.Message("You already own that Upgrade")
-				self:SendDirectMessage("You already own that Upgrade")
-			end
+            if doUpgrade then
+                if neededOtherUp then
+                    self:spendlvlHints("neededOtherUp", neededOtherUp)
+                else
+                    self:spendlvlHints("neededLvl", neededLvl)
+                end
+            else
+                self:spendlvlHints("already_owned", upgrade)
+            end
 		end        
     end
 end
@@ -215,24 +212,20 @@ function Player:CoCheckUpgrade_Alien(upgrade, respawning, position)
 					// subtrate the needed lvl
 					self.combatTable.lvlfree = self.combatTable.lvlfree - neededLvl
 				else
-					Shared.Message("Upgrade failed, maybe not enough room") 
-					self:SendDirectMessage("Upgrade failed, maybe not enough room") 
+					self:spendlvlHints("no_room", upgrade) 
 				end  
 			end
 	  
 		else
-			if doUpgrade then
-				if neededOtherUp then
-					Shared.Message("You need " .. neededOtherUp .. " first")
-					self:SendDirectMessage("You need " .. neededOtherUp .. " first")
-				else
-					Shared.Message("No free Lvl, you need at last ".. neededLvl .. " free Lvl")
-					self:SendDirectMessage("No free Lvl, you need at last ".. neededLvl .. " free Lvl")
-				end
-			else
-				Shared.Message("You already own that Upgrade")
-				self:SendDirectMessage("You already own that Upgrade")
-			end
+            if doUpgrade then
+                if neededOtherUp then
+                    self:spendlvlHints("neededOtherUp", neededOtherUp)
+                else
+                    self:spendlvlHints("neededLvl", neededLv)
+                end
+            else
+                self:spendlvlHints("already_owned", upgrade)
+            end
 		end        
     end
 end
@@ -379,7 +372,9 @@ end
 
 function Player:AddXp(amount)
 	
-	self:CheckCombatData()
+	if not self.combatTable then
+        self:CheckCombatData()
+    end
 	
 	// Make sure we don't go over the max XP.
     if (self:GetXp() + amount) <= maxXp then
@@ -392,7 +387,9 @@ function Player:AddXp(amount)
 
     else
         // Max Lvl reached
-		self.combatTable.xp = maxXp
+        self:SendDirectMessage("Max-XP reached")
+        self.combatTable.xp = maxXp
+        self:CheckLvlUp(self.combatTable.xp)
     end        
        
 end
@@ -404,6 +401,10 @@ function Player:CheckLvlUp(xp)
        
         if (xp >= XpList[self:GetLvl()+1]["XP"]) then
 			//Lvl UP
+												
+            // make sure that we get every lvl we've earned
+			local restXp = 0
+            restXp = xp - XpList[self:GetLvl()+1]["XP"] 
 								
             self.combatTable.lvl =  self.combatTable.lvl + 1
             self:SendDirectMessage( "!! Level UP !! New Lvl: " .. self:GetLvl()) 
@@ -421,10 +422,6 @@ function Player:CheckLvlUp(xp)
 			if (self:GetLvl() < 10) then
 				self:SendDirectMessage( self:GetXp() .. " XP: " .. (XpList[self.combatTable.lvl + 1]["XP"] - self:GetXp()).. " XP missing")
 			end
-						
-            // make sure that we get every lvl we've earned
-			local restXp = 0
-            restXp = xp - XpList[self:GetLvl()+1]["XP"] 
             
             if restXp > 0 then
                 self:CheckLvlUp(restXp)
@@ -433,6 +430,39 @@ function Player:CheckLvlUp(xp)
         else        
             self:SendDirectMessage( self:GetXp() .. " XP: " .. (XpList[self.combatTable.lvl + 1]["XP"] - self:GetXp()).. " XP missing")
         end     
+    end
+end
+
+function Player:spendlvlHints(hint, type)
+// sends a hint to the player if co_spendlvl fails
+
+    if not type then type = "" end
+
+    if hint == "no_type" then
+        self:SendDirectMessage("No type defined, usage is: co_spendlvl type") 
+               
+    elseif hint == "wrong_type_marine" then        
+        self:SendDirectMessage(  type .. " is not known, all upgrades for your team:")        
+        // ToDo: make a short break before printing the ups        
+        Server.ClientCommand(self, "co_upgrades")
+        
+    elseif hint == "wrong_type_alien" then
+        self:SendDirectMessage(  type .. " is not known, all upgrades for your team:")
+        // ToDo: make a short break before printing the ups
+        Server.ClientCommand(self, "co_upgrades")
+        
+    elseif hint == "neededOtherUp" then
+        self:SendDirectMessage( "You need " .. type .. " first")       
+    
+    elseif hint == "neededLvl" then
+        self:SendDirectMessage("You got only " .. self:GetLvlFree().. " but you need at least ".. type .. " free Lvl")
+        
+    elseif hint == "already_owned" then
+        self:SendDirectMessage("You already own the upgrade " .. type)
+        
+    elseif hint == "no_room" then
+        self:SendDirectMessage( type .." upgrade failed, maybe not enough room")   
+        
     end
 end
 

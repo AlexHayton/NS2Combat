@@ -17,22 +17,26 @@ function OnCommandSpendLvl(client, type)
         if player:isa("Marine") then
         
             if UpsList.Marine[type] then             
-                    player:CoCheckUpgrade_Marine(type)   
+                player:CoCheckUpgrade_Marine(type)   
+            else
+                player:spendlvlHints("wrong_type_marine", type)
             end
             
         elseif player:isa("Alien") then
         
             if UpsList.Alien[type] then             
-                    player:CoCheckUpgrade_Alien(type)   
+                player:CoCheckUpgrade_Alien(type)   
+            else 
+                player:spendlvlHints("wrong_type_alien", type)
             end
             
         end
     else
-        Shared.Message("No type defined, usage is: co_spendlvl type")
-        player:SendDirectMessage("No type defined, usage is: co_spendlvl type")
+        player:spendlvlHints("no_type")
     end
    
 end
+
 
 function OnCommandAddXp(client, amount)
 
@@ -100,10 +104,29 @@ function OnCommandHelp(client)
 
 end
 
+
+function OnCommandUpgrades(client)
+
+	// Shows all available Upgrades
+	local player = client:GetControllingPlayer()
+	
+	if player:isa("Marine") then
+		for upName in pairs(UpsList.Marine) do
+	        player:SendDirectMessage(upName .. " , needs Upgrade " .. (UpsList.Marine[upName]["Requires"] or "no") .. " upgrade first and " .. (UpsList.Marine[upName]["Levels"] or 0) .. " free Lvl" )
+        end
+	elseif player:isa("Alien") then
+        for upName in pairs(UpsList.Alien) do
+	        player:SendDirectMessage(upName .. " , needs Upgrade " .. (UpsList.Alien[upName]["Requires"] or "no") .. " upgrade first and " .. (UpsList.Alien[upName]["Levels"] or 0) .. " free Lvl" )	
+        end
+	end
+
+end
+
 // All commands that should be accessible via the need to be in this list
-combatCommands = {"co_spendlvl", "co_help", "co_status"}
+combatCommands = {"co_spendlvl", "co_help", "co_status", "co_upgrades"}
 
 Event.Hook("Console_co_help",                OnCommandHelp) 
+Event.Hook("Console_co_upgrades",                OnCommandUpgrades) 
 Event.Hook("Console_co_spendlvl",                OnCommandSpendLvl)
 Event.Hook("Console_co_addxp",                OnCommandAddXp)
 Event.Hook("Console_co_showxp",                OnCommandShowXp)
