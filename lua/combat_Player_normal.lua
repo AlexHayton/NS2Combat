@@ -12,6 +12,12 @@
 // not hooked
 //___________________
 
+// Welcome Message that every player receives who joined our game
+combatWelcomeMessage = {"Welcome to this Server",
+                        "It's running a special Combat Mod",
+                        "For more informations type co_help in the chat or console"
+                        }
+
 function GetIsPrimaryWeapon(kMapName)
     local isPrimary = false
     
