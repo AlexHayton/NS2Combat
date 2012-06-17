@@ -19,8 +19,8 @@ function CombatPlayingTeam:OnLoad()
 
     ClassHooker:SetClassCreatedIn("PlayingTeam", "lua/PlayingTeam.lua") 
     self:ReplaceClassFunction("PlayingTeam", "SpawnInitialStructures", "SpawnInitialStructures_Hook")
-    //self:ReplaceClassFunction("PlayingTeam", "SpawnResourceTower", "SpawnResourceTower_Hook")
     self:ReplaceClassFunction("PlayingTeam", "GetHasTeamLost", "GetHasTeamLost_Hook")
+	self:ReplaceClassFunction("PlayingTeam", "UpdateTechTree", "UpdateTechTree_Hook")
     
 end
 
@@ -80,9 +80,61 @@ function CombatPlayingTeam:SpawnInitialStructures_Hook(self, techPoint)
     
 end
 
-//function CombatPlayingTeam:SpawnResourceTower_Hook(self, techPoint)
-    // No RTS!!
-//end
+function CombatPlayingTeam:UpdateTechTree_Hook(self)
+
+    PROFILE("PlayingTeam:UpdateTechTree")
+    
+    // Compute tech tree availability only so often because it's very slooow
+    if self.techTree ~= nil then
+		if (self.timeOfLastTechTreeUpdate == nil or Shared.GetTime() > self.timeOfLastTechTreeUpdate + PlayingTeam.kTechTreeUpdateTime) then
+
+			local techIds = {}
+			
+			for index, structure in ipairs(GetEntitiesForTeam("Structure", self:GetTeamNumber())) do
+			
+				if structure:GetIsBuilt() and structure:GetIsActive(true) then
+				
+					table.insert(techIds, structure:GetTechId())
+					
+				end
+				
+			end
+			
+			self.techTree:Update(techIds)
+
+			// Send tech tree base line to players that just switched teams or joined the game        
+			// Also refresh and update existing players' tech trees.
+			local players = self:GetPlayers()
+			
+			for index, player in ipairs(players) do
+
+				player:UpdateTechTree()
+			
+				if player:GetSendTechTreeBase() then
+				
+					if player:GetTechTree() ~= nil then            
+						player:GetTechTree():SendTechTreeBase(player)
+					end
+					
+					player:ClearSendTechTreeBase()
+					
+				end
+				
+				// Send research, availability, etc. tech node updates to players   
+				if player:GetTechTree() ~= nil then            
+					player:GetTechTree():SendTechTreeUpdates({ player })
+				end
+				
+			end
+			
+			self.timeOfLastTechTreeUpdate = Shared.GetTime()
+			
+			self:OnTechTreeUpdated()
+			
+		end
+	end
+    
+end
 
 if(hotreload) then
     CombatPlayingTeam:OnLoad()

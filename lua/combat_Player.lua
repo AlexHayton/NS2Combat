@@ -20,7 +20,8 @@ function CombatPlayer:OnLoad()
     ClassHooker:SetClassCreatedIn("Player", "lua/Player.lua") 
     self:PostHookClassFunction("Player", "Reset", "Reset_Hook")
     self:PostHookClassFunction("Player", "CopyPlayerDataFrom", "CopyPlayerDataFrom_Hook") 
-	self:PostHookClassFunction("Player", "GetTechTree", "GetTechTree_Hook") 
+	self:ReplaceClassFunction("Player", "GetTechTree", "GetTechTree_Hook") 
+	self:PostHookClassFunction("Player", "CopyPlayerDataFrom", "CopyPlayerDataFrom_Hook") 
 
     self:ReplaceFunction("GetIsTechAvailable", "GetIsTechAvailable_Hook")
     
@@ -50,6 +51,10 @@ function CombatPlayer:GetTechTree_Hook(self)
 	self:CheckCombatData()
 	
     return self.combatTechTree
+
+end
+
+function CombatPlayer:CopyPlayerDataFrom_Hook(self, player)
 
 end
 
