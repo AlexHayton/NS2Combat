@@ -30,6 +30,20 @@ function Experience_GetAvgXp()
 
 end
 
+function Experience_GetLvlName(lvl, team)
+
+	local LvlName = ""
+	// ToDo: Support Marine vs Marine?
+	if (team == 1) then
+		LvlName = XpList[lvl]["MarineName"]
+	else
+		LvlName = XpList[lvl]["AlienName"]
+	end
+	
+	return LvlName
+	
+end
+
 function Experience_GetLvl(xp)
 
 	local returnlevel = 1

@@ -38,7 +38,7 @@ function Player:ExecuteTechUpgrade(techId)
 	local node = techTree:GetTechNode(techId)
 	if node == nil then
     
-        Print("Player:ExecuteTechUpgrade(): Couldn't find tech node %d", researchId)
+        Print("Player:ExecuteTechUpgrade(): Couldn't find tech node %d", techId)
         return false
         
     end
@@ -68,7 +68,7 @@ function Player:CoCheckUpgrade_Marine(upgrade, respawning)
         local neededLvl = UpsList.Marine[upgrade]["Levels"]
         local neededOtherUp = UpsList.Marine[upgrade]["Requires"]
         local kMapName = UpsList.Marine[upgrade]["UpgradeName"]
-		local kTechId = UpsList.Marine[upgrade]["UpgradeTechId"]
+		local techId = UpsList.Marine[upgrade]["UpgradeTechId"]
         doUpgrade = true
 
         // do i have the Up already?
@@ -103,12 +103,11 @@ function Player:CoCheckUpgrade_Marine(upgrade, respawning)
 					end
 					
 					self:GiveItem(kMapName)
-					self:ExecuteTechUpgrade(kTechId)
+					self:ExecuteTechUpgrade(techId)
 				end       
 			
-			elseif type == "tech" then
-				// ToDo: There's still a bug, everbody get my tech                    
-				self:ExecuteTechUpgrade(kTechId)
+			elseif type == "tech" then            
+				self:ExecuteTechUpgrade(techId)
 				
 			elseif type == "class" then
 				if self:GetIsAlive() then
@@ -119,7 +118,7 @@ function Player:CoCheckUpgrade_Marine(upgrade, respawning)
 						
 						self:GiveJetpack() 
 						self.combatTable.giveClassAfterRespawn = kMapName
-						self:ExecuteTechUpgrade(kTechId)
+						self:ExecuteTechUpgrade(techId)
 					end
 				end
 			end
@@ -159,7 +158,7 @@ function Player:CoCheckUpgrade_Alien(upgrade, respawning, position)
         local neededLvl = UpsList.Alien[upgrade]["Levels"]
         local neededOtherUp = UpsList.Alien[upgrade]["Requires"]
         local kMapName = UpsList.Alien[upgrade]["UpgradeName"]
-		local kTechId = UpsList.Alien[upgrade]["UpgradeTechId"]
+		local techId = UpsList.Alien[upgrade]["UpgradeTechId"]
         doUpgrade = true
         // this is needed if there is no room for an egg
         upgradeOK = true
@@ -180,15 +179,14 @@ function Player:CoCheckUpgrade_Alien(upgrade, respawning, position)
 			end
 		end
 				 
-		if ((self.combatTable.lvlfree >=  neededLvl and doUpgrade and not neededOtherUp) or respawning) then
-
+		if ((self.combatTable.lvlfree >= neededLvl and doUpgrade and not neededOtherUp) or respawning) then
 				
 			if type == "tech" then
 				if self:GetIsAlive() then
 					if respawning then
 						// no evolving when respawning
 						success = self:GetTechTree():GiveUpgrade(kMapName)
-						self:ExecuteTechUpgrade(kTechId)
+						self:ExecuteTechUpgrade(techId)
 					else    
 						upgradeOK = self:CoEvolve(kMapName)
 						if upgradeOK then
@@ -205,7 +203,7 @@ function Player:CoCheckUpgrade_Alien(upgrade, respawning, position)
 						table.remove(self.combatTable.techtree, position)
 					else
 						//self:Replace(kMapName, self:GetTeamNumber(), false)  
-						self:ExecuteTechUpgrade(kTechId)
+						self:ExecuteTechUpgrade(techId)
 						upgradeOK = self:CoEvolve(kMapName)            
 					end
 				end
@@ -417,15 +415,8 @@ function Player:CheckLvlUp(xp)
 		self.combatTable.lvlfree = self.combatTable.lvlfree + numberLevels
 		self.combatTable.lvl = self:GetLvl()
 		
-		// ToDo find out if rine or Alien and do a different name
-		local RankName = ""
-		if (self:GetTeamNumber() == 1) then
-			RankName = XpList[self:GetLvl()]["MarineName"]
-		else
-			RankName = XpList[self:GetLvl()]["AlienName"]
-		end
-		
-		self:SendDirectMessage( "!! Level UP !! New Lvl: " .. RankName .. " (" .. self:GetLvl() .. ")")
+		local LvlName = Experience_GetLvlName(self:GetLvl(), self:GetTeamNumber())
+		self:SendDirectMessage( "!! Level UP !! New Lvl: " .. LvlName .. " (" .. self:GetLvl() .. ")")
 	end     
 	
 	if self:GetLvl() < maxLvl then
