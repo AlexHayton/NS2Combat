@@ -415,7 +415,6 @@ function Player:GiveXpMatesNearby(xp)
     for _, player in ipairs(playersInRange) do
         if self ~= player then
             player:AddXp(xp)    
-            Print("Give XP to m8 " .. xp)    
         end
     end
 
