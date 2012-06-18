@@ -32,10 +32,10 @@ function CombatNS2Gamerules:JoinTeam_Hook(self, player, newTeamNumber, force)
 	player.combatTechTree = nil
 	player:CheckCombatData()
 	
-    if player.combatTable.lvl > 1 then
+    if player:GetLvl() > 1 then
         if player.combatTable.techtree[1] then
              // give the Lvl back
-            player.combatTable.lvlfree = player.combatTable.lvlfree +  player.combatTable.lvl - 1
+            player.combatTable.lvlfree = player.combatTable.lvlfree + player.combatTable.lvl - 1
             // clear the techtree
             player.combatTable.techtree = {}
 			player.resources = 999

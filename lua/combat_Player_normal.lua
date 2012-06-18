@@ -325,7 +325,7 @@ end
 
 function Player:GetLvl()
     if self.combatTable then
-        return self.combatTable.lvl
+        return Experience_GetLvl(self:GetXp())
     else
         return 1
     end
@@ -408,43 +408,30 @@ function Player:AddXp(amount)
        
 end
 
-
 function Player:CheckLvlUp(xp)
-//ToDo: Levels and XP System
-    if xp and (self:GetLvl() < 10 ) then
-       
-        if (xp >= XpList[self:GetLvl()+1]["XP"]) then
-			//Lvl UP
-												
-            // make sure that we get every lvl we've earned
-			local restXp = 0
-            restXp = xp - XpList[self:GetLvl()+1]["XP"] 
-								
-            self.combatTable.lvl =  self.combatTable.lvl + 1
-            self:SendDirectMessage( "!! Level UP !! New Lvl: " .. self:GetLvl()) 
-            self.combatTable.lvlfree = self.combatTable.lvlfree + 1
-            // ToDo find out if rine or Alien and do a different name
-			local RankName = ""
-			if (self:GetTeamNumber() == 1) then
-				RankName = XpList[self:GetLvl()]["MarineName"]
-			else
-				RankName = XpList[self:GetLvl()]["AlienName"]
-			end
-			self:SendDirectMessage(RankName)
-			
-			// Stop errors when you reach the max level
-			if (self:GetLvl() < 10) then
-				self:SendDirectMessage( self:GetXp() .. " XP: " .. (XpList[self.combatTable.lvl + 1]["XP"] - self:GetXp()).. " XP missing")
-			end
-            
-            if restXp > 0 then
-                self:CheckLvlUp(restXp)
-			end
-			
-        else        
-            self:SendDirectMessage( self:GetXp() .. " XP: " .. (XpList[self.combatTable.lvl + 1]["XP"] - self:GetXp()).. " XP missing")
-        end     
-    end
+	
+	if self:GetLvl() > self.combatTable.lvl then
+		//Lvl UP
+		// make sure that we get every lvl we've earned
+		local numberLevels = self:GetLvl() - self.combatTable.lvl
+		self.combatTable.lvlfree = self.combatTable.lvlfree + numberLevels
+		self.combatTable.lvl = self:GetLvl()
+		
+		// ToDo find out if rine or Alien and do a different name
+		local RankName = ""
+		if (self:GetTeamNumber() == 1) then
+			RankName = XpList[self:GetLvl()]["MarineName"]
+		else
+			RankName = XpList[self:GetLvl()]["AlienName"]
+		end
+		
+		self:SendDirectMessage( "!! Level UP !! New Lvl: " .. RankName .. " (" .. self:GetLvl() .. ")")
+	end     
+	
+	if self:GetLvl() < maxLvl then
+		self:SendDirectMessage( self:GetXp() .. " XP: " .. (XpList[self:GetLvl() + 1]["XP"] - self:GetXp()).. " XP until next level!")
+	end
+	
 end
 
 function Player:spendlvlHints(hint, type)

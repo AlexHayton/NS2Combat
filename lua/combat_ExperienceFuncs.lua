@@ -29,3 +29,27 @@ function Experience_GetAvgXp()
     return avgXp
 
 end
+
+function Experience_GetLvl(xp)
+
+	local returnlevel = 1
+
+	// Look up the level of this amount of Xp
+	if xp >= maxXp then 
+		return maxLvl
+	end
+	
+	// ToDo: Do a binary search instead. We're going to be here a lot!
+	for index, thislevel in ipairs(XpList) do
+	
+		if xp >= thislevel["XP"] and 
+		   xp < XpList[index+1]["XP"] then
+		
+			returnlevel = thislevel["Level"]
+		
+		end
+		
+	end
+
+	return returnlevel
+end
