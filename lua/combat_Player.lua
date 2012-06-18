@@ -56,6 +56,14 @@ end
 
 function CombatPlayer:CopyPlayerDataFrom_Hook(self, player)
 
+
+	self.combatTable = player.combatTable
+	// Give the ups back, but just when respawing
+	if player and player.isRespawning then
+		  self:GiveUpsBack()
+	end
+	
+
 end
 
 //___________________
