@@ -27,9 +27,11 @@ function PointGiverMixin:OnKill(attacker, doer, point, direction)
         if self:isa("Player") then
                 if self.combatTable then
                     pointOwner:AddXp(XpList[self.combatTable.lvl]["GivenXP"])
+                    pointOwner:GiveXpMatesNearby(XpList[self.combatTable.lvl]["GivenXP"])
                 else
                     // if enemy dont got a combatTable, get standard Value for Lvl 1
                     pointOwner:AddXp(XpList[1]["GivenXP"])
+                    pointOwner:GiveXpMatesNearby(XpList[self.combatTable.lvl]["GivenXP"])
                 end
         else    
 		

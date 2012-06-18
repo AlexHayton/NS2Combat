@@ -27,6 +27,10 @@ avgXpAmount = 0.75
 maxLvl = table.maxn(XpList)
 maxXp = XpList[maxLvl]["XP"]
 
+// how much % from the xp are the m8 nearby getting and the range
+mateXpAmount = 0.4
+mateXpRange = 35
+
 // XP-Values
 // Scores for various creatures and structures.
 XpValues = {}

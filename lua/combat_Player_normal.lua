@@ -42,7 +42,7 @@ function Player:ExecuteTechUpgrade(techId)
         return false
         
     end
-    
+
     node:SetResearched(true)
 	node.available = true
 	techTree:SetTechNodeChanged(node)
@@ -101,9 +101,8 @@ function Player:CoCheckUpgrade_Marine(upgrade, respawning)
 						self:RemoveWeapon(weapon)
 						DestroyEntity(weapon)
 					end
-					
-					self:GiveItem(kMapName)
-					self:ExecuteTechUpgrade(techId)
+					// its not needed to ExecuteTechUpgrade when its a weapon
+					self:GiveItem(kMapName)					
 				end       
 			
 			elseif type == "tech" then            
@@ -116,9 +115,9 @@ function Player:CoCheckUpgrade_Marine(upgrade, respawning)
 						// Jps get the lmg back, so get the old weapon (but only directly after up, after dying its all OK)
 						// TODO; when EXO finished, what happen with it?
 						
-						self:GiveJetpack() 
-						self.combatTable.giveClassAfterRespawn = kMapName
-						self:ExecuteTechUpgrade(techId)
+						// its not needed to ExecuteTechUpgrade when its a class
+						self:GiveJetpack() 						
+						self.combatTable.giveClassAfterRespawn = kMapName																		
 					end
 				end
 			end
@@ -203,7 +202,7 @@ function Player:CoCheckUpgrade_Alien(upgrade, respawning, position)
 						table.remove(self.combatTable.techtree, position)
 					else
 						//self:Replace(kMapName, self:GetTeamNumber(), false)  
-						self:ExecuteTechUpgrade(techId)
+						// its not needed to ExecuteTechUpgrade when its a class
 						upgradeOK = self:CoEvolve(kMapName)            
 					end
 				end
@@ -405,6 +404,23 @@ function Player:AddXp(amount)
     end        
        
 end
+
+// Give XP to m8's around you when you kill an enemy
+function Player:GiveXpMatesNearby(xp)
+
+    xp = xp * mateXpAmount
+
+    local playersInRange = GetEntitiesForTeamWithinRange("Player", self:GetTeamNumber(), self:GetOrigin(), mateXpRange)
+    
+    for _, player in ipairs(playersInRange) do
+        if self ~= player then
+            player:AddXp(xp)    
+            Print("Give XP to m8 " .. xp)    
+        end
+    end
+
+end
+
 
 function Player:CheckLvlUp(xp)
 	
