@@ -44,9 +44,11 @@ function Player:ExecuteTechUpgrade(techId)
     end
 
     node:SetResearched(true)
-	node.available = true
+	node:SetHasTech(true)
 	techTree:SetTechNodeChanged(node)
+	techTree:SetTechChanged()
 	techTree:ComputeAvailability()
+	techTree:SendTechTreeUpdates({ self })
 	
 	if techId == kTechId.Armor1 or techId == kTechId.Armor2 or techId == kTechId.Armor3 then
 		self:UpdateArmorAmount()
@@ -101,7 +103,9 @@ function Player:CoCheckUpgrade_Marine(upgrade, respawning)
 						self:RemoveWeapon(weapon)
 						DestroyEntity(weapon)
 					end
-					// its not needed to ExecuteTechUpgrade when its a weapon
+					
+					// Execute the tech upgrade so you can switch the weapon at the armory.
+					self:ExecuteTechUpgrade(techId)
 					self:GiveItem(kMapName)					
 				end       
 			
@@ -375,6 +379,8 @@ end
 
 function Player:UpdateTechTree()
 
+    self:CheckCombatData()
+	
 	if self.combatTechTree then
 		self.combatTechTree:Update({})
 	end
@@ -383,9 +389,7 @@ end
 
 function Player:AddXp(amount)
 	
-	if not self.combatTable then
-        self:CheckCombatData()
-    end
+    self:CheckCombatData()
 	
 	// Make sure we don't go over the max XP.
     if (self:GetXp() + amount) <= maxXp then
