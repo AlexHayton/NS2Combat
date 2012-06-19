@@ -353,7 +353,7 @@ function Player:CheckCombatData()
 		self.combatTable = {}  
 		self.combatTable.xp = 0
 		self.combatTable.lvl = 1
-		self.combatTable.lvlfree = 0
+		self.combatTable.lvlfree = 1
 		
 		self.combatTable.techtree = {}
 	end

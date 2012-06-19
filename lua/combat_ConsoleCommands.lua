@@ -91,7 +91,7 @@ function OnCommandStatus(client)
 
 	local player = client:GetControllingPlayer()
 	player:SendDirectMessage( "You are level " .. player:GetLvl() .. " and have " .. player:GetLvlFree() .. " free Lvl to use")
-	player:SendDirectMessage( "You have " .. player:GetXp() .. " XP, " .. (XpList[player:GetLvl() + 1]["XP"] - player:GetXp()).. " XP to go!")
+	player:SendDirectMessage( "You have " .. player:GetXp() .. " XP, " .. (XpList[player:GetLvl() + 1]["XP"] - player:GetXp()).. " XP until level up!")
 	
 end
 
@@ -101,6 +101,7 @@ function OnCommandHelp(client)
 	local player = client:GetControllingPlayer()
 	player:SendDirectMessage("Available commands:")
 	player:SendDirectMessage("co_spendlvl - use this to buy upgrades")
+	player:SendDirectMessage("co_upgrades - show available upgrades")
 	player:SendDirectMessage("co_status - use this to show your level, xp and available upgrades")
 
 end

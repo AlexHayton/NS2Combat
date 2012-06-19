@@ -76,8 +76,8 @@ function CombatMarineTeam:InitTechTree_Hook(self)
     
     self.techTree:AddUpgradeNode(kTechId.AdvancedArmoryUpgrade,  kTechId.Armory,        kTechId.InfantryPortal)
     
-    self.techTree:AddResearchNode(kTechId.Armor1,                 kTechId.ArmsLab,              kTechId.None)
-    self.techTree:AddResearchNode(kTechId.Weapons1,               kTechId.ArmsLab,               kTechId.None)
+    self.techTree:AddResearchNode(kTechId.Armor1,                 kTechId.None,              kTechId.None)
+    self.techTree:AddResearchNode(kTechId.Weapons1,               kTechId.None,               kTechId.None)
     
     // Marine tier 2
     self.techTree:AddUpgradeNode(kTechId.AdvancedArmory,               kTechId.Armory,        kTechId.None)
@@ -102,24 +102,24 @@ function CombatMarineTeam:InitTechTree_Hook(self)
     self.techTree:AddActivation(kTechId.DoorUnlock)
     
     // Weapon-specific
-    self.techTree:AddResearchNode(kTechId.ShotgunTech,           kTechId.Armory,              kTechId.None)
+    self.techTree:AddResearchNode(kTechId.ShotgunTech,           kTechId.None,              kTechId.None)
     self.techTree:AddBuyNode(kTechId.Shotgun,                    kTechId.ShotgunTech,         kTechId.Armory)
     
-    self.techTree:AddResearchNode(kTechId.GrenadeLauncherTech,           kTechId.AdvancedArmory,                   kTechId.None)
+    self.techTree:AddResearchNode(kTechId.GrenadeLauncherTech,           kTechId.None,                   kTechId.None)
     self.techTree:AddBuyNode(kTechId.GrenadeLauncher,                    kTechId.GrenadeLauncherTech,             kTechId.None)
     
     self.techTree:AddResearchNode(kTechId.NerveGasTech,                  kTechId.GrenadeLauncherTech,           kTechId.None)
     self.techTree:AddBuyNode(kTechId.NerveGas, kTechId.NerveGasTech, kTechId.None, kTechId.GrenadeLauncher)
     
-    self.techTree:AddResearchNode(kTechId.FlamethrowerTech,              kTechId.AdvancedArmory,                   kTechId.None)
+    self.techTree:AddResearchNode(kTechId.FlamethrowerTech,              kTechId.None,                   kTechId.None)
     self.techTree:AddBuyNode(kTechId.Flamethrower,                       kTechId.FlamethrowerTech,                kTechId.None)
     self.techTree:AddResearchNode(kTechId.FlamethrowerAltTech,           kTechId.FlamethrowerTech,                kTechId.None)
     self.techTree:AddBuyNode(kTechId.FlamethrowerAlt,                    kTechId.FlamethrowerAltTech,                kTechId.None, kTechId.Flamethrower)
     
-    self.techTree:AddResearchNode(kTechId.MinesTech,        kTechId.Armory,           kTechId.None)
+    self.techTree:AddResearchNode(kTechId.MinesTech,        kTechId.None,           kTechId.None)
     self.techTree:AddBuyNode(kTechId.LayMines,               kTechId.MinesTech,        kTechId.None)
     
-    self.techTree:AddResearchNode(kTechId.WelderTech,        kTechId.Armory,           kTechId.None)
+    self.techTree:AddResearchNode(kTechId.WelderTech,        kTechId.None,           kTechId.None)
     self.techTree:AddBuyNode(kTechId.Welder,               kTechId.WelderTech,        kTechId.None)
     
     // ARCs
@@ -147,7 +147,7 @@ function CombatMarineTeam:InitTechTree_Hook(self)
     self.techTree:AddResearchNode(kTechId.Weapons3,               kTechId.Weapons2,            kTechId.None)
 
     // Jetpack
-    self.techTree:AddResearchNode(kTechId.JetpackTech,           kTechId.PrototypeLab, kTechId.None)
+    self.techTree:AddResearchNode(kTechId.JetpackTech,           kTechId.None, kTechId.None)
     
     self.techTree:AddBuyNode(kTechId.Jetpack,                    kTechId.JetpackTech, kTechId.PrototypeLab)
     self.techTree:AddResearchNode(kTechId.JetpackFuelTech,       kTechId.JetpackTech, kTechId.None)

@@ -11,9 +11,13 @@
 function TechTree:CopyDataFrom(techTree)
 	self.nodeList = {}
 	// Deep clone the node list.
-	for i,v in pairs(techTree.nodeList) do
-		table.insert(self.nodeList, i, TechNode())
-		self.nodeList[i]:CopyDataFrom(techTree.nodeList[i])
+	local index, oldTechNode = next(techTree.nodeList, nil)
+	while index do
+		local techId = oldTechNode:GetTechId()
+		local newTechNode = TechNode()
+		newTechNode:CopyDataFrom(oldTechNode)
+		self.nodeList[techId] = newTechNode
+		index, oldTechNode = next(techTree.nodeList, index)
 	end
     
     self.techChanged = techTree.techChanged

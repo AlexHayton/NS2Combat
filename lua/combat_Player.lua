@@ -21,7 +21,6 @@ function CombatPlayer:OnLoad()
     self:PostHookClassFunction("Player", "Reset", "Reset_Hook")
     self:PostHookClassFunction("Player", "CopyPlayerDataFrom", "CopyPlayerDataFrom_Hook") 
 	self:ReplaceClassFunction("Player", "GetTechTree", "GetTechTree_Hook") 
-	self:PostHookClassFunction("Player", "CopyPlayerDataFrom", "CopyPlayerDataFrom_Hook") 
 
     self:ReplaceFunction("GetIsTechAvailable", "GetIsTechAvailable_Hook")
     
@@ -39,6 +38,7 @@ end
 function CombatPlayer:CopyPlayerDataFrom_Hook(self, player)    
 
 	self.combatTable = player.combatTable
+	
 	// Give the ups back, but just when respawing
 	if player and player.isRespawning then
 		  self:GiveUpsBack()
@@ -51,18 +51,6 @@ function CombatPlayer:GetTechTree_Hook(self)
 	self:CheckCombatData()
 	
     return self.combatTechTree
-
-end
-
-function CombatPlayer:CopyPlayerDataFrom_Hook(self, player)
-
-
-	self.combatTable = player.combatTable
-	// Give the ups back, but just when respawing
-	if player and player.isRespawning then
-		  self:GiveUpsBack()
-	end
-	
 
 end
 

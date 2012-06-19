@@ -17,7 +17,7 @@ function Experience_GetAvgXp()
     for i, player in ientitylist(Shared.GetEntitiesWithClassname("Player")) do      
 		// Ignore players that are not on a team.
 		if (player:GetTeamNumber() >= 1) and (player:GetTeamNumber() <= 2) then
-			allXp = allXp + (player:GetXp() or 0)
+			allXp = allXp + player:GetXp()
 			playerNumbers = playerNumbers + 1
 		end
     end
@@ -67,4 +67,3 @@ function Experience_GetLvl(xp)
 
 	return returnlevel
 end
-
