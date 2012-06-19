@@ -96,6 +96,9 @@ function CombatNS2Gamerules:JoinTeam_Hook(self, player, newTeamNumber, force)
 		newPlayer.combatTable.xp = player:GetXp()
 		newPlayer.combatTable.lvlfree = player:GetLvl()
 		newPlayer.combatTable.techtree = {}
+		
+		// don't get JP rine again when you're now an Alien
+		newPlayer.combatTable.giveClassAfterRespawn = nil
 
 	end
 	
