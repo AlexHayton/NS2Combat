@@ -15,6 +15,7 @@
 // Welcome Message that every player receives who joined our game
 combatWelcomeMessage = {"Welcome to this Server",
                         "It's running a special Combat Mod",
+                        "Score = XP and Resources = FreeLvl to use",
                         "For more informations type co_help in the chat or console"
                         }
 						
@@ -319,8 +320,8 @@ end
 
 
 function Player:GetXp()
-    if self.combatTable then
-        return self.combatTable.xp
+    if self.score then
+        return self.score
     else
         return 0    
     end         
@@ -388,7 +389,6 @@ function Player:CheckCombatData()
 	// Initialise the Combat Tech Tree
 	if not self.combatTable then
 		self.combatTable = {}  
-		self.combatTable.xp = 0
 		self.combatTable.lvl = 1
 		self:ClearLvlFree()
 		self:AddLvlFree(1)
@@ -425,21 +425,20 @@ end
 function Player:AddXp(amount)
 	
     self:CheckCombatData()
+    self:TriggerEffects("res_received")
 	
 	// Make sure we don't go over the max XP.
     if (self:GetXp() + amount) <= maxXp then
 
-        // For testing the xp System
-        self:SendDirectMessage(amount .. " XP gained")       
-		// Add the Xp and check for any level up...
-		self.combatTable.xp = self.combatTable.xp + amount
-		self:CheckLvlUp(self.combatTable.xp) 
+        // show the cool effect, no direct Message is needed anymore
+        self:XpEffect(amount)
+		self:CheckLvlUp(self.score) 
 
     else
         // Max Lvl reached
         self:SendDirectMessage("Max-XP reached")
-        self.combatTable.xp = maxXp
-        self:CheckLvlUp(self.combatTable.xp)
+        self.score = maxXp
+        self:CheckLvlUp(self.score)
     end        
        
 end
@@ -459,6 +458,24 @@ function Player:GiveXpMatesNearby(xp)
 
 end
 
+// cool effect for getting xp, also showing a new Lvl
+function Player:XpEffect(xp, lvl)
+
+    // Should only be called on the Server.
+    if Server then
+    
+        // Tell client to display cool effect.
+        if xp ~= nil and xp ~= 0 then
+        
+            Server.SendCommand(self, string.format("points %s %s", tostring(xp), tostring(0)))
+            self.score = Clamp(self.score + xp, 0, self:GetMixinConstants().kMaxScore or 100)
+            self:SetScoreboardChanged(true)
+
+        end
+    
+    end
+
+end
 
 function Player:CheckLvlUp(xp)
 	
