@@ -58,11 +58,12 @@ end
 // Remind players once every so often when they have upgrades to spend.
 function CombatPlayer:OnUpdatePlayer_Hook(self, deltaTime)
 
-	if (self.combatTable) and (self.combatTable.lvlfree > 0) then
+	local lvlFree = self:GetLvlFree()
+	if lvlFree > 0 then
 		if (self.combatTable.lastNotify + deltaTime > kUpgradeNotifyInterval) then
 			self.combatTable.lastNotify = 0
-			local upgradeWord = (self.combatTable.lvlfree > 1) and "upgrades" or "upgrade"
-			self:SendDirectMessage("You have " .. self.combatTable.lvlfree .. " " .. upgradeWord .. " to spend. Use co_spendlvl in chat to buy upgrades.")
+			local upgradeWord = (lvlFree > 1) and "upgrades" or "upgrade"
+			self:SendDirectMessage("You have " .. lvlFree .. " " .. upgradeWord .. " to spend. Use co_spendlvl in chat to buy upgrades.")
 		else
 			self.combatTable.lastNotify = self.combatTable.lastNotify + deltaTime
 		end

@@ -19,6 +19,7 @@ function CombatNS2Gamerules:OnLoad()
 
     ClassHooker:SetClassCreatedIn("NS2Gamerules", "lua/NS2Gamerules.lua")
     self:ReplaceClassFunction("NS2Gamerules", "JoinTeam", "JoinTeam_Hook")
+	self:ReplaceClassFunction("NS2Gamerules", "GetUserPlayedInGame", "GetUserPlayedInGame_Hook")
     
     ClassHooker:SetClassCreatedIn("Gamerules", "lua/Gamerules.lua")
     self:PostHookClassFunction("Gamerules", "OnClientConnect", "OnClientConnect_Hook")
@@ -94,7 +95,8 @@ function CombatNS2Gamerules:JoinTeam_Hook(self, player, newTeamNumber, force)
 		
 		// Update the combat data.
 		newPlayer.combatTable.xp = player:GetXp()
-		newPlayer.combatTable.lvlfree = player:GetLvl()
+		newPlayer:ClearLvlFree()
+		newPlayer:AddLvlFree(player:GetLvl())
 		newPlayer.combatTable.techtree = {}
 		
 		// don't get JP rine again when you're now an Alien
@@ -104,6 +106,15 @@ function CombatNS2Gamerules:JoinTeam_Hook(self, player, newTeamNumber, force)
 	
 	return success, newPlayer
 		
+end
+
+// Stop NS2 Giving us 25 personal res at the start.
+function CombatNS2Gamerules:GetUserPlayedInGame_Hook(self, player)
+
+	local success = true
+	local played = true
+	return success, played
+
 end
 
 // If the client connects, send him the welcome Message

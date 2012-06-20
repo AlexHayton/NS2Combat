@@ -91,7 +91,7 @@ function Player:CoCheckUpgrade_Marine(upgrade, respawning)
 			end
 		end
 				 
-		if ((self.combatTable.lvlfree >=  neededLvl and doUpgrade and not neededOtherUp) or respawning) then
+		if ((self:GetLvlFree() >=  neededLvl and doUpgrade and not neededOtherUp) or respawning) then
 
 			// check type(weapon, class, tech)
 			if type == "weapon" then
@@ -132,7 +132,7 @@ function Player:CoCheckUpgrade_Marine(upgrade, respawning)
 				// insert the up to the personal techtree
 				table.insert(self.combatTable.techtree, upgrade)
 				// subtract the needed lvl
-				self.combatTable.lvlfree = self.combatTable.lvlfree -  neededLvl
+				self:SubtractLvlFree(neededLvl)
 			end
 		  
 		else
@@ -184,7 +184,7 @@ function Player:CoCheckUpgrade_Alien(upgrade, respawning, position)
 			end
 		end
 				 
-		if ((self.combatTable.lvlfree >= neededLvl and doUpgrade and not neededOtherUp) or respawning) then
+		if ((self:GetLvlFree() >= neededLvl and doUpgrade and not neededOtherUp) or respawning) then
 				
 			if type == "tech" then
 				if self:GetIsAlive() then
@@ -204,7 +204,7 @@ function Player:CoCheckUpgrade_Alien(upgrade, respawning, position)
 				if self:GetIsAlive() then
 					if respawning then
 						// Just gimme the Lvl back
-						self.combatTable.lvlfree = self.combatTable.lvlfree + neededLvl
+						self:AddLvlFree(neededLvl)
 						table.remove(self.combatTable.techtree, position)
 					else
 						//self:Replace(kMapName, self:GetTeamNumber(), false)  
@@ -219,7 +219,7 @@ function Player:CoCheckUpgrade_Alien(upgrade, respawning, position)
 					// insert the up to the personal techtree
 					table.insert(self.combatTable.techtree, upgrade)
 					// subtrate the needed lvl
-					self.combatTable.lvlfree = self.combatTable.lvlfree - neededLvl
+					self:SubtractLvlFree(neededLvl)
 				else
 					self:spendlvlHints("no_room", upgrade) 
 				end  
@@ -335,11 +335,42 @@ function Player:GetLvl()
 end
 
 function Player:GetLvlFree()
+
     if self.combatTable then
-        return self.combatTable.lvlfree
+        return self.resources
     else
         return 0
     end
+
+end
+
+function Player:AddLvlFree(amount)
+        
+	if amount == nil then
+		amount = 1
+	end
+	
+	self.resources = self.resources + amount
+
+end
+
+function Player:SubtractLvlFree()
+
+	if amount == nil then
+		amount = 1
+	end
+	
+	self.resources = self.resources - amount
+	
+	if self.resources < 0 then 
+        self.resources = 0
+    end
+
+end
+
+function Player:ClearLvlFree()
+
+	self.resources = 0
 
 end
 
@@ -359,7 +390,8 @@ function Player:CheckCombatData()
 		self.combatTable = {}  
 		self.combatTable.xp = 0
 		self.combatTable.lvl = 1
-		self.combatTable.lvlfree = 1
+		self:ClearLvlFree()
+		self:AddLvlFree(1)
 		self.combatTable.lastNotify = 0
 		
 		self.combatTable.techtree = {}
@@ -434,7 +466,7 @@ function Player:CheckLvlUp(xp)
 		//Lvl UP
 		// make sure that we get every lvl we've earned
 		local numberLevels = self:GetLvl() - self.combatTable.lvl
-		self.combatTable.lvlfree = self.combatTable.lvlfree + numberLevels
+		self.resources = self.resources + numberLevels
 		self.combatTable.lvl = self:GetLvl()
 		
 		local LvlName = Experience_GetLvlName(self:GetLvl(), self:GetTeamNumber())
