@@ -15,12 +15,12 @@ XpList[1] = { Level=1, 		XP=0,		MarineName="Private", 				AlienName="Hatchling",
 XpList[2] = { Level=2, 		XP=100, 	MarineName="Private First Class", 	AlienName="Xenoform", 		GivenXP=70}
 XpList[3] = { Level=3, 		XP=250, 	MarineName="Corporal", 				AlienName="Minion", 		GivenXP=80}
 XpList[4] = { Level=4, 		XP=500, 	MarineName="Sergeant", 				AlienName="Ambusher", 		GivenXP=90}
-XpList[5] = { Level=5, 		XP=1000, 	MarineName="Lieutenant", 			AlienName="Attacker", 		GivenXP=100}
-XpList[6] = { Level=6, 		XP=2000, 	MarineName="Captain", 				AlienName="Rampager", 		GivenXP=110}
-XpList[7] = { Level=7, 		XP=4000, 	MarineName="Commander", 			AlienName="Slaughterer", 	GivenXP=120}
-XpList[8] = { Level=8, 		XP=8000, 	MarineName="Major", 				AlienName="Eliminator", 	GivenXP=130}
-XpList[9] = { Level=9, 		XP=16000, 	MarineName="Field Marshal", 		AlienName="Nightmare", 		GivenXP=140}
-XpList[10] = { Level=10, 	XP=25000, 	MarineName="General", 				AlienName="Behemoth", 		GivenXP=150}
+XpList[5] = { Level=5, 		XP=700, 	MarineName="Lieutenant", 			AlienName="Attacker", 		GivenXP=100}
+XpList[6] = { Level=6, 		XP=1000, 	MarineName="Captain", 				AlienName="Rampager", 		GivenXP=110}
+XpList[7] = { Level=7, 		XP=1350, 	MarineName="Commander", 			AlienName="Slaughterer", 	GivenXP=120}
+XpList[8] = { Level=8, 		XP=1750, 	MarineName="Major", 				AlienName="Eliminator", 	GivenXP=130}
+XpList[9] = { Level=9, 		XP=2200, 	MarineName="Field Marshal", 		AlienName="Nightmare", 		GivenXP=140}
+XpList[10] = { Level=10, 	XP=2700, 	MarineName="General", 				AlienName="Behemoth", 		GivenXP=150}
 
 // how much % from the avg xp can new player get
 avgXpAmount = 0.75
