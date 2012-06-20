@@ -17,6 +17,8 @@ combatWelcomeMessage = {"Welcome to this Server",
                         "It's running a special Combat Mod",
                         "For more informations type co_help in the chat or console"
                         }
+						
+kUpgradeNotifyInterval = 10
 
 function GetIsPrimaryWeapon(kMapName)
     local isPrimary = false
@@ -358,6 +360,7 @@ function Player:CheckCombatData()
 		self.combatTable.xp = 0
 		self.combatTable.lvl = 1
 		self.combatTable.lvlfree = 1
+		self.combatTable.lastNotify = 0
 		
 		self.combatTable.techtree = {}
 	end

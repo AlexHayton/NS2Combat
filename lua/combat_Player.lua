@@ -21,6 +21,7 @@ function CombatPlayer:OnLoad()
     self:PostHookClassFunction("Player", "Reset", "Reset_Hook")
     self:PostHookClassFunction("Player", "CopyPlayerDataFrom", "CopyPlayerDataFrom_Hook") 
 	self:ReplaceClassFunction("Player", "GetTechTree", "GetTechTree_Hook") 
+	self:PostHookClassFunction("Player", "OnUpdatePlayer", "OnUpdatePlayer_Hook") 
 
     self:ReplaceFunction("GetIsTechAvailable", "GetIsTechAvailable_Hook")
     
@@ -52,6 +53,21 @@ function CombatPlayer:GetTechTree_Hook(self)
 	
     return self.combatTechTree
 
+end
+
+// Remind players once every so often when they have upgrades to spend.
+function CombatPlayer:OnUpdatePlayer_Hook(self, deltaTime)
+
+	if (self.combatTable) and (self.combatTable.lvlfree > 0) then
+		if (self.combatTable.lastNotify + deltaTime > kUpgradeNotifyInterval) then
+			self.combatTable.lastNotify = 0
+			local upgradeWord = (self.combatTable.lvlfree > 1) and "upgrades" or "upgrade"
+			self:SendDirectMessage("You have " .. self.combatTable.lvlfree .. " " .. upgradeWord .. " to spend. Use co_spendlvl in chat to buy upgrades.")
+		else
+			self.combatTable.lastNotify = self.combatTable.lastNotify + deltaTime
+		end
+	end
+	
 end
 
 //___________________
