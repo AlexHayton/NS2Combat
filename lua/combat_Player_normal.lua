@@ -12,14 +12,6 @@
 // not hooked
 //___________________
 
-// Welcome Message that every player receives who joined our game
-combatWelcomeMessage = {"Welcome to this Server",
-                        "It's running a special Combat Mod",
-                        "Score = XP and Resources = FreeLvl to use",
-                        "For more informations type co_help in the chat or console"
-                        }
-						
-kUpgradeNotifyInterval = 10
 
 function GetIsPrimaryWeapon(kMapName)
     local isPrimary = false
@@ -394,6 +386,9 @@ function Player:CheckCombatData()
 		self:AddLvlFree(1)
 		self.combatTable.lastNotify = 0
 		
+		// getAvgXP is called before giving the score, so this needs to be implemented here
+		self.score = 0
+		
 		self.combatTable.techtree = {}
 	end
 	
@@ -431,6 +426,7 @@ function Player:AddXp(amount)
     if (self:GetXp() + amount) <= maxXp then
 
         // show the cool effect, no direct Message is needed anymore
+
         self:XpEffect(amount)
 		self:CheckLvlUp(self.score) 
 

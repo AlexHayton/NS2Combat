@@ -29,7 +29,9 @@ maxXp = XpList[maxLvl]["XP"]
 
 // how much % from the xp are the m8 nearby getting and the range
 mateXpAmount = 0.4
-mateXpRange = 35
+
+// range 35 was to big
+mateXpRange = 15
 
 // XP-Values
 // Scores for various creatures and structures.
@@ -88,13 +90,3 @@ UpsList.Alien ["regen"] = {UpgradeName = kTechId.Regeneration,	UpgradeTechId = k
 UpsList.Alien ["silence"] = {UpgradeName = kTechId.Silence, 	UpgradeTechId = kTechId.Silence, 			Requires = nil, Levels = 1, Type = "tech"}
 UpsList.Alien ["camo"] = {UpgradeName = kTechId.Camouflage,	 	UpgradeTechId = kTechId.Camouflage,			Requires = nil, Levels = 1, Type = "tech"}
 UpsList.Alien ["cele"] = {UpgradeName = kTechId.Celerity, 		UpgradeTechId = kTechId.Celerity, 			Requires = nil, Levels = 1, Type = "tech"}
-
-// Change the GestateTime so every new Class takes the same time
-kSkulkGestateTime = 3
-kGorgeGestateTime = 3
-kLerkGestateTime = 3
-kFadeGestateTime = 3
-kOnosGestateTime = 3
-
-// No eggs
-kAlienEggsPerHive = 0
