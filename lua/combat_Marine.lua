@@ -27,9 +27,11 @@ end
 // Hooks Marine
 //___________________
 
-// Dont' drop Weapons after getting killed
+// Dont' drop Weapons after getting killed, but destroy them!
 function CombatMarine:MarineOnKill_Hook(self, damage, attacker, doer, point, direction)
 
+    self:DestroyWeapons()
+    
     Player.OnKill(self, damage, attacker, doer, point, direction)
     self:PlaySound(Marine.kDieSoundName)
     
@@ -37,6 +39,8 @@ function CombatMarine:MarineOnKill_Hook(self, damage, attacker, doer, point, dir
     if player ~= self then
         self:GetTeam():TriggerAlert(kTechId.MarineAlertSoldierLost, self)
     end
+    
+    self:SetFlashlightOn(false)
     
     // Remember our squad and position on death so we can beam back to them
     self.lastSquad = self:GetSquad()
