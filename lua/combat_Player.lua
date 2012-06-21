@@ -30,8 +30,17 @@ end
 // Implement lvl and XP
 function CombatPlayer:Reset_Hook(self)
   
-	// Initialise the Combat Data.
-	self:CheckCombatData()
+	// don't initialise the Combat Data !!! we need to reset it
+        self.combatTable = {}  
+		self.combatTable.lvl = 1
+		self:ClearLvlFree()
+		self:AddLvlFree(1)
+		self.combatTable.lastNotify = 0
+		
+		// getAvgXP is called before giving the score, so this needs to be implemented here
+		self.score = 0
+		
+		self.combatTable.techtree = {}
     
 end
 
@@ -39,7 +48,7 @@ end
 function CombatPlayer:CopyPlayerDataFrom_Hook(self, player)    
 
 	self.combatTable = player.combatTable
-	
+
 	// Give the ups back, but just when respawing
 	if player and player.isRespawning then
 		  self:GiveUpsBack()
