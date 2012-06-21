@@ -284,15 +284,34 @@ function Player:CoEvolve(techId)
 
         newPlayer:DropToFloor()
 
-        // SetGestationData needs a table, so give him one
-        local techIds = {}
-        table.insert(techIds, techId)
-        newPlayer:SetGestationData(techIds, self:GetTechId(), healthScalar, armorScalar)
+
+        newPlayer:SetGestationData(self:GetTechIds(techId), self:GetTechId(), healthScalar, armorScalar)
 
         success = true
     end
     
     return success
+end
+
+
+// get all TechIds the player currently got (when you got carapace and then go gorge you would lose it without this function)
+function Player:GetTechIds(techId)
+
+    local techIds = {}
+    if techId then
+        table.insert(techIds, techId)
+    end
+    
+    if self.combatTable.techtree then    // only used by aliens, so only Aliens Uplist
+        for i, entry in ipairs(self.combatTable.techtree) do
+            if entry then
+                table.insert(techIds, UpsList.Alien[entry]["UpgradeTechId"])
+            end
+        end
+    end
+    
+    return techIds
+    
 end
 
 
