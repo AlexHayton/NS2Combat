@@ -28,6 +28,9 @@ kOnosGestateTime = 3
 // No eggs
 kAlienEggsPerHive = 0
 
+// Ammo for mines
+kNumMines = 1
+
 // Override the costs of each of our entries.
 // These won't take effect on the client side until we import this file into the client side mods
 kShotgunCost = 0
