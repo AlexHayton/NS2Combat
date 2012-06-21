@@ -66,6 +66,7 @@ function Player:CoCheckUpgrade_Marine(upgrade, respawning)
         local neededOtherUp = UpsList.Marine[upgrade]["Requires"]
         local kMapName = UpsList.Marine[upgrade]["UpgradeName"]
 		local techId = UpsList.Marine[upgrade]["UpgradeTechId"]
+		local techName = UpsList.Marine[upgrade]["UpgradeText"]
         doUpgrade = true
 
         // do i have the Up already?
@@ -126,6 +127,9 @@ function Player:CoCheckUpgrade_Marine(upgrade, respawning)
 				table.insert(self.combatTable.techtree, upgrade)
 				// subtract the needed lvl
 				self:SubtractLvlFree(neededLvl)
+				
+				local pointText = (neededLvl > 1) and "points" or "point"
+				self:SendDirectMessage(techName .. " purchased for " .. neededLvl .. " upgrade " .. pointText)
 			end
 		  
 		else
@@ -138,7 +142,7 @@ function Player:CoCheckUpgrade_Marine(upgrade, respawning)
             else
                 self:spendlvlHints("already_owned", upgrade)
             end
-		end        
+		end    
     end
 end
 
@@ -157,6 +161,7 @@ function Player:CoCheckUpgrade_Alien(upgrade, respawning, position)
         local neededOtherUp = UpsList.Alien[upgrade]["Requires"]
         local kMapName = UpsList.Alien[upgrade]["UpgradeName"]
 		local techId = UpsList.Alien[upgrade]["UpgradeTechId"]
+		local techName = UpsList.Alien[upgrade]["UpgradeText"]
         doUpgrade = true
         // this is needed if there is no room for an egg
         upgradeOK = true
@@ -213,6 +218,7 @@ function Player:CoCheckUpgrade_Alien(upgrade, respawning, position)
 					table.insert(self.combatTable.techtree, upgrade)
 					// subtrate the needed lvl
 					self:SubtractLvlFree(neededLvl)
+					self:SendDirectMessage(techName .. " purchased for " .. neededLvl .. " upgrade " .. pointText)
 				else
 					self:spendlvlHints("no_room", upgrade) 
 				end  

@@ -51,42 +51,42 @@ UpsList = {}
 UpsList.Marine = {}
 // Table:        Type,   kMapName,  needs Up, need Lvl, Weapon or other
 //Weapons
-UpsList.Marine["mines"] = {UpgradeName = Mine.kMapName, 		UpgradeTechId = kTechId.Mine, 				Requires = nil, Levels = 1, Type = "weapon"}
-UpsList.Marine["welder"] = {UpgradeName = Welder.kMapName, 		UpgradeTechId = kTechId.Welder,			 	Requires = nil, Levels = 1, Type = "weapon"}
-UpsList.Marine["sg"] = {UpgradeName = Shotgun.kMapName,			UpgradeTechId = kTechId.ShotgunTech, 		Requires = "dmg1", Levels = 1, Type = "weapon"}
-UpsList.Marine["flame"] = {UpgradeName = Flamethrower.kMapName, UpgradeTechId = kTechId.Flamethrower, 		Requires = "sg", Levels = 1, Type = "weapon"}
-UpsList.Marine["gl"] = {UpgradeName = GrenadeLauncher.kMapName, UpgradeTechId = kTechId.GrenadeLauncher, 	Requires = "sg", Levels = 1, Type = "weapon"}
+UpsList.Marine["mines"] = {UpgradeText = "Mines", 				UpgradeName = Mine.kMapName, 			UpgradeTechId = kTechId.Mine, 				Requires = nil, Levels = 1, Type = "weapon"}
+UpsList.Marine["welder"] = {UpgradeText = "Welder", 			UpgradeName = Welder.kMapName, 			UpgradeTechId = kTechId.Welder,			 	Requires = nil, Levels = 1, Type = "weapon"}
+UpsList.Marine["sg"] = {UpgradeText = "Shotgun", 				UpgradeName = Shotgun.kMapName,			UpgradeTechId = kTechId.ShotgunTech, 		Requires = "dmg1", Levels = 1, Type = "weapon"}
+UpsList.Marine["flame"] = {UpgradeText = "Flamethrower", 		UpgradeName = Flamethrower.kMapName, 	UpgradeTechId = kTechId.Flamethrower, 		Requires = "sg", Levels = 1, Type = "weapon"}
+UpsList.Marine["gl"] = {UpgradeText = "Grenade Launcher", 		UpgradeName = GrenadeLauncher.kMapName, UpgradeTechId = kTechId.GrenadeLauncher, 	Requires = "sg", Levels = 1, Type = "weapon"}
 // Tech
-UpsList.Marine["dmg1"] = {UpgradeName = kTechId.Weapons1, 		UpgradeTechId = kTechId.Weapons1,			Requires = nil, Levels = 1, Type = "tech"}
-UpsList.Marine["dmg2"] = {UpgradeName = kTechId.Weapons2, 		UpgradeTechId = kTechId.Weapons2,			Requires = "dmg1", Levels = 1, Type = "tech"}
-UpsList.Marine["dmg3"] = {UpgradeName = kTechId.Weapons3, 		UpgradeTechId = kTechId.Weapons3, 			Requires = "dmg2", Levels = 1, Type = "tech"}
-UpsList.Marine["arm1"] = {UpgradeName = kTechId.Armor1, 		UpgradeTechId = kTechId.Armor1, 			Requires = nil, Levels = 1, Type = "tech"}
-UpsList.Marine["arm2"] = {UpgradeName = kTechId.Armor2, 		UpgradeTechId = kTechId.Armor2, 			Requires = "arm1", Levels = 1, Type = "tech"}
-UpsList.Marine["arm3"] = {UpgradeName = kTechId.Armor3, 		UpgradeTechId = kTechId.Armor3,				Requires = "arm2", Levels = 1, Type = "tech"}
+UpsList.Marine["dmg1"] = {UpgradeText = "Damage 1", 			UpgradeName = kTechId.Weapons1, 		UpgradeTechId = kTechId.Weapons1,			Requires = nil, Levels = 1, Type = "tech"}
+UpsList.Marine["dmg2"] = {UpgradeText = "Damage 2", 			UpgradeName = kTechId.Weapons2, 		UpgradeTechId = kTechId.Weapons2,			Requires = "dmg1", Levels = 1, Type = "tech"}
+UpsList.Marine["dmg3"] = {UpgradeText = "Damage 3", 			UpgradeName = kTechId.Weapons3, 		UpgradeTechId = kTechId.Weapons3, 			Requires = "dmg2", Levels = 1, Type = "tech"}
+UpsList.Marine["arm1"] = {UpgradeText = "Armor 1", 				UpgradeName = kTechId.Armor1, 			UpgradeTechId = kTechId.Armor1, 			Requires = nil, Levels = 1, Type = "tech"}
+UpsList.Marine["arm2"] = {UpgradeText = "Armor 2", 				UpgradeName = kTechId.Armor2, 			UpgradeTechId = kTechId.Armor2, 			Requires = "arm1", Levels = 1, Type = "tech"}
+UpsList.Marine["arm3"] = {UpgradeText = "Armor 3", 				UpgradeName = kTechId.Armor3, 			UpgradeTechId = kTechId.Armor3,				Requires = "arm2", Levels = 1, Type = "tech"}
 
 // These will need some new kTechIds...
-UpsList.Marine["motion"] = {UpgradeName = nil, nil, nil, "tech"}
-UpsList.Marine["scanner"] = {UpgradeName = nil, nil, nil, "tech"}
-UpsList.Marine["cat"] = {UpgradeName = nil, nil, nil, "tech"}
-UpsList.Marine["resup"] = {UpgradeName = nil, nil, nil, "tech"}
+UpsList.Marine["motion"] = {UpgradeText = "Motion Detector", 	UpgradeName = nil, nil, nil, "tech"}
+UpsList.Marine["scanner"] = {UpgradeText = "Scanner", 			UpgradeName = nil, nil, nil, "tech"}
+UpsList.Marine["cat"] = {UpgradeText = "Catalyst Packs", 		UpgradeName = nil, nil, nil, "tech"}
+UpsList.Marine["resup"] = {UpgradeText = "Resupply", 			UpgradeName = nil, nil, nil, "tech"}
 
 // Suits for marines
-UpsList.Marine["jp"] = {UpgradeName = JetpackMarine.kMapName, 	UpgradeTechId = kTechId.Jetpack, 			Requires = "arm2", Levels = 2, Type = "class"}
+UpsList.Marine["jp"] = {UpgradeText = "Jetpack", 				UpgradeName = JetpackMarine.kMapName, 	UpgradeTechId = kTechId.Jetpack, 			Requires = "arm2", Levels = 2, Type = "class"}
 // if the exo is rdy
 //UpsList.Marine["exo"] = {JetpackMarine.kMapName, "arm2", 2, "class"} 
 
 UpsList.Alien = {}
 // Table:        Type,   kMapName,  needs Up, need Lvl, Weapon or other
 // Class
-UpsList.Alien ["gorge"] = {UpgradeName = kTechId.Gorge, 		UpgradeTechId = kTechId.Gorge, 				Requires = nil, Levels = 1, Type = "class"}
-UpsList.Alien ["lerk"] = {UpgradeName = kTechId.Lerk, 			UpgradeTechId = kTechId.Lerk, 				Requires = "gorge", Levels = 1, Type = "class"}
-UpsList.Alien ["fade"] = {UpgradeName = kTechId.Fade, 			UpgradeTechId = kTechId.Fade, 				Requires = "gorge", Levels = 2, Type = "class"}
-UpsList.Alien ["onos"] = {UpgradeName = kTechId.Onos, 			UpgradeTechId = kTechId.Onos, 				Requires = "fade", Levels = 2, Type = "class"}
+UpsList.Alien ["gorge"] = {UpgradeText = "Gorge", 				UpgradeName = kTechId.Gorge, 			UpgradeTechId = kTechId.Gorge, 				Requires = nil, Levels = 1, Type = "class"}
+UpsList.Alien ["lerk"] = {UpgradeText = "Lerk", 				UpgradeName = kTechId.Lerk, 			UpgradeTechId = kTechId.Lerk, 				Requires = "gorge", Levels = 1, Type = "class"}
+UpsList.Alien ["fade"] = {UpgradeText = "Fade", 				UpgradeName = kTechId.Fade, 			UpgradeTechId = kTechId.Fade, 				Requires = "gorge", Levels = 2, Type = "class"}
+UpsList.Alien ["onos"] = {UpgradeText = "Onos", 				UpgradeName = kTechId.Onos, 			UpgradeTechId = kTechId.Onos, 				Requires = "fade", Levels = 2, Type = "class"}
 // Tech
-UpsList.Alien ["tier2"] = {UpgradeName = kTechId.Augmentation, 	UpgradeTechId = kTechId.Augmentation, 		Requires = nil, Levels = 1, Type = "tech"}
-UpsList.Alien ["tier3"] = {UpgradeName = kTechId.AlienArmor3,	UpgradeTechId = kTechId.AlienArmor3, 		Requires = "tier2", Levels = 1, Type = "tech"}
-UpsList.Alien ["carapace"] = {UpgradeName = kTechId.Carapace, 	UpgradeTechId = kTechId.Carapace, 			Requires = nil, Levels = 1, Type = "tech"}
-UpsList.Alien ["regen"] = {UpgradeName = kTechId.Regeneration,	UpgradeTechId = kTechId.Regeneration, 		Requires = nil, Levels = 1, Type = "tech"}
-UpsList.Alien ["silence"] = {UpgradeName = kTechId.Silence, 	UpgradeTechId = kTechId.Silence, 			Requires = nil, Levels = 1, Type = "tech"}
-UpsList.Alien ["camo"] = {UpgradeName = kTechId.Camouflage,	 	UpgradeTechId = kTechId.Camouflage,			Requires = nil, Levels = 1, Type = "tech"}
-UpsList.Alien ["cele"] = {UpgradeName = kTechId.Celerity, 		UpgradeTechId = kTechId.Celerity, 			Requires = nil, Levels = 1, Type = "tech"}
+UpsList.Alien ["tier2"] = {UpgradeText = "Tier 2", 				UpgradeName = kTechId.Augmentation,		UpgradeTechId = kTechId.Augmentation, 		Requires = nil, Levels = 1, Type = "tech"}
+UpsList.Alien ["tier3"] = {UpgradeText = "Tier 3", 				UpgradeName = kTechId.AlienArmor3,		UpgradeTechId = kTechId.AlienArmor3, 		Requires = "tier2", Levels = 1, Type = "tech"}
+UpsList.Alien ["carapace"] = {UpgradeText = "Carapace", 		UpgradeName = kTechId.Carapace, 		UpgradeTechId = kTechId.Carapace, 			Requires = nil, Levels = 1, Type = "tech"}
+UpsList.Alien ["regen"] = {UpgradeText = "Regeneration", 		UpgradeName = kTechId.Regeneration,		UpgradeTechId = kTechId.Regeneration, 		Requires = nil, Levels = 1, Type = "tech"}
+UpsList.Alien ["silence"] = {UpgradeText = "Silence", 			UpgradeName = kTechId.Silence, 			UpgradeTechId = kTechId.Silence, 			Requires = nil, Levels = 1, Type = "tech"}
+UpsList.Alien ["camo"] = {UpgradeText = "Camoflage", 			UpgradeName = kTechId.Camouflage, 		UpgradeTechId = kTechId.Camouflage,			Requires = nil, Levels = 1, Type = "tech"}
+UpsList.Alien ["cele"] = {UpgradeText = "Celerity", 			UpgradeName = kTechId.Celerity, 		UpgradeTechId = kTechId.Celerity, 			Requires = nil, Levels = 1, Type = "tech"}
