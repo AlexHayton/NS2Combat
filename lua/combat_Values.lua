@@ -5,7 +5,7 @@
 //	
 //________________________________
 
-// combat_Player_normal.lua
+// combat_Values.lua
 
 // Experience based values like avgXpAmount is still in ExperienceData
 
@@ -27,3 +27,35 @@ kOnosGestateTime = 3
 
 // No eggs
 kAlienEggsPerHive = 0
+
+// Override the costs of each of our entries.
+// These won't take effect on the client side until we import this file into the client side mods
+kShotgunCost = 0
+kMinesCost = 0
+kGrenadeLauncherCost = 0
+kFlamethrowerCost = 0
+kJetpackCost = 0
+kExosuitCost = 0
+kMinigunCost = 0
+kDualMinigunCost = 0
+
+kGorgeCost = 0
+kLerkCost = 0
+kFadeCost = 0
+kOnosCost = 0
+kCarapaceCost = 0
+kRegenerationCost = 0
+kAuraCost = 0
+kSilenceCost = 0
+kHydraAbilityCost = 0
+kPiercingCost = 0
+kAdrenalineCost = 0
+kFeintCost = 0
+kSapCost = 0
+kBoneShieldCost = 0
+kCelerityCost = 0
+kHyperMutationCost = 0
+
+// Health values
+// Give the armory more health
+kArmoryHealth = 2500
