@@ -45,6 +45,14 @@ function CombatTeam:PutPlayerInRespawnQueue_Hook(self, player, time)
         else
             local newPlayer = player:GetTeam():ReplaceRespawnPlayer(player, nil, nil)        
         end
+		
+		// Make a nice effect when you spawn.
+		if newPlayer:isa("Marine") then
+			newPlayer:TriggerEffects("infantry_portal_spawn")
+		elseif newPlayer:isa("Alien") then
+			newPlayer:TriggerEffects("egg_death")
+		end
+		
         return success
 end
 
