@@ -25,35 +25,53 @@ end
 // ToDo: Dont spawn directly, spawn after a short period of time
 // AH: Implement some kind of spawn queue and timer here...
 function CombatTeam:PutPlayerInRespawnQueue_Hook(self, player, time)
-//Spawn, even if there is no IP
+    //Spawn, even if there is no IP
+
+    local success = false
     player:GetTeam():RemovePlayerFromRespawnQueue(player)
-        player.isRespawning = true
-      SendPlayersMessage({ player }, kTeamMessageTypes.Spawning)
+    player.isRespawning = true
+    SendPlayersMessage({ player }, kTeamMessageTypes.Spawning)
 
-           if Server then
-                
-                if player.SetSpectatorMode then
-                    player:SetSpectatorMode(Spectator.kSpectatorMode.Following)
+    if Server then
+        
+        if player.SetSpectatorMode then
+            player:SetSpectatorMode(Spectator.kSpectatorMode.Following)
+        end        
+ 
+    end
 
-                end         
-                
+    if player.combatTable and player.combatTable.giveClassAfterRespawn then
+        success, newPlayer  = player:GetTeam():ReplaceRespawnPlayer(player, nil, nil, player.combatTable.giveClassAfterRespawn)
+    else
+                    // let Aliens spawn in an Egg (that they get theire ups back
+        if player:GetTeamNumber() == kAlienTeamType then            
 
-            end
-
-        if player.combatTable and player.combatTable.giveClassAfterRespawn then
-            local newPlayer = player:GetTeam():ReplaceRespawnPlayer(player, nil, nil, player.combatTable.giveClassAfterRespawn)
+            success, newPlayer = player:GetTeam():ReplaceRespawnPlayer(player, nil, nil)
+            if success then
+                newPlayer:DropToFloor()
+                newPlayer:CoEvolve()
+            end 
+            
         else
-            local newPlayer = player:GetTeam():ReplaceRespawnPlayer(player, nil, nil)        
+            // if it's a Marine, spawn him normally
+            success, newPlayer = player:GetTeam():ReplaceRespawnPlayer(player, nil, nil)        
         end
-		
-		// Make a nice effect when you spawn.
-		if newPlayer:isa("Marine") then
-			newPlayer:TriggerEffects("infantry_portal_spawn")
-		elseif newPlayer:isa("Alien") then
-			newPlayer:TriggerEffects("egg_death")
-		end
-		
-        return success
+    end
+    
+    if not success then
+        // if it failes, move him back to the queue
+        player:GetTeam():PutPlayerInRespawnQueue(player, time)           
+    else 
+    
+        // Make a nice effect when you spawn.
+        if newPlayer:isa("Marine") then
+            newPlayer:TriggerEffects("infantry_portal_spawn")
+        // Aliens hatch due the CoEvolve function
+        end
+    end
+
+    return success
+    
 end
 
 if(HotReload) then

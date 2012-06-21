@@ -33,31 +33,35 @@ kNumMines = 1
 
 // Override the costs of each of our entries.
 // These won't take effect on the client side until we import this file into the client side mods
-kShotgunCost = 0
-kMinesCost = 0
-kGrenadeLauncherCost = 0
-kFlamethrowerCost = 0
-kJetpackCost = 0
-kExosuitCost = 0
-kMinigunCost = 0
-kDualMinigunCost = 0
 
-kGorgeCost = 0
-kLerkCost = 0
-kFadeCost = 0
-kOnosCost = 0
-kCarapaceCost = 0
-kRegenerationCost = 0
-kAuraCost = 0
-kSilenceCost = 0
-kHydraAbilityCost = 0
-kPiercingCost = 0
-kAdrenalineCost = 0
-kFeintCost = 0
-kSapCost = 0
-kBoneShieldCost = 0
-kCelerityCost = 0
-kHyperMutationCost = 0
+// at the moment, nobody should buy something, it needs to be implemented before
+local generalCost = 99
+
+kShotgunCost = generalCost
+kMinesCost = generalCost
+kGrenadeLauncherCost = generalCost
+kFlamethrowerCost = generalCost
+kJetpackCost = generalCost
+kExosuitCost = generalCost
+kMinigunCost = generalCost
+kDualMinigunCost = generalCost
+
+kGorgeCost = generalCost
+kLerkCost = generalCost
+kFadeCost = generalCost
+kOnosCost = generalCost
+kCarapaceCost = generalCost
+kRegenerationCost = generalCost
+kAuraCost = generalCost
+kSilenceCost = generalCost
+kHydraAbilityCost = generalCost
+kPiercingCost = generalCost
+kAdrenalineCost = generalCost
+kFeintCost = generalCost
+kSapCost = generalCost
+kBoneShieldCost = generalCost
+kCelerityCost = generalCost
+kHyperMutationCost = generalCost
 
 // Health values
 // Give the armory more health

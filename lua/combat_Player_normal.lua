@@ -188,10 +188,12 @@ function Player:CoCheckUpgrade_Alien(upgrade, respawning, position)
 				if self:GetIsAlive() then
 					if respawning then
 						// no evolving when respawning
-						success = self:GetTechTree():GiveUpgrade(kMapName)
 						self:ExecuteTechUpgrade(techId)
+						success = self:GetTechTree():GiveUpgrade(kMapName)
+						success = self:GiveUpgrade(kMapName)
+						
 					else    
-						upgradeOK = self:CoEvolve(kMapName)
+						upgradeOK, newPlayer = self:CoEvolve(kMapName)
 						if upgradeOK then
 							//success = self:GetTechTree():GiveUpgrade(kMapName)
 						end
@@ -207,7 +209,7 @@ function Player:CoCheckUpgrade_Alien(upgrade, respawning, position)
 					else
 						//self:Replace(kMapName, self:GetTeamNumber(), false)  
 						// its not needed to ExecuteTechUpgrade when its a class
-						upgradeOK = self:CoEvolve(kMapName)            
+						upgradeOK, newPlayer = self:CoEvolve(kMapName)            
 					end
 				end
 			end
@@ -217,7 +219,8 @@ function Player:CoCheckUpgrade_Alien(upgrade, respawning, position)
 					// insert the up to the personal techtree
 					table.insert(self.combatTable.techtree, upgrade)
 					// subtrate the needed lvl
-					self:SubtractLvlFree(neededLvl)
+					newPlayer:SubtractLvlFree(neededLvl)					     
+					local pointText = (neededLvl > 1) and "points" or "point"
 					self:SendDirectMessage(techName .. " purchased for " .. neededLvl .. " upgrade " .. pointText)
 				else
 					self:spendlvlHints("no_room", upgrade) 
@@ -240,6 +243,10 @@ end
 
 // adaptet from function Alien:ProcessBuyAction(techIds)
 function Player:CoEvolve(techId)
+
+    if not techId then
+        techId = kTechId.Skulk
+    end
     
     local success = false
     local healthScalar = 1
@@ -268,7 +275,7 @@ function Player:CoEvolve(techId)
 		GetHasRoomForCapsule(eggExtents, position + Vector(0, eggExtents.y + Embryo.kEvolveSpawnOffset, 0), CollisionRep.Default, physicsMask, self) and
 		GetHasRoomForCapsule(newAlienExtents, position + Vector(0, newAlienExtents.y + Embryo.kEvolveSpawnOffset, 0), CollisionRep.Default, physicsMask, self) then
       
-        local newPlayer = self:Replace(Embryo.kMapName)
+        newPlayer = self:Replace(Embryo.kMapName)
         position.y = position.y + Embryo.kEvolveSpawnOffset
         newPlayer:SetOrigin(position)
 
@@ -284,13 +291,12 @@ function Player:CoEvolve(techId)
 
         newPlayer:DropToFloor()
 
-
         newPlayer:SetGestationData(self:GetTechIds(techId), self:GetTechId(), healthScalar, armorScalar)
 
         success = true
     end
     
-    return success
+    return success, newPlayer
 end
 
 
@@ -372,7 +378,7 @@ function Player:AddLvlFree(amount)
 
 end
 
-function Player:SubtractLvlFree()
+function Player:SubtractLvlFree(amount)
 
 	if amount == nil then
 		amount = 1
@@ -503,8 +509,8 @@ function Player:CheckLvlUp(xp)
 	if self:GetLvl() > self.combatTable.lvl then
 		//Lvl UP
 		// make sure that we get every lvl we've earned
-		local numberLevels = self:GetLvl() - self.combatTable.lvl
-		self.resources = self.resources + numberLevels
+	    local numberLevels = self:GetLvl() - self.combatTable.lvl
+        self.resources = self.resources + numberLevels
 		self.combatTable.lvl = self:GetLvl()
 		
 		local LvlName = Experience_GetLvlName(self:GetLvl(), self:GetTeamNumber())
