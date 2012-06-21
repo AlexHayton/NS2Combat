@@ -51,7 +51,7 @@ UpsList = {}
 UpsList.Marine = {}
 // Table:        Type,   kMapName,  needs Up, need Lvl, Weapon or other
 //Weapons
-UpsList.Marine["mines"] = {UpgradeText = "Mines", 				UpgradeName = Mine.kMapName, 			UpgradeTechId = kTechId.Mine, 				Requires = nil, Levels = 1, Type = "weapon"}
+UpsList.Marine["mines"] = {UpgradeText = "Mines", 				UpgradeName = LayMines.kMapName, 		UpgradeTechId = kTechId.LayMines, 				Requires = nil, Levels = 1, Type = "weapon"}
 UpsList.Marine["welder"] = {UpgradeText = "Welder", 			UpgradeName = Welder.kMapName, 			UpgradeTechId = kTechId.Welder,			 	Requires = nil, Levels = 1, Type = "weapon"}
 UpsList.Marine["sg"] = {UpgradeText = "Shotgun", 				UpgradeName = Shotgun.kMapName,			UpgradeTechId = kTechId.ShotgunTech, 		Requires = "dmg1", Levels = 1, Type = "weapon"}
 UpsList.Marine["flame"] = {UpgradeText = "Flamethrower", 		UpgradeName = Flamethrower.kMapName, 	UpgradeTechId = kTechId.Flamethrower, 		Requires = "sg", Levels = 1, Type = "weapon"}
