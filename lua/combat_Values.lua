@@ -18,6 +18,10 @@ combatWelcomeMessage = {"Welcome to this Server",
 						
 kUpgradeNotifyInterval = 10
 
+// Set the respawn timer
+kCombatRespawnTimer = 10
+kAlienWaveSpawnInterval = 10
+
 // Change the GestateTime so every new Class takes the same time
 kSkulkGestateTime = 3
 kGorgeGestateTime = 3
