@@ -25,7 +25,8 @@ end
 function CombatTeamMessenger:SendTeamMessage_Hook(hookHandle, team, messageType, optionalData)
 
 	// Only intercept NoCommander messages, for now.
-    if (messageType == kTeamMessageTypes.NoCommander) then
+    if (messageType == kTeamMessageTypes.NoCommander) or
+       (messageType == kTeamMessageTypes.CannotSpawn) then
 		return team, nil, optionalData
 	end
 	
