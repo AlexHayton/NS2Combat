@@ -67,3 +67,40 @@ function Experience_GetLvl(xp)
 
 	return returnlevel
 end
+
+function Experience_GetAllUps(team)
+	
+	local upgradeList = {}
+	local className = ""
+	
+	if team == "Marine" then
+		className = "CombatMarineUpgrade"
+	else
+		className = "CombatAlienUpgrade"
+	end
+	
+	// Extract all the upgrades for this kind of team (Alien vs. Marine).
+	for index, upgrade in pairs(UpsList) do
+		if upgrade:isa(className) then
+			table.insert(upgradeList, upgrade)
+		end
+	end
+	
+	return upgradeList
+	
+end
+
+function Experience_GetUpsOfType(upgradeList, upgradeType)
+
+	local typeList = {}
+
+	// Extract all the upgrades of this type.
+	for index, upgrade in pairs(UpsList) do
+		if upgrade:GetType() == upgradeType then
+			table.insert(typeList, upgrade)
+		end
+	end
+	
+	return typeList
+
+end
