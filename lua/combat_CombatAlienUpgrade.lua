@@ -9,9 +9,9 @@
 
 class 'CombatAlienUpgrade' (CombatUpgrade)
 
-function CombatAlienUpgrade:Initialize(upgradeName, upgradeFunc, requiresUpgrade, levels, upgradeType)
+function CombatAlienUpgrade:Initialize(upgradeId, upgradeTextCode, upgradeDescription, upgradeTechId, upgradeFunc, requirements, levels, upgradeType)
 
-	CombatUpgrade.Initialize(self, "Alien" upgradeName, upgradeFunc, requiresUpgrade, levels, upgradeType)
+	CombatUpgrade.Initialize(self, "Alien", upgradeId, upgradeTextCode, upgradeDescription, upgradeTechId, upgradeFunc, requirements, levels, upgradeType)
 
 end
 
@@ -25,10 +25,10 @@ function CombatAlienUpgrade:DoUpgrade(player)
 		local customFunc = self:GetCustomFunc()
 		customFunc(player, self)
 	else
-		CombatUpgrade.ExecuteTechUpgrade(player, self)
+		self:ExecuteTechUpgrade(player)
 	end
 	
-	if (self:GetUpgradeType() == kCombatUpgradeTypes.Class) then
+	if (self:GetType() == kCombatUpgradeTypes.Class) then
 		// Some special stuff for classes.
 		if not player.isRespawning then
 			player:EvolveTo(techId)

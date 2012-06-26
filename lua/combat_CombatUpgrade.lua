@@ -22,10 +22,11 @@ kCombatUpgradeTypes = enum({'Tech', 'Class', 'Weapon'})
 							
 class 'CombatUpgrade'
 
-function CombatUpgrade:Initialize(team, upgradeId, upgradeDescription, upgradeTechId, upgradeFunc, requirements, levels, upgradeType)
+function CombatUpgrade:Initialize(team, upgradeId, upgradeTextCode, upgradeDescription, upgradeTechId, upgradeFunc, requirements, levels, upgradeType)
 
 	self.team = team
     self.id = upgradeId
+	self.textCode = upgradeTextCode
 	self.description = upgradeDescription
 	self.techId = upgradeTechId
     self.upgradeType = upgradeType
@@ -48,6 +49,10 @@ end
 
 function CombatUpgrade:SetIsApplied(applied)
 	self.applied = applied
+end
+
+function CombatUpgrade:GetTextCode()
+	return self.textCode
 end
 
 function CombatUpgrade:GetDescription()
@@ -78,10 +83,14 @@ function CombatUpgrade:GetCustomFunc()
 	return self.upgradeFunc
 end
 
-function CombatUpgrade:ExecuteTechUpgrade(player, techUpgrade)
+function CombatUpgrade:GetType()
+	return self.upgradeType
+end
+
+function CombatUpgrade:ExecuteTechUpgrade(player)
 
 	local techTree = player:GetTechTree()
-	local techId = techUpgrade:GetTechId()
+	local techId = self:GetTechId()
 	local node = techTree:GetTechNode(techId)
 	if node == nil then
     
@@ -98,9 +107,9 @@ function CombatUpgrade:ExecuteTechUpgrade(player, techUpgrade)
 
 end
 
-function CombatUpgrade:GiveItem(player, techUpgrade)
+function CombatUpgrade:GiveItem(player)
 
-	local kMapName = LookupTechData(techUpgrade:GetTechId(), kTechDataMapName)
+	local kMapName = LookupTechData(self:GetTechId(), kTechDataMapName)
 	player:GiveItem(kMapName)
 
 end

@@ -68,7 +68,7 @@ function Experience_GetLvl(xp)
 	return returnlevel
 end
 
-function Experience_GetAllUps(team)
+function GetAllUpgrades(team)
 	
 	local upgradeList = {}
 	local className = ""
@@ -90,17 +90,40 @@ function Experience_GetAllUps(team)
 	
 end
 
-function Experience_GetUpsOfType(upgradeList, upgradeType)
+function GetUpgradeFromId(upgradeId)
+
+	// Find the upgrade that matches this Id.
+	for index, upgrade in pairs(UpsList) do
+		if upgrade:GetId() == upgradeId then
+			return upgrade
+		end
+	end
+
+end
+
+function GetUpgradesOfType(upgradeList, upgradeType)
 
 	local typeList = {}
 
 	// Extract all the upgrades of this type.
-	for index, upgrade in pairs(UpsList) do
+	for index, upgrade in pairs(upgradeList) do
 		if upgrade:GetType() == upgradeType then
 			table.insert(typeList, upgrade)
 		end
 	end
 	
 	return typeList
+
+end
+
+function GetUpgradeFromTextCode(textCode)
+
+	for index, upgrade in pairs(UpsList) do
+		if (textCode == upgrade:GetTextCode()) then
+			return upgrade
+		end
+	end
+	
+	return nil
 
 end

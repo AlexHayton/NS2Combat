@@ -26,28 +26,6 @@ function GetIsPrimaryWeapon(kMapName)
     return isPrimary
 end
 
-function Player:ExecuteTechUpgrade(techId)
-
-	local techTree = self:GetTechTree()
-	local node = techTree:GetTechNode(techId)
-	if node == nil then
-    
-        Print("Player:ExecuteTechUpgrade(): Couldn't find tech node %d", techId)
-        return false
-        
-    end
-
-    node:SetResearched(true)
-	node:SetHasTech(true)
-	techTree:SetTechNodeChanged(node)
-	techTree:SetTechChanged()
-	
-	if techId == kTechId.Armor1 or techId == kTechId.Armor2 or techId == kTechId.Armor3 then
-		self:UpdateArmorAmount()
-	end
-
-end
-
 function Player:CoEnableUpgrade(upgrade)
 
 	self:CheckCombatData()    
@@ -55,8 +33,9 @@ function Player:CoEnableUpgrade(upgrade)
 	local noRoom = false
 	local requirements = upgrade:GetRequirements()
 	local techId = upgrade:GetTechId()
+	local neededLvl = upgrade:GetLevels()
 	
-	// do i have the Up already?
+	// Loop over the other items in the player's tech tree.
 	for number, entry in ipairs(self.combatTable.techtree) do
 	
 		// does this up needs other ups??
@@ -67,13 +46,14 @@ function Player:CoEnableUpgrade(upgrade)
 			end
 		end
 	
+		// do i have the Up already?
 		if entry:GetId() == upgrade:GetId() then
 		   alreadyGotUpgrade = true
 		end
 	end
 	
 	// Check whether we have room to evolve
-	if self:isa("Alien") and upgrade:GetType() == then
+	if self:isa("Alien") and upgrade:GetType() == kCombatUpgradeTypes.Class then
 		if not self:HasRoomToEvolve(techId) then
 			noRoom = true
 		end
@@ -81,12 +61,12 @@ function Player:CoEnableUpgrade(upgrade)
 
 	// Sanity checks before we actually go further.
 	if requirements then
-		self:spendlvlHints("neededOtherUp", requirements:GetText())
+		self:spendlvlHints("neededOtherUp", GetUpgradeFromId(requirements):GetTextCode())
 	elseif alreadyGotUpgrade then
-	    self:spendlvlHints("already_owned", upgrade:GetText())
+	    self:spendlvlHints("already_owned", upgrade:GetTextCode())
 	elseif noRoom then
 		self:spendlvlHints("no_room")
-    elseif self:GetFreeLvl() < neededLvl then
+    elseif self:GetLvlFree() < neededLvl then
 		self:spendlvlHints("neededLvl", neededLvl)
 	else
 		// insert the up to the personal techtree
@@ -95,7 +75,7 @@ function Player:CoEnableUpgrade(upgrade)
 		self:SubtractLvlFree(neededLvl)
 		
 		local pointText = (neededLvl > 1) and "points" or "point"
-		self:SendDirectMessage(techName .. " purchased for " .. neededLvl .. " upgrade " .. pointText)
+		self:SendDirectMessage(upgrade:GetDescription() .. " purchased for " .. neededLvl .. " upgrade " .. pointText)
 		
 		// Apply all missing upgrades.
 		if not self.respawning then
@@ -105,14 +85,26 @@ function Player:CoEnableUpgrade(upgrade)
 
 end
 
-function Player:ApplyAllUpgrades()
+function Player:ApplyAllUpgrades(upgradeTypes)
 
+	// By default do Classes first, then Weapons, then Tech
+	if not upgradeTypes then 
+		upgradeTypes = { kCombatUpgradeTypes.Class, kCombatUpgradeTypes.Weapon, kCombatUpgradeTypes.Tech }
+	end
+	
 	self:CheckCombatData()
+	local techTree = self:GetCombatTechTree()
 
-	for index, upgrade in ipairs(self.combatTable.techtree) do
-		if not upgrade:GetIsApplied() then
-			upgrade:DoUpgrade(self)
+	for index, upgradeType in ipairs(upgradeTypes) do
+		
+		local upgradesOfType = GetUpgradesOfType(techTree, upgradeType)
+		
+		for index, upgrade in ipairs(upgradesOfType) do
+			//if not upgrade:GetIsApplied() then
+				upgrade:DoUpgrade(self)
+			//end
 		end
+		
 	end
 		
 	// Update the tech tree and send updates to the client
@@ -152,6 +144,8 @@ function Player:HasRoomToEvolve(techId)
 	
 	return success
 	
+end
+	
 function Player:EvolveTo(techId)
 
 	local success = false
@@ -179,18 +173,40 @@ function Player:EvolveTo(techId)
 		// Handle special upgrades.
 		success = self:HandleSpecialUpgrades(newPlayer, techId)
 		newPlayer:SetGestationData({}, self:GetTechId(), healthScalar, armorScalar)
-		newPlayer:ApplyAllUpgrades()
+		
+		// Apply all other upgrades.
+		newPlayer:ApplyAllUpgrades({ kCombatUpgradeTypes.Weapon, kCombatUpgradeTypes.Tech })
 
         success = true
     end
     
     return success, newPlayer
+	
+end
+
+function Player:RefundUpgrades(upgradeTypes)
+	if not upgradeTypes then 
+		upgradeTypes = { kCombatUpgradeTypes.Class }
+	end
+	
+	// Give player back his exp but take the upgrades away
+	for upgradeType in ipairs(upgradeTypes) do
+		local upgrades = GetUpgradesOfType(self.combatTable.techtree, upgradeType)
+		
+		for upgrade in ipairs(upgrades) do
+			self:AddLvlFree(upgrade:GetLevels())
+			table.remove(self.combatTable.techtree, upgrade)
+		end
+	end
 end
      
 // Gimme my Ups back, called from "CopyPlayerData" 
 function Player:GiveUpsBack()
     
-	self:ApplyAllUpgrades()
+	if self:isa("Alien") then
+		self:RefundUpgrades({ kCombatUpgradeTypes.Class })
+	end
+	self:ApplyAllUpgrades({ kCombatUpgradeTypes.Weapon, kCombatUpgradeTypes.Tech })
     self.isRespawning = false
 	
 end

@@ -131,6 +131,12 @@ function Player:ClearLvlFree()
 
 end
 
+function Player:GetCombatTechTree()
+
+	return self.combatTable.techtree
+	
+end
+
 function Player:ClearCombatData()
 
 	// Blow away the old combatTable amd combatTechTree then re-run the check
@@ -262,7 +268,10 @@ function Player:spendlvlHints(hint, type)
 
     if not type then type = "" end
 
-    if hint == "no_type" then
+	if hint == "spectator" then
+        self:SendDirectMessage("You can only apply updates once you've joined a team!")
+		
+    elseif hint == "no_type" then
         self:SendDirectMessage("Usage: co_spendlvl upgrade - All upgrades for your team:")
         // ToDo: make a short break before printing the ups        
         Server.ClientCommand(self, "co_upgrades")

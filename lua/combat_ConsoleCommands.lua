@@ -9,27 +9,25 @@
 
 // combat_ConsoleCommands.lua
 
-function OnCommandSpendLvl(client, type)
+function OnCommandSpendLvl(client, typeCode)
         
     local player = client:GetControllingPlayer() 
-        
-    if type then
-        if player:isa("Marine") then
-        
-            if UpsList.Marine[type] then             
-                player:CoCheckUpgrade_Marine(type)   
-            else
-                player:spendlvlHints("wrong_type_marine", type)
-            end
-            
-        elseif player:isa("Alien") then
-        
-            if UpsList.Alien[type] then             
-                player:CoCheckUpgrade_Alien(type)   
-            else 
-                player:spendlvlHints("wrong_type_alien", type)
-            end
-            
+	if player:isa("Spectator") then
+		player:spendlvlHints("spectator")
+    elseif typeCode then
+		local upgrade = GetUpgradeFromTextCode(typeCode)
+		
+		if upgrade then
+			player:CoEnableUpgrade(upgrade)
+		else
+			local hintType = ""
+			if player:isa("Marine") then
+				hintType = "wrong_type_marine"
+			else
+				hintType = "wrong_type_alien"
+			end
+			
+			player:spendlvlHints(hintType, typeCode)
         end
     else
         player:spendlvlHints("no_type")
@@ -106,21 +104,30 @@ function OnCommandHelp(client)
 
 end
 
-
 function OnCommandUpgrades(client)
 
 	// Shows all available Upgrades
 	local player = client:GetControllingPlayer()
+	local upgradeList = nil
 	
 	if player:isa("Marine") then
-		for upName in pairs(UpsList.Marine) do
-	        player:SendDirectMessage(upName .. " , needs Upgrade " .. (UpsList.Marine[upName]["Requires"] or "no") .. " upgrade first and " .. (UpsList.Marine[upName]["Levels"] or 0) .. " free Lvl" )
-        end
-	elseif player:isa("Alien") then
-        for upName in pairs(UpsList.Alien) do
-	        player:SendDirectMessage(upName .. " , needs Upgrade " .. (UpsList.Alien[upName]["Requires"] or "no") .. " upgrade first and " .. (UpsList.Alien[upName]["Levels"] or 0) .. " free Lvl" )	
-        end
+		upgradeList = GetAllUpgrades("Marine")
+	else
+		upgradeList = GetAllUpgrades("Alien")
 	end
+	
+	for index, upgrade in pairs(upgradeList) do
+		local requirements = upgrade:GetRequirements()
+		local requirementsText = ""
+		
+		if (requirements) then 
+			requirementsText = GetUpgradeFromId(requirements):GetDescription()
+		else
+			requirementsText = "no"
+		end
+		
+	    player:SendDirectMessage(upgrade:GetTextCode() .. " (" .. upgrade:GetDescription() .. ") needs " .. (requirementsText or "no") .. " upgrade first and " .. (upgrade:GetLevels() or 0) .. " free Lvl" )
+    end
 
 end
 

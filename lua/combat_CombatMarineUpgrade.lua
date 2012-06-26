@@ -9,9 +9,9 @@
 
 class 'CombatMarineUpgrade' (CombatUpgrade)
 
-function CombatMarineUpgrade:Initialize(upgradeName, upgradeFunc, requiresUpgrade, levels, upgradeType)
+function CombatMarineUpgrade:Initialize(upgradeId, upgradeTextCode, upgradeDescription, upgradeTechId, upgradeFunc, requirements, levels, upgradeType)
 
-	CombatUpgrade.Initialize(self, "Marine", upgradeName, upgradeFunc, requiresUpgrade, levels, upgradeType)
+	CombatUpgrade.Initialize(self, "Marine", upgradeId, upgradeTextCode, upgradeDescription, upgradeTechId, upgradeFunc, requirements, levels, upgradeType)
 
 end
 
@@ -25,21 +25,21 @@ function CombatMarineUpgrade:DoUpgrade(player)
 		local customFunc = self:GetCustomFunc()
 		customFunc(player, self)
 	else
-		CombatUpgrade.ExecuteTechUpgrade(player, self)
+		self:ExecuteTechUpgrade(player)
 	end
 	
 	// Apply weapons upgrades to a marine.
-	if (self:GetUpgradeType() == kCombatUpgradeTypes.Weapon) then
+	if (self:GetType() == kCombatUpgradeTypes.Weapon) then
 		Player.InitWeapons(player)
 		
 		// if this is a primary weapon, destroy the old one.
 		if GetIsPrimaryWeapon(kMapName) then
-			local weapon = self:GetWeaponInHUDSlot(1)
-			self:RemoveWeapon(weapon)
+			local weapon = player:GetWeaponInHUDSlot(1)
+			player:RemoveWeapon(weapon)
 			DestroyEntity(weapon)
 		end
 		
-		CombatUpgrade.GiveItem(player, self)
+		self:GiveItem(player)
 	end
 	
 end
