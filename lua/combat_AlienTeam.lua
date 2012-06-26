@@ -116,12 +116,13 @@ function CombatAlienTeam:InitTechTree_Hook(self)
     // Global alien upgrades. Make sure the first prerequisite is the main tech required for it, as this is 
     // what is used to display research % in the alien evolve menu.
     // The second prerequisite is needed to determine the buy node unlocked when the upgrade is actually researched.
-    self.techTree:AddBuyNode(kTechId.Carapace, kTechId.CarapaceShell, kTechId.None, kTechId.None)    
-    self.techTree:AddBuyNode(kTechId.Regeneration, kTechId.RegenerationShell, kTechId.None, kTechId.None)
-    self.techTree:AddBuyNode(kTechId.Silence, kTechId.SilenceVeil, kTechId.None, kTechId.None)
-    self.techTree:AddBuyNode(kTechId.Aura, kTechId.AuraVeil, kTechId.None, kTechId.None)
-    self.techTree:AddBuyNode(kTechId.Celerity, kTechId.CeleritySpur, kTechId.None, kTechId.None)    
-    self.techTree:AddBuyNode(kTechId.HyperMutation, kTechId.HyperMutationSpur, kTechId.None, kTechId.None)
+    self.techTree:AddResearchNode(kTechId.Carapace, kTechId.None, kTechId.None, kTechId.None)    
+    self.techTree:AddResearchNode(kTechId.Regeneration, kTechId.None, kTechId.None, kTechId.None)
+    self.techTree:AddResearchNode(kTechId.Silence, kTechId.None, kTechId.None, kTechId.None)
+    self.techTree:AddResearchNode(kTechId.Aura, kTechId.None, kTechId.None, kTechId.None)
+    self.techTree:AddResearchNode(kTechId.Celerity, kTechId.None, kTechId.None, kTechId.None)    
+    self.techTree:AddResearchNode(kTechId.HyperMutation, kTechId.None, kTechId.None, kTechId.None)
+	self.techTree:AddResearchNode(kTechId.Shade, kTechId.None, kTechId.None, kTechId.None)
     
     // Specific alien upgrades
     self.techTree:AddBuildNode(kTechId.Hydra,               kTechId.None,               kTechId.None)

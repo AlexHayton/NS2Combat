@@ -41,8 +41,6 @@ function Player:ExecuteTechUpgrade(techId)
 	node:SetHasTech(true)
 	techTree:SetTechNodeChanged(node)
 	techTree:SetTechChanged()
-	techTree:ComputeAvailability()
-	techTree:SendTechTreeUpdates({ self })
 	
 	if techId == kTechId.Armor1 or techId == kTechId.Armor2 or techId == kTechId.Armor3 then
 		self:UpdateArmorAmount()
@@ -53,7 +51,7 @@ end
 // Do Upgrade, called by console, type and team is checked and is valid
 // ToDo: what happens if I wanna have another weapon -> use last chosen weapon
 // ToDo: do i have everything necessery?
-function Player:CoCheckUpgrade_Marine(upgrade, respawning)
+function Player:CoCheckUpgrade_Marine(upgrade, respawning, position)
     
     local doUpgrade = false
 	self:CheckCombatData()
@@ -143,6 +141,13 @@ function Player:CoCheckUpgrade_Marine(upgrade, respawning)
             end
 		end    
     end
+	
+	// Update the tech tree and send updates to the client
+	if not respawning then
+		self:GetTechTree():ComputeAvailability()
+		self:GetTechTree():SendTechTreeUpdates({self})
+	end
+		
 end
 
 // Special treatment for alien evolutions (eggs etc.)
@@ -186,16 +191,15 @@ function Player:CoCheckUpgrade_Alien(upgrade, respawning, position)
 			if type == "tech" then
 				if self:GetIsAlive() then
 					if respawning then
-						// no evolving when respawning
-						self:ExecuteTechUpgrade(techId)
-						success = self:GetTechTree():GiveUpgrade(kMapName)
-						success = self:GiveUpgrade(kMapName)
-						
+						upgradeOK = self:HandleSpecialUpgrades(self, techId)
+						if not upgradeOK then				
+							// no evolving when respawning
+							self:ExecuteTechUpgrade(techId)
+							self:GetTechTree():GiveUpgrade(kMapName)
+							self:GiveUpgrade(kMapName)
+						end
 					else    
 						upgradeOK, newPlayer = self:CoEvolve(kMapName)
-						if upgradeOK then
-							//success = self:GetTechTree():GiveUpgrade(kMapName)
-						end
 					end
 				end
 				
@@ -206,8 +210,6 @@ function Player:CoCheckUpgrade_Alien(upgrade, respawning, position)
 						self:AddLvlFree(neededLvl)
 						table.remove(self.combatTable.techtree, position)
 					else
-						//self:Replace(kMapName, self:GetTeamNumber(), false)  
-						// its not needed to ExecuteTechUpgrade when its a class
 						upgradeOK, newPlayer = self:CoEvolve(kMapName)            
 					end
 				end
@@ -238,6 +240,31 @@ function Player:CoCheckUpgrade_Alien(upgrade, respawning, position)
             end
 		end        
     end
+	
+	// Update the tech tree and send updates to the client
+	if not respawning then
+		self:GetTechTree():ComputeAvailability()
+		self:GetTechTree():SendTechTreeUpdates({self})
+	end
+	
+end
+
+function Player:HandleSpecialUpgrades(self, techId)
+	
+	local upgraded = false
+	
+	// Tier one and two don't need to evolve, you just unlock it.
+	if techId == kTechId.TwoHives then
+		self:UnlockTierTwo()
+		upgraded = true
+	elseif techId == kTechId.ThreeHives then
+		self:UnlockTierThree()
+		upgraded = true
+	elseif techId == kTechId.Shade then
+		self.combatTable.hasCamouflage = true
+		upgraded = true
+	end
+
 end
 
 // get all TechIds the player currently got (when you got carapace and then go gorge you would lose it without this function)
@@ -266,10 +293,11 @@ function Player:GiveUpsBack()
     
 	self:CheckCombatData()
 	
+	// Don't allow the delegate function to update the tech tree - we will do it ourselves later.
 	if self:isa("Marine") then  
 		// do it for every up in the table      
 		for i, entry in pairs(self.combatTable.techtree) do 
-			self:CoCheckUpgrade_Marine(entry, true) 
+			self:CoCheckUpgrade_Marine(entry, true, i) 
 		end
 	elseif self:isa("Alien") then
 		for i, entry in pairs(self.combatTable.techtree) do 
@@ -277,6 +305,9 @@ function Player:GiveUpsBack()
 			self:CoCheckUpgrade_Alien(entry, true, i)   
 		end
 	end            
-    
+	
+	// Send updates to the client in one go.
+	self:GetTechTree():ComputeAvailability()
+	self:GetTechTree():SendTechTreeUpdates({self})
     self.isRespawning = false
 end

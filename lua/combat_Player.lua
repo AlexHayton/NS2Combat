@@ -65,7 +65,9 @@ function Player:CoEvolve(techId)
 
         newPlayer:DropToFloor()
 
-        newPlayer:SetGestationData(self:GetTechIds(techId), self:GetTechId(), healthScalar, armorScalar)
+		// Handle special upgrades.
+		success = self:HandleSpecialUpgrades(newPlayer, techId)
+		newPlayer:SetGestationData(self:GetTechIds(techId), self:GetTechId(), healthScalar, armorScalar)
 
         success = true
     end
@@ -142,11 +144,12 @@ function Player:CheckCombatData()
 
 	// Initialise the Combat Tech Tree
 	if not self.combatTable then
-		self.combatTable = {}  
+		self.combatTable = {} 
 		self.combatTable.lvl = 1
 		self:ClearLvlFree()
 		self:AddLvlFree(1)
 		self.combatTable.lastNotify = 0
+		self.combatTable.hasCamouflage = false
 		
 		// getAvgXP is called before giving the score, so this needs to be implemented here
 		self.score = 0

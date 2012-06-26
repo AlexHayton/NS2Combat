@@ -32,6 +32,10 @@ kOnosGestateTime = 3
 // No eggs
 kAlienEggsPerHive = 0
 
+// Tweaks for weapons and upgrades
+// Camouflage
+kCamouflageTime = 3
+kCamouflageUncloakFactor = 2 / 3
 // Ammo for mines
 kNumMines = 1
 

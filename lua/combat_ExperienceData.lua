@@ -83,10 +83,10 @@ UpsList.Alien ["lerk"] = {UpgradeText = "Lerk", 				UpgradeName = kTechId.Lerk, 
 UpsList.Alien ["fade"] = {UpgradeText = "Fade", 				UpgradeName = kTechId.Fade, 			UpgradeTechId = kTechId.Fade, 				Requires = "gorge", Levels = 2, Type = "class"}
 UpsList.Alien ["onos"] = {UpgradeText = "Onos", 				UpgradeName = kTechId.Onos, 			UpgradeTechId = kTechId.Onos, 				Requires = "fade", Levels = 2, Type = "class"}
 // Tech
-UpsList.Alien ["tier2"] = {UpgradeText = "Tier 2", 				UpgradeName = kTechId.Augmentation,		UpgradeTechId = kTechId.Augmentation, 		Requires = nil, Levels = 1, Type = "tech"}
-UpsList.Alien ["tier3"] = {UpgradeText = "Tier 3", 				UpgradeName = kTechId.AlienArmor3,		UpgradeTechId = kTechId.AlienArmor3, 		Requires = "tier2", Levels = 1, Type = "tech"}
+UpsList.Alien ["tier2"] = {UpgradeText = "Tier 2", 				UpgradeName = kTechId.TwoHives,			UpgradeTechId = kTechId.TwoHives, 			Requires = nil, Levels = 1, Type = "tech"}
+UpsList.Alien ["tier3"] = {UpgradeText = "Tier 3", 				UpgradeName = kTechId.ThreeHives,		UpgradeTechId = kTechId.ThreeHives, 		Requires = "tier2", Levels = 1, Type = "tech"}
 UpsList.Alien ["carapace"] = {UpgradeText = "Carapace", 		UpgradeName = kTechId.Carapace, 		UpgradeTechId = kTechId.Carapace, 			Requires = nil, Levels = 1, Type = "tech"}
 UpsList.Alien ["regen"] = {UpgradeText = "Regeneration", 		UpgradeName = kTechId.Regeneration,		UpgradeTechId = kTechId.Regeneration, 		Requires = nil, Levels = 1, Type = "tech"}
 UpsList.Alien ["silence"] = {UpgradeText = "Silence", 			UpgradeName = kTechId.Silence, 			UpgradeTechId = kTechId.Silence, 			Requires = nil, Levels = 1, Type = "tech"}
-UpsList.Alien ["camo"] = {UpgradeText = "Camoflage", 			UpgradeName = kTechId.Camouflage, 		UpgradeTechId = kTechId.Camouflage,			Requires = nil, Levels = 1, Type = "tech"}
+UpsList.Alien ["camo"] = {UpgradeText = "Camouflage", 			UpgradeName = kTechId.Shade, 			UpgradeTechId = kTechId.Shade,				Requires = nil, Levels = 1, Type = "tech"}
 UpsList.Alien ["cele"] = {UpgradeText = "Celerity", 			UpgradeName = kTechId.Celerity, 		UpgradeTechId = kTechId.Celerity, 			Requires = nil, Levels = 1, Type = "tech"}

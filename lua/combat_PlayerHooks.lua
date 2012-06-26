@@ -21,6 +21,7 @@ function CombatPlayer:OnLoad()
     self:PostHookClassFunction("Player", "CopyPlayerDataFrom", "CopyPlayerDataFrom_Hook") 
 	self:ReplaceClassFunction("Player", "GetTechTree", "GetTechTree_Hook") 
 	self:PostHookClassFunction("Player", "OnUpdatePlayer", "OnUpdatePlayer_Hook") 
+	self:PostHookClassFunction("Player", "UpdateSharedMisc", "UpdateSharedMisc_Hook") 
 
     self:ReplaceFunction("GetIsTechAvailable", "GetIsTechAvailable_Hook")
     
@@ -35,6 +36,7 @@ function CombatPlayer:Reset_Hook(self)
 		self:ClearLvlFree()
 		self:AddLvlFree(1)
 		self.combatTable.lastNotify = 0
+		self.combatTable.hasCamouflage = false
 		
 		// getAvgXP is called before giving the score, so this needs to be implemented here
 		self.score = 0
@@ -63,9 +65,10 @@ function CombatPlayer:GetTechTree_Hook(self)
 
 end
 
-// Remind players once every so often when they have upgrades to spend.
+// Various updates and timers in here.
 function CombatPlayer:OnUpdatePlayer_Hook(self, deltaTime)
-
+	
+	// Remind players once every so often when they have upgrades to spend.
 	local lvlFree = self:GetLvlFree()
 	if lvlFree > 0 then
 		if (self.combatTable.lastNotify + deltaTime > kUpgradeNotifyInterval) then
@@ -74,6 +77,21 @@ function CombatPlayer:OnUpdatePlayer_Hook(self, deltaTime)
 			self:SendDirectMessage("You have " .. lvlFree .. " " .. upgradeWord .. " to spend. Use co_spendlvl in chat to buy upgrades.")
 		else
 			self.combatTable.lastNotify = self.combatTable.lastNotify + deltaTime
+		end
+	end
+	
+	// Provide a camouflage function
+	if self.combatTable and self.combatTable.hasCamouflage then
+		if HasMixin(self, "Cloakable") then
+			self:SetIsCloaked(true, 1, false)
+	
+			// Trigger uncloak when you reach a certain speed, based on lifeform's max speed.
+			local velocity = self:GetVelocity():GetLength()
+			
+			if velocity >= (self:GetMaxSpeed(true) * kCamouflageUncloakFactor) then
+				self:SetIsCloaked(false)
+				self.cloakChargeTime = kCamouflageTime
+			end
 		end
 	end
 	
@@ -90,6 +108,12 @@ function CombatPlayer:GetIsTechAvailable_Hook(self, teamNumber, techId)
 
 end
 
+// Provide a camouflage function
+function CombatPlayer:UpdateSharedMisc_Hook(self, input)
+
+	// Do nothing
+
+end
 
 if(hotreload) then
     CombatPlayer:OnLoad()
