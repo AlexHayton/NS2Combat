@@ -18,7 +18,8 @@ kCombatUpgrades = enum({// Marine upgrades
 						'TierTwo', 'TierThree',
 						'Carapace', 'Regeneration', 'Silence', 'Camouflage', 'Celerity'})
 						
-kCombatUpgradeTypes = enum({'Tech', 'Class', 'Weapon'})
+// The order of these is important...
+kCombatUpgradeTypes = enum({'Class', 'Tech', 'Weapon'})
 							
 class 'CombatUpgrade'
 
@@ -89,7 +90,7 @@ end
 
 function CombatUpgrade:ExecuteTechUpgrade(player)
 
-	local techTree = player:GetTechTree()
+	/*local techTree = player:GetTechTree()
 	local techId = self:GetTechId()
 	local node = techTree:GetTechNode(techId)
 	if node == nil then
@@ -103,7 +104,8 @@ function CombatUpgrade:ExecuteTechUpgrade(player)
 	node:SetHasTech(true)
 	techTree:SetTechNodeChanged(node)
 	techTree:SetTechChanged()
-	self:SetIsApplied(true)
+	self:SetIsApplied(true)*/
+	player:GiveUpgrade(self:GetTechId())
 
 end
 

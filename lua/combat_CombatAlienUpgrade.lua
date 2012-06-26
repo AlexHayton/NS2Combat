@@ -25,7 +25,7 @@ function CombatAlienUpgrade:DoUpgrade(player)
 		local customFunc = self:GetCustomFunc()
 		customFunc(player, self)
 	else
-		self:ExecuteTechUpgrade(player)
+		player:GiveUpgrade(techId)
 	end
 	
 	if (self:GetType() == kCombatUpgradeTypes.Class) then

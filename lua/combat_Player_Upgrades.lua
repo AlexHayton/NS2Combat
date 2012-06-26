@@ -26,6 +26,15 @@ function GetIsPrimaryWeapon(kMapName)
     return isPrimary
 end
 
+function Player:GetPrimaryClass(kMapName)
+   
+	local techTree = self:GetTechTree()
+	local techOptions = GetUpgradesOfType(techTree, kCombatUpgradeTypes.Class)
+
+	// Start with Onos and work down...
+	
+end
+
 function Player:CoEnableUpgrade(upgrade)
 
 	self:CheckCombatData()    
@@ -94,6 +103,9 @@ function Player:ApplyAllUpgrades(upgradeTypes)
 	
 	self:CheckCombatData()
 	local techTree = self:GetCombatTechTree()
+	
+	// Handle class upgrades differently - pick the best one available.
+	
 
 	for index, upgradeType in ipairs(upgradeTypes) do
 		
@@ -150,9 +162,18 @@ function Player:EvolveTo(techId)
 
 	local success = false
 	
+	if not techId then
+        techId = kTechId.Skulk
+    end
+    
+    local success = false
+	
 	// Preserve existing health/armor when we're not changing lifeform
 	local healthScalar = self:GetHealth() / self:GetMaxHealth()
     local armorScalar = self:GetArmor() / self:GetMaxArmor()
+    
+    local physicsMask = PhysicsMask.AllButPCsAndRagdolls
+    local position = self:GetOrigin()
 
 	if self:HasRoomToEvolve(techId) then
 	
@@ -169,10 +190,13 @@ function Player:EvolveTo(techId)
         // Eliminate velocity so that we don't slide or jump as an egg
         newPlayer:SetVelocity(Vector(0, 0, 0))
         newPlayer:DropToFloor()
+		
+		// Specify the list of tech Ids for the new entity to have.
+		local techIds = self:GetUpgrades()
+		table.insert(techIds, techId)
 
 		// Handle special upgrades.
-		success = self:HandleSpecialUpgrades(newPlayer, techId)
-		newPlayer:SetGestationData({}, self:GetTechId(), healthScalar, armorScalar)
+		newPlayer:SetGestationData(techIds, self:GetTechId(), healthScalar, armorScalar)
 		
 		// Apply all other upgrades.
 		newPlayer:ApplyAllUpgrades({ kCombatUpgradeTypes.Weapon, kCombatUpgradeTypes.Tech })

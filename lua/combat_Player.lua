@@ -15,66 +15,6 @@ Script.Load("lua/combat_Player_Upgrades.lua")
 // not hooked
 //___________________
 
-// adaptet from function Alien:ProcessBuyAction(techIds)
-function Player:CoEvolve(techId)
-
-    if not techId then
-        techId = kTechId.Skulk
-    end
-    
-    local success = false
-    local healthScalar = 1
-    local armorScalar = 1
-    
-    // Check for room
-    local eggExtents = LookupTechData(kTechId.Embryo, kTechDataMaxExtents)
-    local newAlienExtents = nil
-    // Aliens will have a kTechDataMaxExtents defined, find it.
-    newAlienExtents = LookupTechData(techId, kTechDataMaxExtents)
-  
-    // In case we aren't evolving to a new alien, using the current's extents.
-    if not newAlienExtents then
-    
-        newAlienExtents = LookupTechData(self:GetTechId(), kTechDataMaxExtents)
-        // Preserve existing health/armor when we're not changing lifeform
-        healthScalar = self:GetHealth() / self:GetMaxHealth()
-        armorScalar = self:GetArmor() / self:GetMaxArmor()
-        
-    end
-    
-    local physicsMask = PhysicsMask.AllButPCsAndRagdolls
-    local position = self:GetOrigin()
-    
-    if self:GetIsOnGround() and
-		GetHasRoomForCapsule(eggExtents, position + Vector(0, eggExtents.y + Embryo.kEvolveSpawnOffset, 0), CollisionRep.Default, physicsMask, self) and
-		GetHasRoomForCapsule(newAlienExtents, position + Vector(0, newAlienExtents.y + Embryo.kEvolveSpawnOffset, 0), CollisionRep.Default, physicsMask, self) then
-      
-        newPlayer = self:Replace(Embryo.kMapName)
-        position.y = position.y + Embryo.kEvolveSpawnOffset
-        newPlayer:SetOrigin(position)
-
-          
-        // Clear angles, in case we were wall-walking or doing some crazy alien thing
-        local angles = Angles(self:GetViewAngles())
-        angles.roll = 0.0
-        angles.pitch = 0.0
-        newPlayer:SetAngles(angles)
-
-        // Eliminate velocity so that we don't slide or jump as an egg
-        newPlayer:SetVelocity(Vector(0, 0, 0))
-
-        newPlayer:DropToFloor()
-
-		// Handle special upgrades.
-		success = self:HandleSpecialUpgrades(newPlayer, techId)
-		newPlayer:SetGestationData(self:GetTechIds(techId), self:GetTechId(), healthScalar, armorScalar)
-
-        success = true
-    end
-    
-    return success, newPlayer
-end
-
 function Player:GetXp()
     if self.score then
         return self.score

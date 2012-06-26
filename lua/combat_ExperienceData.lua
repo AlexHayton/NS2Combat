@@ -47,7 +47,7 @@ XpValues["Clog"] = 10
 XpValues["Armory"] = 100
 
 local function UpgradeArmor(player, techUpgrade)
-	techUpgrade:ExecuteTechUpgrade(player)
+	player:GiveUpgrade(techUpgrade:GetTechId())
 	player:UpdateArmorAmount()
 end
 

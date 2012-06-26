@@ -215,7 +215,7 @@ function CombatPlayingTeam:SpawnPlayer(player)
             success, newPlayer = player:GetTeam():ReplaceRespawnPlayer(player, nil, nil)
             if success then
                 newPlayer:DropToFloor()
-                newPlayer:CoEvolve()
+                newPlayer:ApplyAllUpgrades()
             end 
             
         else
