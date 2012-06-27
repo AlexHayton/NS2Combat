@@ -84,7 +84,7 @@ end
 
 UpsList = {}
 // Marine Upgrades
-// Parameters:        				team,	 upgradeId, 						upgradeTextCode, 		upgradeDesc, 		upgradeTechId, 				upgradeFunc, 	requirements, 				levels, upgradeType
+// Parameters:        				team,	 upgradeId, 						upgradeTextCode, 	upgradeDesc, 		upgradeTechId, 				upgradeFunc, 	requirements, 				levels, upgradeType
 // Start with classes
 table.insert(UpsList, BuildUpgrade("Marine", kCombatUpgrades.Jetpack,			"jp",				"Jetpack",			nil, 						GiveJetpack, 	kCombatUpgrades.Armor2, 	1, 		kCombatUpgradeTypes.Class))
 
@@ -106,7 +106,7 @@ table.insert(UpsList, BuildUpgrade("Marine", kCombatUpgrades.Armor3,			"arm3",		
 // Add motion detector, scanner, resup, catpacks as available...
 
 // Alien Upgrades
-// Parameters:        				team,	 upgradeId, 						upgradeDesc, 		upgradeTechId, 				upgradeFunc, 	requirements, 				levels, upgradeType
+// Parameters:        				team,	 upgradeId, 						upgradeTextCode, 	upgradeDesc, 		upgradeTechId, 				upgradeFunc, 	requirements, 				levels, upgradeType
 // Start with classes
 table.insert(UpsList, BuildUpgrade("Alien", kCombatUpgrades.Gorge,				"gorge",			"Gorge",			kTechId.Gorge, 				nil, 			nil, 						1, 		kCombatUpgradeTypes.Class))
 table.insert(UpsList, BuildUpgrade("Alien", kCombatUpgrades.Lerk,				"lerk",				"Lerk",				kTechId.Lerk, 				nil, 			kCombatUpgrades.Gorge, 		1, 		kCombatUpgradeTypes.Class))
