@@ -33,7 +33,6 @@ function CombatUpgrade:Initialize(team, upgradeId, upgradeTextCode, upgradeDescr
     self.upgradeType = upgradeType
 	self.requirements = requirements
 	self.levels = levels
-	self.applied = false
 
 	if (upgradeFunc) then
 		self.upgradeFunc = upgradeFunc
@@ -42,14 +41,6 @@ function CombatUpgrade:Initialize(team, upgradeId, upgradeTextCode, upgradeDescr
 		self.useCustomFunc = false
 	end
 	
-end
-
-function CombatUpgrade:GetIsApplied()
-	return self.applied
-end
-
-function CombatUpgrade:SetIsApplied(applied)
-	self.applied = applied
 end
 
 function CombatUpgrade:GetTextCode()
@@ -90,7 +81,7 @@ end
 
 function CombatUpgrade:ExecuteTechUpgrade(player)
 
-	/*local techTree = player:GetTechTree()
+	local techTree = player:GetTechTree()
 	local techId = self:GetTechId()
 	local node = techTree:GetTechNode(techId)
 	if node == nil then
@@ -104,8 +95,12 @@ function CombatUpgrade:ExecuteTechUpgrade(player)
 	node:SetHasTech(true)
 	techTree:SetTechNodeChanged(node)
 	techTree:SetTechChanged()
-	self:SetIsApplied(true)*/
-	player:GiveUpgrade(self:GetTechId())
+	//player.sendTechTreeBase = true
+	//self:SetIsApplied(true)
+	if (player:isa("Alien")) then
+		player:GetTechTree():GiveUpgrade(self:GetTechId())
+		player:GiveUpgrade(self:GetTechId())
+	end
 
 end
 
@@ -114,4 +109,20 @@ function CombatUpgrade:GiveItem(player)
 	local kMapName = LookupTechData(self:GetTechId(), kTechDataMapName)
 	player:GiveItem(kMapName)
 
+end
+
+function CombatUpgrade:DoUpgrade(player)
+	local techId = self:GetTechId()
+	local kMapName = LookupTechData(techId, kTechDataMapName)
+	
+	// Generic functions for upgrades and custom ones.
+	if self:HasCustomFunc() then
+		local customFunc = self:GetCustomFunc()
+		customFunc(player, self)
+	else
+		self:ExecuteTechUpgrade(player)
+	end
+	
+	// Do specific stuff for aliens or marines.
+	self:TeamSpecificLogic(player)
 end

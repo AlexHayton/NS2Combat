@@ -26,18 +26,9 @@ function GetIsPrimaryWeapon(kMapName)
     return isPrimary
 end
 
-function Player:GetPrimaryClass(kMapName)
-   
-	local techTree = self:GetTechTree()
-	local techOptions = GetUpgradesOfType(techTree, kCombatUpgradeTypes.Class)
-
-	// Start with Onos and work down...
-	
-end
-
 function Player:CoEnableUpgrade(upgrade)
 
-	self:CheckCombatData()    
+	self:CheckCombatData()
 	local alreadyGotUpgrade = false
 	local noRoom = false
 	local requirements = upgrade:GetRequirements()
@@ -62,7 +53,16 @@ function Player:CoEnableUpgrade(upgrade)
 	end
 	
 	// Check whether we have room to evolve
-	if self:isa("Alien") and upgrade:GetType() == kCombatUpgradeTypes.Class then
+	if self:isa("Alien") then
+		local lifeFormTechId = kTechId.Skulk
+		if self:GetIsAlive() then 
+			if upgrade:GetType() == kCombatUpgradeTypes.Class then
+				lifeFormTechId = self:GetTechId()
+			else
+				lifeFormTechId = techId
+			end
+		end
+		
 		if not self:HasRoomToEvolve(techId) then
 			noRoom = true
 		end
@@ -86,6 +86,11 @@ function Player:CoEnableUpgrade(upgrade)
 		local pointText = (neededLvl > 1) and "points" or "point"
 		self:SendDirectMessage(upgrade:GetDescription() .. " purchased for " .. neededLvl .. " upgrade " .. pointText)
 		
+		// Special logic for alien lifeforms
+		if self:isa("Alien") and upgrade:GetType() == kCombatUpgradeTypes.Class then
+			self.combatTable.currentLifeForm = upgrade
+		end
+		
 		// Apply all missing upgrades.
 		if not self.respawning then
 			self:ApplyAllUpgrades()
@@ -103,9 +108,6 @@ function Player:ApplyAllUpgrades(upgradeTypes)
 	
 	self:CheckCombatData()
 	local techTree = self:GetCombatTechTree()
-	
-	// Handle class upgrades differently - pick the best one available.
-	
 
 	for index, upgradeType in ipairs(upgradeTypes) do
 		
@@ -113,15 +115,23 @@ function Player:ApplyAllUpgrades(upgradeTypes)
 		
 		for index, upgrade in ipairs(upgradesOfType) do
 			//if not upgrade:GetIsApplied() then
+			
+			// Only apply the currently active lifeform upgrade...
+			if upgradeType == kCombatUpgradeTypes.Class then
+				if upgrade == self.combatTable.currentLifeForm then
+					upgrade:DoUpgrade(self)
+				end
+			else
 				upgrade:DoUpgrade(self)
+			end
 			//end
 		end
 		
 	end
 		
 	// Update the tech tree and send updates to the client
-	self:GetTechTree():ComputeAvailability()
-	self:GetTechTree():SendTechTreeUpdates({self})
+	//self:GetTechTree():ComputeAvailability()
+	//self:GetTechTree():SendTechTreeUpdates({self})
 	
 end
 

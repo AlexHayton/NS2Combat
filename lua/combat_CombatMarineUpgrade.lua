@@ -15,18 +15,10 @@ function CombatMarineUpgrade:Initialize(upgradeId, upgradeTextCode, upgradeDescr
 
 end
 
-function CombatMarineUpgrade:DoUpgrade(player)
+function CombatMarineUpgrade:TeamSpecificLogic(player)
 	
 	local techId = self:GetTechId()
 	local kMapName = LookupTechData(techId, kTechDataMapName)
-	
-	// Generic functions for upgrades and custom ones.
-	if self:HasCustomFunc() then
-		local customFunc = self:GetCustomFunc()
-		customFunc(player, self)
-	else
-		player:GiveUpgrade(techId)
-	end
 	
 	// Apply weapons upgrades to a marine.
 	if (self:GetType() == kCombatUpgradeTypes.Weapon) then

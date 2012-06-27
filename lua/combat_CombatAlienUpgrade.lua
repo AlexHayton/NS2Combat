@@ -15,18 +15,7 @@ function CombatAlienUpgrade:Initialize(upgradeId, upgradeTextCode, upgradeDescri
 
 end
 
-function CombatAlienUpgrade:DoUpgrade(player)
-	
-	local techId = self:GetTechId()
-	local kMapName = LookupTechData(techId, kTechDataMapName)
-	
-	// Generic functions for upgrades and custom ones.
-	if self:HasCustomFunc() then
-		local customFunc = self:GetCustomFunc()
-		customFunc(player, self)
-	else
-		player:GiveUpgrade(techId)
-	end
+function CombatAlienUpgrade:TeamSpecificLogic(player)
 	
 	if (self:GetType() == kCombatUpgradeTypes.Class) then
 		// Some special stuff for classes.

@@ -20,8 +20,7 @@ function CombatPlayer:OnLoad()
     self:PostHookClassFunction("Player", "Reset", "Reset_Hook")
     self:PostHookClassFunction("Player", "CopyPlayerDataFrom", "CopyPlayerDataFrom_Hook") 
 	self:ReplaceClassFunction("Player", "GetTechTree", "GetTechTree_Hook") 
-	self:PostHookClassFunction("Player", "OnUpdatePlayer", "OnUpdatePlayer_Hook") 
-	self:PostHookClassFunction("Player", "UpdateSharedMisc", "UpdateSharedMisc_Hook") 
+	self:PostHookClassFunction("Player", "OnUpdatePlayer", "OnUpdatePlayer_Hook")
 
     self:ReplaceFunction("GetIsTechAvailable", "GetIsTechAvailable_Hook")
     
@@ -31,17 +30,17 @@ end
 function CombatPlayer:Reset_Hook(self)
   
 	// don't initialise the Combat Data !!! we need to reset it
-        self.combatTable = {}  
-		self.combatTable.lvl = 1
-		self:ClearLvlFree()
-		self:AddLvlFree(1)
-		self.combatTable.lastNotify = 0
-		self.combatTable.hasCamouflage = false
-		
-		// getAvgXP is called before giving the score, so this needs to be implemented here
-		self.score = 0
-		
-		self.combatTable.techtree = {}
+	self.combatTable = {}  
+	self.combatTable.lvl = 1
+	self:ClearLvlFree()
+	self:AddLvlFree(1)
+	self.combatTable.lastNotify = 0
+	self.combatTable.hasCamouflage = false
+	
+	// getAvgXP is called before giving the score, so this needs to be implemented here
+	self.score = 0
+	
+	self.combatTable.techtree = {}
     
 end
 
@@ -105,13 +104,6 @@ end
 function CombatPlayer:GetIsTechAvailable_Hook(self, teamNumber, techId)
 
     return true
-
-end
-
-// Provide a camouflage function
-function CombatPlayer:UpdateSharedMisc_Hook(self, input)
-
-	// Do nothing
 
 end
 
