@@ -53,6 +53,8 @@ end
 
 local function GiveJetpack(player, techUpgrade)
 	player:GiveJetpack()
+	// get jp back after respawn
+	player.combatTable.giveClassAfterRespawn = JetpackMarine.kMapName
 end
 
 local function TierTwo(player, techUpgrade)
@@ -94,7 +96,7 @@ UpsList = {}
 // Marine Upgrades
 // Parameters:        				team,	 upgradeId, 						upgradeTextCode, 	upgradeDesc, 		upgradeTechId, 				upgradeFunc, 	requirements, 				levels, upgradeType
 // Start with classes
-table.insert(UpsList, BuildUpgrade("Marine", kCombatUpgrades.Jetpack,			"jp",				"Jetpack",			nil, 						GiveJetpack, 	kCombatUpgrades.Armor2, 	1, 		kCombatUpgradeTypes.Class))
+table.insert(UpsList, BuildUpgrade("Marine", kCombatUpgrades.Jetpack,			"jp",				"Jetpack",			nil, 						GiveJetpack, 	kCombatUpgrades.Armor2, 	2, 		kCombatUpgradeTypes.Class))
 
 // Weapons
 table.insert(UpsList, BuildUpgrade("Marine", kCombatUpgrades.Mines,				"mines",			"Mines",			kTechId.LayMines, 			nil, 			nil, 						1, 		kCombatUpgradeTypes.Weapon))

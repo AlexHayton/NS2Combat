@@ -195,6 +195,8 @@ end
 
 function CombatPlayingTeam:SpawnPlayer(player)
 
+    local success = false
+
 	player.isRespawning = true
 	SendPlayersMessage({ player }, kTeamMessageTypes.Spawning)
 

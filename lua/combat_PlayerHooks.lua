@@ -43,6 +43,8 @@ function CombatPlayer:Reset_Hook(self)
 
     self.combatTable.hasResupply = false
     self.combatTable.lastResupply = 0
+    
+    self.combatTable.giveClassAfterRespawn = nil
 	
 	// getAvgXP is called before giving the score, so this needs to be implemented here
 	self.score = 0

@@ -136,6 +136,16 @@ function Player:CheckCombatData()
 		self.combatTable.lastNotify = 0
 		self.combatTable.hasCamouflage = false
 		
+		// scan and resupp values	
+        self.combatTable.hasScan = false
+        self.combatTable.lastScan = 0
+
+        self.combatTable.hasResupply = false
+        self.combatTable.lastResupply = 0
+		
+		// class after respawn for rines
+		self.combatTable.giveClassAfterRespawn = nil
+		
 		// getAvgXP is called before giving the score, so this needs to be implemented here
 		self.score = 0
 		

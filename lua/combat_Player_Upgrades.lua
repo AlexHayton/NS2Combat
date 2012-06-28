@@ -120,7 +120,12 @@ function Player:ApplyAllUpgrades(upgradeTypes)
 			if upgradeType == kCombatUpgradeTypes.Class then
 				if upgrade == self.combatTable.currentLifeForm then
 					upgrade:DoUpgrade(self)
-				end
+				else
+				    // to enable jp and exo
+                    if  self:isa("Marine") then
+                        upgrade:DoUpgrade(self)
+                    end
+                end
 			else
 				upgrade:DoUpgrade(self)
 			end
