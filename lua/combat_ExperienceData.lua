@@ -67,6 +67,14 @@ local function Camouflage(player, techUpgrade)
 	player.combatTable.hasCamouflage = true
 end
 
+local function Scan(player, techUpgrade)
+	player.combatTable.hasScan = true
+end
+
+local function Resupply(player, techUpgrade)
+	player.combatTable.hasResupply = true
+end
+
 // Helper function to build upgrades for us.
 local function BuildUpgrade(team, upgradeId, upgradeTextCode, upgradeDescription, upgradeTechId, upgradeFunc, requirements, levels, upgradeType)
 	local upgrade = nil
@@ -104,6 +112,9 @@ table.insert(UpsList, BuildUpgrade("Marine", kCombatUpgrades.Armor2,			"arm2",		
 table.insert(UpsList, BuildUpgrade("Marine", kCombatUpgrades.Armor3,			"arm3",				"Armor 3",			kTechId.Armor3, 			UpgradeArmor, 	kCombatUpgrades.Armor2, 	1, 		kCombatUpgradeTypes.Tech))
 
 // Add motion detector, scanner, resup, catpacks as available...
+table.insert(UpsList, BuildUpgrade("Marine", kCombatUpgrades.Scanner,			"scan",				"Scanner",			kTechId.Scan, 			    Scan, 	        nil,                     	1, 		kCombatUpgradeTypes.Tech))
+table.insert(UpsList, BuildUpgrade("Marine", kCombatUpgrades.Resupply,			"resup",			"Resupply",			kTechId.MedPack , 	        Resupply,    	nil, 	                    1, 		kCombatUpgradeTypes.Tech))
+
 
 // Alien Upgrades
 // Parameters:        				team,	 upgradeId, 						upgradeTextCode, 	upgradeDesc, 		upgradeTechId, 				upgradeFunc, 	requirements, 				levels, upgradeType

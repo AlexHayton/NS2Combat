@@ -15,6 +15,45 @@ Script.Load("lua/combat_Player_Upgrades.lua")
 // not hooked
 //___________________
 
+// Resup and Scan function
+
+function Player:ScanNow()
+
+    local position = self:GetOrigin()
+    
+    CreateEntity(Scan.kMapName, position, self:GetTeamNumber())
+    StartSoundEffectAtOrigin(Observatory.kScanSound, position)  
+
+    return true
+    
+end
+
+function Player:ResupplyNow()
+
+    local success = false
+    local mapNameHealth = LookupTechData(kTechId.MedPack, kTechDataMapName)
+    local mapNameAmmo = LookupTechData(kTechId.AmmoPack, kTechDataMapName)    
+    local position = self:GetOrigin()
+
+    if (mapNameHealth and mapNameAmmo) then
+    
+        local droppackHealth = CreateEntity(mapNameHealth, position, self:GetTeamNumber())
+        local droppackAmmo = CreateEntity(mapNameAmmo , position, self:GetTeamNumber())
+        
+        StartSoundEffectForPlayer(MedPack.kHealthSound, self)        
+        success = true
+        
+        //Destroy them so they can't be used by somebody else (if they are unused)
+        DestroyEntity(droppackHealth)
+        DestroyEntity(droppackAmmo)
+        
+    end
+
+    return success
+
+
+end
+
 function Player:GetXp()
     if self.score then
         return self.score

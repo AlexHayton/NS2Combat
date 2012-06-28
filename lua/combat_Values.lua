@@ -22,6 +22,15 @@ kUpgradeNotifyInterval = 10
 kCombatRespawnTimer = 10
 kAlienWaveSpawnInterval = 10
 
+
+// time for Scan and Resuply
+kScanTimer = 15
+kResupplyTimer = 10
+// scan Duration, maybe we need to tune it a bit
+kScanDuration = 5
+kScanRadius = 20
+
+
 // Change the GestateTime so every new Class takes the same time
 kSkulkGestateTime = 3
 kGorgeGestateTime = 3

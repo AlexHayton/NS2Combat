@@ -36,6 +36,13 @@ function CombatPlayer:Reset_Hook(self)
 	self:AddLvlFree(1)
 	self.combatTable.lastNotify = 0
 	self.combatTable.hasCamouflage = false
+
+    // scan and resupp values	
+    self.combatTable.hasScan = false
+    self.combatTable.lastScan = 0
+
+    self.combatTable.hasResupply = false
+    self.combatTable.lastResupply = 0
 	
 	// getAvgXP is called before giving the score, so this needs to be implemented here
 	self.score = 0
@@ -79,19 +86,51 @@ function CombatPlayer:OnUpdatePlayer_Hook(self, deltaTime)
 		end
 	end
 	
-	// Provide a camouflage function
-	if self.combatTable and self.combatTable.hasCamouflage then
-		if HasMixin(self, "Cloakable") then
-			self:SetIsCloaked(true, 1, false)
+	if self.combatTable then 
 	
-			// Trigger uncloak when you reach a certain speed, based on lifeform's max speed.
-			local velocity = self:GetVelocity():GetLength()
-			
-			if velocity >= (self:GetMaxSpeed(true) * kCamouflageUncloakFactor) then
-				self:SetIsCloaked(false)
-				self.cloakChargeTime = kCamouflageTime
-			end
-		end
+	    // Provide a camouflage function
+        if self.combatTable.hasCamouflage then
+            if HasMixin(self, "Cloakable") then
+                self:SetIsCloaked(true, 1, false)
+        
+                // Trigger uncloak when you reach a certain speed, based on lifeform's max speed.
+                local velocity = self:GetVelocity():GetLength()
+                
+                if velocity >= (self:GetMaxSpeed(true) * kCamouflageUncloakFactor) then
+                    self:SetIsCloaked(false)
+                    self.cloakChargeTime = kCamouflageTime
+                end
+            end
+        end 
+
+	    // Provide scan and resupply function
+	    if self.combatTable.hasScan then
+	        // SCAN!!
+            if (self.combatTable.lastScan + deltaTime > kScanTimer) then
+                
+                self:ScanNow()
+	            self.combatTable.lastScan = 0	            
+	            
+	        else
+	            self.combatTable.lastScan = self.combatTable.lastScan + deltaTime
+            end
+    	end 
+    	
+    	if self.combatTable.hasResupply then
+    		if (self.combatTable.lastResupply + deltaTime > kResupplyTimer) then
+    		    	        
+	            local success = self:ResupplyNow()
+	            
+	            if success then
+	                self.combatTable.lastResupply = 0
+                end
+	           
+	        else
+                self.combatTable.lastResupply = self.combatTable.lastResupply + deltaTime
+            end
+	
+    	end 
+  
 	end
 	
 end
