@@ -53,6 +53,7 @@ local HookNumToString = {
 
 PassHookHandle = 1
 InstantHookFlag = 2
+HookHasMultiReturns = 4
 
 if(not FakeNil) then
 	FakeNil = {}
@@ -108,6 +109,7 @@ end
 
 local HookHandleMT, HookHandleMT_PassHandle, SelfFuncHookHandleMT, SelfFuncHookHandleMT_PassHandle
 
+
 --[1] is the hook function
 --[2] is the self arg
 --[3] is the global hook table for the hooked function
@@ -124,6 +126,16 @@ local HookHandleFunctions = {
 		
 		return self[3].ReturnValue 
 	end,
+	
+	SetReturnMulti = function(self, ...)
+    self[3].ReturnValue = {...}
+  end,
+
+  GetReturnMulti = function(self)
+    if(self[3].ReturnValue) then
+      return unpack(self[3].ReturnValue)
+    end
+  end,
 	
 	SetPassHandle = function(self, passHandle)
 	 local CurrentMT = getmetatable(self)
@@ -475,6 +487,10 @@ function ClassHooker:ProcessHookEntryFlags(handle, flags)
 	if(flags) then
 	  if(bit.band(flags, PassHookHandle) ~= 0) then
 	    handle:SetPassHandle(true)
+	  end
+	  
+	  if(bit.band(flags, HookHasMultiReturns) ~= 0) then
+	    handle[3].MultiReturn = true
 	  end
 	  
 	  if(bit.band(flags, InstantHookFlag) ~= 0) then
