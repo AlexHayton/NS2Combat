@@ -137,11 +137,11 @@ end
 
 function Player:HasRoomToEvolve(techId)
 
+    local success = false
+
     if not techId then
         techId = kTechId.Skulk
     end
-    
-    local success = false
     
     // Check for room
     local eggExtents = LookupTechData(kTechId.Embryo, kTechDataMaxExtents)
@@ -168,15 +168,13 @@ function Player:HasRoomToEvolve(techId)
 	
 end
 	
-function Player:EvolveTo(techId)
+function Player:EvolveTo(newTechId)
 
 	local success = false
 	
-	if not techId then
-        techId = kTechId.Skulk
+	if not newTechId then
+        newTechId = kTechId.Skulk
     end
-    
-    local success = false
 	
 	// Preserve existing health/armor when we're not changing lifeform
 	local healthScalar = self:GetHealth() / self:GetMaxHealth()
@@ -185,7 +183,7 @@ function Player:EvolveTo(techId)
     local physicsMask = PhysicsMask.AllButPCsAndRagdolls
     local position = self:GetOrigin()
 
-	if self:HasRoomToEvolve(techId) then
+	if self:HasRoomToEvolve(newTechId) then
 	
         newPlayer = self:Replace(Embryo.kMapName)
         position.y = position.y + Embryo.kEvolveSpawnOffset
@@ -202,14 +200,29 @@ function Player:EvolveTo(techId)
         newPlayer:DropToFloor()
 		
 		// Specify the list of tech Ids for the new entity to have.
-		local techIds = self:GetUpgrades()
-		table.insert(techIds, techId)
+		local myTechTree = self:GetCombatTechTree()
+		local techIds = {}
+		//self:GetUpgrades()
+		for index, upgrade in ipairs(myTechTree) do
+			if (upgrade:GetType() == kCombatUpgradeTypes.Tech) then
+				table.insert(techIds, upgrade:GetTechId())
+			end
+		end
+		table.insert(techIds, newTechId)
+		
+		newAlienExtents = LookupTechData(techId, kTechDataMaxExtents)
+  
+		// In case we aren't evolving to a new alien, using the current's extents.
+		lifeform = self:GetTechId()
+		if newAlienExtents then
+			lifeform = newTechId
+		end
 
 		// Handle special upgrades.
-		newPlayer:SetGestationData(techIds, self:GetTechId(), healthScalar, armorScalar)
+		newPlayer:SetGestationData(techIds, lifeform, healthScalar, armorScalar)
 		
 		// Apply all other upgrades.
-		newPlayer:ApplyAllUpgrades({ kCombatUpgradeTypes.Weapon, kCombatUpgradeTypes.Tech })
+		//newPlayer:ApplyAllUpgrades({ kCombatUpgradeTypes.Weapon, kCombatUpgradeTypes.Tech })
 
         success = true
     end
@@ -218,18 +231,25 @@ function Player:EvolveTo(techId)
 	
 end
 
+// To refund Class upgrades.
 function Player:RefundUpgrades(upgradeTypes)
 	if not upgradeTypes then 
 		upgradeTypes = { kCombatUpgradeTypes.Class }
 	end
 	
 	// Give player back his exp but take the upgrades away
-	for upgradeType in ipairs(upgradeTypes) do
+	for index, upgradeType in ipairs(upgradeTypes) do
 		local upgrades = GetUpgradesOfType(self.combatTable.techtree, upgradeType)
 		
-		for upgrade in ipairs(upgrades) do
+		// For each class, find the upgrade and remove it, and take away the correct amount of lvlfree.
+		for index, upgrade in ipairs(upgrades) do
 			self:AddLvlFree(upgrade:GetLevels())
-			table.remove(self.combatTable.techtree, upgrade)
+			
+			for index, combatUpgrade in ipairs(self.combatTable.techtree) do
+				if upgrade.GetId() == combatUpgrade:GetId() then
+					table.remove(self.combatTable.techtree, index)
+				end
+			end
 		end
 	end
 end
