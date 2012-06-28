@@ -246,7 +246,7 @@ function Player:RefundUpgrades(upgradeTypes)
 			self:AddLvlFree(upgrade:GetLevels())
 			
 			for index, combatUpgrade in ipairs(self.combatTable.techtree) do
-				if upgrade.GetId() == combatUpgrade:GetId() then
+				if upgrade:GetId() == combatUpgrade:GetId() then
 					table.remove(self.combatTable.techtree, index)
 				end
 			end
