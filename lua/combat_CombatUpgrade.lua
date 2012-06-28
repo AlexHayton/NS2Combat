@@ -9,7 +9,7 @@
 
 kCombatUpgrades = enum({// Marine upgrades
 						'Mines', 'Welder', 'Shotgun', 'Flamethrower', 'GrenadeLauncher', 
-						'Damage1', 'Damage2', 'Damage3', 'Armor1', 'Armor2', 'Armor3', 
+						'Weapons1', 'Weapons2', 'Weapons3', 'Armor1', 'Armor2', 'Armor3', 
 						'MotionDetector', 'Scanner', 'CatalystPacks', 'Resupply', 
 						'Jetpack', 'Exosuit',
 						
