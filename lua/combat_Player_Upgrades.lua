@@ -225,9 +225,6 @@ function Player:EvolveTo(newTechId)
 
 		// Handle special upgrades.
 		newPlayer:SetGestationData(techIds, lifeform, healthScalar, armorScalar)
-		
-		// Apply all other upgrades.
-		//newPlayer:ApplyAllUpgrades({ kCombatUpgradeTypes.Weapon, kCombatUpgradeTypes.Tech })
 
         success = true
     end

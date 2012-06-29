@@ -52,9 +52,10 @@ local function UpgradeArmor(player, techUpgrade)
 end
 
 local function GiveJetpack(player, techUpgrade)
-	player:GiveJetpack()
+	jetpackMarine = player:GiveJetpack()
 	// get jp back after respawn
-	player.combatTable.giveClassAfterRespawn = JetpackMarine.kMapName
+	jetpackMarine.combatTable.giveClassAfterRespawn = JetpackMarine.kMapName
+	return jetpackMarine
 end
 
 local function TierTwo(player, techUpgrade)

@@ -95,8 +95,7 @@ function CombatUpgrade:ExecuteTechUpgrade(player)
 	node:SetHasTech(true)
 	techTree:SetTechNodeChanged(node)
 	techTree:SetTechChanged()
-	//player.sendTechTreeBase = true
-	//self:SetIsApplied(true)
+
 	if (player:isa("Alien")) then
 		player:GetTechTree():GiveUpgrade(self:GetTechId())
 		player:GiveUpgrade(self:GetTechId())
@@ -117,8 +116,12 @@ function CombatUpgrade:DoUpgrade(player)
 	
 	// Generic functions for upgrades and custom ones.
 	if self:HasCustomFunc() then
+		// If the custom function returns a new player then use that instead.
 		local customFunc = self:GetCustomFunc()
-		customFunc(player, self)
+		local customReturnPlayer = customFunc(player, self)
+		if (customReturnPlayer) then
+			player = customReturnPlayer
+		end
 	else
 		self:ExecuteTechUpgrade(player)
 	end

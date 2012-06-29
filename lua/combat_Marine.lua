@@ -20,6 +20,7 @@ function CombatMarine:OnLoad()
     ClassHooker:SetClassCreatedIn("Marine", "lua/Marine.lua") 
     self:ReplaceClassFunction("Marine", "OnKill", "MarineOnKill_Hook") 
     self:ReplaceClassFunction("Marine", "Drop", "Drop_Hook")
+	self:ReplaceClassFunction("Marine", "GiveJetpack", "GiveJetpack_Hook")
     
 end
 
@@ -53,6 +54,26 @@ function CombatMarine:Drop_Hook(self, weapon, ignoreDropTimeLimit, ignoreReplace
 
 	// just do nothing
 
+end
+
+// Return the new marine so that we can update the player that is referenced.
+function CombatMarine:GiveJetpack_Hook(self)
+
+    local activeWeapon = self:GetActiveWeapon()
+    local activeWeaponMapName = nil
+    local health = self:GetHealth()
+    
+    if activeWeapon ~= nil then
+        activeWeaponMapName = activeWeapon:GetMapName()
+    end
+    
+    local jetpackMarine = self:Replace(JetpackMarine.kMapName, self:GetTeamNumber(), true, Vector(self:GetOrigin()))
+    
+    jetpackMarine:SetActiveWeapon(activeWeaponMapName)
+    jetpackMarine:SetHealth(health)
+    
+	return jetpackMarine
+	
 end
 
 if(hotreload) then
