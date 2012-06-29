@@ -88,7 +88,8 @@ function CombatPlayer:OnUpdatePlayer_Hook(self, deltaTime)
 		end
 	end
 	
-	if self.combatTable then 
+	// only trigger Camo, Scan and Ressuply when player is alive
+	if (self.combatTable and self:GetIsAlive()) then 
 	
 	    // Provide a camouflage function
         if self.combatTable.hasCamouflage then

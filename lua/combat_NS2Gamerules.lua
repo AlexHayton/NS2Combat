@@ -90,7 +90,7 @@ function CombatNS2Gamerules:JoinTeam_Hook(self, player, newTeamNumber, force)
 	if (success) then
 		
 		// Reinitialise the tech tree
-		newPlayer.combatTechTree = nil
+		newPlayer:Reset()
 		newPlayer:CheckCombatData()
 		
 		// Update the combat data.
