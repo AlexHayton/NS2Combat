@@ -211,20 +211,10 @@ function CombatPlayingTeam:SpawnPlayer(player)
     if player.combatTable and player.combatTable.giveClassAfterRespawn then
         success, newPlayer  = player:GetTeam():ReplaceRespawnPlayer(player, nil, nil, player.combatTable.giveClassAfterRespawn)
     else
-        // let Aliens spawn in an Egg (that they get theire ups back
-        if player:GetTeamNumber() == kAlienTeamType then            
-
-            success, newPlayer = player:GetTeam():ReplaceRespawnPlayer(player, nil, nil)
-            if success then
-                newPlayer:DropToFloor()
-                newPlayer:ApplyAllUpgrades()
-            end 
-            
-        else
-            // if it's a Marine, spawn him normally
-            success, newPlayer = player:GetTeam():ReplaceRespawnPlayer(player, nil, nil)        
-        end
-		
+		// Spawn normally		
+		// Give the ups back too
+		player:GiveUpsBack()
+        success, newPlayer = player:GetTeam():ReplaceRespawnPlayer(player, nil, nil)        
     end
     
     if success then
