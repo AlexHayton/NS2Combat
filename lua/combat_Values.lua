@@ -32,11 +32,11 @@ kScanRadius = 20
 
 
 // Change the GestateTime so every new Class takes the same time
-kSkulkGestateTime = 3
-kGorgeGestateTime = 3
-kLerkGestateTime = 3
-kFadeGestateTime = 3
-kOnosGestateTime = 3
+kSkulkGestateTime = 2
+kGorgeGestateTime = 2
+kLerkGestateTime = 2
+kFadeGestateTime = 2
+kOnosGestateTime = 2
 
 // No eggs
 kAlienEggsPerHive = 0
