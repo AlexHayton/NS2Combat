@@ -89,18 +89,12 @@ function CombatNS2Gamerules:JoinTeam_Hook(self, player, newTeamNumber, force)
 	// This is the new bit for Combat
 	if (success) then
 		
-		// Reinitialise the tech tree
-		newPlayer:Reset()
-		newPlayer:CheckCombatData()
-		
-		// Update the combat data.
-		newPlayer.combatTable.xp = player:GetXp()
-		newPlayer:ClearLvlFree()
+		// Only reset things like techTree, scan, camo etc.
+		newPlayer:Reset_Lite()
+		newPlayer:CheckCombatData()		
+
+		//newPlayer.combatTable.xp = player:GetXp()
 		newPlayer:AddLvlFree(player:GetLvl())
-		newPlayer.combatTable.techtree = {}
-		
-		// don't get JP rine again when you're now an Alien
-		newPlayer.combatTable.giveClassAfterRespawn = nil
 
 	end
 	

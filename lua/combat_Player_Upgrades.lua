@@ -93,13 +93,13 @@ function Player:CoEnableUpgrade(upgrade)
 		
 		// Apply all missing upgrades.
 		if not self.respawning then
-			self:ApplyAllUpgrades()
+			self:ApplyAllUpgrades(nil, upgrade)
 		end
 	end
 
 end
 
-function Player:ApplyAllUpgrades(upgradeTypes)
+function Player:ApplyAllUpgrades(upgradeTypes, singleUpgrade)
 
 	// By default do Classes first, then Weapons, then Tech
 	if not upgradeTypes then 
@@ -109,34 +109,39 @@ function Player:ApplyAllUpgrades(upgradeTypes)
 	self:CheckCombatData()
 	local techTree = self:GetCombatTechTree()
 
-	for index, upgradeType in ipairs(upgradeTypes) do
-		
-		local upgradesOfType = GetUpgradesOfType(techTree, upgradeType)
-		
-		for index, upgrade in ipairs(upgradesOfType) do
-			//if not upgrade:GetIsApplied() then
-			
-			// Only apply the currently active lifeform upgrade...
-			if upgradeType == kCombatUpgradeTypes.Class then
-				if upgrade == self.combatTable.currentLifeForm then
-					upgrade:DoUpgrade(self)
-				else
-				    // to enable jp and exo
-                    if  self:isa("Marine") then
+    if not singleUpgrade then
+        for index, upgradeType in ipairs(upgradeTypes) do
+            
+            local upgradesOfType = GetUpgradesOfType(techTree, upgradeType)
+            
+            for index, upgrade in ipairs(upgradesOfType) do
+                //if not upgrade:GetIsApplied() then
+                
+                // Only apply the currently active lifeform upgrade...
+                if upgradeType == kCombatUpgradeTypes.Class then
+                    if upgrade == self.combatTable.currentLifeForm then
                         upgrade:DoUpgrade(self)
+                    else
+                        // to enable jp and exo
+                        if  self:isa("Marine") then
+                            upgrade:DoUpgrade(self)
+                        end
                     end
+                else
+                    upgrade:DoUpgrade(self)
                 end
-			else
-				upgrade:DoUpgrade(self)
-			end
-			//end
-		end
-		
-	end
-		
-	// Update the tech tree and send updates to the client
-	//self:GetTechTree():ComputeAvailability()
-	//self:GetTechTree():SendTechTreeUpdates({self})
+                //end
+            end
+            
+        end
+        
+    else
+        singleUpgrade:DoUpgrade(self)
+    end    
+            
+    // Update the tech tree and send updates to the client
+    //self:GetTechTree():ComputeAvailability()
+    //self:GetTechTree():SendTechTreeUpdates({self})
 	
 end
 
@@ -265,4 +270,23 @@ function Player:GiveUpsBack()
 	self:ApplyAllUpgrades({ kCombatUpgradeTypes.Weapon, kCombatUpgradeTypes.Tech })
     self.isRespawning = false
 	
+end
+
+// resetting some things, for team change
+function Player:Reset_Lite()
+
+	self:ClearLvlFree()
+	self.combatTable.lastNotify = 0
+	self.combatTable.hasCamouflage = false
+
+    // scan and resupp values	
+    self.combatTable.hasScan = false
+    self.combatTable.lastScan = 0
+
+    self.combatTable.hasResupply = false
+    self.combatTable.lastResupply = 0
+    
+    self.combatTable.giveClassAfterRespawn = nil	
+	self.combatTable.techtree = {}
+
 end
