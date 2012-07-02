@@ -89,9 +89,9 @@ function CombatNS2Gamerules:JoinTeam_Hook(self, player, newTeamNumber, force)
 	// This is the new bit for Combat
 	if (success) then
 		
-		// Only reset things like techTree, scan, camo etc.
-		newPlayer:Reset_Lite()
+		// Only reset things like techTree, scan, camo etc.		
 		newPlayer:CheckCombatData()		
+		newPlayer:Reset_Lite()
 
 		//newPlayer.combatTable.xp = player:GetXp()
 		newPlayer:AddLvlFree(player:GetLvl())
