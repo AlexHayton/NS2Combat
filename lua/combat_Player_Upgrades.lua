@@ -277,6 +277,7 @@ function Player:Reset_Lite()
 
 	self:ClearLvlFree()
 	self.combatTable.lastNotify = 0
+	self.combatTable.hasCamouflage = false
 	
 	self.twoHives = false
 	self.threeHives = false

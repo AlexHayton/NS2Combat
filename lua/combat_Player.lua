@@ -133,6 +133,7 @@ function Player:CheckCombatData()
 		self:ClearLvlFree()
 		self:AddLvlFree(1)
 		self.combatTable.lastNotify = 0
+		self.combatTable.hasCamouflage = false
 		
 		self.twoHives = false
 		self.threeHives = false

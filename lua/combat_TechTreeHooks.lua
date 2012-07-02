@@ -17,7 +17,8 @@ function CombatTechTree:OnLoad()
 
     ClassHooker:SetClassCreatedIn("TechTree", "lua/TechTree.lua") 
 	self:ReplaceFunction("GetHasTech", "GetHasTech_Hook")
-	self:ReplaceClassFunction("TechTree", "GetIsTechAvailable", "GetIsTechAvailable_Hook")
+    self:PostHookFunction("GetIsTechAvailable", function() return true end)
+	self:ReplaceClassFunction("TechTree", "GetIsTechAvailable", function() return true end)
 	
 end
 
@@ -39,10 +40,11 @@ function CombatTechTree:GetHasTech_Hook(callingEntity, techId, silenceError)
     
 end
 
+/*
 // when techIds from our combat, just say true
-function CombatTechTree:GetIsTechAvailable_Hook(self, techId)
+function CombatTechTree:GetIsTechAvailable_Hook(self, HookHandle, techId)
 
-    local isCombatUp = false
+    local isCombatUp = false    
 
     if UpsList then
         for index, upgrade in pairs(UpsList) do
@@ -60,11 +62,11 @@ function CombatTechTree:GetIsTechAvailable_Hook(self, techId)
             return techNode:GetAvailable()
         end 
         
-        return false        
+        return false    
     end 
 
 end
-
+*/
 
 if(HotReload) then
     CombatTechTree:OnLoad()
