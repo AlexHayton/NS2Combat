@@ -277,7 +277,6 @@ function Player:Reset_Lite()
 
 	self:ClearLvlFree()
 	self.combatTable.lastNotify = 0
-	self.combatTable.hasCamouflage = false
 
     // scan and resupp values	
     self.combatTable.hasScan = false

@@ -35,7 +35,6 @@ function CombatPlayer:Reset_Hook(self)
 	self:ClearLvlFree()
 	self:AddLvlFree(1)
 	self.combatTable.lastNotify = 0
-	self.combatTable.hasCamouflage = false
 
     // scan and resupp values	
     self.combatTable.hasScan = false
@@ -88,23 +87,8 @@ function CombatPlayer:OnUpdatePlayer_Hook(self, deltaTime)
 		end
 	end
 	
-	// only trigger Camo, Scan and Ressuply when player is alive
+	// only trigger Scan and Ressuply when player is alive
 	if (self.combatTable and self:GetIsAlive()) then 
-	
-	    // Provide a camouflage function
-        if self.combatTable.hasCamouflage then
-            if HasMixin(self, "Cloakable") then
-                self:SetIsCloaked(true, 1, false)
-        
-                // Trigger uncloak when you reach a certain speed, based on lifeform's max speed.
-                local velocity = self:GetVelocity():GetLength()
-                
-                if velocity >= (self:GetMaxSpeed(true) * kCamouflageUncloakFactor) then
-                    self:SetIsCloaked(false)
-                    self.cloakChargeTime = kCamouflageTime
-                end
-            end
-        end 
 
 	    // Provide scan and resupply function
 	    if self.combatTable.hasScan then

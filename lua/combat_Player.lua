@@ -134,7 +134,6 @@ function Player:CheckCombatData()
 		self:ClearLvlFree()
 		self:AddLvlFree(1)
 		self.combatTable.lastNotify = 0
-		self.combatTable.hasCamouflage = false
 		
 		// scan and resupp values	
         self.combatTable.hasScan = false

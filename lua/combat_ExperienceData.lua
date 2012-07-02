@@ -66,10 +66,6 @@ local function TierThree(player, techUpgrade)
 	player:UnlockTierThree()
 end
 
-local function Camouflage(player, techUpgrade)
-	player.combatTable.hasCamouflage = true
-end
-
 local function Scan(player, techUpgrade)
 	player.combatTable.hasScan = true
 end
@@ -133,5 +129,5 @@ table.insert(UpsList, BuildUpgrade("Alien", kCombatUpgrades.TierThree,			"tier3"
 table.insert(UpsList, BuildUpgrade("Alien", kCombatUpgrades.Carapace,			"cara",				"Carapace",			kTechId.Carapace, 			nil, 			nil, 						1, 		kCombatUpgradeTypes.Tech))
 table.insert(UpsList, BuildUpgrade("Alien", kCombatUpgrades.Regeneration,		"regen",			"Regeneration",		kTechId.Regeneration, 		nil, 			nil, 						1, 		kCombatUpgradeTypes.Tech))
 table.insert(UpsList, BuildUpgrade("Alien", kCombatUpgrades.Silence,			"silence",			"Silence",			kTechId.Silence, 			nil, 			nil, 						1, 		kCombatUpgradeTypes.Tech))
-table.insert(UpsList, BuildUpgrade("Alien", kCombatUpgrades.Camouflage,			"camo",				"Camouflage",		kTechId.Shade, 				Camouflage,		nil, 						1, 		kCombatUpgradeTypes.Tech))
+table.insert(UpsList, BuildUpgrade("Alien", kCombatUpgrades.Camouflage,			"camo",				"Camouflage",		kTechId.Camouflage, 		nil,    		nil, 						1, 		kCombatUpgradeTypes.Tech))
 table.insert(UpsList, BuildUpgrade("Alien", kCombatUpgrades.Celerity,			"cele",				"Celerity",			kTechId.Celerity, 			nil, 			nil, 						1, 		kCombatUpgradeTypes.Tech))
