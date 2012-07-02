@@ -157,7 +157,7 @@ function CombatPlayer:GetIsTechAvailable_Hook(self, teamNumber, techId)
 
 end
 
-function CombatPlayer:UpdateNumHives_Hook()
+function CombatPlayer:UpdateNumHives_Hook(self)
 
     local time = Shared.GetTime()
     if self.timeOfLastNumHivesUpdate == nil or (time > self.timeOfLastNumHivesUpdate + .5) then
