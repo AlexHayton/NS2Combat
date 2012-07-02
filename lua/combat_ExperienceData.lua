@@ -59,11 +59,11 @@ local function GiveJetpack(player, techUpgrade)
 end
 
 local function TierTwo(player, techUpgrade)
-	player:UnlockTierTwo()
+    player.twoHives = true
 end
 
 local function TierThree(player, techUpgrade)
-	player:UnlockTierThree()
+    player.threeHives = true
 end
 
 local function Scan(player, techUpgrade)

@@ -277,6 +277,9 @@ function Player:Reset_Lite()
 
 	self:ClearLvlFree()
 	self.combatTable.lastNotify = 0
+	
+	self.twoHives = false
+	self.threeHives = false
 
     // scan and resupp values	
     self.combatTable.hasScan = false

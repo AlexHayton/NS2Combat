@@ -23,8 +23,11 @@ function CombatPlayer:OnLoad()
 	self:PostHookClassFunction("Player", "OnUpdatePlayer", "OnUpdatePlayer_Hook")
 
     self:ReplaceFunction("GetIsTechAvailable", "GetIsTechAvailable_Hook")
+    self:ReplaceClassFunction("Alien", "LockTierTwo",function() end)
+    self:ReplaceClassFunction("Alien", "UpdateNumHives","UpdateNumHives_Hook")
     
 end
+
 
 // Implement lvl and XP
 function CombatPlayer:Reset_Hook(self)
@@ -35,6 +38,9 @@ function CombatPlayer:Reset_Hook(self)
 	self:ClearLvlFree()
 	self:AddLvlFree(1)
 	self.combatTable.lastNotify = 0
+	
+	self.twoHives = false
+	self.threeHives = false
 
     // scan and resupp values	
     self.combatTable.hasScan = false
@@ -87,39 +93,40 @@ function CombatPlayer:OnUpdatePlayer_Hook(self, deltaTime)
 		end
 	end
 	
-	// only trigger Scan and Ressuply when player is alive
-	if (self.combatTable and self:GetIsAlive()) then 
+	if self.combatTable then
+        // only trigger Scan and Ressuply when player is alive
+        if self:GetIsAlive() then 
 
-	    // Provide scan and resupply function
-	    if self.combatTable.hasScan then
-	        // SCAN!!
-            if (self.combatTable.lastScan + deltaTime > kScanTimer) then
-                
-                self:ScanNow()
-	            self.combatTable.lastScan = 0	            
-	            
-	        else
-	            self.combatTable.lastScan = self.combatTable.lastScan + deltaTime
-            end
-    	end 
-    	
-    	if self.combatTable.hasResupply then
-    		if (self.combatTable.lastResupply + deltaTime > kResupplyTimer) then
-    		    	        
-	            local success = self:ResupplyNow()
-	            
-	            if success then
-	                self.combatTable.lastResupply = 0
+            // Provide scan and resupply function
+            if self.combatTable.hasScan then
+                // SCAN!!
+                if (self.combatTable.lastScan + deltaTime > kScanTimer) then
+                    
+                    self:ScanNow()
+                    self.combatTable.lastScan = 0	            
+                    
+                else
+                    self.combatTable.lastScan = self.combatTable.lastScan + deltaTime
                 end
-	           
-	        else
-                self.combatTable.lastResupply = self.combatTable.lastResupply + deltaTime
-            end
-	
-    	end 
-  
+            end 
+            
+            if self.combatTable.hasResupply then
+                if (self.combatTable.lastResupply + deltaTime > kResupplyTimer) then
+                                
+                    local success = self:ResupplyNow()
+                    
+                    if success then
+                        self.combatTable.lastResupply = 0
+                    end
+                   
+                else
+                    self.combatTable.lastResupply = self.combatTable.lastResupply + deltaTime
+                end
+        
+            end 
+      
+        end	
 	end
-	
 end
 
 //___________________
@@ -132,6 +139,25 @@ function CombatPlayer:GetIsTechAvailable_Hook(self, teamNumber, techId)
     return true
 
 end
+
+function CombatPlayer:UpdateNumHives_Hook()
+
+    local time = Shared.GetTime()
+    if self.timeOfLastNumHivesUpdate == nil or (time > self.timeOfLastNumHivesUpdate + .5) then
+
+        if self.twoHives then
+            self:UnlockTierTwo()   
+        end
+        
+        if self.threeHives then
+            self:UnlockTierThree()
+        end
+        
+        self.timeOfLastNumHivesUpdate = time
+        
+    end
+end
+
 
 if(hotreload) then
     CombatPlayer:OnLoad()

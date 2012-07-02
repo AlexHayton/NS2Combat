@@ -51,7 +51,6 @@ function Player:ResupplyNow()
 
     return success
 
-
 end
 
 function Player:GetXp()
@@ -134,6 +133,9 @@ function Player:CheckCombatData()
 		self:ClearLvlFree()
 		self:AddLvlFree(1)
 		self.combatTable.lastNotify = 0
+		
+		self.twoHives = false
+		self.threeHives = false
 		
 		// scan and resupp values	
         self.combatTable.hasScan = false
