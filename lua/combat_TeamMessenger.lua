@@ -17,20 +17,21 @@ local HotReload = ClassHooker:Mixin("CombatTeamMessenger")
 
 function CombatTeamMessenger:OnLoad()
 
-	self:RawHookFunction("SendTeamMessage", "SendTeamMessage_Hook", PassHookHandle)
+	self:ReplaceFunction("SendTeamMessage", "SendTeamMessage_Hook")
 	
 end
 
-// Intercept and block any 'No Commander' messages.
-function CombatTeamMessenger:SendTeamMessage_Hook(hookHandle, team, messageType, optionalData)
+// Intercept and block any 'No Commander' messages, Hooking caused errors so we replace it
+function CombatTeamMessenger:SendTeamMessage_Hook(team, messageType, optionalData)
 
-	// Only intercept NoCommander messages, for now.
-    if (messageType == kTeamMessageTypes.NoCommander) or
-       (messageType == kTeamMessageTypes.CannotSpawn) then
-		return team, nil, optionalData
+    local function SendToPlayer(player)
+        Server.SendNetworkMessage(player, "TeamMessage", { type = messageType, data = optionalData or 0 }, true)
+    end    
+    	// Only intercept NoCommander messages, for now.
+    if not ((messageType == kTeamMessageTypes.NoCommander) or
+       (messageType == kTeamMessageTypes.CannotSpawn)) then
+		    team:ForEachPlayer(SendToPlayer)
 	end
-	
-	return team, messageType, optionalData
 	
 end
 
