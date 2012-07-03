@@ -84,66 +84,69 @@ end
 // Various updates and timers in here.
 function CombatPlayer:OnUpdatePlayer_Hook(self, deltaTime)
 	
-	// Remind players once every so often when they have upgrades to spend.
-	local lvlFree = self:GetLvlFree()
-	if lvlFree > 0 then
-		if (self.combatTable.lastNotify + deltaTime > kUpgradeNotifyInterval) then
-			self.combatTable.lastNotify = 0
-			local upgradeWord = (lvlFree > 1) and "upgrades" or "upgrade"
-			self:SendDirectMessage("You have " .. lvlFree .. " " .. upgradeWord .. " to spend. Use co_spendlvl in chat to buy upgrades.")
-		else
-			self.combatTable.lastNotify = self.combatTable.lastNotify + deltaTime
-		end
-	end
-	
-	if self.combatTable then
-        // only trigger Scan and Ressuply when player is alive
-        if self:GetIsAlive() then
-
-            if self.combatTable.hasCamouflage then
-                if HasMixin(self, "Cloakable") then
-                    self:SetIsCloaked(true, 1, false)
-            
-                    // Trigger uncloak when you reach a certain speed, based on lifeform's max speed.
-                    local velocity = self:GetVelocity():GetLength()
-                    
-                    if velocity >= (self:GetMaxSpeed(true) * kCamouflageUncloakFactor) then
-                        self:SetIsCloaked(false)
-                        self.cloakChargeTime = kCamouflageTime
-                    end
-                end
-            end 
-
-            // Provide scan and resupply function
-            if self.combatTable.hasScan then
-                // SCAN!!
-                if (self.combatTable.lastScan + deltaTime > kScanTimer) then
-                    
-                    self:ScanNow()
-                    self.combatTable.lastScan = 0	            
-                    
-                else
-                    self.combatTable.lastScan = self.combatTable.lastScan + deltaTime
-                end
-            end 
-            
-            if self.combatTable.hasResupply then
-                if (self.combatTable.lastResupply + deltaTime > kResupplyTimer) then
-                                
-                    local success = self:ResupplyNow()
-                    
-                    if success then
-                        self.combatTable.lastResupply = 0
-                    end
-                   
-                else
-                    self.combatTable.lastResupply = self.combatTable.lastResupply + deltaTime
-                end
+	// don't remind players in the ReadyRoom
+	if (self:GetTeamNumber() ~= kTeamReadyRoom) then
+        // Remind players once every so often when they have upgrades to spend.
+        local lvlFree = self:GetLvlFree()
+        if lvlFree > 0 then
+            if (self.combatTable.lastNotify + deltaTime > kUpgradeNotifyInterval) then
+                self.combatTable.lastNotify = 0
+                local upgradeWord = (lvlFree > 1) and "upgrades" or "upgrade"
+                self:SendDirectMessage("You have " .. lvlFree .. " " .. upgradeWord .. " to spend. Use co_spendlvl in chat to buy upgrades.")
+            else
+                self.combatTable.lastNotify = self.combatTable.lastNotify + deltaTime
+            end
+        end
         
-            end 
-      
-        end	
-	end
+        if self.combatTable then
+            // only trigger Scan and Ressuply when player is alive
+            if self:GetIsAlive() then
+
+                if self.combatTable.hasCamouflage then
+                    if HasMixin(self, "Cloakable") then
+                        self:SetIsCloaked(true, 1, false)
+                
+                        // Trigger uncloak when you reach a certain speed, based on lifeform's max speed.
+                        local velocity = self:GetVelocity():GetLength()
+                        
+                        if velocity >= (self:GetMaxSpeed(true) * kCamouflageUncloakFactor) then
+                            self:SetIsCloaked(false)
+                            self.cloakChargeTime = kCamouflageTime
+                        end
+                    end
+                end 
+
+                // Provide scan and resupply function
+                if self.combatTable.hasScan then
+                    // SCAN!!
+                    if (self.combatTable.lastScan + deltaTime > kScanTimer) then
+                        
+                        self:ScanNow()
+                        self.combatTable.lastScan = 0	            
+                        
+                    else
+                        self.combatTable.lastScan = self.combatTable.lastScan + deltaTime
+                    end
+                end 
+                
+                if self.combatTable.hasResupply then
+                    if (self.combatTable.lastResupply + deltaTime > kResupplyTimer) then
+                                    
+                        local success = self:ResupplyNow()
+                        
+                        if success then
+                            self.combatTable.lastResupply = 0
+                        end
+                       
+                    else
+                        self.combatTable.lastResupply = self.combatTable.lastResupply + deltaTime
+                    end
+            
+                end 
+          
+            end	
+        end
+    end
 end
 
 //___________________
