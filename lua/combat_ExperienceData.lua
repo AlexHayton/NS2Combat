@@ -123,13 +123,13 @@ table.insert(UpsList, BuildUpgrade("Marine", kCombatUpgrades.Resupply,			"resup"
 // Parameters:        				team,	 upgradeId, 						upgradeTextCode, 	upgradeDesc, 		upgradeTechId, 				upgradeFunc, 	requirements, 				levels, upgradeType
 // Start with classes
 table.insert(UpsList, BuildUpgrade("Alien", kCombatUpgrades.Gorge,				"gorge",			"Gorge",			kTechId.Gorge, 				nil, 			nil, 						1, 		kCombatUpgradeTypes.Class))
-table.insert(UpsList, BuildUpgrade("Alien", kCombatUpgrades.Lerk,				"lerk",				"Lerk",				kTechId.Lerk, 				nil, 			kCombatUpgrades.Gorge, 		1, 		kCombatUpgradeTypes.Class))
-table.insert(UpsList, BuildUpgrade("Alien", kCombatUpgrades.Fade,				"fade",				"Fade",				kTechId.Fade, 				nil, 			kCombatUpgrades.Gorge, 		2, 		kCombatUpgradeTypes.Class))
-table.insert(UpsList, BuildUpgrade("Alien", kCombatUpgrades.Onos,				"onos",				"Onos",				kTechId.Onos, 				nil, 			kCombatUpgrades.Fade, 		2, 		kCombatUpgradeTypes.Class))
+table.insert(UpsList, BuildUpgrade("Alien", kCombatUpgrades.Lerk,				"lerk",				"Lerk",				kTechId.Lerk, 				nil, 			nil,                 		2, 		kCombatUpgradeTypes.Class))
+table.insert(UpsList, BuildUpgrade("Alien", kCombatUpgrades.Fade,				"fade",				"Fade",				kTechId.Fade, 				nil, 			nil,                 		3, 		kCombatUpgradeTypes.Class))
+table.insert(UpsList, BuildUpgrade("Alien", kCombatUpgrades.Onos,				"onos",				"Onos",				kTechId.Onos, 				nil, 			nil,                 		4, 		kCombatUpgradeTypes.Class))
 
 // Tech
 table.insert(UpsList, BuildUpgrade("Alien", kCombatUpgrades.TierTwo,			"tier2",			"Tier 2",			kTechId.TwoHives, 			TierTwo, 		nil, 						1, 		kCombatUpgradeTypes.Tech))
-table.insert(UpsList, BuildUpgrade("Alien", kCombatUpgrades.TierThree,			"tier3",			"Tier 3",			kTechId.ThreeHives, 		TierThree, 		kCombatUpgrades.TierTwo,	1, 		kCombatUpgradeTypes.Tech))
+table.insert(UpsList, BuildUpgrade("Alien", kCombatUpgrades.TierThree,			"tier3",			"Tier 3",			kTechId.ThreeHives, 		TierThree, 		kCombatUpgrades.TierTwo,	2, 		kCombatUpgradeTypes.Tech))
 table.insert(UpsList, BuildUpgrade("Alien", kCombatUpgrades.Carapace,			"cara",				"Carapace",			kTechId.Carapace, 			nil, 			nil, 						1, 		kCombatUpgradeTypes.Tech))
 table.insert(UpsList, BuildUpgrade("Alien", kCombatUpgrades.Regeneration,		"regen",			"Regeneration",		kTechId.Regeneration, 		nil, 			nil, 						1, 		kCombatUpgradeTypes.Tech))
 table.insert(UpsList, BuildUpgrade("Alien", kCombatUpgrades.Silence,			"silence",			"Silence",			kTechId.Silence, 			nil, 			nil, 						1, 		kCombatUpgradeTypes.Tech))
