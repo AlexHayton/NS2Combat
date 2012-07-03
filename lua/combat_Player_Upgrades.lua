@@ -108,37 +108,38 @@ function Player:ApplyAllUpgrades(upgradeTypes, singleUpgrade)
 	
 	self:CheckCombatData()
 	local techTree = self:GetCombatTechTree()
-
-    if not singleUpgrade then
-        for index, upgradeType in ipairs(upgradeTypes) do
-            
-            local upgradesOfType = GetUpgradesOfType(techTree, upgradeType)
-            
-            for index, upgrade in ipairs(upgradesOfType) do
-                //if not upgrade:GetIsApplied() then
+    
+    if self:GetHasUps() then 
+        if not singleUpgrade then
+            for index, upgradeType in ipairs(upgradeTypes) do
                 
-                // Only apply the currently active lifeform upgrade...
-                if upgradeType == kCombatUpgradeTypes.Class then
-                    if upgrade == self.combatTable.currentLifeForm then
-                        upgrade:DoUpgrade(self)
-                    else
-                        // to enable jp and exo
-                        if  self:isa("Marine") then
+                local upgradesOfType = GetUpgradesOfType(techTree, upgradeType)
+                
+                for index, upgrade in ipairs(upgradesOfType) do
+                    //if not upgrade:GetIsApplied() then
+                    
+                    // Only apply the currently active lifeform upgrade...
+                    if upgradeType == kCombatUpgradeTypes.Class then
+                        if upgrade == self.combatTable.currentLifeForm then
                             upgrade:DoUpgrade(self)
+                        else
+                            // to enable jp and exo
+                            if  self:isa("Marine") then
+                                upgrade:DoUpgrade(self)
+                            end
                         end
+                    else
+                        upgrade:DoUpgrade(self)
                     end
-                else
-                    upgrade:DoUpgrade(self)
+                    //end
                 end
-                //end
+                
             end
             
-        end
-        
-    else
-        singleUpgrade:DoUpgrade(self)
-    end    
-            
+        else
+            singleUpgrade:DoUpgrade(self)
+        end    
+    end
     // Update the tech tree and send updates to the client
     //self:GetTechTree():ComputeAvailability()
     //self:GetTechTree():SendTechTreeUpdates({self})
@@ -260,15 +261,30 @@ function Player:RefundUpgrades(upgradeTypes)
 		end
 	end
 end
+
+// return if the player got any ups or not
+function Player:GetHasUps()
+    
+    self:CheckCombatData()    
+    return not(table.maxn(self.combatTable.techtree) <= 0)
+	
+end
      
 // Gimme my Ups back, called from "CopyPlayerData" 
 function Player:GiveUpsBack()
+      
+    if self:isa("Alien") then
+        if self:GetHasUps() then 
+            self:RefundUpgrades({ kCombatUpgradeTypes.Class })
+        else  
+            // if we have no Ups, spawn in an egg
+            self:DropToFloor()
+			self:EvolveTo(self:GetTechId())
+        end
+    end
     
-	if self:isa("Alien") then
-		self:RefundUpgrades({ kCombatUpgradeTypes.Class })
-	end
-	self:ApplyAllUpgrades({ kCombatUpgradeTypes.Weapon, kCombatUpgradeTypes.Tech })
-    self.isRespawning = false
+    self:ApplyAllUpgrades({ kCombatUpgradeTypes.Weapon, kCombatUpgradeTypes.Tech })         
+    self.isRespawning = false        
 	
 end
 
