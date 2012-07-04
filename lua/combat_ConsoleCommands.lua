@@ -98,9 +98,9 @@ function OnCommandHelp(client)
 	// Display a banner showing the available commands
 	local player = client:GetControllingPlayer()
 	player:SendDirectMessage("Available commands:")
-	player:SendDirectMessage("co_spendlvl - use this to buy upgrades")
-	player:SendDirectMessage("co_upgrades - show available upgrades")
-	player:SendDirectMessage("co_status - use this to show your level, xp and available upgrades")
+	player:SendDirectMessage("/buy or co_spendlvl - use this to buy upgrades")
+	player:SendDirectMessage("/upgrades or co_upgrades - show available upgrades")
+	player:SendDirectMessage("/status or co_status - use this to show your level, xp and available upgrades")
 
 end
 
@@ -131,15 +131,18 @@ function OnCommandUpgrades(client)
 
 end
 
-// All commands that should be accessible via the need to be in this list
-combatCommands = {"co_spendlvl", "co_help", "co_status", "co_upgrades"}
+// All commands that should be accessible via the chat need to be in this list
+combatCommands = {"co_spendlvl", "co_help", "co_status", "co_upgrades", "/upgrades", "/status", "/buy"}
 
 Event.Hook("Console_co_help",                OnCommandHelp) 
 Event.Hook("Console_co_upgrades",                OnCommandUpgrades) 
+Event.Hook("Console_/upgrades",                OnCommandUpgrades) 
 Event.Hook("Console_co_spendlvl",                OnCommandSpendLvl)
+Event.Hook("Console_/buy",						OnCommandSpendLvl)
 Event.Hook("Console_co_addxp",                OnCommandAddXp)
 Event.Hook("Console_co_showxp",                OnCommandShowXp)
 Event.Hook("Console_co_showlvl",                OnCommandShowLvl)
 Event.Hook("Console_co_status",                OnCommandStatus) 
+Event.Hook("Console_/status",                OnCommandStatus) 
 Event.Hook("Console_testmsg",                OnCommandTestMsg)
 Event.Hook("Console_/stuck",                OnCommandStuck)

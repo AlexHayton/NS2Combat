@@ -24,11 +24,11 @@ kAlienWaveSpawnInterval = 10
 
 
 // time for Scan and Resuply
-kScanTimer = 15
+kScanTimer = 12
 kResupplyTimer = 10
 // scan Duration, maybe we need to tune it a bit
 kScanDuration = 5
-kScanRadius = 20
+kScanRadius = 30
 
 
 // Change the GestateTime so every new Class takes the same time

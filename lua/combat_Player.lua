@@ -265,7 +265,7 @@ function Player:spendlvlHints(hint, type)
         self:SendDirectMessage("You can only apply updates once you've joined a team!")
 		
     elseif hint == "no_type" then
-        self:SendDirectMessage("Usage: co_spendlvl upgrade - All upgrades for your team:")
+        self:SendDirectMessage("Usage: /buy upgradeName or co_spendlvl upgradeName - All upgrades for your team:")
         // ToDo: make a short break before printing the ups        
         Server.ClientCommand(self, "co_upgrades")
                
