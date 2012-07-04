@@ -219,8 +219,7 @@ function Player:EvolveTo(newTechId)
 			end
 		end
 		
-		
-		newAlienExtents = LookupTechData(techId, kTechDataMaxExtents)
+		newAlienExtents = LookupTechData(newTechId, kTechDataMaxExtents)
   
 		// In case we aren't evolving to a new alien, using the current's extents.
 		lifeform = self:GetTechId()
