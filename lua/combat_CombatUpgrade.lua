@@ -98,10 +98,11 @@ function CombatUpgrade:ExecuteTechUpgrade(player)
 	// Update the tech tree and send updates to the client. Don't know why, but it's only working when we send it hear
     techTree:SendTechTreeBase(self)
 
-	if (player:isa("Alien")) then
+	if (player:isa("Alien") and self:GetType() ~= kCombatUpgradeTypes.Class) then
 		player:GetTechTree():GiveUpgrade(self:GetTechId())
 		player:GiveUpgrade(self:GetTechId())
 	end
+	
 
 end
 

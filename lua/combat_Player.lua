@@ -184,21 +184,23 @@ function Player:AddXp(amount)
     self:CheckCombatData()
     self:TriggerEffects("res_received")
 	
-	// Make sure we don't go over the max XP.
-    if (self:GetXp() + amount) <= maxXp then
+	// check if amount isn't nil, could cause an error
+	if amount then
+        // Make sure we don't go over the max XP.
+        if (self:GetXp() + amount) <= maxXp then
 
-        // show the cool effect, no direct Message is needed anymore
+            // show the cool effect, no direct Message is needed anymore
 
-        self:XpEffect(amount)
-		self:CheckLvlUp(self.score) 
+            self:XpEffect(amount)
+            self:CheckLvlUp(self.score) 
 
-    else
-        // Max Lvl reached
-        self:SendDirectMessage("Max-XP reached")
-        self.score = maxXp
-        self:CheckLvlUp(self.score)
-    end        
-       
+        else
+            // Max Lvl reached
+            self:SendDirectMessage("Max-XP reached")
+            self.score = maxXp
+            self:CheckLvlUp(self.score)
+        end        
+    end   
 end
 
 // Give XP to m8's around you when you kill an enemy
