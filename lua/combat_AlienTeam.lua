@@ -20,6 +20,7 @@ function CombatAlienTeam:OnLoad()
     ClassHooker:SetClassCreatedIn("AlienTeam", "lua/AlienTeam.lua") 
 	self:ReplaceClassFunction("AlienTeam", "InitTechTree", "InitTechTree_Hook")
 	self:ReplaceClassFunction("AlienTeam", "SpawnInitialStructures", "SpawnInitialStructures_Hook")
+	self:ReplaceClassFunction("AlienTeam", "GetNumHives","GetNumHives_Hook")
 	
 end
 
@@ -146,6 +147,13 @@ function CombatAlienTeam:SpawnInitialStructures_Hook(self, techPoint)
     hive:SetInfestationFullyGrown()    
    
     return tower, hive
+    
+end
+
+
+function CombatAlienTeam:GetNumHives_Hook()
+
+    return 6
     
 end
 

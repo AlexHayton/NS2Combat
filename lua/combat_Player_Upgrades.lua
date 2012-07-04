@@ -140,9 +140,7 @@ function Player:ApplyAllUpgrades(upgradeTypes, singleUpgrade)
             singleUpgrade:DoUpgrade(self)
         end    
     end
-    // Update the tech tree and send updates to the client
-    //self:GetTechTree():ComputeAvailability()
-    //self:GetTechTree():SendTechTreeUpdates({self})
+
 	
 end
 
@@ -213,13 +211,14 @@ function Player:EvolveTo(newTechId)
 		// Specify the list of tech Ids for the new entity to have.
 		local myTechTree = self:GetCombatTechTree()
 		local techIds = {}
+		table.insert(techIds, newTechId)
 		//self:GetUpgrades()
 		for index, upgrade in ipairs(myTechTree) do
 			if (upgrade:GetType() == kCombatUpgradeTypes.Tech) then
 				table.insert(techIds, upgrade:GetTechId())
 			end
 		end
-		table.insert(techIds, newTechId)
+		
 		
 		newAlienExtents = LookupTechData(techId, kTechDataMaxExtents)
   

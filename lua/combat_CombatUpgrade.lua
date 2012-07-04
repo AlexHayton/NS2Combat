@@ -94,8 +94,9 @@ function CombatUpgrade:ExecuteTechUpgrade(player)
     node:SetResearched(true)
 	node:SetHasTech(true)
 	techTree:SetTechNodeChanged(node)
-	techTree:SetTechChanged()	
-	techTree:SendTechTreeBase(player)
+	techTree:SetTechChanged()
+	// Update the tech tree and send updates to the client. Don't know why, but it's only working when we send it hear
+    techTree:SendTechTreeBase(self)
 
 	if (player:isa("Alien")) then
 		player:GetTechTree():GiveUpgrade(self:GetTechId())
