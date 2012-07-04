@@ -56,7 +56,8 @@ function CombatPlayer:Reset_Hook(self)
 	self.score = 0
 	
 	self.combatTable.techtree = {}
-    
+	Server.SendNetworkMessage(self, "ClearTechTree", {}, true)
+	    
 end
 
 // Copy old lvl and XP when respawning 
@@ -86,7 +87,10 @@ function CombatPlayer:OnUpdatePlayer_Hook(self, deltaTime)
 	
 	// don't remind players in the ReadyRoom
 	if (self:GetTeamNumber() ~= kTeamReadyRoom) then
-        // Remind players once every so often when they have upgrades to spend.
+	    // set ArmsLab always true so the up icons are white and not red	    
+	    self.hasArmsLab = true
+	    
+        // Remind players once every so often when they have upgrades to spend.        
         local lvlFree = self:GetLvlFree()
         if lvlFree > 0 then
             if (self.combatTable.lastNotify + deltaTime > kUpgradeNotifyInterval) then

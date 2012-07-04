@@ -307,5 +307,6 @@ function Player:Reset_Lite()
     
     self.combatTable.giveClassAfterRespawn = nil	
 	self.combatTable.techtree = {}
+	Server.SendNetworkMessage(self, "ClearTechTree", {}, true)
 
 end

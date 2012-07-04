@@ -94,7 +94,8 @@ function CombatUpgrade:ExecuteTechUpgrade(player)
     node:SetResearched(true)
 	node:SetHasTech(true)
 	techTree:SetTechNodeChanged(node)
-	techTree:SetTechChanged()
+	techTree:SetTechChanged()	
+	techTree:SendTechTreeBase(player)
 
 	if (player:isa("Alien")) then
 		player:GetTechTree():GiveUpgrade(self:GetTechId())
