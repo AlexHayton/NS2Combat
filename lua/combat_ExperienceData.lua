@@ -87,7 +87,6 @@ local function BuildUpgrade(team, upgradeId, upgradeTextCode, upgradeDescription
 	else
 		upgrade = CombatAlienUpgrade()
 	end
-	
 	upgrade:Initialize(upgradeId, upgradeTextCode, upgradeDescription, upgradeTechId, upgradeFunc, requirements, levels, upgradeType)
 	
 	return upgrade
@@ -97,7 +96,7 @@ UpsList = {}
 // Marine Upgrades
 // Parameters:        				team,	 upgradeId, 						upgradeTextCode, 	upgradeDesc, 		upgradeTechId, 				upgradeFunc, 	requirements, 				levels, upgradeType
 // Start with classes
-table.insert(UpsList, BuildUpgrade("Marine", kCombatUpgrades.Jetpack,			"jp",				"Jetpack",			nil, 						GiveJetpack, 	kCombatUpgrades.Armor2, 	2, 		kCombatUpgradeTypes.Class))
+table.insert(UpsList, BuildUpgrade("Marine", kCombatUpgrades.Jetpack,			"jp",				"Jetpack",			kTechId.Jetpack, 			GiveJetpack, 	kCombatUpgrades.Armor2, 	2, 		kCombatUpgradeTypes.Class))
 
 // Weapons
 table.insert(UpsList, BuildUpgrade("Marine", kCombatUpgrades.Mines,				"mines",			"Mines",			kTechId.LayMines, 			nil, 			nil, 						1, 		kCombatUpgradeTypes.Weapon))

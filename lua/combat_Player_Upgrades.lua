@@ -140,7 +140,9 @@ function Player:ApplyAllUpgrades(upgradeTypes, singleUpgrade)
             singleUpgrade:DoUpgrade(self)
         end    
     end
-
+    
+    // send the Ups to the GUI
+    self:SendUpgrades()    
 	
 end
 
@@ -305,6 +307,24 @@ function Player:Reset_Lite()
     
     self.combatTable.giveClassAfterRespawn = nil	
 	self.combatTable.techtree = {}
+	self:SendUpgrades()
 	Server.SendNetworkMessage(self, "ClearTechTree", {}, true)
 
+end
+
+function Player:SendUpgrades()
+
+    local combatTechTree = self:GetCombatTechTree()
+
+    // clear all upgrades and send new ones
+    Server.SendCommand(self, "co_clearupgrades")    
+    
+    if combatTechTree then    
+        for _, upgrade in pairs(combatTechTree) do
+            if upgrade then
+                Server.SendCommand(self, "co_setupgrades " .. tostring(upgrade:GetId()))
+            end
+        end
+    end
+      
 end
