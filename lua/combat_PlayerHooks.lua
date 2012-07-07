@@ -57,6 +57,7 @@ function CombatPlayer:Reset_Hook(self)
 	
 	self.combatTable.techtree = {}
 	Server.SendNetworkMessage(self, "ClearTechTree", {}, true)
+	self:SendUpgrades()
 	    
 end
 
@@ -71,6 +72,8 @@ function CombatPlayer:CopyPlayerDataFrom_Hook(self, player)
 	if (self:isa("Marine") and self:GetTeamNumber() ~= kTeamReadyRoom) then
 		self:ApplyAllUpgrades({ kCombatUpgradeTypes.Tech })
 	end
+	
+	self:SendUpgrades(player)
 	
 end
 

@@ -19,7 +19,7 @@ combat_GUIMarineBuyMenu.kRepeatingBackground = "ui/menu/grid.dds"
 combat_GUIMarineBuyMenu.kContentBgTexture = "ui/menu/repeating_bg.dds"
 combat_GUIMarineBuyMenu.kContentBgBackTexture = "ui/menu/repeating_bg_black.dds"
 combat_GUIMarineBuyMenu.kResourceIconTexture = "ui/pres_icon_big.dds"
-combat_GUIMarineBuyMenu.kSmallIconTexture = "ui/marine_messages_icons.dds"
+combat_GUIMarineBuyMenu.kSmallIconTexture = "ui/marine_buildmenu.dds"
 combat_GUIMarineBuyMenu.kBigIconTexture = "ui/marine_buy_bigicons.dds"
 combat_GUIMarineBuyMenu.kButtonTexture = "ui/marine_buymenu_button.dds"
 combat_GUIMarineBuyMenu.kMenuSelectionTexture = "ui/marine_buymenu_selector.dds"
@@ -39,93 +39,72 @@ combat_GUIMarineBuyMenu.kArrowWidth = GUIScale(32)
 combat_GUIMarineBuyMenu.kArrowHeight = GUIScale(32)
 combat_GUIMarineBuyMenu.kArrowTexCoords = { 1, 1, 0, 0 }
 
-// Big Item Icons
-combat_GUIMarineBuyMenu.kBigIconSize = GUIScale( Vector(320, 256, 0) )
-combat_GUIMarineBuyMenu.kBigIconOffset = GUIScale(20)
-
-local gBigIconIndex = nil
-local bigIconWidth = 400
-local bigIconHeight = 300
-local function GetBigIconPixelCoords(techId, researched)
-
-    if not gBigIconIndex then
-    
-        gBigIconIndex = {}
-        gBigIconIndex[kTechId.Axe] = 0
-        gBigIconIndex[kTechId.Pistol] = 1
-        gBigIconIndex[kTechId.Rifle] = 2
-        gBigIconIndex[kTechId.Shotgun] = 3
-        gBigIconIndex[kTechId.GrenadeLauncher] = 4
-        gBigIconIndex[kTechId.Flamethrower] = 5
-        gBigIconIndex[kTechId.Jetpack] = 6
-        gBigIconIndex[kTechId.Exosuit] = 7
-        gBigIconIndex[kTechId.Welder] = 8
-        gBigIconIndex[kTechId.LayMines] = 9
-    
-    end
-    
-    local index = gBigIconIndex[techId]
-    if not index then
-        index = 0
-    end
-    
-    local x1 = 0
-    local x2 = bigIconWidth
-    
-    if not researched then
-    
-        x1 = bigIconWidth
-        x2 = bigIconWidth * 2
-        
-    end
-    
-    local y1 = index * bigIconHeight
-    local y2 = (index + 1) * bigIconHeight
-    
-    return x1, y1, x2, y2
-
-end
-
 // Small Item Icons
-combat_GUIMarineBuyMenu.kSmallIconSize = GUIScale( Vector(128, 64, 0) )
-combat_GUIMarineBuyMenu.kSelectorSize = GUIScale( Vector(148, 96, 0) )
+
+combat_GUIMarineBuyMenu.kSmallIconSize = GUIScale( Vector(80, 80, 0) )
+combat_GUIMarineBuyMenu.kSelectorSize = GUIScale( Vector(100, 100, 0) )
+
+// x-offset
+combat_GUIMarineBuyMenu.kSmallIconOffset_x = GUIScale(120)
+
 combat_GUIMarineBuyMenu.kIconTopOffset = 10
 combat_GUIMarineBuyMenu.kItemIconYOffset = {}
 
 combat_GUIMarineBuyMenu.kEquippedIconTopOffset = 58
 
-local smallIconHeight = 64
-local smallIconWidth = 128
+local smallIconHeight = 80
+local smallIconWidth = 80
+// max Icon per row
+local smallIconRows = 4
+
 local gSmallIconIndex = nil
 local function GetSmallIconPixelCoordinates(itemTechId)
 
-    if not gSmallIconIndex then
+    if not kMarineTechIdToMaterialOffset then
     
-        gSmallIconIndex = {}
-        gSmallIconIndex[kTechId.Axe] = 4
-        gSmallIconIndex[kTechId.Pistol] = 3
-        gSmallIconIndex[kTechId.Rifle] = 1
-        gSmallIconIndex[kTechId.Shotgun] = 5
-        gSmallIconIndex[kTechId.GrenadeLauncher] = 8
-        gSmallIconIndex[kTechId.Flamethrower] = 6
-        gSmallIconIndex[kTechId.Jetpack] = 24
-        gSmallIconIndex[kTechId.Exosuit] = 25
-        gSmallIconIndex[kTechId.Welder] = 10
-        gSmallIconIndex[kTechId.LayMines] = 21
+        // Init marine offsets
+        kMarineTechIdToMaterialOffset = {} 
+        
+        // class 
+        kMarineTechIdToMaterialOffset[kTechId.Jetpack] = 40
+        //kMarineTechIdToMaterialOffset[kTechId.Exo] = 61        
+        //kMarineTechIdToMaterialOffset[kTechId.Exosuit] = 77
+        
+        // weapons        
+        kMarineTechIdToMaterialOffset[kTechId.LayMines] = 80
+        kMarineTechIdToMaterialOffset[kTechId.Welder] = 34
+        kMarineTechIdToMaterialOffset[kTechId.Shotgun] = 48
+        kMarineTechIdToMaterialOffset[kTechId.GrenadeLauncher] = 72
+        kMarineTechIdToMaterialOffset[kTechId.Flamethrower] = 42
+        
+        // tech        
+        kMarineTechIdToMaterialOffset[kTechId.Armor1] = 49
+        kMarineTechIdToMaterialOffset[kTechId.Armor2] = 50
+        kMarineTechIdToMaterialOffset[kTechId.Armor3] = 51
+        kMarineTechIdToMaterialOffset[kTechId.Weapons1] = 55
+        kMarineTechIdToMaterialOffset[kTechId.Weapons2] = 56
+        kMarineTechIdToMaterialOffset[kTechId.Weapons3] = 57        
+        kMarineTechIdToMaterialOffset[kTechId.MedPack] = 37
+        kMarineTechIdToMaterialOffset[kTechId.Scan] = 41
     
     end
     
-    local index = gSmallIconIndex[itemTechId]
+    local index = kMarineTechIdToMaterialOffset[itemTechId]
     if not index then
         index = 0
     end
+        
+    local columns = 12    
+    local textureOffset_x1 = index % columns
+    local textureOffset_y1 = math.floor(index / columns)
     
-    local y1 = index * smallIconHeight
-    local y2 = (index + 1) * smallIconHeight
-    
-    return 0, y1, smallIconWidth, y2
+    local pixelXOffset = textureOffset_x1 * smallIconWidth
+    local pixelYOffset = textureOffset_y1 * smallIconHeight
+        
+    return pixelXOffset, pixelYOffset, pixelXOffset + smallIconWidth, pixelYOffset + smallIconHeight
 
 end
+
                             
 combat_GUIMarineBuyMenu.kTextColor = Color(kMarineFontColor)
 
@@ -361,83 +340,85 @@ function combat_GUIMarineBuyMenu:_InitializeItemButtons()
     self.menuHeaderTitle:SetTextAlignmentY(GUIItem.Align_Center)
     self.menuHeaderTitle:SetColor(combat_GUIMarineBuyMenu.kTextColor)
     self.menuHeaderTitle:SetText(Locale.ResolveString("BUY"))
-    self.menuHeader:AddChild(self.menuHeaderTitle)
-    
+    self.menuHeader:AddChild(self.menuHeaderTitle)    
     
     self.itemButtons = { }
     
     local allUps = GetAllUpgrades("Marine")
+    // sort the ups, definied in this file
+    sortedList = CombatMarineBuy_GUISortUps(allUps)  
     local selectorPosX = -combat_GUIMarineBuyMenu.kSelectorSize.x + combat_GUIMarineBuyMenu.kPadding
     local fontScaleVector = Vector(0.8, 0.8, 0)
-    local itemNr = 0
-    local k = 0
-    testOffset = 0
+    local itemNr = 1
+    local k = 1
+    xOffset  = 0
     
-    for i, upgrade in ipairs(allUps) do
+    for i, upgrade in ipairs(sortedList) do
     
-        local itemTechId = upgrade:GetTechId()
-        // only 6 icons per column
-        if itemTechId then
-            
-            itemNr = itemNr +1
-            k = k + 1
-            if itemNr == 8 then
-                k = 1
-                testOffset = testOffset + 180
+        if upgrade ~= "nextRow" then
+            local itemTechId = upgrade:GetTechId()
+            // only 6 icons per column
+            if itemTechId then         
+                
+                local graphicItem = GUIManager:CreateGraphicItem()
+                graphicItem:SetSize(combat_GUIMarineBuyMenu.kSmallIconSize)
+                graphicItem:SetAnchor(GUIItem.Middle, GUIItem.Top)
+                graphicItem:SetPosition(Vector((-combat_GUIMarineBuyMenu.kSmallIconSize.x/ 2) + xOffset, combat_GUIMarineBuyMenu.kIconTopOffset + (combat_GUIMarineBuyMenu.kSmallIconSize.y) * itemNr - combat_GUIMarineBuyMenu.kSmallIconSize.y, 0))
+                // set the tecture file for the icons
+                graphicItem:SetTexture(combat_GUIMarineBuyMenu.kSmallIconTexture)
+                 // set the pixel coordinate for the icon
+                graphicItem:SetTexturePixelCoordinates(GetSmallIconPixelCoordinates(itemTechId))
+                
+                local graphicItemActive = GUIManager:CreateGraphicItem()
+                graphicItemActive:SetSize(combat_GUIMarineBuyMenu.kSelectorSize)          
+                graphicItemActive:SetPosition(Vector(selectorPosX, -combat_GUIMarineBuyMenu.kSelectorSize.y / 2, 0))
+                graphicItemActive:SetAnchor(GUIItem.Right, GUIItem.Center)
+                graphicItemActive:SetTexture(combat_GUIMarineBuyMenu.kMenuSelectionTexture)
+                graphicItemActive:SetIsVisible(false)
+                
+                graphicItem:AddChild(graphicItemActive)
+                
+                local costIcon = GUIManager:CreateGraphicItem()
+                costIcon:SetSize(Vector(combat_GUIMarineBuyMenu.kResourceIconWidth * 0.8, combat_GUIMarineBuyMenu.kResourceIconHeight * 0.8, 0))
+                costIcon:SetAnchor(GUIItem.Right, GUIItem.Bottom)
+                costIcon:SetPosition(Vector(-32, -combat_GUIMarineBuyMenu.kResourceIconHeight * 0.5, 0))
+                costIcon:SetTexture(combat_GUIMarineBuyMenu.kResourceIconTexture)
+                costIcon:SetColor(combat_GUIMarineBuyMenu.kTextColor)
+                
+                local selectedArrow = GUIManager:CreateGraphicItem()
+                selectedArrow:SetSize(Vector(combat_GUIMarineBuyMenu.kArrowWidth, combat_GUIMarineBuyMenu.kArrowHeight, 0))
+                selectedArrow:SetAnchor(GUIItem.Left, GUIItem.Center)
+                selectedArrow:SetPosition(Vector(-combat_GUIMarineBuyMenu.kArrowWidth - combat_GUIMarineBuyMenu.kPadding, -combat_GUIMarineBuyMenu.kArrowHeight * 0.5, 0))
+                selectedArrow:SetTexture(combat_GUIMarineBuyMenu.kArrowTexture)
+                selectedArrow:SetColor(combat_GUIMarineBuyMenu.kTextColor)
+                selectedArrow:SetTextureCoordinates(unpack(combat_GUIMarineBuyMenu.kArrowTexCoords))
+                selectedArrow:SetIsVisible(false)
+                
+                graphicItem:AddChild(selectedArrow) 
+                
+                local itemCost = GUIManager:CreateTextItem()
+                itemCost:SetFontName(combat_GUIMarineBuyMenu.kFont)
+                itemCost:SetFontIsBold(true)
+                itemCost:SetAnchor(GUIItem.Right, GUIItem.Center)
+                itemCost:SetPosition(Vector(0, 0, 0))
+                itemCost:SetTextAlignmentX(GUIItem.Align_Min)
+                itemCost:SetTextAlignmentY(GUIItem.Align_Center)
+                itemCost:SetScale(fontScaleVector)
+                itemCost:SetColor(combat_GUIMarineBuyMenu.kTextColor)
+                itemCost:SetText(ToString(upgrade:GetLevels()))
+                
+                costIcon:AddChild(itemCost)  
+                
+                graphicItem:AddChild(costIcon)  
+                
+                self.menu:AddChild(graphicItem)
+                table.insert(self.itemButtons, { Button = graphicItem, Highlight = graphicItemActive, TechId = itemTechId, Cost = itemCost, ResourceIcon = costIcon, Arrow = selectedArrow , Upgrade = upgrade} )
+                  
+                itemNr = itemNr +1
             end
-            
-            local graphicItem = GUIManager:CreateGraphicItem()
-            graphicItem:SetSize(combat_GUIMarineBuyMenu.kSmallIconSize)
-            graphicItem:SetAnchor(GUIItem.Middle, GUIItem.Top)
-            graphicItem:SetPosition(Vector((-combat_GUIMarineBuyMenu.kSmallIconSize.x/ 2) + testOffset, combat_GUIMarineBuyMenu.kIconTopOffset + (combat_GUIMarineBuyMenu.kSmallIconSize.y) * k - combat_GUIMarineBuyMenu.kSmallIconSize.y, 0))
-            graphicItem:SetTexture(combat_GUIMarineBuyMenu.kSmallIconTexture)
-            graphicItem:SetTexturePixelCoordinates(GetSmallIconPixelCoordinates(itemTechId))
-            
-            local graphicItemActive = GUIManager:CreateGraphicItem()
-            graphicItemActive:SetSize(combat_GUIMarineBuyMenu.kSelectorSize)
-            
-            graphicItemActive:SetPosition(Vector(selectorPosX, -combat_GUIMarineBuyMenu.kSelectorSize.y / 2, 0))
-            graphicItemActive:SetAnchor(GUIItem.Right, GUIItem.Center)
-            graphicItemActive:SetTexture(combat_GUIMarineBuyMenu.kMenuSelectionTexture)
-            graphicItemActive:SetIsVisible(false)
-            
-            graphicItem:AddChild(graphicItemActive)
-            
-            local costIcon = GUIManager:CreateGraphicItem()
-            costIcon:SetSize(Vector(combat_GUIMarineBuyMenu.kResourceIconWidth * 0.8, combat_GUIMarineBuyMenu.kResourceIconHeight * 0.8, 0))
-            costIcon:SetAnchor(GUIItem.Right, GUIItem.Bottom)
-            costIcon:SetPosition(Vector(-32, -combat_GUIMarineBuyMenu.kResourceIconHeight * 0.5, 0))
-            costIcon:SetTexture(combat_GUIMarineBuyMenu.kResourceIconTexture)
-            costIcon:SetColor(combat_GUIMarineBuyMenu.kTextColor)
-            
-            local selectedArrow = GUIManager:CreateGraphicItem()
-            selectedArrow:SetSize(Vector(combat_GUIMarineBuyMenu.kArrowWidth, combat_GUIMarineBuyMenu.kArrowHeight, 0))
-            selectedArrow:SetAnchor(GUIItem.Left, GUIItem.Center)
-            selectedArrow:SetPosition(Vector(-combat_GUIMarineBuyMenu.kArrowWidth - combat_GUIMarineBuyMenu.kPadding, -combat_GUIMarineBuyMenu.kArrowHeight * 0.5, 0))
-            selectedArrow:SetTexture(combat_GUIMarineBuyMenu.kArrowTexture)
-            selectedArrow:SetColor(combat_GUIMarineBuyMenu.kTextColor)
-            selectedArrow:SetTextureCoordinates(unpack(combat_GUIMarineBuyMenu.kArrowTexCoords))
-            selectedArrow:SetIsVisible(false)
-            
-            graphicItem:AddChild(selectedArrow) 
-            
-            local itemCost = GUIManager:CreateTextItem()
-            itemCost:SetFontName(combat_GUIMarineBuyMenu.kFont)
-            itemCost:SetFontIsBold(true)
-            itemCost:SetAnchor(GUIItem.Right, GUIItem.Center)
-            itemCost:SetPosition(Vector(0, 0, 0))
-            itemCost:SetTextAlignmentX(GUIItem.Align_Min)
-            itemCost:SetTextAlignmentY(GUIItem.Align_Center)
-            itemCost:SetScale(fontScaleVector)
-            itemCost:SetColor(combat_GUIMarineBuyMenu.kTextColor)
-            itemCost:SetText(ToString(upgrade:GetLevels()))
-            
-            costIcon:AddChild(itemCost)  
-            
-            graphicItem:AddChild(costIcon)  
-            
-            self.menu:AddChild(graphicItem)
-            table.insert(self.itemButtons, { Button = graphicItem, Highlight = graphicItemActive, TechId = itemTechId, Cost = itemCost, ResourceIcon = costIcon, Arrow = selectedArrow , Upgrade = upgrade} )
+        else
+            itemNr = 1
+            xOffset = xOffset + combat_GUIMarineBuyMenu.kSmallIconOffset_x
         end
     
     end
@@ -507,20 +488,16 @@ function combat_GUIMarineBuyMenu:_UpdateItemButtons(deltaTime)
             
                 useColor = Color(0.5, 0.5, 0.5, 1) 
                
+            // set it blink when we got the upp already
+            elseif  self.player:GotItemAlready(item.Upgrade) then
+                
+                local anim = math.cos(Shared.GetTime() * 9) * 0.4 + 0.6
+                useColor = Color(1, 1, anim, 1)
+                    
             // set red if can't afford
             elseif PlayerUI_GetPlayerResources() < item.Upgrade:GetLevels() then
             
-               useColor = Color(1, 0, 0, 1)
-            
-            // set normal visible
-            else
-
-                if self.player:GotItemAlready(item.Upgrade) then
-                
-                    local anim = math.cos(Shared.GetTime() * 9) * 0.4 + 0.6
-                    useColor = Color(1, 1, anim, 1)
-                    
-                end
+                useColor = Color(1, 0, 0, 1)
                
             end
             
@@ -552,7 +529,7 @@ function combat_GUIMarineBuyMenu:_InitializeContent()
     self.itemName:SetFontName(combat_GUIMarineBuyMenu.kFont)
     self.itemName:SetFontIsBold(true)
     self.itemName:SetAnchor(GUIItem.Left, GUIItem.Top)
-    self.itemName:SetPosition(Vector(combat_GUIMarineBuyMenu.kItemNameOffsetX , combat_GUIMarineBuyMenu.kItemNameOffsetY , 0))
+    self.itemName:SetPosition(Vector((-combat_GUIMarineBuyMenu.kSmallIconSize.x/ 2) - 60, combat_GUIMarineBuyMenu.kIconTopOffset + (combat_GUIMarineBuyMenu.kSmallIconSize.y) * (smallIconRows + 1.5) - combat_GUIMarineBuyMenu.kSmallIconSize.y, 0))
     self.itemName:SetTextAlignmentX(GUIItem.Align_Min)
     self.itemName:SetTextAlignmentY(GUIItem.Align_Min)
     self.itemName:SetColor(combat_GUIMarineBuyMenu.kTextColor)
@@ -560,21 +537,12 @@ function combat_GUIMarineBuyMenu:_InitializeContent()
     
     self.content:AddChild(self.itemName)
     
-    self.portrait = GetGUIManager():CreateGraphicItem()
-    self.portrait:SetAnchor(GUIItem.Middle, GUIItem.Top)
-    self.portrait:SetPosition(Vector(-combat_GUIMarineBuyMenu.kBigIconSize.x/2, combat_GUIMarineBuyMenu.kBigIconOffset, 0))
-    self.portrait:SetSize(combat_GUIMarineBuyMenu.kBigIconSize)
-    self.portrait:SetTexture(combat_GUIMarineBuyMenu.kBigIconTexture)
-    self.portrait:SetTexturePixelCoordinates(GetBigIconPixelCoords(kTechId.Axe))
-    self.portrait:SetIsVisible(false)
-    self.content:AddChild(self.portrait)
-    
     self.itemDescription = GetGUIManager():CreateTextItem()
     self.itemDescription:SetFontName(combat_GUIMarineBuyMenu.kDescriptionFontName)
     //self.itemDescription:SetFontIsBold(true)
     self.itemDescription:SetFontSize(combat_GUIMarineBuyMenu.kDescriptionFontSize)
     self.itemDescription:SetAnchor(GUIItem.Middle, GUIItem.Top)
-    self.itemDescription:SetPosition(Vector(-combat_GUIMarineBuyMenu.kItemDescriptionSize.x / 2, combat_GUIMarineBuyMenu.kItemDescriptionOffsetY, 0))
+    self.itemDescription:SetPosition(Vector((-combat_GUIMarineBuyMenu.kSmallIconSize.x/ 2) - 200, combat_GUIMarineBuyMenu.kIconTopOffset + (combat_GUIMarineBuyMenu.kSmallIconSize.y) * (smallIconRows + 1.8) - combat_GUIMarineBuyMenu.kSmallIconSize.y, 0))
     self.itemDescription:SetTextAlignmentX(GUIItem.Align_Min)
     self.itemDescription:SetTextAlignmentY(GUIItem.Align_Min)
     self.itemDescription:SetColor(combat_GUIMarineBuyMenu.kTextColor)
@@ -598,22 +566,15 @@ function combat_GUIMarineBuyMenu:_UpdateContent(deltaTime)
         local upgradesCost = 0
         local canAfford = PlayerUI_GetPlayerResources() >= itemCost + upgradesCost
 
-        if not canAfford and researched then
-            self.portrait:SetColor(Color(1, 0, 0, 1))
-        else
-            self.portrait:SetColor(Color(1, 1, 1, 1))
-        end
-    
-        self.itemName:SetText(MarineBuy_GetDisplayName(techId))
-        self.portrait:SetTexturePixelCoordinates(GetBigIconPixelCoords(techId, researched))
-        self.itemDescription:SetText(MarineBuy_GetWeaponDescription(techId))
+        // the discription text under the buttons
+        self.itemName:SetText(CombatMarineBuy_GetDisplayName(techId))
+        self.itemDescription:SetText(CombatMarineBuy_GetWeaponDescription(techId))
         self.itemDescription:SetTextClipped(true, combat_GUIMarineBuyMenu.kItemDescriptionSize.x - 2* combat_GUIMarineBuyMenu.kPadding, combat_GUIMarineBuyMenu.kItemDescriptionSize.y - combat_GUIMarineBuyMenu.kPadding)
 
     end
     
     local contentVisible = techId ~= nil and techId ~= kTechId.None
-    
-    self.portrait:SetIsVisible(contentVisible)
+
     self.itemName:SetIsVisible(contentVisible)
     self.itemDescription:SetIsVisible(contentVisible)
     

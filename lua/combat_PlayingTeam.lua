@@ -210,12 +210,12 @@ function CombatPlayingTeam:SpawnPlayer(player)
 
     if player.combatTable and player.combatTable.giveClassAfterRespawn then
         success, newPlayer  = player:GetTeam():ReplaceRespawnPlayer(player, nil, nil, player.combatTable.giveClassAfterRespawn)
-        newPlayer:GiveUpsBack()     
+        newPlayer:GiveUpsBack()   
     else
 		// Spawn normally		
 		// Give the ups back too		
         success, newPlayer = player:GetTeam():ReplaceRespawnPlayer(player, nil, nil)   
-        newPlayer:GiveUpsBack()     
+        newPlayer:GiveUpsBack()    
     end
     
     if success then
