@@ -131,6 +131,14 @@ function OnCommandUpgrades(client)
 
 end
 
+// send the Ups to the requesting player
+function OnCommandSendUpgrades(client)
+
+    local player = client:GetControllingPlayer()
+    player:SendUpgrades()
+
+end
+
 // All commands that should be accessible via the chat need to be in this list
 combatCommands = {"co_spendlvl", "co_help", "co_status", "co_upgrades", "/upgrades", "/status", "/buy"}
 
@@ -146,3 +154,5 @@ Event.Hook("Console_co_status",                OnCommandStatus)
 Event.Hook("Console_/status",                OnCommandStatus) 
 Event.Hook("Console_testmsg",                OnCommandTestMsg)
 Event.Hook("Console_/stuck",                OnCommandStuck)
+
+Event.Hook("Console_co_sendupgrades",       OnCommandSendUpgrades) 

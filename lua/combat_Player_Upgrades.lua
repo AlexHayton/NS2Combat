@@ -312,22 +312,18 @@ function Player:Reset_Lite()
 
 end
 
-function Player:SendUpgrades(player)
-
-    if not player  then
-        player = self
-    end
-    
-    player:CheckCombatData()    
-    local combatTechTree = player:GetCombatTechTree()
+function Player:SendUpgrades()
+  
+	self:CheckCombatData()    
+    local combatTechTree = self:GetCombatTechTree()
 
     // clear all upgrades and send new ones
-    Server.SendCommand(player, "co_clearupgrades")    
+    Server.SendCommand(self, "co_clearupgrades")    
     
     if combatTechTree then    
         for _, upgrade in pairs(combatTechTree) do
             if upgrade then
-                Server.SendCommand(player, "co_setupgrades " .. tostring(upgrade:GetId()))
+                Server.SendCommand(self, "co_setupgrades " .. tostring(upgrade:GetId()))
             end
         end
     end

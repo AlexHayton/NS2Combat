@@ -17,6 +17,7 @@ function CombatPlayerClient:OnLoad()
 
     ClassHooker:SetClassCreatedIn("Player", "lua/Player.lua") 
 	self:ReplaceClassFunction("Player", "Buy", "Buy_Hook_Marine")
+	self:HookClassFunction("Player", "OnInitLocalClient", "OnInitLocalClient_Hook")
 	self:ReplaceClassFunction("Alien", "Buy", "Buy_Hook_Alien")
     self:ReplaceClassFunction("Marine", "CloseMenu", "CloseMenu_Hook")
 end
@@ -44,6 +45,15 @@ function CombatPlayerClient:Buy_Hook_Marine(self)
     end
 
 end
+
+
+// get the ups from the server (only worked that way)
+function CombatPlayerClient:OnInitLocalClient_Hook(self)
+
+    Shared.ConsoleCommand("co_sendupgrades") 
+
+end
+
 
 // starting the costum buy menu for aliens
 function CombatPlayerClient:Buy_Hook_Alien(self)

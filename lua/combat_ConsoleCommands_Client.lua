@@ -15,7 +15,13 @@ function OnCommandSetUpgrades(upgradeId)
         
     // insert the ids in the personal player table
     local player = Client.GetLocalPlayer()
+    
+    if not player.combatUpgrades then
+        player.combatUpgrades = {}
+    end
+    
     table.insert(player.combatUpgrades, upgradeId)
+
  
 end
 

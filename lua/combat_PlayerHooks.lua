@@ -73,8 +73,6 @@ function CombatPlayer:CopyPlayerDataFrom_Hook(self, player)
 		self:ApplyAllUpgrades({ kCombatUpgradeTypes.Tech })
 	end
 	
-	self:SendUpgrades(player)
-	
 end
 
 function CombatPlayer:GetTechTree_Hook(self)
