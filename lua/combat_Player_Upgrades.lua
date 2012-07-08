@@ -34,6 +34,7 @@ function Player:CoEnableUpgrade(upgrade)
 	local requirements = upgrade:GetRequirements()
 	local techId = upgrade:GetTechId()
 	local neededLvl = upgrade:GetLevels()
+	local team = upgrade:GetTeam()
 	
 	// Loop over the other items in the player's tech tree.
 	for number, entry in ipairs(self.combatTable.techtree) do
@@ -71,6 +72,8 @@ function Player:CoEnableUpgrade(upgrade)
 	// Sanity checks before we actually go further.
 	if requirements then
 		self:spendlvlHints("neededOtherUp", GetUpgradeFromId(requirements):GetTextCode())
+	elseif not self:isa(team) then
+		self:spendlvlHints("wrong_team", team)
 	elseif alreadyGotUpgrade then
 	    self:spendlvlHints("already_owned", upgrade:GetTextCode())
 	elseif noRoom then

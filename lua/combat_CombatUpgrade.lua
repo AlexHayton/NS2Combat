@@ -55,6 +55,10 @@ function CombatUpgrade:GetId()
 	return self.id
 end
 
+function CombatUpgrade:GetTeam()
+	return self.team
+end
+
 function CombatUpgrade:GetTechId()
 	return self.techId
 end

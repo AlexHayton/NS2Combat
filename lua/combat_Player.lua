@@ -291,6 +291,15 @@ function Player:spendlvlHints(hint, type)
     elseif hint == "no_room" then
         self:SendDirectMessage( type .." upgrade failed, maybe not enough room")   
         
+	elseif hint == "wrong_team" then
+		local teamtext = ""
+		if type == "Alien" then
+			teamtext = "an Alien"
+		else
+			teamtext = "a Marine"
+		end
+		self:SendDirectMessage( "Cannot take this upgrade. You are not " .. teamtext .. "!" )   
+	
     end
 end
 
