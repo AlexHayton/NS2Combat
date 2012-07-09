@@ -68,6 +68,16 @@ function Experience_GetLvl(xp)
 	return returnlevel
 end
 
+function GetXpValue(entity)
+
+	if entity:isa("Player") then
+		return XpList[entity.combatTable.lvl]["GivenXP"]
+	else
+		return XpValues[entity:GetClassName()]
+	end
+	
+end
+
 function GetAllUpgrades(team)
 	
 	local upgradeList = {}

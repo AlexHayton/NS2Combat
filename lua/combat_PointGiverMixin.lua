@@ -26,20 +26,13 @@ function PointGiverMixin:OnKill(attacker, doer, point, direction)
     // to fix a bug, check before if the pointOwner is a Player
    if pointOwner and pointOwner:isa("Player") then
         if(pointOwner:GetTeamNumber() ~= self:GetTeamNumber()) then
-            if self:isa("Player") then
-                    if self.combatTable then
-                        pointOwner:AddXp(XpList[self.combatTable.lvl]["GivenXP"])
-                        pointOwner:GiveXpMatesNearby(XpList[self.combatTable.lvl]["GivenXP"])
-                    else
-                        // if enemy dont got a combatTable, get standard Value for Lvl 1
-                        pointOwner:AddXp(XpList[1]["GivenXP"])
-                        pointOwner:GiveXpMatesNearby(XpList[self.combatTable.lvl]["GivenXP"])
-                    end
-            else    
-            
-                // Give XP for killing structures
-                pointOwner:AddXp(XpValues[self:GetClassName()])
-            end
+		
+			pointOwner:AddXp(GetXPValue(self))
+			// Add Xp to mates if the dead thing is a player.
+			if self:isa("Player") then
+				pointOwner:GiveXpMatesNearby(GetXPValue(self))
+			end
+			
         end
     end    
 
