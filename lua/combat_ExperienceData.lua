@@ -44,7 +44,7 @@ XpValues["Fade"] = 100
 XpValues["Onos"] = 100
 XpValues["Hydra"] = 50
 XpValues["Clog"] = 20
-XpValues["Armory"] = 400
+XpValues["Armory"] = 200
 XpValues["CommandStation"] = 700
 XpValues["Hive"] = 700
 

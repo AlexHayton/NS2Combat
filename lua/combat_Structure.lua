@@ -37,13 +37,13 @@ function CombatStructure:OnTakeDamage_Hook(self, damage, attacker, doer, point)
     // to fix a bug, check before if the pointOwner is a Player
 	if pointOwner and pointOwner:isa("Player") then
 		if(pointOwner:GetTeamNumber() ~= self:GetTeamNumber()) then
-
-			local maxXp = GetXpValue(self)
-			local dmgXp = maxXp * damage / self:GetMaxHealth()
-			
-			// Award XP but suppress the message.
-			pointOwner:AddXp(dmgXp, true)
-		
+			if GetTrickleXp(self) then
+				local maxXp = GetXpValue(self)
+				local dmgXp = math.floor(maxXp * damage / self:GetMaxHealth())
+				
+				// Award XP but suppress the message.
+				pointOwner:AddXp(dmgXp, true)
+			end
 		end
 	end
     

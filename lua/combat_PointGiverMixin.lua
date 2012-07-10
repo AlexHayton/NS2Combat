@@ -26,14 +26,12 @@ function PointGiverMixin:OnKill(attacker, doer, point, direction)
     // to fix a bug, check before if the pointOwner is a Player
    if pointOwner and pointOwner:isa("Player") then
         if(pointOwner:GetTeamNumber() ~= self:GetTeamNumber()) then
-		
-			local XpValue = GetXpValue(self)
-			pointOwner:AddXp(XpValue)
-			// Add Xp to mates if the dead thing is a player.
-			if self:isa("Player") then
+			// Only add Xp if killing a player or player structure. Structures now get partial Xp for damage.
+			if not GetTrickleXp(self) then
+				local XpValue = GetXpValue(self)
+				pointOwner:AddXp(XpValue)
 				pointOwner:GiveXpMatesNearby(XpValue)
-			end
-			
+			end			
         end
     end    
 

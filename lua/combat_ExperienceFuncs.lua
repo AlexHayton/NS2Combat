@@ -78,6 +78,15 @@ function GetXpValue(entity)
 	
 end
 
+// Used to check whether an entity should deliver Xp on death or on damage
+function GetTrickleXp(entity)
+	if entity:isa("Hive") or entity:isa("CommandStation") or entity:isa("Armory") then
+		return true
+	else
+		return false
+	end
+end
+
 function GetAllUpgrades(team)
 	
 	local upgradeList = {}
