@@ -189,11 +189,9 @@ function Player:AddXp(amount, suppressmessage)
         // Make sure we don't go over the max XP.
         if (self:GetXp() + amount) <= maxXp then
 
-			if not suppressmessage then
-			    // show the cool effect, no direct Message is needed anymore
-				self:XpEffect(amount)
-			end
-            self:CheckLvlUp(self.score) 
+			// show the cool effect, no direct Message is needed anymore
+			self:XpEffect(amount)
+            self:CheckLvlUp(self.score, suppressmessage) 
 			self:SetScoreboardChanged(true)
 
         else
@@ -202,8 +200,8 @@ function Player:AddXp(amount, suppressmessage)
 				self:SendDirectMessage("Max-XP reached")
 			end
             self.score = maxXp
-            self:CheckLvlUp(self.score)
-        end        
+            self:CheckLvlUp(self.score, suppressmessage)
+        end 
     end   
 end
 
@@ -240,7 +238,7 @@ function Player:XpEffect(xp, lvl)
 
 end
 
-function Player:CheckLvlUp(xp)
+function Player:CheckLvlUp(xp, suppressmessage)
 	
 	if self:GetLvl() > self.combatTable.lvl then
 		//Lvl UP
@@ -253,7 +251,7 @@ function Player:CheckLvlUp(xp)
 		self:SendDirectMessage( "!! Level UP !! New Lvl: " .. LvlName .. " (" .. self:GetLvl() .. ")")
 	end     
 	
-	if self:GetLvl() < maxLvl then
+	if self:GetLvl() < maxLvl and not suppressmessage then
 		self:SendDirectMessage( self:GetXp() .. " XP: " .. (XpList[self:GetLvl() + 1]["XP"] - self:GetXp()).. " XP until next level!")
 	end
 	

@@ -27,10 +27,11 @@ function PointGiverMixin:OnKill(attacker, doer, point, direction)
    if pointOwner and pointOwner:isa("Player") then
         if(pointOwner:GetTeamNumber() ~= self:GetTeamNumber()) then
 		
-			pointOwner:AddXp(GetXPValue(self))
+			local XpValue = GetXpValue(self)
+			pointOwner:AddXp(XpValue)
 			// Add Xp to mates if the dead thing is a player.
 			if self:isa("Player") then
-				pointOwner:GiveXpMatesNearby(GetXPValue(self))
+				pointOwner:GiveXpMatesNearby(XpValue)
 			end
 			
         end
