@@ -179,7 +179,7 @@ function Player:UpdateTechTree()
 	
 end
 
-function Player:AddXp(amount)
+function Player:AddXp(amount, suppressmessage)
 	
     self:CheckCombatData()
     self:TriggerEffects("res_received")
@@ -189,17 +189,19 @@ function Player:AddXp(amount)
         // Make sure we don't go over the max XP.
         if (self:GetXp() + amount) <= maxXp then
 
-            // show the cool effect, no direct Message is needed anymore
-
-            self:XpEffect(amount)
-            self:CheckLvlUp(self.score) 
+			// show the cool effect, no direct Message is needed anymore
+			self:XpEffect(amount)
+            self:CheckLvlUp(self.score, suppressmessage) 
+			self:SetScoreboardChanged(true)
 
         else
             // Max Lvl reached
-            self:SendDirectMessage("Max-XP reached")
+			if not suppressmessage then
+				self:SendDirectMessage("Max-XP reached")
+			end
             self.score = maxXp
-            self:CheckLvlUp(self.score)
-        end        
+            self:CheckLvlUp(self.score, suppressmessage)
+        end 
     end   
 end
 
@@ -229,7 +231,6 @@ function Player:XpEffect(xp, lvl)
         
             Server.SendCommand(self, string.format("points %s %s", tostring(xp), tostring(0)))
             self.score = Clamp(self.score + xp, 0, self:GetMixinConstants().kMaxScore or 100)
-            self:SetScoreboardChanged(true)
 
         end
     
@@ -237,7 +238,7 @@ function Player:XpEffect(xp, lvl)
 
 end
 
-function Player:CheckLvlUp(xp)
+function Player:CheckLvlUp(xp, suppressmessage)
 	
 	if self:GetLvl() > self.combatTable.lvl then
 		//Lvl UP
@@ -250,7 +251,7 @@ function Player:CheckLvlUp(xp)
 		self:SendDirectMessage( "!! Level UP !! New Lvl: " .. LvlName .. " (" .. self:GetLvl() .. ")")
 	end     
 	
-	if self:GetLvl() < maxLvl then
+	if self:GetLvl() < maxLvl and not suppressmessage then
 		self:SendDirectMessage( self:GetXp() .. " XP: " .. (XpList[self:GetLvl() + 1]["XP"] - self:GetXp()).. " XP until next level!")
 	end
 	

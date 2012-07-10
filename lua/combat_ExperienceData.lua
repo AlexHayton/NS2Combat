@@ -30,7 +30,7 @@ maxXp = XpList[maxLvl]["XP"]
 // how much % from the xp are the m8 nearby getting and the range
 mateXpAmount = 0.4
 
-// range 35 was to big
+// range 35 was too big
 mateXpRange = 15
 
 // XP-Values
@@ -43,8 +43,10 @@ XpValues["Lerk"] = 100
 XpValues["Fade"] = 100
 XpValues["Onos"] = 100
 XpValues["Hydra"] = 50
-XpValues["Clog"] = 10
-XpValues["Armory"] = 100
+XpValues["Clog"] = 20
+XpValues["Armory"] = 200
+XpValues["CommandStation"] = 700
+XpValues["Hive"] = 700
 
 local function UpgradeArmor(player, techUpgrade)
 	techUpgrade:ExecuteTechUpgrade(player)
