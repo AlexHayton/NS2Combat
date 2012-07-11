@@ -22,6 +22,7 @@ function CombatPlayingTeam:OnLoad()
     self:ReplaceClassFunction("PlayingTeam", "GetHasTeamLost", "GetHasTeamLost_Hook")
 	self:ReplaceClassFunction("PlayingTeam", "UpdateTechTree", "UpdateTechTree_Hook")
 	self:ReplaceClassFunction("PlayingTeam", "Update", "Update_Hook")
+	self:PostHookClassFunction("PlayingTeam", "RespawnPlayer", "RespawnPlayer_Hook"):SetPassHandle(true)
     
 end
 
@@ -229,6 +230,17 @@ function CombatPlayingTeam:SpawnPlayer(player)
 
     return success
 
+end
+
+// hook RespawnPlayer to make sure the player will be respawned
+function CombatPlayingTeam:RespawnPlayer_Hook(handle, self, player, origin, angles)
+    
+    // try again
+    if (handle:GetReturn() == false) then        
+        Print("PlayingTeam:RespawnPlayer: Will try again to find a spawn.\n")        
+        player:GetTeam():RespawnPlayer(player, nil, nil)
+    end
+    
 end
 
 if(hotreload) then
