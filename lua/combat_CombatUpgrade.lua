@@ -16,7 +16,8 @@ kCombatUpgrades = enum({// Marine upgrades
 						// Alien upgrades
 						'Gorge', 'Lerk', 'Fade', 'Onos', 
 						'TierTwo', 'TierThree',
-						'Carapace', 'Regeneration', 'Silence', 'Camouflage', 'Celerity'})
+						'Carapace', 'Regeneration', 'Silence', 'Camouflage', 'Celerity',
+                        'Adrenaline', 'Feint'})
 						
 // The order of these is important...
 kCombatUpgradeTypes = enum({'Class', 'Tech', 'Weapon'})

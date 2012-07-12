@@ -96,8 +96,7 @@ function CombatPlayer:OnUpdatePlayer_Hook(self, deltaTime)
         if lvlFree > 0 then
             if (self.combatTable.lastNotify + deltaTime > kUpgradeNotifyInterval) then
                 self.combatTable.lastNotify = 0
-                local upgradeWord = (lvlFree > 1) and "upgrades" or "upgrade"
-                self:SendDirectMessage("You have " .. lvlFree .. " " .. upgradeWord .. " to spend. Use co_spendlvl in chat to buy upgrades.")
+                self:spendlvlHints("freeLvl")
             else
                 self.combatTable.lastNotify = self.combatTable.lastNotify + deltaTime
             end
