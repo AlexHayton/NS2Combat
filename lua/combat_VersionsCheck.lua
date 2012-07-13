@@ -22,8 +22,8 @@ local CombatCheckVersion = function(data)
     Shared.Message("CombatMod: Checking Version-Number")
     Shared.Message("\n")
     
-    if not string.sub(data , 1, 1) == "<" then
-        local WebVersion = tonumber(string.sub(data, string.len("kCombatLocalVersion = "), 6)
+    if string.sub(data , 1, 1) ~= "<" then
+        local WebVersion = tonumber(string.sub(data, string.len("kCombatLocalVersion = "), string.len("kCombatLocalVersion = ") + 6))
         if WebVersion <= kCombatLocalVersion then
             Shared.Message("CombatMod is on the newest version")
         else
