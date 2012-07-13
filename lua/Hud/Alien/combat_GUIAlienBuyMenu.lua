@@ -64,8 +64,8 @@ combat_GUIAlienBuyMenukResourceIconWidth = GUIScale(combat_GUIAlienBuyMenukResou
 combat_GUIAlienBuyMenukResourceIconHeight = GUIScale(combat_GUIAlienBuyMenukResourceIconTextureCoordinates[4] - combat_GUIAlienBuyMenukResourceIconTextureCoordinates[2])
 
 combat_GUIAlienBuyMenukMouseOverInfoTextSize = GUIScale(20)
-combat_GUIAlienBuyMenukMouseOverInfoOffset = Vector(GUIScale(-30), GUIScale(-20), 0)
-combat_GUIAlienBuyMenukMouseOverInfoResIconOffset = Vector(GUIScale(-40), GUIScale(-60), 0)
+combat_GUIAlienBuyMenukMouseOverInfoOffset = Vector(GUIScale(10), GUIScale(100), 0)
+combat_GUIAlienBuyMenukMouseOverInfoResIconOffset = Vector(GUIScale(0), GUIScale(50), 0)
 
 combat_GUIAlienBuyMenukDisabledColor = Color(0.5, 0.5, 0.5, 0.5)
 combat_GUIAlienBuyMenukCannotBuyColor = Color(1, 0, 0, 0.5)
@@ -389,7 +389,7 @@ end
 function combat_GUIAlienBuyMenu:_InitializeMouseOverInfo()
 
     self.mouseOverInfo = GUIManager:CreateTextItem()
-    self.mouseOverInfo:SetAnchor(GUIItem.Right, GUIItem.Center)
+    self.mouseOverInfo:SetAnchor(GUIItem.Right, GUIItem.Top)
     self.mouseOverInfo:SetPosition(combat_GUIAlienBuyMenukMouseOverInfoOffset)
     self.mouseOverInfo:SetFontName(combat_GUIAlienBuyMenukFont)
     self.mouseOverInfo:SetFontSize(combat_GUIAlienBuyMenukMouseOverInfoTextSize)
@@ -403,7 +403,7 @@ function combat_GUIAlienBuyMenu:_InitializeMouseOverInfo()
     
     self.mouseOverInfoResIcon = GUIManager:CreateGraphicItem()
     self.mouseOverInfoResIcon:SetSize(Vector(combat_GUIAlienBuyMenukResourceIconWidth, combat_GUIAlienBuyMenukResourceIconHeight, 0))
-    self.mouseOverInfoResIcon:SetAnchor(GUIItem.Right, GUIItem.Center)
+    self.mouseOverInfoResIcon:SetAnchor(GUIItem.Right, GUIItem.Top)
     self.mouseOverInfoResIcon:SetPosition(combat_GUIAlienBuyMenukMouseOverInfoResIconOffset)
     self.mouseOverInfoResIcon:SetTexture(combat_GUIAlienBuyMenukBuyMenuTexture)
     self.mouseOverInfoResIcon:SetTexturePixelCoordinates(unpack(combat_GUIAlienBuyMenukResourceIconTextureCoordinates))
@@ -411,7 +411,7 @@ function combat_GUIAlienBuyMenu:_InitializeMouseOverInfo()
     self.background:AddChild(self.mouseOverInfoResIcon)
     
     self.mouseOverInfoResAmount = GUIManager:CreateTextItem()
-    self.mouseOverInfoResAmount:SetAnchor(GUIItem.Right, GUIItem.Center)
+    self.mouseOverInfoResAmount:SetAnchor(GUIItem.Right, GUIItem.Top)
     self.mouseOverInfoResAmount:SetPosition(Vector(0, 0, 0))
     self.mouseOverInfoResAmount:SetFontName(combat_GUIAlienBuyMenukFont)
     self.mouseOverInfoResAmount:SetFontSize(combat_GUIAlienBuyMenukMouseOverInfoTextSize)
