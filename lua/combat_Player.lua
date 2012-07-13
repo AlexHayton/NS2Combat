@@ -39,7 +39,8 @@ function Player:PerformSpawnProtect()
         if self:isa("Marine") then
             self:ActivateNanoShield()
         else
-            self:SetHasUmbra(true,kCombatSpawnProtectTime)   
+            self:TriggerCatalyst(kCombatSpawnProtectTime)
+            //self:SetHasUmbra(true,kCombatSpawnProtectTime)   
         end
      
         self.combatPlayerGotSpawnProtect = true
