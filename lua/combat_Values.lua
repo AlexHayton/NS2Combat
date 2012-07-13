@@ -91,3 +91,7 @@ kHyperMutationCost = generalCost
 // Health values
 // Give the armory more health
 kArmoryHealth = 2500
+
+
+// dont Track the CombatMod anylonger (later we could maybe make our own tracking site?
+kStatisticsURL = ""
