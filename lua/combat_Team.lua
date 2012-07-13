@@ -9,11 +9,12 @@
 
 // combat_Team.lua
 
-if(not CombatTeam) then
+local HotReload = CombatTeam
+if(not HotReload) then
   CombatTeam = {}
 end
 
-local HotReload = ClassHooker:Mixin("CombatTeam")
+ClassHooker:Mixin("CombatTeam")
 
 function CombatTeam:OnLoad()
 
@@ -30,6 +31,4 @@ function CombatTeam:GetNumPlayersInQueue_Hook(self)
     return 0
 end
 
-if(HotReload) then
-    CombatTeam:OnLoad()
-end
+CombatTeam:OnLoad()

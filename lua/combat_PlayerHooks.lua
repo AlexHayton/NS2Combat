@@ -7,10 +7,10 @@
 
 // combat_PlayerHooks.lua
 
-if(not CombatPlayer) then
-    CombatPlayer = {}
+local HotReload = CombatPlayer
+if(not HotReload) then
+  CombatPlayer = {}
 end
-
 
 local HotReload = ClassHooker:Mixin("CombatPlayer")
     
@@ -183,7 +183,4 @@ function CombatPlayer:UpdateNumHives_Hook(self)
     end
 end
 
-
-if(hotreload) then
-    CombatPlayer:OnLoad()
-end
+CombatPlayer:OnLoad()

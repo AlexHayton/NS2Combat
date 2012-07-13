@@ -7,7 +7,8 @@
 
 // combat_Player_ClientHook.lua
 
-if(not CombatTechTree) then
+local HotReload = CombatPlayerClient
+if(not HotReload) then
   CombatPlayerClient = {}
 end
 
@@ -97,7 +98,4 @@ function CombatPlayerClient:CloseMenu_Hook(self)
     return false
 end
 
-
-if(HotReload) then
-    CombatPlayerClient:OnLoad()
-end
+CombatPlayerClient:OnLoad()

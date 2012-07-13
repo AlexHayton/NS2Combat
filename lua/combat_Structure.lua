@@ -7,13 +7,12 @@
 
 // combat_Structure.lua
 
-
-if(not CombatStructure) then
-    CombatStructure = {}
+local HotReload = CombatStructure
+if(not HotReload) then
+  CombatStructure = {}
 end
 
-
-local HotReload = ClassHooker:Mixin("CombatStructure")
+ClassHooker:Mixin("CombatStructure")
     
 function CombatStructure:OnLoad()
     
@@ -49,6 +48,4 @@ function CombatStructure:OnTakeDamage_Hook(self, damage, attacker, doer, point)
     
 end
 
-if(hotreload) then
-    CombatStructure:OnLoad()
-end
+CombatStructure:OnLoad()

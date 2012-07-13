@@ -7,13 +7,12 @@
 
 // combat_Embryo.lua
 
-
-if(not CombatEmbryo) then
-    CombatEmbryo = {}
+local HotReload = CombatEmbryo
+if(not HotReload) then
+  CombatEmbryo = {}
 end
 
-
-local HotReload = ClassHooker:Mixin("CombatEmbryo")
+ClassHooker:Mixin("CombatEmbryo")
     
 function CombatEmbryo:OnLoad()
     
@@ -29,6 +28,4 @@ function CombatEmbryo:SetGestationData_Hook(self, techIds, previousTechId, healt
 
 end
 
-if(HotReload) then
-    CombatEmbryo:OnLoad()
-end
+CombatEmbryo:OnLoad()

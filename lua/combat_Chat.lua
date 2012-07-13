@@ -9,7 +9,7 @@
 
 // combat_PlayingTeam.lua
 
-
+local HotReload = GetChatPlayerData
 
 local function GetChatPlayerData(client)
 
@@ -81,4 +81,6 @@ local function OnChatReceived(client, message)
         
 end
 
-Server.HookNetworkMessage("ChatClient", OnChatReceived)
+if(not HotReload) then
+  Server.HookNetworkMessage("ChatClient", OnChatReceived)
+end

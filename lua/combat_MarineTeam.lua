@@ -9,11 +9,12 @@
 
 // combat_MarineTeam.lua
 
-if(not CombatMarineTeam) then
+local HotReload = CombatMarineTeam
+if(not HotReload) then
   CombatMarineTeam = {}
 end
 
-local HotReload = ClassHooker:Mixin("CombatMarineTeam")
+ClassHooker:Mixin("CombatMarineTeam")
 
 function CombatMarineTeam:OnLoad()
 
@@ -170,7 +171,4 @@ function CombatMarineTeam:Update_Hook(self, timePassed)
     
 end
 
-
-if(HotReload) then
-    CombatMarineTeam:OnLoad()
-end
+CombatMarineTeam:OnLoad()

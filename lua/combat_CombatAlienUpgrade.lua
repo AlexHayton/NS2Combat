@@ -17,12 +17,9 @@ end
 
 function CombatAlienUpgrade:TeamSpecificLogic(player)
 	
-	//if (self:GetType() == kCombatUpgradeTypes.Class) then
-		// Some special stuff for classes.
-		if not player.isRespawning then
-		    player:DropToFloor()
-			player:EvolveTo(self:GetTechId())
-		end
-	//end
+	if not player.isRespawning then
+		player:DropToFloor()
+		player:EvolveTo(self:GetTechId())
+	end
 	
 end

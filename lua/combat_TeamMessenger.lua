@@ -9,7 +9,8 @@
 
 // combat_TeamMessenger.lua
 
-if(not CombatTeamMessenger) then
+local HotReload = CombatTeamMessenger
+if(not HotReload) then
   CombatTeamMessenger = {}
 end
 
@@ -35,6 +36,4 @@ function CombatTeamMessenger:SendTeamMessage_Hook(team, messageType, optionalDat
 	
 end
 
-if(HotReload) then
-    CombatTeamMessenger:OnLoad()
-end
+CombatTeamMessenger:OnLoad()

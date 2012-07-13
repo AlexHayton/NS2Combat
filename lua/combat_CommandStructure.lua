@@ -7,12 +7,12 @@
 
 // combat_CommandStructure.lua
 
-if(not CombatCommandStructure) then
+local HotReload = CombatCommandStructure
+if(not HotReload) then
   CombatCommandStructure = {}
 end
 
-
-local HotReload = ClassHooker:Mixin("CombatCommandStructure")
+ClassHooker:Mixin("CombatCommandStructure")
     
 function CombatCommandStructure:OnLoad()
 
@@ -27,3 +27,5 @@ function CombatCommandStructure:UpdateCommanderLogin_Hook(self, force)
     self.commanderId = Entity.invalidId
             
 end
+
+CombatCommandStructure:OnLoad()

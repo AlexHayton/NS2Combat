@@ -7,13 +7,12 @@
 
 // combat_Marine.lua
 
-
-if(not CombatMarine) then
-    CombatMarine = {}
+local HotReload = CombatMarine
+if(not HotReload) then
+  CombatMarine = {}
 end
 
-
-local HotReload = ClassHooker:Mixin("CombatMarine")
+ClassHooker:Mixin("CombatMarine")
     
 function CombatMarine:OnLoad()
     
@@ -76,6 +75,4 @@ function CombatMarine:GiveJetpack_Hook(self)
 	
 end
 
-if(hotreload) then
-    CombatMarine:OnLoad()
-end
+CombatMarine:OnLoad()
