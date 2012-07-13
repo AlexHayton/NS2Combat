@@ -16,6 +16,8 @@ function CombatAlienBuy_GetAbilitiesFor(lifeFormTechId)
     local abilityIds = {}
 
     local player = Client.GetLocalPlayer()
+    
+    /* currently not working
     if player and player:isa("Alien") then
     
         local tierTwoTech = GetAlienTierTwoFor(lifeFormTechId)
@@ -31,6 +33,7 @@ function CombatAlienBuy_GetAbilitiesFor(lifeFormTechId)
         
     
     end
+    */
     
     return abilityIds
 
@@ -43,14 +46,39 @@ local function GetUnpurchasedTechIds(techId)
     //TODO : delete purchased ups
     local allUps = GetAllUpgrades("Allien") 
     local techUps = GetUpgradesOfType(allUps, kCombatUpgradeTypes.Tech)
+    
     local addOnUpgrades = {}   
     local player = Client.GetLocalPlayer()
     
     for i, upgrade in ipairs(techUps) do
-        table.insert(addOnUpgrades, upgrade:GetTechId())
+        if not player:GotItemAlready(upgrade) then
+            table.insert(addOnUpgrades, upgrade:GetTechId())
+        end
     end
         
     return addOnUpgrades
+    
+end
+
+
+local function GetPurchasedTechIds(techId)
+    
+    local player = Client.GetLocalPlayer()
+    
+    if player then
+        // get All ups from the personal combat table (send from the server via OnCommandSetUpgrades(upgradeId)
+        local purchasedList = {}
+        for i, upgradeId in ipairs (player.combatUpgrades) do
+            local upgrade =  GetUpgradeFromId(tonumber(upgradeId))
+            if upgrade then
+                table.insert(purchasedList, upgrade:GetTechId())
+            end
+        end
+        
+        return purchasedList
+    end
+        
+    return nil
     
 end
 
@@ -100,6 +128,43 @@ function CombatAlienBuy_GetUnpurchasedUpgradeInfoArray(techIdTable)
     
 end
 
+function CombatAlienBuy_GetPurchasedUpgradeInfoArray(techIdTable)
+
+    local t = {}
+    
+    local player = Client.GetLocalPlayer()
+    
+    for index, techId in ipairs(techIdTable) do
+
+        local iconX, iconY = GetMaterialXYOffset(techId, false)
+        if iconX and iconY then
+
+            local techTree = GetTechTree(player:GetTeamNumber())
+        
+            table.insert(t, iconX)
+            table.insert(t, iconY)
+            table.insert(t, GetDisplayNameForTechId(techId, string.format("<not found - %s>", EnumToString(kTechId, techId))))
+            table.insert(t, GetTooltipInfoText(techId))
+            table.insert(t, techId)
+            table.insert(t, true)
+
+            if techTree then
+                table.insert(t, true)
+            else
+                table.insert(t, false)
+            end
+            
+        else
+        
+            Print("GetPurchasedUpgradeInfoArray():GetAlienUpgradeIconXY(%s): Couldn't find upgrade icon.", ToString(techId))
+            
+        end
+    end
+    
+    return t
+    
+end
+
 
 // return the unpurchased ups from the UpsList
 function CombatAlienBuy_GetUnpurchasedUpgrades(idx)
@@ -112,6 +177,41 @@ function CombatAlienBuy_GetUnpurchasedUpgrades(idx)
 
 end
 
+
+function CombatAlienBuy_GetPurchasedUpgrades(idx)
+
+    local player = Client.GetLocalPlayer()
+    return CombatAlienBuy_GetPurchasedUpgradeInfoArray(GetPurchasedTechIds(IndexToAlienTechId(idx)))
+    
+end
+
+
+function CombatAlienBuy_GetGotRequirements(techId)
+
+    local player = Client.GetLocalPlayer()
+    if player then    
+        local upgrade = GetUpgradeFromTechId(techId)
+        if upgrade then
+            return player:GotRequirements(upgrade)
+        end    
+    end
+    
+    return false
+end
+
+
+function CombatAlienBuy_Purchase(purchaseId)
+
+    local player = Client.GetLocalPlayer()
+    if player then
+        local upgrade = GetUpgradeFromTechId(purchaseId)
+        if upgrade then
+            local textCode = upgrade:GetTextCode()
+            player:Combat_PurchaseItemAndUpgrades(textCode)
+        end
+    end
+
+end
 
 
 

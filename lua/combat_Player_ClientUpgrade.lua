@@ -10,6 +10,7 @@
 // combat_Player_SharedUpgrade.lua
 
 // helper functions for the buy Menu
+
 function Player:GotRequirements(upgrade)
     
     if upgrade then

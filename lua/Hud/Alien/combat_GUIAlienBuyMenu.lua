@@ -73,7 +73,7 @@ combat_GUIAlienBuyMenukEnabledColor = Color(1, 1, 1, 1)
 
 local kTooltipTextWidth = GUIScale(300)
 
-combat_GUIAlienBuyMenukMaxNumberOfUpgradeButtons = 8
+combat_GUIAlienBuyMenukMaxNumberOfUpgradeButtons = 9
 combat_GUIAlienBuyMenukUpgradeButtonSize = GUIScale(54)
 combat_GUIAlienBuyMenukUpgradeButtonDistance = GUIScale(198)
 // The distance in pixels to move the button inside the embryo when selected.
@@ -1174,8 +1174,8 @@ function combat_GUIAlienBuyMenu:_UpdateUpgrades(deltaTime)
     local upgradeIndex = 0
     
     local numElementsPerPurchasedUpgrades = 7
-    local purchasedUpgrades = AlienBuy_GetPurchasedUpgrades(self.selectedAlienType)
-    local numPurchasedUpgrades = table.count(purchasedUpgrades) / numElementsPerPurchasedUpgrades
+    local purchasedUpgrades = CombatAlienBuy_GetPurchasedUpgrades(self.selectedAlienType)
+    numPurchasedUpgrades = table.count(purchasedUpgrades) / numElementsPerPurchasedUpgrades
     for i = 0, numPurchasedUpgrades - 1 do
         local currentIndex = i * numElementsPerPurchasedUpgrades + 1
         local currentUpgrade = { }
@@ -1213,7 +1213,8 @@ function combat_GUIAlienBuyMenu:_UpdateUpgrades(deltaTime)
         currentUpgrade.Purchased = false
         currentUpgrade.Index = upgradeIndex
         currentUpgrade.TechId = unpurchasedUpgrades[currentIndex + 6]
-        currentUpgrade.Available = unpurchasedUpgrades[currentIndex + 7]
+        // All ups are availabe
+        currentUpgrade.Available = CombatAlienBuy_GetGotRequirements(currentUpgrade.TechId)
         upgradeIndex = upgradeIndex + 1
         table.insert(allUpgrades, currentUpgrade)
     end
@@ -1221,11 +1222,11 @@ function combat_GUIAlienBuyMenu:_UpdateUpgrades(deltaTime)
     local numberOfUpgrades = table.count(allUpgrades)
     ASSERT(numberOfUpgrades <= combat_GUIAlienBuyMenukMaxNumberOfUpgradeButtons)
 
-    local offsetAmount = math.pi / 7
+    local offsetAmount = math.pi / 9
     local buttonAngles = { math.pi / 2, math.pi / 2 + offsetAmount, math.pi / 2 - offsetAmount,
                            math.pi / 2 + offsetAmount * 2, math.pi / 2 - offsetAmount * 2,
                            math.pi / 2 + offsetAmount * 3, math.pi / 2 + offsetAmount * 4,
-                           math.pi / 2 + offsetAmount * 5 }
+                           math.pi / 2 + offsetAmount * 5 ,math.pi / 2 + offsetAmount * 6 }
 
     local numSelected = 0
 
@@ -1375,11 +1376,11 @@ function combat_GUIAlienBuyMenu:SendKeyEvent(key, down)
         if down then
         
             // Check if the evolve button was selected.
-            local allowedToEvolve = GetCanAffordAlienTypeAndUpgrades(self, self.selectedAlienType) and AlienBuy_GetHasGameStarted()
+            local allowedToEvolve = GetCanAffordAlienTypeAndUpgrades(self, self.selectedAlienType)
             allowedToEvolve = allowedToEvolve and GetAlienOrUpgradeSelected(self)
             if allowedToEvolve and self:_GetIsMouseOver(self.evolveButtonBackground) then
             
-                local purchases = { }
+                local purchaseId = nil
                 // Buy the selected alien if we have a different one selected.
                 if self.selectedAlienType ~= AlienBuy_GetCurrentAlien() then
                     table.insert(purchases, { Type = "Alien", Alien = self.selectedAlienType })
@@ -1389,7 +1390,7 @@ function combat_GUIAlienBuyMenu:SendKeyEvent(key, down)
                 for i, currentButton in ipairs(self.upgradeButtons) do
                 
                     if currentButton.Selected then
-                        table.insert(purchases, { Type = "Upgrade", Alien = self.selectedAlienType, UpgradeIndex = currentButton.Index, TechId = currentButton.TechId })
+                        purchaseId = currentButton.TechId
                     end
                     
                 end
@@ -1399,8 +1400,8 @@ function combat_GUIAlienBuyMenu:SendKeyEvent(key, down)
                 closeMenu = true
                 inputHandled = true
                 
-                if #purchases > 0 then
-                    AlienBuy_Purchase(purchases)
+                if  purchaseId then
+                    CombatAlienBuy_Purchase(purchaseId)
                 end
                 
                 AlienBuy_OnPurchase()
@@ -1490,8 +1491,10 @@ function combat_GUIAlienBuyMenu:_DeselectAllUpgrades()
 
 end
 
+// only 1 upgrade should be selectable
 function combat_GUIAlienBuyMenu:_GetHasMaximumSelected()
-    return self.numSelectedUpgrades >= PlayerUI_GetNumCommandStructures()
+    // only 1 upgrade should be selectable, but already bought ups are OK
+    return self.numSelectedUpgrades - numPurchasedUpgrades>= 1
 end
 
 function combat_GUIAlienBuyMenu:_HandleUpgradeClicked(mouseX, mouseY)
