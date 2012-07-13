@@ -68,10 +68,14 @@ local function GetPurchasedTechIds(techId)
     if player then
         // get All ups from the personal combat table (send from the server via OnCommandSetUpgrades(upgradeId)
         local purchasedList = {}
-        for i, upgradeId in ipairs (player.combatUpgrades) do
-            local upgrade =  GetUpgradeFromId(tonumber(upgradeId))
-            if upgrade then
-                table.insert(purchasedList, upgrade:GetTechId())
+        
+        if player.combatUpgrades then
+            for i, upgradeId in ipairs (player.combatUpgrades) do
+                local upgrade =  GetUpgradeFromId(tonumber(upgradeId))            
+                // don't show the icon from a class
+                if (upgrade and upgrade:GetType() ~= kCombatUpgradeTypes.Class) then
+                    table.insert(purchasedList, upgrade:GetTechId())
+                end
             end
         end
         
@@ -185,6 +189,36 @@ function CombatAlienBuy_GetPurchasedUpgrades(idx)
     
 end
 
+// sends the hover Infos from the classes to the menu
+function CombatAlienBuy_GetClassStats(idx)
+
+    if idx == nil then
+        Print("AlienBuy_GetClassStats(nil) called")
+    end
+    
+    // name, hp, ap, cost
+    local techId = IndexToAlienTechId(idx)
+    local upgrade = GetUpgradeFromTechId(techId)
+    local cost = 0
+     
+    if upgrade then
+        cost = upgrade:GetLevels()
+    end
+
+    if techId == kTechId.Fade then
+        return {"Fade", Fade.kHealth, Fade.kArmor, cost }
+    elseif techId == kTechId.Gorge then
+        return {"Gorge", kGorgeHealth, kGorgeArmor, cost}
+    elseif techId == kTechId.Lerk then
+        return {"Lerk", kLerkHealth, kLerkArmor, cost}
+    elseif techId == kTechId.Onos then
+        return {"Onos", Onos.kHealth, Onos.kArmor, cost}
+    else
+        return {"Skulk", Skulk.kHealth, Skulk.kArmor, cost}
+    end   
+
+end
+
 
 function CombatAlienBuy_GetGotRequirements(techId)
 
@@ -197,6 +231,26 @@ function CombatAlienBuy_GetGotRequirements(techId)
     end
     
     return false
+end
+
+
+function CombatAlienBuy_GetTechIdForAlien(idx)
+    
+    return IndexToAlienTechId(idx)
+
+end
+
+
+function CombatAlienBuy_GetAlienCost(alienType)
+
+    local techId = CombatAlienBuy_GetTechIdForAlien(alienType)    
+    local upgrade = GetUpgradeFromTechId(techId)
+    
+    if upgrade then
+        return upgrade:GetLevels()
+    end
+    
+    return 0
 end
 
 
