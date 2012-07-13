@@ -96,10 +96,26 @@ function CombatPlayer:OnUpdatePlayer_Hook(self, deltaTime)
         if lvlFree > 0 then
             if (self.combatTable.lastNotify + deltaTime > kUpgradeNotifyInterval) then
                 self.combatTable.lastNotify = 0
-                local upgradeWord = (lvlFree > 1) and "upgrades" or "upgrade"
-                self:SendDirectMessage("You have " .. lvlFree .. " " .. upgradeWord .. " to spend. Use co_spendlvl in chat to buy upgrades.")
+                self:spendlvlHints("freeLvl")
             else
                 self.combatTable.lastNotify = self.combatTable.lastNotify + deltaTime
+            end
+        end
+        
+        // Spawn Protect
+        
+        if self.combatSpawnProtect then
+            if self:GetIsAlive() then
+                if self.combatSpawnProtect == 1 then
+                    // set the real spawn protect time here
+                    self.combatSpawnProtect = Shared.GetTime() +  kCombatSpawnProtectTime
+                elseif
+                    Shared.GetTime() >= self.combatSpawnProtect then
+                    // end spawn protect
+                    self:DeactivateSpawnProtect()
+                else
+                    self:PerformSpawnProtect()
+                end
             end
         end
         
@@ -126,8 +142,11 @@ function CombatPlayer:OnUpdatePlayer_Hook(self, deltaTime)
                     // SCAN!!
                     if (self.combatTable.lastScan + deltaTime > kScanTimer) then
                         
-                        self:ScanNow()
-                        self.combatTable.lastScan = 0	            
+                        local success = self:ScanNow()
+                        
+                        if success then
+                            self.combatTable.lastScan = 0	            
+                        end
                         
                     else
                         self.combatTable.lastScan = self.combatTable.lastScan + deltaTime

@@ -15,6 +15,39 @@ Script.Load("lua/combat_Player_Upgrades.lua")
 // not hooked
 //___________________
 
+// function for spawn protect
+
+function Player:SetSpawnProtect()
+
+    self.combatSpawnProtect = 1
+    
+end
+
+function Player:DeactivateSpawnProtect()
+    self.combatSpawnProtect = nil
+    self.combatPlayerGotSpawnProtect = nil
+end
+
+function Player:PerformSpawnProtect()
+
+    self:SetHealth( self:GetMaxHealth() )
+    self:SetArmor( self:GetMaxArmor() )
+        
+    // only make the effects once
+    if not self.combatPlayerGotProtect then
+        
+        if self:isa("Marine") then
+            self:ActivateNanoShield()
+        else
+            self:SetHasUmbra(true,kCombatSpawnProtectTime)   
+        end
+     
+        self.combatPlayerGotSpawnProtect = true
+    end
+    
+ end
+
+
 // Resup and Scan function
 
 function Player:ScanNow()
@@ -300,6 +333,11 @@ function Player:spendlvlHints(hint, type)
 			teamtext = "a Marine"
 		end
 		self:SendDirectMessage( "Cannot take this upgrade. You are not " .. teamtext .. "!" )   
+		
+	elseif hint == "freeLvl" then
+	    local lvlFree = self:GetLvlFree()
+	    local upgradeWord = (lvlFree > 1) and "upgrades" or "upgrade"
+	    self:SendDirectMessage("You have " .. lvlFree .. " " .. upgradeWord .. " to spend. Use /buy or co_spendlvl in chat to buy upgrades.")   
 	
     end
 end

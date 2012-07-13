@@ -21,6 +21,8 @@ function CombatPlayerClient:OnLoad()
 	self:HookClassFunction("Player", "OnInitLocalClient", "OnInitLocalClient_Hook")
 	self:ReplaceClassFunction("Alien", "Buy", "Buy_Hook_Alien")
     self:ReplaceClassFunction("Marine", "CloseMenu", "CloseMenu_Hook")
+    
+    self:PostHookFunction("InitTechTreeMaterialOffsets", "InitTechTreeMaterialOffsets_Hook")
 end
 
 // starting the costum buy menu for marines
@@ -67,11 +69,11 @@ function CombatPlayerClient:Buy_Hook_Alien(self)
             if not self.buyMenu then
                 // open the buy menu
                 self.combatBuy = true
-                self.buyMenu = GetGUIManager():CreateGUIScript("GUIAlienBuyMenu")
+                self.buyMenu = GetGUIManager():CreateGUIScript("Hud/Alien/combat_GUIAlienBuyMenu")
                 MouseTracker_SetIsVisible(true, "ui/Cursor_MenuDefault.dds", true)
             else
                 self.combatBuy = false
-                self:OnClose()
+                self:CloseMenu()
             end
             
         else
@@ -96,6 +98,14 @@ function CombatPlayerClient:CloseMenu_Hook(self)
     end
    
     return false
+end
+
+// that tier2 and tier3 have the right icons
+function CombatPlayerClient:InitTechTreeMaterialOffsets_Hook()
+
+    // Icons for tier2 and 3
+    kAlienTechIdToMaterialOffset[kTechId.TwoHives] = 95
+    kAlienTechIdToMaterialOffset[kTechId.ThreeHives] = 77
 end
 
 CombatPlayerClient:OnLoad()

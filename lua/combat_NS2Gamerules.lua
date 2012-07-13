@@ -58,7 +58,7 @@ function CombatNS2Gamerules:JoinTeam_Hook(self, player, newTeamNumber, force)
 		
 			// Destroy the existing player and create a spectator in their place.
 			local mapName = ConditionalValue(team:isa("AlienTeam"), AlienSpectator.kMapName, Spectator.kMapName)
-			newPlayer = player:Replace(mapName, newTeamNumber)
+			newPlayer = player:Replace(mapName, newTeamNumber)			
 			
 			// Queue up the spectator for respawn.
 			team:PutPlayerInRespawnQueue(newPlayer, Shared.GetTime())
@@ -96,7 +96,10 @@ function CombatNS2Gamerules:JoinTeam_Hook(self, player, newTeamNumber, force)
 
 		//newPlayer.combatTable.xp = player:GetXp()
 		newPlayer:AddLvlFree(player:GetLvl())
-
+		
+		//set spawn protect
+		newPlayer:SetSpawnProtect()
+		
 	end
 	
 	return success, newPlayer
