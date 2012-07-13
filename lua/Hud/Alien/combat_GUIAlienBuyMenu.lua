@@ -25,7 +25,7 @@ combat_GUIAlienBuyMenukAlienTypes = { { Name = "Fade", Width = GUIScale(188), He
                                 { Name = "Gorge", Width = GUIScale(200), Height = GUIScale(167), XPos = 2, Index = 2 },
                                 { Name = "Lerk", Width = GUIScale(284), Height = GUIScale(253), XPos = 3, Index = 3 },
                                 { Name = "Onos", Width = GUIScale(304), Height = GUIScale(326), XPos = 5, Index = 4 },
-                                { Name = "Skulk", Width = GUIScale(240), Height = GUIScale(170), XPos = 1, Index = 5 } }
+                                { Name = "Skulk", Width = GUIScale(240), Height = GUIScale(170), XPos = 1, Index = 5 }}
 
 combat_GUIAlienBuyMenukBackgroundTextureCoordinates = { 9, 1, 602, 424 }
 combat_GUIAlienBuyMenukBackgroundWidth = GUIScale((combat_GUIAlienBuyMenukBackgroundTextureCoordinates[3] - combat_GUIAlienBuyMenukBackgroundTextureCoordinates[1]) * 0.80)
@@ -862,7 +862,7 @@ end
 
 local function GetCanAffordAlienTypeAndUpgrades(self, alienType)
 
-    local alienCost = AlienBuy_GetAlienCost(alienType)
+    local alienCost = CombatAlienBuy_GetAlienCost(alienType)
     local upgradesCost = GetSelectedUpgradesCost(self)
     // Cannot buy the current alien without upgrades.
     if alienType == AlienBuy_GetCurrentAlien() then
@@ -886,47 +886,40 @@ local function UpdateEvolveButton(self)
     local selectedUpgradesCost = GetSelectedUpgradesCost(self)
     local numberOfSelectedUpgrades = GetNumberOfSelectedUpgrades(self)
     local evolveButtonTextureCoords = combat_GUIAlienBuyMenukEvolveButtonTextureCoordinates
-    local hasGameStarted = AlienBuy_GetHasGameStarted()
-    local evolveText = "Game has not started"
-    local evolveCost = nil
     
-    if hasGameStarted then
+    evolveText = "Select upgrades"
     
-        evolveText = "Select upgrades"
+    // If the current alien is selected with no upgrades, cannot evolve.
+    if self.selectedAlienType == AlienBuy_GetCurrentAlien() and numberOfSelectedUpgrades == 0 then
+        evolveButtonTextureCoords = combat_GUIAlienBuyMenukEvolveButtonNeedResourcesTextureCoordinates
+    elseif researching then
+    
+        // If researching, cannot evolve.
+        evolveButtonTextureCoords = combat_GUIAlienBuyMenukEvolveButtonNeedResourcesTextureCoordinates
+        evolveText = "Researching..."
         
-        // If the current alien is selected with no upgrades, cannot evolve.
-        if self.selectedAlienType == AlienBuy_GetCurrentAlien() and numberOfSelectedUpgrades == 0 then
-            evolveButtonTextureCoords = combat_GUIAlienBuyMenukEvolveButtonNeedResourcesTextureCoordinates
-        elseif researching then
+    elseif not GetCanAffordAlienTypeAndUpgrades(self, self.selectedAlienType) then
+    
+        // If cannot afford selected alien type and/or upgrades, cannot evolve.
+        evolveButtonTextureCoords = combat_GUIAlienBuyMenukEvolveButtonNeedResourcesTextureCoordinates
+        evolveText = "Need "
+        evolveCost = CombatAlienBuy_GetAlienCost(self.selectedAlienType) + selectedUpgradesCost - AlienBuy_GetHyperMutationCostReduction(self.selectedAlienType)
         
-            // If researching, cannot evolve.
-            evolveButtonTextureCoords = combat_GUIAlienBuyMenukEvolveButtonNeedResourcesTextureCoordinates
-            evolveText = "Researching..."
-            
-        elseif not GetCanAffordAlienTypeAndUpgrades(self, self.selectedAlienType) then
+    else
+    
+        // Evolution is possible! Darwin would be proud.
+        local totalCost = selectedUpgradesCost
         
-            // If cannot afford selected alien type and/or upgrades, cannot evolve.
-            evolveButtonTextureCoords = combat_GUIAlienBuyMenukEvolveButtonNeedResourcesTextureCoordinates
-            evolveText = "Need "
-            evolveCost = AlienBuy_GetAlienCost(self.selectedAlienType) + selectedUpgradesCost - AlienBuy_GetHyperMutationCostReduction(self.selectedAlienType)
-            
-        else
-        
-            // Evolution is possible! Darwin would be proud.
-            local totalCost = selectedUpgradesCost
-            
-            // Cannot buy the current alien.
-            if self.selectedAlienType ~= AlienBuy_GetCurrentAlien() then
-                totalCost = totalCost + AlienBuy_GetAlienCost(self.selectedAlienType)
-            end
-            
-            evolveText = "Evolve for "
-            evolveCost = totalCost - AlienBuy_GetHyperMutationCostReduction(self.selectedAlienType) // shows also negative values
-            
+        // Cannot buy the current alien.
+        if self.selectedAlienType ~= AlienBuy_GetCurrentAlien() then
+            totalCost = totalCost + CombatAlienBuy_GetAlienCost(self.selectedAlienType)
         end
         
+        evolveText = "Evolve for "
+        evolveCost = totalCost - AlienBuy_GetHyperMutationCostReduction(self.selectedAlienType) // shows also negative values
+        
     end
-    
+            
     self.evolveButtonBackground:SetTexturePixelCoordinates(unpack(evolveButtonTextureCoords))
     self.evolveButtonText:SetText(evolveText)
     self.evolveResourceIcon:SetIsVisible(evolveCost ~= nil)
@@ -1074,7 +1067,7 @@ end
 
 function combat_GUIAlienBuyMenu:_GetCanAffordAlienType(alienType)
 
-    local alienCost = AlienBuy_GetAlienCost(alienType)
+    local alienCost = CombatAlienBuy_GetAlienCost(alienType)
     // Cannot buy the current alien without upgrades.
     if alienType == AlienBuy_GetCurrentAlien() then
         return false
@@ -1085,7 +1078,7 @@ function combat_GUIAlienBuyMenu:_GetCanAffordAlienType(alienType)
 end
 
 function combat_GUIAlienBuyMenu:_GetAlienTypeResearchInfo(alienType)
-    local researched = AlienBuy_IsAlienResearched(alienType)
+    local researched = true
     local researchProgress = AlienBuy_GetAlienResearchProgress(alienType)
     local researching = researchProgress > 0 and researchProgress < 1
     return researched, researchProgress, researching
@@ -1120,8 +1113,9 @@ function combat_GUIAlienBuyMenu:_UpdateAlienButtons()
     
         // Info needed for the rest of this code.
         local researched, researchProgress, researching = self:_GetAlienTypeResearchInfo(alienButton.TypeData.Index)
+        researched = true
         
-        local buttonIsVisible = researched or researching
+        local buttonIsVisible = true
         alienButton.Button:SetIsVisible(buttonIsVisible)
         
         // Don't bother updating anything else unless it is visible.
@@ -1139,7 +1133,7 @@ function combat_GUIAlienBuyMenu:_UpdateAlienButtons()
             local mouseOver = self:_GetIsMouseOver(alienButton.Button)
             
             if mouseOver then
-                local classStats = AlienBuy_GetClassStats(combat_GUIAlienBuyMenukAlienTypes[alienButton.TypeData.Index].Index)
+                local classStats = CombatAlienBuy_GetClassStats(combat_GUIAlienBuyMenukAlienTypes[alienButton.TypeData.Index].Index)
                 local mouseOverName = string.upper(combat_GUIAlienBuyMenukAlienTypes[alienButton.TypeData.Index].Name)
                 self:_ShowMouseOverInfo(mouseOverName .. "\n" .. ToString(classStats[2]) .. " Health\n" .. ToString(classStats[3]) .. " Armor", classStats[4])
             end
@@ -1223,11 +1217,17 @@ function combat_GUIAlienBuyMenu:_UpdateUpgrades(deltaTime)
     ASSERT(numberOfUpgrades <= combat_GUIAlienBuyMenukMaxNumberOfUpgradeButtons)
 
     local offsetAmount = math.pi / 9
-    local buttonAngles = { math.pi / 2, math.pi / 2 + offsetAmount, math.pi / 2 - offsetAmount,
-                           math.pi / 2 + offsetAmount * 2, math.pi / 2 - offsetAmount * 2,
-                           math.pi / 2 + offsetAmount * 3, math.pi / 2 + offsetAmount * 4,
-                           math.pi / 2 + offsetAmount * 5 ,math.pi / 2 + offsetAmount * 6 }
-
+    local buttonAngles = {  math.pi / 2, 
+                            math.pi / 2 + offsetAmount, 
+                            math.pi / 2 - offsetAmount,
+                            math.pi / 2 + offsetAmount * 2, 
+                            math.pi / 2 - offsetAmount * 2,
+                            math.pi / 2 + offsetAmount * 3, 
+                            math.pi / 2 - offsetAmount * 3,
+                            math.pi / 2 + offsetAmount * 4 ,
+                            math.pi / 2 - offsetAmount * 4 
+                        }
+                        
     local numSelected = 0
 
     for i, currentUpgrade in ipairs(allUpgrades) do
@@ -1383,16 +1383,18 @@ function combat_GUIAlienBuyMenu:SendKeyEvent(key, down)
                 local purchaseId = nil
                 // Buy the selected alien if we have a different one selected.
                 if self.selectedAlienType ~= AlienBuy_GetCurrentAlien() then
-                    table.insert(purchases, { Type = "Alien", Alien = self.selectedAlienType })
-                end
+                    purchaseId = CombatAlienBuy_GetTechIdForAlien(self.selectedAlienType)
+                else
                 
-                // Buy all selected upgrades.
-                for i, currentButton in ipairs(self.upgradeButtons) do
-                
-                    if currentButton.Selected then
-                        purchaseId = currentButton.TechId
-                    end
+                    // Buy all selected upgrades.
+                    for i, currentButton in ipairs(self.upgradeButtons) do
                     
+                        if currentButton.Selected then
+                            purchaseId = currentButton.TechId
+                        end
+                        
+                    end
+                
                 end
                 
                 self:_DeselectAllUpgrades()
