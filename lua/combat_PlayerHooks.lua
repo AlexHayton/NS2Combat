@@ -102,6 +102,23 @@ function CombatPlayer:OnUpdatePlayer_Hook(self, deltaTime)
             end
         end
         
+        // Spawn Protect
+        
+        if self.combatSpawnProtect then
+            if self:GetIsAlive() then
+                if self.combatSpawnProtect == 1 then
+                    // set the real spawn protect time here
+                    self.combatSpawnProtect = Shared.GetTime() +  kCombatSpawnProtectTime
+                elseif
+                    Shared.GetTime() >= self.combatSpawnProtect then
+                    // end spawn protect
+                    self:DeactivateSpawnProtect()
+                else
+                    self:PerformSpawnProtect()
+                end
+            end
+        end
+        
         if self.combatTable then
             // only trigger Scan and Ressuply when player is alive
             if self:GetIsAlive() then
@@ -125,8 +142,11 @@ function CombatPlayer:OnUpdatePlayer_Hook(self, deltaTime)
                     // SCAN!!
                     if (self.combatTable.lastScan + deltaTime > kScanTimer) then
                         
-                        self:ScanNow()
-                        self.combatTable.lastScan = 0	            
+                        local success = self:ScanNow()
+                        
+                        if success then
+                            self.combatTable.lastScan = 0	            
+                        end
                         
                     else
                         self.combatTable.lastScan = self.combatTable.lastScan + deltaTime

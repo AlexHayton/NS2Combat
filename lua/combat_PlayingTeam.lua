@@ -162,7 +162,7 @@ function CombatPlayingTeam:Update_Hook(self, timePassed)
 			local thisPlayer = self:GetOldestQueuedPlayer()
 			
 			while (lastPlayer == thisPlayer) or (thisPlayer ~= nil) do
-				CombatPlayingTeam:SpawnPlayer(thisPlayer)
+				CombatPlayingTeam:SpawnPlayer(thisPlayer)				
 				lastPlayer = thisPlayer
 				thisPlayer = self:GetOldestQueuedPlayer()
 			end
@@ -226,6 +226,9 @@ function CombatPlayingTeam:SpawnPlayer(player)
             newPlayer:TriggerEffects("infantry_portal_spawn")
         end
 		newPlayer:GetTeam():RemovePlayerFromRespawnQueue(newPlayer)
+		
+		//give him spawn Protect (dont set the time here, just that spawn protect ist active)
+		newPlayer:SetSpawnProtect()
     end
 
     return success
