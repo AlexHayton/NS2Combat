@@ -66,11 +66,11 @@ function CombatPlayerClient:Buy_Hook_Alien(self)
             if not self.buyMenu then
                 // open the buy menu
                 self.combatBuy = true
-                self.buyMenu = GetGUIManager():CreateGUIScript("GUIAlienBuyMenu")
+                self.buyMenu = GetGUIManager():CreateGUIScript("Hud/Alien/combat_GUIAlienBuyMenu")
                 MouseTracker_SetIsVisible(true, "ui/Cursor_MenuDefault.dds", true)
             else
                 self.combatBuy = false
-                self:OnClose()
+                self:CloseMenu()
             end
             
         else

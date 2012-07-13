@@ -146,3 +146,15 @@ function GetUpgradeFromTextCode(textCode)
 	return nil
 
 end
+
+function GetUpgradeFromTechId(techId)
+
+	for index, upgrade in pairs(UpsList) do
+		if (techId == upgrade:GetTechId()) then
+			return upgrade
+		end
+	end
+	
+	return nil
+
+end
