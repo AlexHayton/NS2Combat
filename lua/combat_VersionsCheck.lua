@@ -12,7 +12,7 @@
 // Local Versionsnumber
 
 Script.Load("Version.lua")
-local kCombatVersionPath = "https://raw.github.com/AlexHayton/NS2Combat/master/Version.txt"
+local kCombatVersionPath = "https://raw.github.com/AlexHayton/NS2Combat/master/Version.lua"
 
 local CombatCheckVersion = function(data)
 
