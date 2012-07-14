@@ -1,0 +1,1 @@
+kCombatLocalVersion = 1.0

@@ -1382,8 +1382,12 @@ function combat_GUIAlienBuyMenu:SendKeyEvent(key, down)
             
                 local purchaseId = nil
                 // Buy the selected alien if we have a different one selected.
+                
                 if self.selectedAlienType ~= AlienBuy_GetCurrentAlien() then
-                    purchaseId = CombatAlienBuy_GetTechIdForAlien(self.selectedAlienType)
+                    if AlienBuy_GetCurrentAlien() == 5 then
+                        // only buy another calss when youre a skulk
+                        purchaseId = CombatAlienBuy_GetTechIdForAlien(self.selectedAlienType)
+                    end
                 else
                 
                     // Buy all selected upgrades.
@@ -1416,18 +1420,21 @@ function combat_GUIAlienBuyMenu:SendKeyEvent(key, down)
             
                 // Check if an alien was selected.
                 for k, buttonItem in ipairs(self.alienButtons) do
-                
+                    
                     local researched, researchProgress, researching = self:_GetAlienTypeResearchInfo(buttonItem.TypeData.Index)
                     if (researched or researching) and self:_GetIsMouseOver(buttonItem.Button) then
-                    
-                        // Deselect all upgrades when a different alien type is selected.
-                        if self.selectedAlienType ~= buttonItem.TypeData.Index then
-                            AlienBuy_OnSelectAlien(combat_GUIAlienBuyMenukAlienTypes[buttonItem.TypeData.Index].Name)
-                        end
                         
-                        self.selectedAlienType = buttonItem.TypeData.Index
-                        inputHandled = true
-                        break
+                        if (AlienBuy_GetCurrentAlien() == 5) then
+                            // Deselect all upgrades when a different alien type is selected.
+                            if self.selectedAlienType ~= buttonItem.TypeData.Index  then
+                                AlienBuy_OnSelectAlien(combat_GUIAlienBuyMenukAlienTypes[buttonItem.TypeData.Index].Name)
+                            end
+                            
+                            self.selectedAlienType = buttonItem.TypeData.Index
+                            inputHandled = true
+                            break
+    
+                        end
                         
                     end
                     

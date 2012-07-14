@@ -11,6 +11,12 @@
 Script.Load("lua/PathUtil.lua")
 Script.Load("lua/fsfod_scripts.lua")
 
+
+// Load the Versions Checker and kill him
+Script.Load("lua/combat_VersionsCheck.lua")
+CombatInitCheckVersion()
+
+
 // Loading the Hook classes
 // TODO: Maybe we don't need the OnLoad?
 Script.Load("lua/combat_TechTreeHooks.lua")
