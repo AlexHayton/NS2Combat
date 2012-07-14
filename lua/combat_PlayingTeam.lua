@@ -22,6 +22,7 @@ function CombatPlayingTeam:OnLoad()
     self:ReplaceClassFunction("PlayingTeam", "GetHasTeamLost", "GetHasTeamLost_Hook")
 	self:ReplaceClassFunction("PlayingTeam", "UpdateTechTree", "UpdateTechTree_Hook")
 	self:ReplaceClassFunction("PlayingTeam", "Update", "Update_Hook")
+	self:PostHookClassFunction("PlayingTeam", "RespawnPlayer", "RespawnPlayer_Hook"):SetPassHandle(true)
     
 end
 
@@ -161,7 +162,7 @@ function CombatPlayingTeam:Update_Hook(self, timePassed)
 			local thisPlayer = self:GetOldestQueuedPlayer()
 			
 			while (lastPlayer == thisPlayer) or (thisPlayer ~= nil) do
-				CombatPlayingTeam:SpawnPlayer(thisPlayer)
+				CombatPlayingTeam:SpawnPlayer(thisPlayer)				
 				lastPlayer = thisPlayer
 				thisPlayer = self:GetOldestQueuedPlayer()
 			end
@@ -225,10 +226,24 @@ function CombatPlayingTeam:SpawnPlayer(player)
             newPlayer:TriggerEffects("infantry_portal_spawn")
         end
 		newPlayer:GetTeam():RemovePlayerFromRespawnQueue(newPlayer)
+		
+		//give him spawn Protect (dont set the time here, just that spawn protect ist active)
+		newPlayer:SetSpawnProtect()
     end
 
     return success
 
+end
+
+// hook RespawnPlayer to make sure the player will be respawned
+function CombatPlayingTeam:RespawnPlayer_Hook(handle, self, player, origin, angles)
+    
+    // try again
+    if (handle:GetReturn() == false) then        
+        Print("PlayingTeam:RespawnPlayer: Will try again to find a spawn.\n")        
+        player:GetTeam():RespawnPlayer(player, nil, nil)
+    end
+    
 end
 
 if(hotreload) then

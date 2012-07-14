@@ -11,6 +11,12 @@
 Script.Load("lua/PathUtil.lua")
 Script.Load("lua/fsfod_scripts.lua")
 
+
+// Load the Versions Checker and kill him
+Script.Load("lua/combat_VersionsCheck.lua")
+CombatInitCheckVersion()
+
+
 Script.Load("..\\NS2GmOvrmind\\Lua\\NS2GmOvrmind.lua"); -- Load the NS2-GmOvrmind prerequisites
 
 NS2GmOvrmind.InitFunc,CallRes=package.loadlib(string.format("%s\\Binaries_x86\\%s.dll",

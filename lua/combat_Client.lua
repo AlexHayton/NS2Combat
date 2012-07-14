@@ -33,6 +33,7 @@ Script.Load("lua/combat_ExperienceFuncs.lua")
 Script.Load("lua/combat_Values.lua")
 Script.Load("lua/combat_ConsoleCommands_Client.lua")
 Script.Load("lua/combat_MarineBuyFuncs.lua")
+Script.Load("lua/combat_AlienBuyFuncs.lua")
 
 
 // Tell the class hooker that we've fully loaded.

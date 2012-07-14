@@ -22,6 +22,10 @@ kUpgradeNotifyInterval = 10
 kCombatRespawnTimer = 10
 kAlienWaveSpawnInterval = 10
 
+// Spawn protection
+kCombatSpawnProtectTime = 4
+// nano shield = spawn Protection
+kNanoShieldDuration = kCombatSpawnProtectTime 
 
 // time for Scan and Resuply
 kScanTimer = 12
@@ -45,6 +49,10 @@ kAlienEggsPerHive = 0
 // Camouflage
 kCamouflageTime = 3
 kCamouflageUncloakFactor = 2 / 3
+
+// Gorge Healspray heals more (and makes a bit more damage)
+kHealsprayDamage = 10
+
 // Ammo for mines
 kNumMines = 1
 
@@ -83,3 +91,7 @@ kHyperMutationCost = generalCost
 // Health values
 // Give the armory more health
 kArmoryHealth = 2500
+
+
+// dont Track the CombatMod anylonger (later we could maybe make our own tracking site?
+kStatisticsURL = ""
