@@ -1,10 +1,8 @@
 //________________________________
 //
-//   	Combat Mod     
-//	Made by JimWest, 2012
+//   	NS2 Combat Mod     
+//	Made by JimWest and MCMLXXXIV, 2012
 //
-//	Version 0.1
-//	
 //________________________________
 
 // Load the script from fsfod that we can hook some functions
