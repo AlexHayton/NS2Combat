@@ -180,13 +180,15 @@ function CombatPlayingTeam:Update_Hook(self, timePassed)
 			// Send any 'waiting to respawn' messages (normally these only go to AlienSpectators)
 			for index, player in pairs(self:GetPlayers()) do				
 				if not player.waitingToSpawnMessageSent then
-					SendPlayersMessage({ player }, kTeamMessageTypes.SpawningWait)
-					player.waitingToSpawnMessageSent = true
+					if player:GetIsAlive() == false then
+						SendPlayersMessage({ player }, kTeamMessageTypes.SpawningWait)
+						player.waitingToSpawnMessageSent = true
 
-					// TODO: Update the GUI so that marines can get the 'ready to spawn in ... ' message too.
-					// After that is done, remove the AlienSpectator check here.
-					if (player:isa("AlienSpectator")) then
-						player:SetWaveSpawnEndTime(nextSpawnTime)
+						// TODO: Update the GUI so that marines can get the 'ready to spawn in ... ' message too.
+						// After that is done, remove the AlienSpectator check here.
+						if (player:isa("AlienSpectator")) then
+							player:SetWaveSpawnEndTime(nextSpawnTime)
+						end
 					end
 				end
 			end
