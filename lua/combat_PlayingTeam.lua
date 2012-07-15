@@ -19,6 +19,7 @@ function CombatPlayingTeam:OnLoad()
 
     ClassHooker:SetClassCreatedIn("PlayingTeam", "lua/PlayingTeam.lua") 
     self:ReplaceClassFunction("PlayingTeam", "SpawnInitialStructures", "SpawnInitialStructures_Hook")
+	self:ReplaceClassFunction("PlayingTeam", "GetHasTeamWon", "GetHasTeamWon_Hook")
     self:ReplaceClassFunction("PlayingTeam", "GetHasTeamLost", "GetHasTeamLost_Hook")
 	self:ReplaceClassFunction("PlayingTeam", "UpdateTechTree", "UpdateTechTree_Hook")
 	self:ReplaceClassFunction("PlayingTeam", "Update", "Update_Hook")
@@ -30,7 +31,7 @@ end
 // Hooks Playing Team
 //___________________
 
-function CombatPlayingTeam:GetHasTeamLost_Hook(self, handle)
+function CombatPlayingTeam:GetHasTeamLost_Hook(self)
     // Don't bother with the original - we just set our own logic here.
 	// You can lose with cheats on (testing purposes)
 	if(GetGamerules():GetGameStarted()) then
@@ -49,6 +50,15 @@ function CombatPlayingTeam:GetHasTeamLost_Hook(self, handle)
 
     return false
 
+end
+
+function CombatPlayingTeam:GetHasTeamWon_Hook(self)
+	// Usually this will be nil - only set it when a team wins by default (e.g. time out).
+	if self.combatTeamWon then
+		return true
+	else
+		return false
+	end
 end
 
 function CombatPlayingTeam:SpawnInitialStructures_Hook(self, techPoint)

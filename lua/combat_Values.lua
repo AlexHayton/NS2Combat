@@ -27,6 +27,9 @@ kCombatSpawnProtectTime = 4
 // nano shield = spawn Protection
 kNanoShieldDuration = kCombatSpawnProtectTime 
 
+// By default, Aliens win after a certain amount of time...
+kCombatTimeLimit = 15
+
 // time for Scan and Resuply
 kScanTimer = 12
 kResupplyTimer = 10

@@ -20,6 +20,7 @@ function CombatNS2Gamerules:OnLoad()
     ClassHooker:SetClassCreatedIn("NS2Gamerules", "lua/NS2Gamerules.lua")
     self:ReplaceClassFunction("NS2Gamerules", "JoinTeam", "JoinTeam_Hook")
 	self:ReplaceClassFunction("NS2Gamerules", "GetUserPlayedInGame", "GetUserPlayedInGame_Hook")
+	self:PostHookClassFunction("NS2Gamerules", "OnUpdate", "OnUpdate_Hook")
     
     ClassHooker:SetClassCreatedIn("Gamerules", "lua/Gamerules.lua")
     self:PostHookClassFunction("Gamerules", "OnClientConnect", "OnClientConnect_Hook")
@@ -132,6 +133,19 @@ function CombatNS2Gamerules:OnClientConnect_Hook(self, client)
 		player:AddXp(avgXp)
 	end    
 
+end
+
+// After a certain amount of time the aliens need to win (except if it's marines vs marines).
+function CombatNS2Gamerules:OnUpdate_Hook(self, timePassed)
+	local team1 = self:GetTeam(1)
+	local team2 = self:GetTeam(2)
+	
+	// Check that it's Marines vs Aliens...
+	if team1:isa("MarineTeam") and team2:isa("AlienTeam") then
+		if self.timeSinceGameStateChanged > kCombatTimeLimit then
+			team2.combatTeamWon = true
+		end
+	end
 end
 
 if(HotReload) then
