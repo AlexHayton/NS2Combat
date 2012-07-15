@@ -5,25 +5,10 @@
 //	
 //________________________________
 
-// combat_Structure.lua
-
-
-if(not CombatStructure) then
-    CombatStructure = {}
-end
-
-
-local HotReload = ClassHooker:Mixin("CombatStructure")
-    
-function CombatStructure:OnLoad()
-    
-    ClassHooker:SetClassCreatedIn("Structure", "lua/Structure.lua") 
-    self:PostHookClassFunction("Structure", "OnTakeDamage", "OnTakeDamage_Hook") 
-    
-end
+// combat_StaticTarget.lua
 
 // Give some XP to the damaging entity.
-function CombatStructure:OnTakeDamage_Hook(self, damage, attacker, doer, point)
+function StaticTargetMixin:OnTakeDamage(damage, attacker, doer, point)
 
     // Give XP to attacker.
     local pointOwner = attacker

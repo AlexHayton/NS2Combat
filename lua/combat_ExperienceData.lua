@@ -44,9 +44,9 @@ XpValues["Fade"] = 100
 XpValues["Onos"] = 100
 XpValues["Hydra"] = 50
 XpValues["Clog"] = 20
-XpValues["Armory"] = 200
-XpValues["CommandStation"] = 700
-XpValues["Hive"] = 700
+XpValues["Armory"] = 80
+XpValues["CommandStation"] = 300
+XpValues["Hive"] = 300
 
 local function UpgradeArmor(player, techUpgrade)
 	techUpgrade:ExecuteTechUpgrade(player)
