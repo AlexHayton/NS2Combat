@@ -37,7 +37,6 @@ kResupplyTimer = 10
 kScanDuration = 5
 kScanRadius = 30
 
-
 // Change the GestateTime so every new Class takes the same time
 kSkulkGestateTime = 2
 kGorgeGestateTime = 2
@@ -55,6 +54,10 @@ kCamouflageUncloakFactor = 2 / 3
 
 // Gorge Healspray heals more (and makes a bit more damage)
 kHealsprayDamage = 10
+
+// Alien vision should be free
+kAlienVisionCost = 0
+kAlienVisionEnergyRegenMod = 1
 
 // Ammo for mines
 kNumMines = 1
