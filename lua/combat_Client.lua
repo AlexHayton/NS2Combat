@@ -33,6 +33,8 @@ Script.Load("lua/combat_ConsoleCommands_Client.lua")
 Script.Load("lua/combat_MarineBuyFuncs.lua")
 Script.Load("lua/combat_AlienBuyFuncs.lua")
 
+// just for testing that i see the props
+//Script.Load("lua/combat_Props.lua")
 
 // Tell the class hooker that we've fully loaded.
 ClassHooker:OnLuaFullyLoaded()
