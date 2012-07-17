@@ -54,6 +54,8 @@ kCamouflageUncloakFactor = 2 / 3
 
 // Gorge Healspray heals more (and makes a bit more damage)
 kHealsprayDamage = 10
+// Conversely, reduce the welder's effectiveness from its original value of 150.
+kStructureWeldRate = 100
 
 // Alien vision should be free
 kAlienVisionCost = 0
@@ -97,7 +99,6 @@ kHyperMutationCost = generalCost
 // Health values
 // Give the armory more health
 kArmoryHealth = 2500
-
 
 // dont Track the CombatMod anylonger (later we could maybe make our own tracking site?
 kStatisticsURL = ""
