@@ -246,8 +246,9 @@ function Player:GiveXpMatesNearby(xp)
 
     local playersInRange = GetEntitiesForTeamWithinRange("Player", self:GetTeamNumber(), self:GetOrigin(), mateXpRange)
     
+	// Only give Xp to players who are alive!
     for _, player in ipairs(playersInRange) do
-        if self ~= player then
+        if self ~= player and player:GetIsAlive() then
             player:AddXp(xp)    
         end
     end
