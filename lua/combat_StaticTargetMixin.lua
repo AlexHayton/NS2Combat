@@ -33,7 +33,3 @@ function StaticTargetMixin:OnTakeDamage(damage, attacker, doer, point)
 	end
     
 end
-
-if(hotreload) then
-    CombatStructure:OnLoad()
-end
