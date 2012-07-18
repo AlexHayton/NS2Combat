@@ -156,16 +156,52 @@ function CombatNS2Gamerules:ChooseTechPoint_Hook(handle, self, techPoints, teamN
     spawnTeam1Location, spawnTeam2Location = CombatGetSpawns()
     local allTechPoints = EntityListToTable(Shared.GetEntitiesWithClassname("TechPoint"))
         
-    for i, techPoint in ipairs(allTechPoints) do
-        // find the techPoint that fits to our team and LocationName
-        if techPoint:GetLocationName() == ConditionalValue(teamNumber == kTeam1Index, spawnTeam1Location, spawnTeam2Location) then
-            spawnTechPoint = techPoint
-            break
-        end                
-    end
+    if  spawnTeam1Location ~= nil and  spawnTeam2Location ~=nil  then
     
-    CombatInitProps()
-    // when no techPoint could be found, take the original techPoints
+        for i, techPoint in ipairs(allTechPoints) do
+            // find the techPoint that fits to our team and LocationName
+            if techPoint:GetLocationName() == ConditionalValue(teamNumber == kTeam1Index, spawnTeam1Location, spawnTeam2Location) then
+                spawnTechPoint = techPoint
+                break
+            end                
+        end
+        
+        CombatInitProps()
+        // when no techPoint could be found, take the original techPoints
+        
+    else    
+        
+        // no spawn pairs, so search 2 near spawns 
+        if teamNumber == kTeam1Index then        
+            // if its team1, just search any random techPoint  
+            local randomNumber = math.random(1, table.maxn(allTechPoints))
+            spawnTechPoint = allTechPoints[randomNumber]
+            
+        else
+        
+            local team1TeachPoint = GetGamerules():GetTeam1():GetInitialTechPoint()
+            local closestRange = nil
+            
+            for i, currentTechPoint in ipairs(allTechPoints) do
+                // skip if we found team1techpoint
+                if currentTechPoint ~= team1TeachPoint then
+                    range = GetPathDistance(team1TeachPoint:GetOrigin(), currentTechPoint:GetOrigin())
+                    if not closestRange then
+                        closestRange = range
+                        spawnTechPoint = currentTechPoint                    
+                    else
+                        if range < closestRange then
+                            closestRange = range
+                            spawnTechPoint = currentTechPoint
+                        end
+                    end
+                end
+            end 
+  
+        end
+        
+    end
+        
     if spawnTechPoint then
         handle:SetReturn(spawnTechPoint)
     end
