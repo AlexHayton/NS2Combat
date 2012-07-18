@@ -19,13 +19,19 @@ Script.Load("lua/combat_Player_Upgrades.lua")
 
 function Player:SetSpawnProtect()
 
-    self.combatSpawnProtect = 1
+    self.combatSpawnProtect = 1    
     
 end
 
 function Player:DeactivateSpawnProtect()
     self.combatSpawnProtect = nil
     self.combatPlayerGotSpawnProtect = nil
+    
+    if self.combatNanoShieldEnt then
+        DestroyEntity(self.combatNanoShieldEnt)
+    end
+    
+    self.combatNanoShieldEnt = nil
 end
 
 function Player:PerformSpawnProtect()
@@ -34,18 +40,22 @@ function Player:PerformSpawnProtect()
     self:SetArmor( self:GetMaxArmor() )
         
     // only make the effects once
-    if not self.combatPlayerGotProtect then
+    if not self.combatPlayerGotSpawnProtect then
         
         if self:isa("Marine") then
+        
+            local nanoShield = CreateEntity(NanoShield.kMapName, self:GetOrigin(), self:GetTeamNumber())
+            nanoShield:SetParent(self)
             self:ActivateNanoShield()
-        else
+            self.combatNanoShieldEnt = nanoShield
+        elseif self:isa("Alien") then
             self:TriggerCatalyst(kCombatSpawnProtectTime)
-            //self:SetHasUmbra(true,kCombatSpawnProtectTime)   
+            //self:SetHasUmbra(false,kCombatSpawnProtectTime)            
+
         end
      
         self.combatPlayerGotSpawnProtect = true
-    end
-    
+    end    
  end
 
 

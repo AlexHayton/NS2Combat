@@ -19,6 +19,8 @@ function CombatNS2Gamerules:OnLoad()
     self:ReplaceClassFunction("NS2Gamerules", "JoinTeam", "JoinTeam_Hook")
 	self:ReplaceClassFunction("NS2Gamerules", "GetUserPlayedInGame", "GetUserPlayedInGame_Hook")
 	self:PostHookClassFunction("NS2Gamerules", "OnUpdate", "OnUpdate_Hook")
+	self:PostHookClassFunction("NS2Gamerules", "ChooseTechPoint", "ChooseTechPoint_Hook"):SetPassHandle(true)
+	self:RawHookClassFunction("NS2Gamerules", "ResetGame", "ResetGame_Hook")
     
     ClassHooker:SetClassCreatedIn("Gamerules", "lua/Gamerules.lua")
     self:PostHookClassFunction("Gamerules", "OnClientConnect", "OnClientConnect_Hook")
@@ -145,6 +147,41 @@ function CombatNS2Gamerules:OnUpdate_Hook(self, timePassed)
 		end
 	end
 end
+
+
+// let ns2 find a techPoint for team1 and search the nearest techPoint for team2
+function CombatNS2Gamerules:ChooseTechPoint_Hook(handle, self, techPoints, teamNumber)
+
+    //GetLocationName() to get the name
+    spawnTeam1Location, spawnTeam2Location = CombatGetSpawns()
+    local allTechPoints = EntityListToTable(Shared.GetEntitiesWithClassname("TechPoint"))
+        
+    for i, techPoint in ipairs(allTechPoints) do
+        // find the techPoint that fits to our team and LocationName
+        if techPoint:GetLocationName() == ConditionalValue(teamNumber == kTeam1Index, spawnTeam1Location, spawnTeam2Location) then
+            spawnTechPoint = techPoint
+            break
+        end                
+    end
+    
+    CombatInitProps()
+    // when no techPoint could be found, take the original techPoints
+    if spawnTechPoint then
+        handle:SetReturn(spawnTechPoint)
+    end
+    
+end
+
+
+function CombatNS2Gamerules:ResetGame_Hook()
+
+    // reset SpawnCombo to set them again
+    combatSpawnCombo = nil
+    combatSpawnComboIndex  = nil
+    CombatDeleteProps()
+
+end
+
 
 if(HotReload) then
     CombatNS2Gamerules:OnLoad()

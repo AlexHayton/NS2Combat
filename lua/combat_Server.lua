@@ -65,6 +65,8 @@ Script.Load("lua/combat_ExperienceData.lua")
 Script.Load("lua/combat_ExperienceFuncs.lua")
 Script.Load("lua/combat_Values.lua")
 
+Script.Load("lua/combat_Props.lua")
+
 // due to a bug, this needs to be loaded here
 Script.Load("lua/combat_PointGiverMixin.lua")
 Script.Load("lua/combat_ScoringMixin.lua")
