@@ -11,6 +11,20 @@
 
 
 
+function CombatAlienBuy_GetCurrentAlien()
+    local player = Client.GetLocalPlayer()
+    local techId = player:GetTechId()
+    local index = AlienTechIdToIndex(techId)
+    
+    index = ConditionalValue( index < 1, 5, index) 
+    
+    ASSERT(index >= 1 and index <= table.count(indexToAlienTechIdTable), "AlienBuy_GetCurrentAlien(" .. ToString(techId) .. "): returning invalid index " .. ToString(index) .. " for " .. SafeClassName(player))
+    
+    return index
+    
+end
+
+
 function CombatAlienBuy_GetAbilitiesFor(lifeFormTechId)
 
     local abilityIds = {}

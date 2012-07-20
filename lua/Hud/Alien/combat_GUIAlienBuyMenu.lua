@@ -342,11 +342,11 @@ function combat_GUIAlienBuyMenu:_InitializeCurrentAlienDisplay()
     
     self.currentAlienDisplay.Icon = GUIManager:CreateGraphicItem()
     self.currentAlienDisplay.Icon:SetAnchor(GUIItem.Middle, GUIItem.Center)
-    local width = combat_GUIAlienBuyMenukAlienTypes[AlienBuy_GetCurrentAlien()].Width
-    local height = combat_GUIAlienBuyMenukAlienTypes[AlienBuy_GetCurrentAlien()].Height
+    local width = combat_GUIAlienBuyMenukAlienTypes[CombatAlienBuy_GetCurrentAlien()].Width
+    local height = combat_GUIAlienBuyMenukAlienTypes[CombatAlienBuy_GetCurrentAlien()].Height
     self.currentAlienDisplay.Icon:SetSize(Vector(width, height, 0))
     self.currentAlienDisplay.Icon:SetPosition(Vector((-width / 2), -height / 2, 0))
-    self.currentAlienDisplay.Icon:SetTexture("ui/" .. combat_GUIAlienBuyMenukAlienTypes[AlienBuy_GetCurrentAlien()].Name .. ".dds")
+    self.currentAlienDisplay.Icon:SetTexture("ui/" .. combat_GUIAlienBuyMenukAlienTypes[CombatAlienBuy_GetCurrentAlien()].Name .. ".dds")
     self.currentAlienDisplay.Icon:SetLayer(kGUILayerPlayerHUDForeground2)
     self.currentAlienDisplay.Icon:SetParentRenders(false)
     self.background:AddChild(self.currentAlienDisplay.Icon)
@@ -358,7 +358,7 @@ function combat_GUIAlienBuyMenu:_InitializeCurrentAlienDisplay()
     self.currentAlienDisplay.TitleShadow:SetFontSize(combat_GUIAlienBuyMenukCurrentAlienTitleTextSize)
     self.currentAlienDisplay.TitleShadow:SetTextAlignmentX(GUIItem.Align_Center)
     self.currentAlienDisplay.TitleShadow:SetTextAlignmentY(GUIItem.Align_Min)
-    self.currentAlienDisplay.TitleShadow:SetText(string.upper(combat_GUIAlienBuyMenukAlienTypes[AlienBuy_GetCurrentAlien()].Name))
+    self.currentAlienDisplay.TitleShadow:SetText(string.upper(combat_GUIAlienBuyMenukAlienTypes[CombatAlienBuy_GetCurrentAlien()].Name))
     self.currentAlienDisplay.TitleShadow:SetColor(Color(0, 0, 0, 1))
     self.background:AddChild(self.currentAlienDisplay.TitleShadow)
     
@@ -369,7 +369,7 @@ function combat_GUIAlienBuyMenu:_InitializeCurrentAlienDisplay()
     self.currentAlienDisplay.Title:SetFontSize(combat_GUIAlienBuyMenukCurrentAlienTitleTextSize)
     self.currentAlienDisplay.Title:SetTextAlignmentX(GUIItem.Align_Center)
     self.currentAlienDisplay.Title:SetTextAlignmentY(GUIItem.Align_Min)
-    self.currentAlienDisplay.Title:SetText(string.upper(combat_GUIAlienBuyMenukAlienTypes[AlienBuy_GetCurrentAlien()].Name))
+    self.currentAlienDisplay.Title:SetText(string.upper(combat_GUIAlienBuyMenukAlienTypes[CombatAlienBuy_GetCurrentAlien()].Name))
     self.currentAlienDisplay.Title:SetColor(ColorIntToColor(kAlienTeamColor))
     self.currentAlienDisplay.TitleShadow:AddChild(self.currentAlienDisplay.Title)
 
@@ -393,7 +393,7 @@ function combat_GUIAlienBuyMenu:_InitializeMouseOverInfo()
     self.mouseOverInfo:SetFontSize(combat_GUIAlienBuyMenukMouseOverInfoTextSize)
     self.mouseOverInfo:SetTextAlignmentX(GUIItem.Align_Min)
     self.mouseOverInfo:SetTextAlignmentY(GUIItem.Align_Min)
-    self.mouseOverInfo:SetText(string.upper(combat_GUIAlienBuyMenukAlienTypes[AlienBuy_GetCurrentAlien()].Name))
+    self.mouseOverInfo:SetText(string.upper(combat_GUIAlienBuyMenukAlienTypes[CombatAlienBuy_GetCurrentAlien()].Name))
     self.mouseOverInfo:SetColor(ColorIntToColor(kAlienTeamColor))
     // Only visible on mouse over.
     self.mouseOverInfo:SetIsVisible(false)
@@ -483,7 +483,7 @@ end
 
 function combat_GUIAlienBuyMenu:_InitializeEvolveButton()
 
-    self.selectedAlienType = AlienBuy_GetCurrentAlien()
+    self.selectedAlienType = CombatAlienBuy_GetCurrentAlien()
     
     self.evolveButtonBackground = GUIManager:CreateGraphicItem()
     self.evolveButtonBackground:SetAnchor(GUIItem.Middle, GUIItem.Bottom)
@@ -848,7 +848,7 @@ local function GetNumberOfSelectedUpgrades(self)
     local numSelected = 0
     for i, currentButton in ipairs(self.upgradeButtons) do
     
-        if currentButton.Selected then
+        if currentButton.Selected and not currentButton.Purchased then
             numSelected = numSelected + 1
         end
         
@@ -863,7 +863,7 @@ local function GetCanAffordAlienTypeAndUpgrades(self, alienType)
     local alienCost = CombatAlienBuy_GetAlienCost(alienType)
     local upgradesCost = GetSelectedUpgradesCost(self)
     // Cannot buy the current alien without upgrades.
-    if alienType == AlienBuy_GetCurrentAlien() then
+    if alienType == CombatAlienBuy_GetCurrentAlien() then
         alienCost = 0
     end
     
@@ -875,7 +875,7 @@ end
  * Returns true if the player has a different Alien or any upgrade selected.
  */
 local function GetAlienOrUpgradeSelected(self)
-    return self.selectedAlienType ~= AlienBuy_GetCurrentAlien() or GetNumberOfSelectedUpgrades(self) > 0
+    return self.selectedAlienType ~= CombatAlienBuy_GetCurrentAlien() or GetNumberOfSelectedUpgrades(self) > 0
 end
 
 local function UpdateEvolveButton(self)
@@ -888,7 +888,7 @@ local function UpdateEvolveButton(self)
     evolveText = "Select upgrades"
     
     // If the current alien is selected with no upgrades, cannot evolve.
-    if self.selectedAlienType == AlienBuy_GetCurrentAlien() and numberOfSelectedUpgrades == 0 then
+    if self.selectedAlienType == CombatAlienBuy_GetCurrentAlien() and numberOfSelectedUpgrades == 0 then
         evolveButtonTextureCoords = combat_GUIAlienBuyMenukEvolveButtonNeedResourcesTextureCoordinates
     elseif researching then
     
@@ -909,7 +909,7 @@ local function UpdateEvolveButton(self)
         local totalCost = selectedUpgradesCost
         
         // Cannot buy the current alien.
-        if self.selectedAlienType ~= AlienBuy_GetCurrentAlien() then
+        if self.selectedAlienType ~= CombatAlienBuy_GetCurrentAlien() then
             totalCost = totalCost + CombatAlienBuy_GetAlienCost(self.selectedAlienType)
         end
         
@@ -1067,7 +1067,7 @@ function combat_GUIAlienBuyMenu:_GetCanAffordAlienType(alienType)
 
     local alienCost = CombatAlienBuy_GetAlienCost(alienType)
     // Cannot buy the current alien without upgrades.
-    if alienType == AlienBuy_GetCurrentAlien() then
+    if alienType == CombatAlienBuy_GetCurrentAlien() then
         return false
     end
 
@@ -1119,7 +1119,7 @@ function combat_GUIAlienBuyMenu:_UpdateAlienButtons()
         // Don't bother updating anything else unless it is visible.
         if buttonIsVisible then
         
-            local isCurrentAlien = AlienBuy_GetCurrentAlien() == alienButton.TypeData.Index
+            local isCurrentAlien = CombatAlienBuy_GetCurrentAlien() == alienButton.TypeData.Index
             if researched and (isCurrentAlien or self:_GetCanAffordAlienType(alienButton.TypeData.Index)) then
                 alienButton.Button:SetColor(combat_GUIAlienBuyMenukEnabledColor)
             elseif researched and not self:_GetCanAffordAlienType(alienButton.TypeData.Index) then
@@ -1381,8 +1381,8 @@ function combat_GUIAlienBuyMenu:SendKeyEvent(key, down)
                 local purchases = { }
                 // Buy the selected alien if we have a different one selected.
                 
-                if self.selectedAlienType ~= AlienBuy_GetCurrentAlien() then
-                    if AlienBuy_GetCurrentAlien() == 5 then
+                if self.selectedAlienType ~= CombatAlienBuy_GetCurrentAlien() then
+                    if CombatAlienBuy_GetCurrentAlien() == 5 then
                         // only buy another calss when youre a skulk
                         table.insert(purchases, CombatAlienBuy_GetTechIdForAlien(self.selectedAlienType))
                     end
@@ -1404,7 +1404,7 @@ function combat_GUIAlienBuyMenu:SendKeyEvent(key, down)
                 closeMenu = true
                 inputHandled = true
                 
-                if table.maxn(purchases) > 0 then
+                if table.maxn(purchases)  > 0 then
                     CombatAlienBuy_Purchase(purchases)
                 end
                 
@@ -1422,7 +1422,7 @@ function combat_GUIAlienBuyMenu:SendKeyEvent(key, down)
                     local researched, researchProgress, researching = self:_GetAlienTypeResearchInfo(buttonItem.TypeData.Index)
                     if (researched or researching) and self:_GetIsMouseOver(buttonItem.Button) then
                         
-                        if (AlienBuy_GetCurrentAlien() == 5) then
+                        if (CombatAlienBuy_GetCurrentAlien() == 5) then
                             // Deselect all upgrades when a different alien type is selected.
                             if self.selectedAlienType ~= buttonItem.TypeData.Index  then
                                 AlienBuy_OnSelectAlien(combat_GUIAlienBuyMenukAlienTypes[buttonItem.TypeData.Index].Name)
