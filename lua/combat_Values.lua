@@ -18,6 +18,9 @@ combatWelcomeMessage = {"Welcome to this Server",
 						
 kUpgradeNotifyInterval = 10
 
+// default start points
+kCombatStartUpgradePoints = 1
+
 // Set the respawn timer
 kCombatRespawnTimer = 10
 kAlienWaveSpawnInterval = 10

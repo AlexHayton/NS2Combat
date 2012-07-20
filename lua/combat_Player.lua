@@ -175,7 +175,7 @@ function Player:CheckCombatData()
 		self.combatTable = {} 
 		self.combatTable.lvl = 1
 		self:ClearLvlFree()
-		self:AddLvlFree(1)
+		self:AddLvlFree(kCombatStartUpgradePoints)
 		self.combatTable.lastNotify = 0
 		self.combatTable.hasCamouflage = false
 		
