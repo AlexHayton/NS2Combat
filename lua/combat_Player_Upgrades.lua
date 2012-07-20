@@ -26,79 +26,93 @@ function GetIsPrimaryWeapon(kMapName)
     return isPrimary
 end
 
-function Player:CoEnableUpgrade(upgrade)
+function Player:CoEnableUpgrade(upgrades)
 
 	self:CheckCombatData()
-	local alreadyGotUpgrade = false
-	local noRoom = false
-	local requirements = upgrade:GetRequirements()
-	local techId = upgrade:GetTechId()
-	local neededLvl = upgrade:GetLevels()
-	local team = upgrade:GetTeam()
+	local vaildUpgrades = {}
+	// support multiple upgrades
 	
-	// Loop over the other items in the player's tech tree.
-	for number, entry in ipairs(self.combatTable.techtree) do
+	for i, upgrade in ipairs(upgrades) do
 	
-		// does this up needs other ups??
-		if requirements then
-			if entry:GetId() == requirements then
-			// we got the needed Update
-				requirements = nil
-			end
-		end
-	
-		// do i have the Up already?
-		if entry:GetId() == upgrade:GetId() then
-		   alreadyGotUpgrade = true
-		end
-	end
-	
-	// Check whether we have room to evolve
-	if self:isa("Alien") then
-		local lifeFormTechId = kTechId.Skulk
-		if self:GetIsAlive() then 
-			if upgrade:GetType() == kCombatUpgradeTypes.Class then
-				lifeFormTechId = self:GetTechId()
-			else
-				lifeFormTechId = techId
-			end
-		end
-		
-		if not self:HasRoomToEvolve(techId) then
-			noRoom = true
-		end
-	end
+        local alreadyGotUpgrade = false
+        local noRoom = false
+        local requirements = upgrade:GetRequirements()
+        local techId = upgrade:GetTechId()
+        local neededLvl = upgrade:GetLevels()
+        local team = upgrade:GetTeam()
+        
+        // Loop over the other items in the player's tech tree.
+        for number, entry in ipairs(self.combatTable.techtree) do
+        
+            // does this up needs other ups??
+            if requirements then
+                if entry:GetId() == requirements then
+                // we got the needed Update
+                    requirements = nil
+                end
+            end
+        
+            // do i have the Up already?
+            if entry:GetId() == upgrade:GetId() then
+               alreadyGotUpgrade = true
+            end
+        end
+        
+        // Check whether we have room to evolve
+        if self:isa("Alien") then
+            local lifeFormTechId = kTechId.Skulk
+            if self:GetIsAlive() then 
+                if upgrade:GetType() == kCombatUpgradeTypes.Class then
+                    lifeFormTechId = self:GetTechId()
+                else
+                    lifeFormTechId = techId
+                end
+            end
+            
+            if not self:HasRoomToEvolve(techId) then
+                noRoom = true
+            end
+        end
 
-	// Sanity checks before we actually go further.
-	if requirements then
-		self:spendlvlHints("neededOtherUp", GetUpgradeFromId(requirements):GetTextCode())
-	elseif not self:isa(team) then
-		self:spendlvlHints("wrong_team", team)
-	elseif alreadyGotUpgrade then
-	    self:spendlvlHints("already_owned", upgrade:GetTextCode())
-	elseif noRoom then
-		self:spendlvlHints("no_room")
-    elseif self:GetLvlFree() < neededLvl then
-		self:spendlvlHints("neededLvl", neededLvl)
-	else
-		// insert the up to the personal techtree
-		table.insert(self.combatTable.techtree, upgrade)
-		// subtract the needed lvl
-		self:SubtractLvlFree(neededLvl)
-		
-		local pointText = (neededLvl > 1) and "points" or "point"
-		self:SendDirectMessage(upgrade:GetDescription() .. " purchased for " .. neededLvl .. " upgrade " .. pointText)
-		
-		// Special logic for alien lifeforms
-		if self:isa("Alien") and upgrade:GetType() == kCombatUpgradeTypes.Class then
-			self.combatTable.currentLifeForm = upgrade
-		end
-		
-		// Apply all missing upgrades.
-		if not self.respawning then
-			self:ApplyAllUpgrades(nil, upgrade)
-		end
-	end
+        // Sanity checks before we actually go further.
+        if requirements then
+            self:spendlvlHints("neededOtherUp", GetUpgradeFromId(requirements):GetTextCode())
+        elseif not self:isa(team) then
+            self:spendlvlHints("wrong_team", team)
+        elseif alreadyGotUpgrade then
+            self:spendlvlHints("already_owned", upgrade:GetTextCode())
+        elseif noRoom then
+            self:spendlvlHints("no_room")
+        elseif self:GetLvlFree() < neededLvl then
+            self:spendlvlHints("neededLvl", neededLvl)
+        else
+            table.insert(vaildUpgrades, upgrade)
+            // insert the up to the personal techtree
+            table.insert(self.combatTable.techtree, upgrade)
+            // subtract the needed lvl
+            self:SubtractLvlFree(neededLvl)
+            
+            local pointText = (neededLvl > 1) and "points" or "point"
+            self:SendDirectMessage(upgrade:GetDescription() .. " purchased for " .. neededLvl .. " upgrade " .. pointText)
+            
+            // Special logic for alien lifeforms
+            if self:isa("Alien") and upgrade:GetType() == kCombatUpgradeTypes.Class then
+                self.combatTable.currentLifeForm = upgrade
+            end
+        end            
+	end		
+	
+	// Apply all missing upgrades.
+    if table.maxn(vaildUpgrades) > 0 then
+        if self:isa("Alien")  then
+            // special treatment for aliens cause they will hatch with all upgrades)
+            self:ApplyAllUpgrades(nil, vaildUpgrades)
+        else
+            for i, upgrade in ipairs(vaildUpgrades) do
+                self:ApplyAllUpgrades(nil, upgrade)
+            end    
+        end
+    end
 
 end
 
@@ -140,7 +154,15 @@ function Player:ApplyAllUpgrades(upgradeTypes, singleUpgrade)
             end
             
         else
-            singleUpgrade:DoUpgrade(self)
+            if type(singleUpgrade) == "table" then
+                // if its a table, special logic for aliens
+                for i, upgrade in ipairs(singleUpgrade) do
+                    upgrade:DoUpgrade(self, true)
+                end
+                singleUpgrade[1]:DoUpgrade(self, false)
+            else
+                singleUpgrade:DoUpgrade(self)
+            end
         end    
     end
     

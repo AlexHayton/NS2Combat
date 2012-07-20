@@ -254,14 +254,21 @@ function CombatAlienBuy_GetAlienCost(alienType)
 end
 
 
-function CombatAlienBuy_Purchase(purchaseId)
+function CombatAlienBuy_Purchase(purchases)
 
     local player = Client.GetLocalPlayer()
+    local textCodes = {}
     if player then
-        local upgrade = GetUpgradeFromTechId(purchaseId)
-        if upgrade then
-            local textCode = upgrade:GetTextCode()
-            player:Combat_PurchaseItemAndUpgrades(textCode)
+        for i, purchaseId in ipairs(purchases) do
+            local upgrade = GetUpgradeFromTechId(purchaseId)
+            if upgrade then
+                local textCode = upgrade:GetTextCode()
+                table.insert(textCodes, textCode)
+            end
+        end
+        
+        if table.maxn(textCodes) > 0 then
+            player:Combat_PurchaseItemAndUpgrades(textCodes)
         end
     end
 

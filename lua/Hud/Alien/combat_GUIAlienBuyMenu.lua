@@ -1378,13 +1378,13 @@ function combat_GUIAlienBuyMenu:SendKeyEvent(key, down)
             allowedToEvolve = allowedToEvolve and GetAlienOrUpgradeSelected(self)
             if allowedToEvolve and self:_GetIsMouseOver(self.evolveButtonBackground) then
             
-                local purchaseId = nil
+                local purchases = { }
                 // Buy the selected alien if we have a different one selected.
                 
                 if self.selectedAlienType ~= AlienBuy_GetCurrentAlien() then
                     if AlienBuy_GetCurrentAlien() == 5 then
                         // only buy another calss when youre a skulk
-                        purchaseId = CombatAlienBuy_GetTechIdForAlien(self.selectedAlienType)
+                        table.insert(purchases, CombatAlienBuy_GetTechIdForAlien(self.selectedAlienType))
                     end
                 else
                 
@@ -1392,7 +1392,7 @@ function combat_GUIAlienBuyMenu:SendKeyEvent(key, down)
                     for i, currentButton in ipairs(self.upgradeButtons) do
                     
                         if currentButton.Selected then
-                            purchaseId = currentButton.TechId
+                            table.insert(purchases, currentButton.TechId)
                         end
                         
                     end
@@ -1404,8 +1404,8 @@ function combat_GUIAlienBuyMenu:SendKeyEvent(key, down)
                 closeMenu = true
                 inputHandled = true
                 
-                if  purchaseId then
-                    CombatAlienBuy_Purchase(purchaseId)
+                if table.maxn(purchases) > 0 then
+                    CombatAlienBuy_Purchase(purchases)
                 end
                 
                 AlienBuy_OnPurchase()
@@ -1501,7 +1501,7 @@ end
 // only 1 upgrade should be selectable
 function combat_GUIAlienBuyMenu:_GetHasMaximumSelected()
     // only 1 upgrade should be selectable, but already bought ups are OK
-    return self.numSelectedUpgrades - numPurchasedUpgrades>= 1
+    return self.numSelectedUpgrades - numPurchasedUpgrades >= 20
 end
 
 function combat_GUIAlienBuyMenu:_HandleUpgradeClicked(mouseX, mouseY)

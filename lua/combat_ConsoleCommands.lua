@@ -7,28 +7,38 @@
 
 // combat_ConsoleCommands.lua
 
-function OnCommandSpendLvl(client, typeCode)
+function OnCommandSpendLvl(client, ...)
         
+    // support multiple types
+    local args = {...}    
+    local upgradeTable = {}
     local player = client:GetControllingPlayer() 
+    
 	if player:isa("Spectator") then
 		player:spendlvlHints("spectator")
-    elseif typeCode then
-		local upgrade = GetUpgradeFromTextCode(typeCode)
-		
-		if upgrade then
-			player:CoEnableUpgrade(upgrade)
-		else
-			local hintType = ""
-			if player:isa("Marine") then
-				hintType = "wrong_type_marine"
-			else
-				hintType = "wrong_type_alien"
-			end
-			
-			player:spendlvlHints(hintType, typeCode)
+    else		
+        for i, typeCode in ipairs(args) do
+            local upgrade = GetUpgradeFromTextCode(typeCode)
+            if not upgrade then 
+                // check for every arg if its a valid update
+                local hintType = ""
+                if player:isa("Marine") then
+                    hintType = "wrong_type_marine"
+                else
+                    hintType = "wrong_type_alien"
+                end			
+                player:spendlvlHints(hintType, typeCode)
+            else
+            // build new table with upgrades
+                table.insert(upgradeTable, upgrade) 
+            end        
+        end       
+
+        if table.maxn(upgradeTable) > 0 then   
+            player:CoEnableUpgrade(upgradeTable)
+        else
+            player:spendlvlHints("no_type")
         end
-    else
-        player:spendlvlHints("no_type")
     end
    
 end

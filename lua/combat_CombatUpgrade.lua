@@ -114,7 +114,7 @@ function CombatUpgrade:GiveItem(player)
 
 end
 
-function CombatUpgrade:DoUpgrade(player)
+function CombatUpgrade:DoUpgrade(player, wait, upgradeList)
 	local techId = self:GetTechId()
 	local kMapName = LookupTechData(techId, kTechDataMapName)
 	
@@ -131,5 +131,11 @@ function CombatUpgrade:DoUpgrade(player)
 	end
 	
 	// Do specific stuff for aliens or marines.
-	self:TeamSpecificLogic(player)
+	if wait ~= nil then
+	    self:TeamSpecificLogic(player)
+    else
+        if not wait then
+            self:TeamSpecificLogic(player)
+        end
+    end
 end

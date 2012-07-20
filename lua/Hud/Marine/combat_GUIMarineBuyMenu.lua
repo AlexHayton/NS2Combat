@@ -559,8 +559,8 @@ function combat_GUIMarineBuyMenu:_UpdateContent(deltaTime)
     
     if techId then
     
-        local researched = self.player:GotRequirements(self.hoverUpgrade)        
-        local itemCost = self.hoverUpgrade:GetLevels()
+        local researched = self.player:GotRequirements(self.hoverUpgrade)                
+        local itemCost = ConditionalValue(self.hoverUpgrade, self.hoverUpgrade:GetLevels(), 0)
         local upgradesCost = 0
         local canAfford = PlayerUI_GetPlayerResources() >= itemCost + upgradesCost
 
