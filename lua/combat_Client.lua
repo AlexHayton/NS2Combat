@@ -11,10 +11,12 @@ Script.Load("lua/fsfod_scripts.lua")
 
 // Loading the Hook classes
 Script.Load("lua/Hud/Marine/combat_GUIMarineHud.lua")
+Script.Load("lua/Hud/combat_GUIPlayerResources.lua")
 Script.Load("lua/combat_Player_ClientHook.lua")
 
 // Calling the Hook classes
 CombatGUIMarineHud:OnLoad()
+CombatGUIPlayerResources:OnLoad()
 CombatPlayerClient:OnLoad()
 
 // Load the normal Ns2 Server Scripts
