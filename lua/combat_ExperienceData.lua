@@ -86,6 +86,10 @@ local function Resupply(player, techUpgrade)
 	player.combatTable.hasResupply = true
 end
 
+local function EMP(player, techUpgrade)
+	player.combatTable.hasEMP = true
+end
+
 // Helper function to build upgrades for us.
 local function BuildUpgrade(team, upgradeId, upgradeTextCode, upgradeDescription, upgradeTechId, upgradeFunc, requirements, levels, upgradeType)
 	local upgrade = nil
@@ -124,6 +128,7 @@ table.insert(UpsList, BuildUpgrade("Marine", kCombatUpgrades.Armor3,			"arm3",		
 // Add motion detector, scanner, resup, catpacks as available...
 table.insert(UpsList, BuildUpgrade("Marine", kCombatUpgrades.Scanner,			"scan",				"Scanner",			kTechId.Scan, 			    Scan, 	        nil,                     	1, 		kCombatUpgradeTypes.Tech))
 table.insert(UpsList, BuildUpgrade("Marine", kCombatUpgrades.Resupply,			"resup",			"Resupply",			kTechId.MedPack , 	        Resupply,    	nil, 	                    1, 		kCombatUpgradeTypes.Tech))
+table.insert(UpsList, BuildUpgrade("Marine", kCombatUpgrades.EMP,   			"emo",			    "EMP-Taunt",		kTechId.MACEMP , 	        EMP,        	nil, 	                    1, 		kCombatUpgradeTypes.Tech))
 
 
 // Alien Upgrades

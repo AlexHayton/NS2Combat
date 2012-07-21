@@ -329,6 +329,9 @@ function Player:Reset_Lite()
 
     self.combatTable.hasResupply = false
     self.combatTable.lastResupply = 0
+	
+	self.combatTable.hasEMP = false
+	self.combatTable.lastEMP = 0
     
     self.combatTable.giveClassAfterRespawn = nil	
 	self.combatTable.techtree = {}

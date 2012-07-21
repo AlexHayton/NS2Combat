@@ -97,6 +97,12 @@ function Player:ResupplyNow()
 
 end
 
+function Player:EMPBlast()
+
+    local empBlast = CreateEntity(EMPBlast.kMapName, self:GetOrigin(), self:GetTeamNumber())
+        
+end
+
 function Player:GetXp()
     if self.score then
         return self.score
@@ -188,6 +194,9 @@ function Player:CheckCombatData()
 
         self.combatTable.hasResupply = false
         self.combatTable.lastResupply = 0
+		
+		self.combatTable.hasEMP = false
+        self.combatTable.lastEMP = 0
 		
 		// class after respawn for rines
 		self.combatTable.giveClassAfterRespawn = nil

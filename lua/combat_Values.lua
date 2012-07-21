@@ -37,6 +37,9 @@ kResupplyTimer = 10
 kScanDuration = 5
 kScanRadius = 30
 
+kEMPTimer = 20
+
+
 // Change the GestateTime so every new Class takes the same time
 kSkulkGestateTime = 2
 kGorgeGestateTime = 2

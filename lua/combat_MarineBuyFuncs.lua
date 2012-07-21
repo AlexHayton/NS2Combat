@@ -25,6 +25,7 @@ function CombatMarineBuy_GUISortUps(upgradeList)
         kTechId.Shotgun,
         kTechId.GrenadeLauncher,
         kTechId.Flamethrower,
+        kTechId.MACEMP,
         "nextRow",
         
         // 2 
@@ -87,6 +88,7 @@ function CombatMarineBuy_GetWeaponDescription(techId)
         combatWeaponDescription[kTechId.Scan] = "You get Scansupply. A scan will appear after some time and shows all enemys nearby"
         combatWeaponDescription[kTechId.Welder] = "You get a Welder. You can repair buildings or the Armor from Teammates"
         combatWeaponDescription[kTechId.LayMines] = "You get 1 Mine."
+        combatWeaponDescription[kTechId.MACEMP] =  "You're taunt will activate a powerful EMP-Blast"
         
         combatWeaponDescription[kTechId.Axe] = "Axe description."
         combatWeaponDescription[kTechId.Pistol] = "Pistol description."

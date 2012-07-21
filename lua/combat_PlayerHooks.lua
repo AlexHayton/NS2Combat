@@ -21,6 +21,7 @@ function CombatPlayer:OnLoad()
     self:PostHookClassFunction("Player", "CopyPlayerDataFrom", "CopyPlayerDataFrom_Hook") 
 	self:ReplaceClassFunction("Player", "GetTechTree", "GetTechTree_Hook") 
 	self:PostHookClassFunction("Player", "OnUpdatePlayer", "OnUpdatePlayer_Hook")
+	self:PostHookClassFunction("Player", "Taunt", "Taunt_Hook")
 
     self:ReplaceFunction("GetIsTechAvailable", "GetIsTechAvailable_Hook")
     self:ReplaceClassFunction("Alien", "LockTierTwo",function() end)
@@ -49,6 +50,9 @@ function CombatPlayer:Reset_Hook(self)
 
     self.combatTable.hasResupply = false
     self.combatTable.lastResupply = 0
+	
+	self.combatTable.hasEMP = false
+    self.combatTable.lastEMP = 0
     
     self.combatTable.giveClassAfterRespawn = nil
 	
@@ -172,6 +176,24 @@ function CombatPlayer:OnUpdatePlayer_Hook(self, deltaTime)
         end
     end
 end
+
+
+function CombatPlayer:Taunt_Hook(self)
+
+    if self.combatTable then
+        if self.combatTable.hasEMP then
+            if  self.combatTable.lastEMP == 0 or Shared.GetTime() > ( self.combatTable.lastEMP + kEMPTimer) then
+                self:EMPBlast()
+                self.combatTable.lastEMP = Shared.GetTime()
+            else
+                local timeReady = math.ceil(self.combatTable.lastEMP + kEMPTimer - Shared.GetTime())
+                self:SendDirectMessage("EMP-taunt is not ready, wait " .. timeReady .. " sec")
+            end    
+        end
+    end
+    
+end
+
 
 //___________________
 // Hooks Alien_Upgrade
