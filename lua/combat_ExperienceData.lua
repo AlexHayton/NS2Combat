@@ -22,6 +22,9 @@ XpList[8] = { Level=8, 		XP=1750, 	MarineName="Major", 				AlienName="Eliminator
 XpList[9] = { Level=9, 		XP=2200, 	MarineName="Field Marshal", 		AlienName="Nightmare", 		GivenXP=140}
 XpList[10] = { Level=10, 	XP=2700, 	MarineName="General", 				AlienName="Behemoth", 		GivenXP=150}
 
+// default start points
+kCombatStartUpgradePoints = 1
+
 // how much % from the avg xp can new player get
 avgXpAmount = 0.75
 maxLvl = table.maxn(XpList)
@@ -47,6 +50,9 @@ XpValues["Clog"] = 20
 XpValues["Armory"] = 80
 XpValues["CommandStation"] = 300
 XpValues["Hive"] = 300
+
+// xp  for welding, healing
+kCombatHealingXP = 5
 
 local function UpgradeArmor(player, techUpgrade)
 	techUpgrade:ExecuteTechUpgrade(player)
