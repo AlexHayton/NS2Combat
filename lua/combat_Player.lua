@@ -235,8 +235,9 @@ function Player:AddXp(amount, suppressmessage)
 			if not suppressmessage then
 				self:SendDirectMessage("Max-XP reached")
 			end
-            self.score = maxXp
+            self:XpEffect(amount)
             self:CheckLvlUp(self.score, suppressmessage)
+            self:SetScoreboardChanged(true)
         end 
     end   
 end
