@@ -166,7 +166,7 @@ function CombatUpdatePropEffect(team)
          // get the middle of the prop
          local coords = prop:GetCoords()
          local middle = coords.origin + (coords.yAxis / 2)
-         team:PrintWorldTextForTeamInRange("---- Ristricted area -----", middle , 20)
+         team:PrintWorldTextForTeamInRange("---- Restricted area -----", middle , 20)
     end
 
 end
