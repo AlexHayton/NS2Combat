@@ -187,36 +187,7 @@ function Player:CheckCombatData()
 
 	// Initialise the Combat Tech Tree
 	if not self.combatTable then
-		self.combatTable = {} 
-		self.combatTable.lvl = 1
-		self:ClearLvlFree()
-		self:AddLvlFree(kCombatStartUpgradePoints)
-		self.combatTable.lastNotify = 0
-		self.combatTable.hasCamouflage = false
-		
-		self.twoHives = false
-		self.threeHives = false
-		
-		// scan and resupp values	
-        self.combatTable.hasScan = false
-        self.combatTable.lastScan = 0
-
-        self.combatTable.hasResupply = false
-        self.combatTable.lastResupply = 0
-		
-		self.combatTable.hasEMP = false
-        self.combatTable.lastEMP = 0
-		
-		self.combatTable.hasInk = false
-		self.combatTable.lastInk = 0
-		
-		// class after respawn for rines
-		self.combatTable.giveClassAfterRespawn = nil
-		
-		// getAvgXP is called before giving the score, so this needs to be implemented here
-		self.score = 0
-		
-		self.combatTable.techtree = {}
+		self:Reset()
 	end
 	
 	if not self.combatTechTree then

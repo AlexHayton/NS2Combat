@@ -34,37 +34,16 @@ end
 function CombatPlayer:Reset_Hook(self)
   
 	// don't initialise the Combat Data !!! we need to reset it
-	self.combatTable = {}  
+	self.combatTable = {} 
+
+	// that we don't have to write everything in 3 different functions
+	self:Reset_Lite() 
+
 	self.combatTable.lvl = 1
-	self:ClearLvlFree()
 	self:AddLvlFree(kCombatStartUpgradePoints)
-	self.combatTable.lastNotify = 0
-	self.combatTable.hasCamouflage = false
-	
-	self.twoHives = false
-	self.threeHives = false
-
-    // scan and resupp values	
-    self.combatTable.hasScan = false
-    self.combatTable.lastScan = 0
-
-    self.combatTable.hasResupply = false
-    self.combatTable.lastResupply = 0
-	
-	self.combatTable.hasEMP = false
-    self.combatTable.lastEMP = 0
-	
-	self.combatTable.hasInk = false
-	self.combatTable.lastInk = 0
-    
-    self.combatTable.giveClassAfterRespawn = nil
 	
 	// getAvgXP is called before giving the score, so this needs to be implemented here
 	self.score = 0
-	
-	self.combatTable.techtree = {}
-	Server.SendNetworkMessage(self, "ClearTechTree", {}, true)
-	self:SendUpgrades()
 	    
 end
 
