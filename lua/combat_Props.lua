@@ -131,7 +131,7 @@ function CombatCreateProp(origin, angels, scale)
     // Create the physical representation of the prop.
     local physicsModel = Shared.CreatePhysicsModel(model, false, coords, nil) 
     physicsModel:SetPhysicsType(1)
-
+    
     // Make it not block selection and structure placement (GetCommanderPickTarget)
     if renderModelCommAlpha < 1 or blocksPlacement then
         physicsModel:SetGroup(PhysicsGroup.CommanderPropsGroup)
@@ -160,6 +160,16 @@ function CombatCreateProp(origin, angels, scale)
 
 end
 
+function CombatUpdatePropEffect(team)
+
+    for i, prop in ipairs(CombatPropList) do  
+         // get the middle of the prop
+         local coords = prop:GetCoords()
+         local middle = coords.origin + (coords.yAxis / 2)
+         team:PrintWorldTextForTeamInRange("---- Ristricted area -----", middle , 20)
+    end
+
+end
 
 function CombatDeleteProps()
 

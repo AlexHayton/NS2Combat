@@ -167,6 +167,7 @@ function CombatPlayingTeam:Update_Hook(self, timePassed)
 		local timeToSpawn = (self.timeSinceLastSpawn >= kCombatRespawnTimer)
 		
 		if timeToSpawn then
+		
 			// Reset the spawn timer.
 			CombatPlayingTeam:ResetSpawnTimer(self)
 			
@@ -200,6 +201,18 @@ function CombatPlayingTeam:Update_Hook(self, timePassed)
 		
 	end
 	
+	if not self.timeSincePropEffect then
+        self.timeSincePropEffect = 0
+    else
+        self.timeSincePropEffect = self.timeSincePropEffect + timePassed
+    end
+	
+	if self.timeSincePropEffect >= 4 then
+        // resend prop messages	        
+        CombatUpdatePropEffect(self)
+        self.timeSincePropEffect = 0
+    end
+    
 end
 
 function CombatPlayingTeam:ResetSpawnTimer(self)
