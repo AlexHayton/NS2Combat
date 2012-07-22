@@ -53,6 +53,9 @@ function CombatPlayer:Reset_Hook(self)
 	
 	self.combatTable.hasEMP = false
     self.combatTable.lastEMP = 0
+	
+	self.combatTable.hasInk = false
+	self.combatTable.lastInk = 0
     
     self.combatTable.giveClassAfterRespawn = nil
 	
@@ -189,7 +192,15 @@ function CombatPlayer:Taunt_Hook(self)
                 local timeReady = math.ceil(self.combatTable.lastEMP + kEMPTimer - Shared.GetTime())
                 self:SendDirectMessage("EMP-taunt is not ready, wait " .. timeReady .. " sec")
             end    
-        end
+        elseif self.combatTable.hasInk then
+            if  self.combatTable.lastInk == 0 or Shared.GetTime() > ( self.combatTable.lastInk + kInkTimer) then
+                self:TriggerInk()
+                self.combatTable.lastInk = Shared.GetTime()
+            else
+                local timeReady = math.ceil(self.combatTable.lastInk + kInkTimer - Shared.GetTime())
+                self:SendDirectMessage("Ink-taunt is not ready, wait " .. timeReady .. " sec")
+            end   
+        end    
     end
     
 end

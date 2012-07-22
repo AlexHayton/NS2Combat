@@ -38,6 +38,7 @@ kScanDuration = 5
 kScanRadius = 30
 
 kEMPTimer = 20
+kInkTimer = 15
 
 
 // Change the GestateTime so every new Class takes the same time

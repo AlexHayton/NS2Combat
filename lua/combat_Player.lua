@@ -103,6 +103,15 @@ function Player:EMPBlast()
         
 end
 
+
+function Player:TriggerInk()
+
+    // Create ShadeInk entity in world at this position with a small offset
+    CreateEntity(ShadeInk.kMapName, self:GetOrigin() + Vector(0, 0.2, 0), self:GetTeamNumber())
+
+end
+
+
 function Player:GetXp()
     if self.score then
         return self.score
@@ -197,6 +206,9 @@ function Player:CheckCombatData()
 		
 		self.combatTable.hasEMP = false
         self.combatTable.lastEMP = 0
+		
+		self.combatTable.hasInk = false
+		self.combatTable.lastInk = 0
 		
 		// class after respawn for rines
 		self.combatTable.giveClassAfterRespawn = nil

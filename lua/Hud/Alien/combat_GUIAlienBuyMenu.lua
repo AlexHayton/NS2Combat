@@ -71,7 +71,7 @@ combat_GUIAlienBuyMenukEnabledColor = Color(1, 1, 1, 1)
 
 local kTooltipTextWidth = GUIScale(300)
 
-combat_GUIAlienBuyMenukMaxNumberOfUpgradeButtons = 9
+combat_GUIAlienBuyMenukMaxNumberOfUpgradeButtons = 10
 combat_GUIAlienBuyMenukUpgradeButtonSize = GUIScale(54)
 combat_GUIAlienBuyMenukUpgradeButtonDistance = GUIScale(198)
 // The distance in pixels to move the button inside the embryo when selected.
@@ -1223,7 +1223,8 @@ function combat_GUIAlienBuyMenu:_UpdateUpgrades(deltaTime)
                             math.pi / 2 + offsetAmount * 3, 
                             math.pi / 2 - offsetAmount * 3,
                             math.pi / 2 + offsetAmount * 4 ,
-                            math.pi / 2 - offsetAmount * 4 
+                            math.pi / 2 - offsetAmount * 4 ,
+                            math.pi / 2 + offsetAmount * 5 
                         }
                         
     local numSelected = 0

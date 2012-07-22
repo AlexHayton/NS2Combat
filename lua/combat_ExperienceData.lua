@@ -88,6 +88,12 @@ end
 
 local function EMP(player, techUpgrade)
 	player.combatTable.hasEMP = true
+	player:SendDirectMessage("You got EMP-taunt, use your taunt key to activate it")
+end
+
+local function ShadeInk(player, techUpgrade)
+    player.combatTable.hasInk = true
+    player:SendDirectMessage("You got Ink-taunt, use your taunt key to activate it")
 end
 
 // Helper function to build upgrades for us.
@@ -128,7 +134,7 @@ table.insert(UpsList, BuildUpgrade("Marine", kCombatUpgrades.Armor3,			"arm3",		
 // Add motion detector, scanner, resup, catpacks as available...
 table.insert(UpsList, BuildUpgrade("Marine", kCombatUpgrades.Scanner,			"scan",				"Scanner",			kTechId.Scan, 			    Scan, 	        nil,                     	1, 		kCombatUpgradeTypes.Tech))
 table.insert(UpsList, BuildUpgrade("Marine", kCombatUpgrades.Resupply,			"resup",			"Resupply",			kTechId.MedPack , 	        Resupply,    	nil, 	                    1, 		kCombatUpgradeTypes.Tech))
-table.insert(UpsList, BuildUpgrade("Marine", kCombatUpgrades.EMP,   			"emo",			    "EMP-Taunt",		kTechId.MACEMP , 	        EMP,        	nil, 	                    1, 		kCombatUpgradeTypes.Tech))
+table.insert(UpsList, BuildUpgrade("Marine", kCombatUpgrades.EMP,   			"emp",			    "EMP-Taunt",		kTechId.MACEMP , 	        EMP,        	nil, 	                    1, 		kCombatUpgradeTypes.Tech))
 
 
 // Alien Upgrades
@@ -150,3 +156,6 @@ table.insert(UpsList, BuildUpgrade("Alien", kCombatUpgrades.Adrenaline,			"adren
 table.insert(UpsList, BuildUpgrade("Alien", kCombatUpgrades.TierTwo,			"tier2",			"Tier 2",			kTechId.TwoHives, 			TierTwo, 		nil, 						1, 		kCombatUpgradeTypes.Tech))
 table.insert(UpsList, BuildUpgrade("Alien", kCombatUpgrades.Feint,		    	"feint",    		"Feint",    		kTechId.Feint,   			nil, 			nil, 						1, 		kCombatUpgradeTypes.Tech))
 table.insert(UpsList, BuildUpgrade("Alien", kCombatUpgrades.TierThree,			"tier3",			"Tier 3",			kTechId.ThreeHives, 		TierThree, 		kCombatUpgrades.TierTwo,	2, 		kCombatUpgradeTypes.Tech))
+
+// new ink abilitiy
+table.insert(UpsList, BuildUpgrade("Alien", kCombatUpgrades.ShadeInk,			"ink",		        "Ink-Taunt",		kTechId.ShadeInk, 		    ShadeInk,		nil, 						1, 		kCombatUpgradeTypes.Tech))
