@@ -10,8 +10,10 @@
 // Experience based values like avgXpAmount is still in ExperienceData
 
 // Welcome Message that every player receives who joined our game
+
+Script.Load("Version.lua")
 combatWelcomeMessage = {"Welcome to this Server",
-                        "It's running a special Combat Mod",
+                        "It's running a special Combat Mod V." .. kCombatLocalVersion,
                         "Score = XP and Resources = FreeLvl to use",
                         "For more informations type co_help in the chat or console"
                         }

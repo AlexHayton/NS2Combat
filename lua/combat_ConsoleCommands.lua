@@ -148,9 +148,10 @@ function OnCommandSendUpgrades(client)
 end
 
 // All commands that should be accessible via the chat need to be in this list
-combatCommands = {"co_spendlvl", "co_help", "co_status", "co_upgrades", "/upgrades", "/status", "/buy"}
+combatCommands = {"co_spendlvl", "co_help", "co_status", "co_upgrades", "/upgrades", "/status", "/buy", "/help"}
 
 Event.Hook("Console_co_help",                OnCommandHelp) 
+Event.Hook("Console_/help",                OnCommandHelp) 
 Event.Hook("Console_co_upgrades",                OnCommandUpgrades) 
 Event.Hook("Console_/upgrades",                OnCommandUpgrades) 
 Event.Hook("Console_co_spendlvl",                OnCommandSpendLvl)
