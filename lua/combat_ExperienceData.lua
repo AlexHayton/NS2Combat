@@ -86,6 +86,10 @@ local function Resupply(player, techUpgrade)
 	player.combatTable.hasResupply = true
 end
 
+local function Catalyst(player, techUpgrade)
+	player.combatTable.hasCatalyst = true
+end
+
 local function EMP(player, techUpgrade)
 	player.combatTable.hasEMP = true
 	player:SendDirectMessage("You got EMP-taunt, use your taunt key to activate it")
@@ -134,6 +138,7 @@ table.insert(UpsList, BuildUpgrade("Marine", kCombatUpgrades.Armor3,			"arm3",		
 // Add motion detector, scanner, resup, catpacks as available...
 table.insert(UpsList, BuildUpgrade("Marine", kCombatUpgrades.Scanner,			"scan",				"Scanner",			kTechId.Scan, 			    Scan, 	        nil,                     	1, 		kCombatUpgradeTypes.Tech))
 table.insert(UpsList, BuildUpgrade("Marine", kCombatUpgrades.Resupply,			"resup",			"Resupply",			kTechId.MedPack , 	        Resupply,    	nil, 	                    1, 		kCombatUpgradeTypes.Tech))
+table.insert(UpsList, BuildUpgrade("Marine", kCombatUpgrades.Catalyst,			"cat",				"Catalyst",			kTechId.CatPack , 	        Catalyst,  		nil, 	                    1, 		kCombatUpgradeTypes.Tech))
 table.insert(UpsList, BuildUpgrade("Marine", kCombatUpgrades.EMP,   			"emp",			    "EMP-Taunt",		kTechId.MACEMP , 	        EMP,        	nil, 	                    1, 		kCombatUpgradeTypes.Tech))
 
 

@@ -163,6 +163,23 @@ function CombatPlayer:OnUpdatePlayer_Hook(self, deltaTime)
                     end
             
                 end 
+				
+				if self.combatTable.hasCatalyst and self.combatTable.activateCatalyst then
+                    if (self.combatTable.lastCatalyst + deltaTime > kCatalystTimer) then
+                        
+                        local success = self:CatalystNow()
+                        
+                        if success then
+                            self.combatTable.lastCatalyst = 0
+							// TODO: Only activate if the player fires or takes damage.
+							// self.combatTable.activateCatalyst = false
+                        end
+                       
+                    else
+                        self.combatTable.lastCatalyst = self.combatTable.lastCatalyst + deltaTime
+                    end
+            
+                end 
           
             end	
         end

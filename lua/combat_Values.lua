@@ -35,9 +35,10 @@ kNanoShieldDuration = kCombatSpawnProtectTime
 // By default, Aliens win after a certain amount of time...
 kCombatTimeLimit = 30
 
-// time for Scan and Resuply
+// Timers for Scan, Resupply and Catalyst packs.
 kScanTimer = 12
 kResupplyTimer = 10
+kCatalystTimer = 20
 // scan Duration, maybe we need to tune it a bit
 kScanDuration = 5
 kScanRadius = 30

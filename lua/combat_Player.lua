@@ -97,6 +97,28 @@ function Player:ResupplyNow()
 
 end
 
+function Player:CatalystNow()
+
+    local success = false
+    local mapNameCatalyst = LookupTechData(kTechId.CatPack, kTechDataMapName)
+    local position = self:GetOrigin()
+
+    if (mapNameCatalyst) then
+    
+        local droppackCat = CreateEntity(mapNameCatalyst, position, self:GetTeamNumber())
+        
+        //StartSoundEffectForPlayer(CatPack.kPickupSound, self)  
+        success = true
+        
+        //Destroy them so they can't be used by somebody else (if they are unused)
+        DestroyEntity(droppackCat)
+        
+    end
+
+    return success
+
+end
+
 function Player:EMPBlast()
 
     local empBlast = CreateEntity(EMPBlast.kMapName, self:GetOrigin(), self:GetTeamNumber())
