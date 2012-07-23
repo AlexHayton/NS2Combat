@@ -317,7 +317,8 @@ end
 function Player:Reset_Lite()
 
 	self:ClearLvlFree()
-	self.combatTable.lastNotify = 0
+	self.combatTable.lastUpgradeNotify = 0
+	self.combatTable.lastReminderNotify = 0
 	self.combatTable.hasCamouflage = false
 	
 	self.twoHives = false

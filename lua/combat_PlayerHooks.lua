@@ -80,16 +80,28 @@ function CombatPlayer:OnUpdatePlayer_Hook(self, deltaTime)
         // Remind players once every so often when they have upgrades to spend.        
         local lvlFree = self:GetLvlFree()
         if lvlFree > 0 then
-            if (self.combatTable.lastNotify + deltaTime > kUpgradeNotifyInterval) then
-                self.combatTable.lastNotify = 0
+            if (self.combatTable.lastUpgradeNotify + deltaTime > kUpgradeNotifyInterval) then
+                self.combatTable.lastUpgradeNotify = 0
                 self:spendlvlHints("freeLvl")
             else
-                self.combatTable.lastNotify = self.combatTable.lastNotify + deltaTime
+                self.combatTable.lastUpgradeNotify = self.combatTable.lastUpgradeNotify + deltaTime
+            end
+        end
+		
+		// If the player hasn't spent their upgrades at all, remind them again
+		// that this is combat mode after a longer interval.
+        if self:GetLvl() + kCombatStartUpgradePoints == self:GetLvlFree() then
+            if (self.combatTable.lastReminderNotify + deltaTime > kReminderNotifyInterval) then
+                self.combatTable.lastReminderNotify = 0
+                for i, message in ipairs(combatWelcomeMessage) do
+					self:SendDirectMessage(message)
+				end
+            else
+                self.combatTable.lastReminderNotify = self.combatTable.lastReminderNotify + deltaTime
             end
         end
         
         // Spawn Protect
-        
         if self.combatSpawnProtect then
             if self:GetIsAlive() then
                 if self.combatSpawnProtect == 1 then

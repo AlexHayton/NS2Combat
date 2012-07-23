@@ -19,6 +19,7 @@ combatWelcomeMessage = {"Welcome to this Server",
                         }
 						
 kUpgradeNotifyInterval = 10
+kReminderNotifyInterval = 35
 
 // Set the respawn timer
 kCombatRespawnTimer = 10
