@@ -93,9 +93,7 @@ function CombatPlayer:OnUpdatePlayer_Hook(self, deltaTime)
         if self:GetLvl() + kCombatStartUpgradePoints == self:GetLvlFree() then
             if (self.combatTable.lastReminderNotify + deltaTime > kReminderNotifyInterval) then
                 self.combatTable.lastReminderNotify = 0
-                for i, message in ipairs(combatWelcomeMessage) do
-					self:SendDirectMessage(message)
-				end
+				self:SendDirectMessage(combatModifiedMessage)
             else
                 self.combatTable.lastReminderNotify = self.combatTable.lastReminderNotify + deltaTime
             end

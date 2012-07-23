@@ -12,10 +12,12 @@
 // Welcome Message that every player receives who joined our game
 
 Script.Load("Version.lua")
-combatWelcomeMessage = {"Welcome to this Server",
-                        "It's running a special Combat Mod V." .. kCombatLocalVersion,
-                        "Score = XP and Resources = FreeLvl to use",
-                        "For more informations type co_help in the chat or console"
+combatModifiedMessage = "This is a community-modified server and not reflective of the standard NS2 experience."
+combatWelcomeMessage = {combatModifiedMessage,
+                        "This server is running a special Combat Mod V." .. kCombatLocalVersion .. ".",
+                        "This mod removes the RTS elements of NS2 and provides upgrades-for-kills gameplay.",
+                        "Score = XP and Resources = FreeLvl to use.",
+                        "For more information type /help in the chat or console."
                         }
 						
 kUpgradeNotifyInterval = 10
