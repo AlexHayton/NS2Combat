@@ -37,24 +37,9 @@ function CombatMarineTeam:InitTechTree_Hook(self)
     self.techTree:AddBuyNode(kTechId.Rifle,                       kTechId.None,                kTechId.None)
 
     self.techTree:AddBuildNode(kTechId.PowerPack,                 kTechId.None,      kTechId.None)      
-    
-    // Squad tech nodes
-    self.techTree:AddOrder(kTechId.SelectRedSquad)
-    self.techTree:AddOrder(kTechId.SelectBlueSquad)
-    self.techTree:AddOrder(kTechId.SelectGreenSquad)
-    self.techTree:AddOrder(kTechId.SelectYellowSquad)
-    self.techTree:AddOrder(kTechId.SelectOrangeSquad)
-    
-    self.techTree:AddOrder(kTechId.SquadMove)
-    self.techTree:AddOrder(kTechId.SquadAttack)
-    self.techTree:AddOrder(kTechId.SquadDefend)
-    self.techTree:AddOrder(kTechId.SquadSeekAndDestroy)
-    self.techTree:AddOrder(kTechId.SquadHarass)
-    self.techTree:AddOrder(kTechId.SquadRegroup)
-    
+
     // Commander abilities
     self.techTree:AddTargetedActivation(kTechId.NanoShield,       kTechId.None,                kTechId.None)
-    self.techTree:AddTargetedActivation(kTechId.NanoConstruct,    kTechId.None,                kTechId.None)
     self.techTree:AddTargetedActivation(kTechId.Scan,             kTechId.None,         	   kTechId.None)
 
     // Armory upgrades
@@ -163,8 +148,6 @@ end
 function CombatMarineTeam:Update_Hook(self, timePassed)
 
     PlayingTeam.Update(self, timePassed)
-    
-    self:UpdateSquads(timePassed)
     
 end
 
