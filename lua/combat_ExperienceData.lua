@@ -159,7 +159,7 @@ table.insert(UpsList, BuildUpgrade("Alien", kCombatUpgrades.Celerity,			"cele",	
 table.insert(UpsList, BuildUpgrade("Alien", kCombatUpgrades.Adrenaline,			"adrenaline",		"Adrenaline",		kTechId.Adrenaline, 		nil, 			nil, 						1, 		kCombatUpgradeTypes.Tech))
 // a bit sorting for better sorting in the alien GUI
 table.insert(UpsList, BuildUpgrade("Alien", kCombatUpgrades.TierTwo,			"tier2",			"Tier 2",			kTechId.TwoHives, 			TierTwo, 		nil, 						1, 		kCombatUpgradeTypes.Tech))
-table.insert(UpsList, BuildUpgrade("Alien", kCombatUpgrades.Feint,		    	"feint",    		"Feint",    		kTechId.Feint,   			nil, 			nil, 						1, 		kCombatUpgradeTypes.Tech))
+//table.insert(UpsList, BuildUpgrade("Alien", kCombatUpgrades.Feint,		    	"feint",    		"Feint",    		kTechId.Feint,   			nil, 			nil, 						1, 		kCombatUpgradeTypes.Tech))
 table.insert(UpsList, BuildUpgrade("Alien", kCombatUpgrades.TierThree,			"tier3",			"Tier 3",			kTechId.ThreeHives, 		TierThree, 		kCombatUpgrades.TierTwo,	2, 		kCombatUpgradeTypes.Tech))
 
 // new ink abilitiy
