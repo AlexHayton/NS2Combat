@@ -19,11 +19,11 @@ combat_GUIAlienBuyMenukBuyHUDTexture = "ui/alien_buildmenu.dds"
 combat_GUIAlienBuyMenukFont = "Candara"
 combat_GUIAlienBuyMenukFont2 = "Candarab"
 
-combat_GUIAlienBuyMenukAlienTypes = { { Name = "Fade", Width = GUIScale(188), Height = GUIScale(220), XPos = 4, Index = 1 },
-                                { Name = "Gorge", Width = GUIScale(200), Height = GUIScale(167), XPos = 2, Index = 2 },
-                                { Name = "Lerk", Width = GUIScale(284), Height = GUIScale(253), XPos = 3, Index = 3 },
-                                { Name = "Onos", Width = GUIScale(304), Height = GUIScale(326), XPos = 5, Index = 4 },
-                                { Name = "Skulk", Width = GUIScale(240), Height = GUIScale(170), XPos = 1, Index = 5 }}
+combat_GUIAlienBuyMenukAlienTypes = { { Name = Locale.ResolveString("FADE"), Width = GUIScale(188), Height = GUIScale(220), XPos = 4, Index = 1 },
+                                { Name = Locale.ResolveString("GORGE"), Width = GUIScale(200), Height = GUIScale(167), XPos = 2, Index = 2 },
+                                { Name = Locale.ResolveString("LERK"), Width = GUIScale(284), Height = GUIScale(253), XPos = 3, Index = 3 },
+                                { Name = Locale.ResolveString("ONOS"), Width = GUIScale(304), Height = GUIScale(326), XPos = 5, Index = 4 },
+                                { Name = Locale.ResolveString("SKULK"), Width = GUIScale(240), Height = GUIScale(170), XPos = 1, Index = 5 } }
 
 combat_GUIAlienBuyMenukBackgroundTextureCoordinates = { 9, 1, 602, 424 }
 combat_GUIAlienBuyMenukBackgroundWidth = GUIScale((combat_GUIAlienBuyMenukBackgroundTextureCoordinates[3] - combat_GUIAlienBuyMenukBackgroundTextureCoordinates[1]) * 0.80)
@@ -113,6 +113,8 @@ function combat_GUIAlienBuyMenu:Initialize()
     self.upgradeTweeners = { }
     
     self:_InitializeBackground()
+	self:_InitializeSmokeParticles()
+    self:_InitializeBackgroundCircle()    
     //self:_InitializeResourceDisplay()
     self:_InitializeUpgradeButtons()
     // _InitializeMouseOverInfo() must be called before _InitializeAlienButtons().
@@ -122,7 +124,6 @@ function combat_GUIAlienBuyMenu:Initialize()
     self:_InitializeEvolveButton()
     self:_InitializeCloseButton()
     self:_InitializeGlowieParticles()
-    self:_InitializeSmokeParticles()
     self:_InitializeCorners()
     
     AlienBuy_OnOpen()
@@ -132,6 +133,8 @@ end
 function combat_GUIAlienBuyMenu:Uninitialize()
 
     self:_UninitializeBackground()
+	self:_UninitializeSmokeParticles()
+    self:_UninitializeBackgroundCircle()    
     //self:_UninitializeResourceDisplay()
     self:_UninitializeUpgradeButtons()
     self:_UninitializeMouseOverInfo()
@@ -140,7 +143,6 @@ function combat_GUIAlienBuyMenu:Uninitialize()
     self:_UninitializeEvolveButton()
     self:_UninitializeCloseButton()
     self:_UninitializeGlowieParticles()
-    self:_UninitializeSmokeParticles()
     self:_UninitializeCorners()
 
 end
@@ -154,6 +156,17 @@ function combat_GUIAlienBuyMenu:_InitializeBackground()
     self.background:SetPosition(Vector(-combat_GUIAlienBuyMenukBackgroundWidth / 2, -combat_GUIAlienBuyMenukBackgroundHeight / 2, 0))
     self.background:SetColor(Color(0, 0, 0, 0))
     self.background:SetLayer(kGUILayerPlayerHUD)
+	
+end
+
+function combat_GUIAlienBuyMenu:_UninitializeBackground()
+    
+    GUI.DestroyItem(self.background)
+    self.background = nil
+    
+end
+
+function combat_GUIAlienBuyMenu:_InitializeBackgroundCircle()
     
     self.backgroundCircle = GUIManager:CreateGraphicItem()
     self.backgroundCircle:SetSize(Vector(combat_GUIAlienBuyMenukBackgroundWidth, combat_GUIAlienBuyMenukBackgroundHeight, 0))
@@ -178,16 +191,13 @@ function combat_GUIAlienBuyMenu:_InitializeBackground()
     
 end
 
-function combat_GUIAlienBuyMenu:_UninitializeBackground()
+function combat_GUIAlienBuyMenu:_UninitializeBackgroundCircle()
 
     GUI.DestroyItem(self.backgroundCircleStencil)
     self.backgroundCircleStencil = nil
     
     GUI.DestroyItem(self.backgroundCircle)
     self.backgroundCircle = nil
-    
-    GUI.DestroyItem(self.background)
-    self.background = nil
     
 end
 
@@ -199,7 +209,6 @@ function combat_GUIAlienBuyMenu:_InitializeResourceDisplay()
     self.resourceDisplayBackground:SetPosition(Vector((-combat_GUIAlienBuyMenukResourceDisplayWidth / 2), -combat_GUIAlienBuyMenukResourceTextYOffset, 0))
     self.resourceDisplayBackground:SetColor(Color(0, 0, 0, 0))
     self.resourceDisplayBackground:SetLayer(kGUILayerPlayerHUDForeground4)
-    self.resourceDisplayBackground:SetParentRenders(false)
     self.background:AddChild(self.resourceDisplayBackground)
     
     self.resourceDisplayParticles = GUIParticleSystem()
@@ -348,7 +357,6 @@ function combat_GUIAlienBuyMenu:_InitializeCurrentAlienDisplay()
     self.currentAlienDisplay.Icon:SetPosition(Vector((-width / 2), -height / 2, 0))
     self.currentAlienDisplay.Icon:SetTexture("ui/" .. combat_GUIAlienBuyMenukAlienTypes[CombatAlienBuy_GetCurrentAlien()].Name .. ".dds")
     self.currentAlienDisplay.Icon:SetLayer(kGUILayerPlayerHUDForeground2)
-    self.currentAlienDisplay.Icon:SetParentRenders(false)
     self.background:AddChild(self.currentAlienDisplay.Icon)
     
     self.currentAlienDisplay.TitleShadow = GUIManager:CreateTextItem()
@@ -447,7 +455,6 @@ function combat_GUIAlienBuyMenu:_InitializeUpgradeButtons()
         buttonIcon:SetTexture(combat_GUIAlienBuyMenukBuyHUDTexture)
         // Render above the Alien image.
         buttonIcon:SetLayer(kGUILayerPlayerHUDForeground3)
-        buttonIcon:SetParentRenders(false)
         buttonIcon:SetIsVisible(false)
         self.background:AddChild(buttonIcon)
         
@@ -506,7 +513,7 @@ function combat_GUIAlienBuyMenu:_InitializeEvolveButton()
     self.evolveButtonText:SetFontSize(combat_GUIAlienBuyMenukEvolveButtonTextSize)
     self.evolveButtonText:SetTextAlignmentX(GUIItem.Align_Center)
     self.evolveButtonText:SetTextAlignmentY(GUIItem.Align_Center)
-    self.evolveButtonText:SetText("Evolve for ")
+    self.evolveButtonText:SetText(Locale.ResolveString("ABM_EVOLVE_FOR"))
     self.evolveButtonText:SetColor(Color(0, 0, 0, 1))
     self.evolveButtonVeins:AddChild(self.evolveButtonText)
     
@@ -560,40 +567,9 @@ function combat_GUIAlienBuyMenu:_InitializeCloseButton()
     self.closeButton:SetTexturePixelCoordinates(unpack(combat_GUIAlienBuyMenukCloseButtonTextureCoordinates))
     self.closeButton:SetLayer(kGUILayerPlayerHUDForeground4)
     
-    self.closeButtonSmoke = GUIParticleSystem()
-    self.closeButtonSmoke:Initialize()
-    
-    self.closeButtonSmoke:AddParticleType("Smoke",
-                                          { SetTexture = { combat_GUIAlienBuyMenukBuyMenuTexture },
-                                            SetTexturePixelCoordinates = combat_GUIAlienBuyMenukSmokeSmallTextureCoordinates })
-    
-    local fadeInFunc = function(particle, lifetime) if lifetime <= 0.5 then particle.Item:SetColor(Color(1, 1, 1, lifetime / 2)) end end
-    local fadeOutFunc = function(particle, lifetime) if lifetime > 0.5 then particle.Item:SetColor(Color(1, 1, 1, (1 - lifetime) / 2)) end end
-    local scaleFunc = function(particle, lifetime) particle.Item:SetScale(Vector(0.5 + (1 - lifetime * 0.5), 0.5 + (1 - lifetime * 0.5), 0)) end
-    local mainEmitter = { Name = "Main",
-                          Position = Vector(0, 0, 0),
-                          EmitOffsetLimits = { Min = Vector(-10, -10, 0), Max = Vector(10, 10, 0) },
-                          SizeLimits = { MinX = 30, MaxX = 30, MinY = 15, MaxY = 15 },
-                          VelocityLimits = { Min = Vector(-2, -1, 0), Max = Vector(10, 1, 0) },
-                          AccelLimits = { Min = Vector(-0.01, -1, 0), Max = Vector(0.05, 1, 0) },
-                          RateLimits = { Min = 0.1, Max = 0.2 },
-                          LifeLimits = { Min = 6, Max = 8 },
-                          LifeTimeFuncs = { fadeInFunc, fadeOutFunc, scaleFunc } }
-    self.closeButtonSmoke:AddEmitter(mainEmitter)
-    
-    self.closeButtonSmoke:AddParticleTypeToEmitter("Smoke", "Main")
-    
-    self.closeButtonSmoke:AttachToItem(self.closeButton)
-    self.closeButtonSmoke:SetAnchor(GUIItem.Middle, GUIItem.Center)
-    self.closeButtonSmoke:SetLayer(kGUILayerPlayerHUDForeground3)
-    self.closeButtonSmoke:FastForward(3)
-    
 end
 
 function combat_GUIAlienBuyMenu:_UninitializeCloseButton()
-
-    self.closeButtonSmoke:Uninitialize()
-    self.closeButtonSmoke = nil
     
     GUI.DestroyItem(self.closeButton)
     self.closeButton = nil
@@ -751,7 +727,7 @@ function combat_GUIAlienBuyMenu:_InitializeSmokeParticles()
     
     self.smokeParticles:AttachToItem(self.background)
     self.smokeParticles:SetAnchor(GUIItem.Right, GUIItem.Center)
-    self.smokeParticles:SetLayer(kGUILayerPlayerHUDBackground)
+    --self.smokeParticles:SetLayer(kGUILayerPlayerHUDBackground)
     
     // Fast forward so particles already exist when the player first sees the menu.
     self.smokeParticles:FastForward(3)
@@ -885,7 +861,7 @@ local function UpdateEvolveButton(self)
     local numberOfSelectedUpgrades = GetNumberOfSelectedUpgrades(self)
     local evolveButtonTextureCoords = combat_GUIAlienBuyMenukEvolveButtonTextureCoordinates
     
-    evolveText = "Select upgrades"
+    evolveText = Locale.ResolveString("ABM_SELECT_UPGRADES")
     
     // If the current alien is selected with no upgrades, cannot evolve.
     if self.selectedAlienType == CombatAlienBuy_GetCurrentAlien() and numberOfSelectedUpgrades == 0 then
@@ -900,7 +876,7 @@ local function UpdateEvolveButton(self)
     
         // If cannot afford selected alien type and/or upgrades, cannot evolve.
         evolveButtonTextureCoords = combat_GUIAlienBuyMenukEvolveButtonNeedResourcesTextureCoordinates
-        evolveText = "Need "
+        evolveText = Locale.ResolveString("ABM_NEED")
         evolveCost = CombatAlienBuy_GetAlienCost(self.selectedAlienType) + selectedUpgradesCost - AlienBuy_GetHyperMutationCostReduction(self.selectedAlienType)
         
     else
@@ -913,7 +889,7 @@ local function UpdateEvolveButton(self)
             totalCost = totalCost + CombatAlienBuy_GetAlienCost(self.selectedAlienType)
         end
         
-        evolveText = "Evolve for "
+        evolveText = Locale.ResolveString("ABM_EVOLVE_FOR")
         evolveCost = totalCost - AlienBuy_GetHyperMutationCostReduction(self.selectedAlienType) // shows also negative values
         
     end
@@ -1131,9 +1107,13 @@ function combat_GUIAlienBuyMenu:_UpdateAlienButtons()
             local mouseOver = self:_GetIsMouseOver(alienButton.Button)
             
             if mouseOver then
+
                 local classStats = CombatAlienBuy_GetClassStats(combat_GUIAlienBuyMenukAlienTypes[alienButton.TypeData.Index].Index)
                 local mouseOverName = string.upper(combat_GUIAlienBuyMenukAlienTypes[alienButton.TypeData.Index].Name)
-                self:_ShowMouseOverInfo(mouseOverName .. "\n" .. ToString(classStats[2]) .. " Health\n" .. ToString(classStats[3]) .. " Armor", classStats[4])
+                local healthStr = Locale.ResolveString("HEALTH")
+                local armorStr = Locale.ResolveString("ARMOR")
+				self:_ShowMouseOverInfo(mouseOverName .. "\n" .. ToString(classStats[2]) .. " " .. healthStr .. "\n" .. ToString(classStats[3]) .. " " .. armorStr .. "\n" .. GetTooltipInfoText(IndexToAlienTechId(alienButton.TypeData.Index)), classStats[4] )
+
             end
             
             // Only show the background if the mouse is over this button.
@@ -1205,7 +1185,7 @@ function combat_GUIAlienBuyMenu:_UpdateUpgrades(deltaTime)
         currentUpgrade.Purchased = false
         currentUpgrade.Index = upgradeIndex
         currentUpgrade.TechId = unpurchasedUpgrades[currentIndex + 6]
-        // All ups are availabe
+        // All ups are available
         currentUpgrade.Available = CombatAlienBuy_GetGotRequirements(currentUpgrade.TechId)
         upgradeIndex = upgradeIndex + 1
         table.insert(allUpgrades, currentUpgrade)
@@ -1318,8 +1298,6 @@ function combat_GUIAlienBuyMenu:_UpdateCloseButton(deltaTime)
     if self:_GetIsMouseOver(self.closeButton) then
         self.closeButton:SetTexturePixelCoordinates(unpack(combat_GUIAlienBuyMenukCloseButtonRollOverTextureCoordinates))
     end
-    
-    self.closeButtonSmoke:Update(deltaTime)
 
 end
 
