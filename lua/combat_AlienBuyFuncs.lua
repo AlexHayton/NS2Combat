@@ -58,7 +58,7 @@ local function GetUnpurchasedTechIds(techId)
 
     // get All ups for the aliens
     //TODO : delete purchased ups
-    local allUps = GetAllUpgrades("Allien") 
+    local allUps = GetAllUpgrades("Alien") 
     local techUps = GetUpgradesOfType(allUps, kCombatUpgradeTypes.Tech)
     
     local addOnUpgrades = {}   
