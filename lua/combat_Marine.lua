@@ -41,10 +41,8 @@ function CombatMarine:MarineOnKill_Hook(self, damage, attacker, doer, point, dir
         self:GetTeam():TriggerAlert(kTechId.MarineAlertSoldierLost, self)
     end
     
+    // Note: Flashlight is powered by Marine's beating heart. Eco friendly.
     self:SetFlashlightOn(false)
-    
-    // Remember our squad and position on death so we can beam back to them
-    self.lastSquad = self:GetSquad()
     self.originOnDeath = self:GetOrigin()
 	
 end
