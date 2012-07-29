@@ -207,7 +207,7 @@ function CombatPlayingTeam:Update_Hook(self, timePassed)
         self.timeSincePropEffect = self.timeSincePropEffect + timePassed
     end
 	
-	if self.timeSincePropEffect >= 4 then
+	if self.timeSincePropEffect >= kPropEffectTimer then
         // resend prop messages	        
         CombatUpdatePropEffect(self)
         self.timeSincePropEffect = 0

@@ -166,7 +166,12 @@ function CombatUpdatePropEffect(team)
          // get the middle of the prop
          local coords = prop:GetCoords()
          local middle = coords.origin + (coords.yAxis / 2)
-         team:PrintWorldTextForTeamInRange("---- Restricted area -----", middle , 20)
+         
+		 // Spawn an effect.
+		 CreateEntity(kPropEffect, middle, team:GetTeamNumber())
+		 
+		 // Old way of sending the prop effect, with a message.
+		 //team:PrintWorldTextForTeamInRange(kWorldTextMessageType.Resources, 0, middle , 20)
     end
 
 end
