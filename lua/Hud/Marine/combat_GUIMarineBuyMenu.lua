@@ -85,6 +85,7 @@ local function GetSmallIconPixelCoordinates(itemTechId)
         kMarineTechIdToMaterialOffset[kTechId.MedPack] = 37
         kMarineTechIdToMaterialOffset[kTechId.Scan] = 41
         kMarineTechIdToMaterialOffset[kTechId.MACEMP] = 62
+		kMarineTechIdToMaterialOffset[kTechId.CatPack] = 45
     
     end
     
