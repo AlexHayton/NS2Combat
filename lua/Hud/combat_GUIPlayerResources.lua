@@ -35,7 +35,7 @@ end
 // Upgrade Points instead of RESOURCES
 function CombatGUIPlayerResources:Initialize_Hook(self, style) 
 
-	self.pResDescription:SetText("Upgrade Point(s)")
+	self.pResDescription:SetText("Upgrade Points")
 
 end
 
