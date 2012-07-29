@@ -141,9 +141,11 @@ function CombatNS2Gamerules:OnUpdate_Hook(self, timePassed)
 	local team2 = self:GetTeam(2)
 	
 	// Check that it's Marines vs Aliens...
-	if team1:isa("MarineTeam") and team2:isa("AlienTeam") then
-		if self.timeSinceGameStateChanged > kCombatTimeLimit then
-			team2.combatTeamWon = true
+	if self:GetGameState() == kGameState.Started then
+		if team1:isa("MarineTeam") and team2:isa("AlienTeam") then
+			if self.timeSinceGameStateChanged > kCombatTimeLimit then
+				team2.combatTeamWon = true
+			end
 		end
 	end
 end

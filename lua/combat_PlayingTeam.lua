@@ -54,15 +54,11 @@ end
 
 function CombatPlayingTeam:GetHasTeamWon_Hook(self)
 	// Usually this will be nil - only set it when a team wins by default (e.g. time out).
-	// Commented out until I have time to fix this.
-	// TODO: Fix this for v1.2!
-	/*if self.combatTeamWon then
+	if self.combatTeamWon ~= nil then
 		return true
 	else
 		return false
-	end*/
-	
-	return false
+	end
 end
 
 function CombatPlayingTeam:SpawnInitialStructures_Hook(self, techPoint)
