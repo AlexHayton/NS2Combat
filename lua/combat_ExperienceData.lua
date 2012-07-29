@@ -47,9 +47,9 @@ XpValues["Fade"] = 100
 XpValues["Onos"] = 100
 XpValues["Hydra"] = 50
 XpValues["Clog"] = 20
-XpValues["Armory"] = 80
-XpValues["CommandStation"] = 300
-XpValues["Hive"] = 300
+XpValues["Armory"] = 200
+XpValues["CommandStation"] = 400
+XpValues["Hive"] = 400
 
 // xp  for welding, healing
 kCombatHealingXP = 5
