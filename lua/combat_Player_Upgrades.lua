@@ -332,7 +332,6 @@ function Player:Reset_Lite()
     self.combatTable.lastResupply = 0
 	
 	self.combatTable.hasCatalyst = false
-	// TODO: Only activate if the player fires or takes damage.
 	self.combatTable.activateCatalyst = true
 	self.combatTable.lastCatalyst = 0
 	

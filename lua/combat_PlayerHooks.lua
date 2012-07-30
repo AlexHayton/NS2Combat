@@ -151,8 +151,14 @@ function CombatPlayer:OnUpdatePlayer_Hook(self, deltaTime)
                 
                 if self.combatTable.hasResupply then
                     if (self.combatTable.lastResupply + deltaTime > kResupplyTimer) then
-                                    
-                        local success = self:ResupplyNow()
+                        
+						// Keep the timer going, even if we don't need to resupply.
+						local success = false
+						if (self:NeedsResupply()) then
+							success = self:ResupplyNow()
+						else
+							success = true
+						end
                         
                         if success then
                             self.combatTable.lastResupply = 0
@@ -164,15 +170,14 @@ function CombatPlayer:OnUpdatePlayer_Hook(self, deltaTime)
             
                 end 
 				
-				if self.combatTable.hasCatalyst and self.combatTable.activateCatalyst then
-                    if (self.combatTable.lastCatalyst + deltaTime > kCatalystTimer) then
+				if self.combatTable.hasCatalyst then
+                    if (self.combatTable.lastCatalyst + deltaTime > kCatalystTimer) and self.combatTable.activateCatalyst then
                         
                         local success = self:CatalystNow()
                         
                         if success then
                             self.combatTable.lastCatalyst = 0
-							// TODO: Only activate if the player fires or takes damage.
-							// self.combatTable.activateCatalyst = false
+							self.combatTable.activateCatalyst = false
                         end
                        
                     else

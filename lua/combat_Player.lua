@@ -72,6 +72,17 @@ function Player:ScanNow()
     
 end
 
+function Player:NeedsResupply()
+	
+    // Ammo packs give ammo to clip as well (so pass true to GetNeedsAmmo())
+    local weapon = self:GetActiveWeapon()
+    local needsAmmo = weapon ~= nil and weapon:isa("ClipWeapon") and weapon:GetNeedsAmmo(false) and not GetIsVortexed(self)
+	local needsHealth = not GetIsVortexed(self) and self:GetHealth() < self:GetMaxHealth()
+	
+	return needsAmmo or needsHealth
+
+end
+
 function Player:ResupplyNow()
 
     local success = false
@@ -79,41 +90,34 @@ function Player:ResupplyNow()
     local mapNameAmmo = LookupTechData(kTechId.AmmoPack, kTechDataMapName)    
     local position = self:GetOrigin()
 
-    if (mapNameHealth and mapNameAmmo) then
+	if (mapNameHealth and mapNameAmmo) then
     
-        local droppackHealth = CreateEntity(mapNameHealth, position, self:GetTeamNumber())
-        local droppackAmmo = CreateEntity(mapNameAmmo , position, self:GetTeamNumber())
-        
-        StartSoundEffectForPlayer(MedPack.kHealthSound, self)        
-        success = true
-        
-        //Destroy them so they can't be used by somebody else (if they are unused)
-        DestroyEntity(droppackHealth)
-        DestroyEntity(droppackAmmo)
-        
-    end
+		local droppackHealth = CreateEntity(mapNameHealth, position, self:GetTeamNumber())
+		local droppackAmmo = CreateEntity(mapNameAmmo , position, self:GetTeamNumber())
+		
+		StartSoundEffectAtOrigin(MedPack.kHealthSound, self:GetOrigin())
+		success = true
+		
+		//Destroy them so they can't be used by somebody else (if they are unused)
+		DestroyEntity(droppackHealth)
+		DestroyEntity(droppackAmmo)
+	end
 
     return success
 
 end
 
 function Player:CatalystNow()
-
-    local success = false
-    local mapNameCatalyst = LookupTechData(kTechId.CatPack, kTechDataMapName)
-    local position = self:GetOrigin()
-
-    if (mapNameCatalyst) then
-    
-        local droppackCat = CreateEntity(mapNameCatalyst, position, self:GetTeamNumber())
-        
-        //StartSoundEffectForPlayer(CatPack.kPickupSound, self)  
-        success = true
-        
-        //Destroy them so they can't be used by somebody else (if they are unused)
-        DestroyEntity(droppackCat)
-        
-    end
+	
+	local success = false
+	local globalSound = CatPack.kPickupSound
+	local localSound = "sound/NS2.fev/marine/common/mine_warmup"
+	
+	// Use one sound for global, another for local player to give more of an effect!
+	StartSoundEffectAtOrigin(globalSound, self:GetOrigin())
+	StartSoundEffectForPlayer(localSound, self)  
+	self:ApplyCatPack()
+	success = true
 
     return success
 
