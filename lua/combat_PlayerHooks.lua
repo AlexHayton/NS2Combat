@@ -73,7 +73,7 @@ end
 function CombatPlayer:OnUpdatePlayer_Hook(self, deltaTime)
 	
 	// don't remind players in the ReadyRoom
-	if (self:GetTeamNumber() ~= kTeamReadyRoom) then
+	if (self:GetTeamNumber() ~= kTeamReadyRoom) and (self:GetTeamNumber() ~= kSpectatorIndex) then
 	    // set ArmsLab always true so the up icons are white and not red	    
 	    self.hasArmsLab = true
 	    
@@ -90,7 +90,7 @@ function CombatPlayer:OnUpdatePlayer_Hook(self, deltaTime)
 		
 		// If the player hasn't spent their upgrades at all, remind them again
 		// that this is combat mode after a longer interval.
-        if self:GetLvl() + kCombatStartUpgradePoints == self:GetLvlFree() then
+        if (self:GetLvl() - 1) + kCombatStartUpgradePoints == self:GetLvlFree() then
             if (self.combatTable.lastReminderNotify + deltaTime > kReminderNotifyInterval) then
                 self.combatTable.lastReminderNotify = 0
 				self:SendDirectMessage(combatModifiedMessage)
