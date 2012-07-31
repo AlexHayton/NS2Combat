@@ -167,9 +167,13 @@ function CombatUpdatePropEffect(team)
          local coords = prop:GetCoords()
          local middle = coords.origin + (coords.yAxis / 2)
          
-		 // Spawn an effect.
-		 CreateEntity(kPropEffect, middle, team:GetTeamNumber())
-		 
+		 // Spawn an effect, just a dummy entity cause its getting destroyed after the effect (you can just play a effect you need an entity first)
+		 propEntity = CreateEntity(EtherealGate.kMapName, middle, team:GetTeamNumber())	 
+
+		 // play the effect and destroy the entity
+		 propEntity:TriggerEffects(kPropEffect)
+		 DestroyEntity(propEntity)
+
 		 // Old way of sending the prop effect, with a message.
 		 //team:PrintWorldTextForTeamInRange(kWorldTextMessageType.Resources, 0, middle , 20)
     end

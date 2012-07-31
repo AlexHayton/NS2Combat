@@ -48,8 +48,8 @@ kEMPTimer = 20
 kInkTimer = 15
 
 // Props
-kPropEffect = ShadeInk.kMapName
-kPropEffectTimer = 12
+kPropEffect = "vortex_destroy"
+kPropEffectTimer = 4
 
 // Change the GestateTime so every new Class takes the same time
 kSkulkGestateTime = 2
