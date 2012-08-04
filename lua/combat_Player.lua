@@ -118,8 +118,29 @@ function Player:CatalystNow()
 	StartSoundEffectForPlayer(localSound, self)  
 	self:ApplyCatPack()
 	success = true
-
+    self:SendDirectMessage("You got now catalyst for " .. CatPack.kDuration .. " sec!")
     return success
+
+end
+
+function Player:CheckCatalyst()
+	
+	local deltaTime = Shared.GetTime()
+
+    if self.combatTable.hasCatalyst then
+    
+        if self.combatTable.lastCatalyst == 0 then
+            self.combatTable.lastCatalyst = deltaTime
+        end
+        
+        if (deltaTime - self.combatTable.lastCatalyst >= kCatalystTimer) then            
+            local success = self:CatalystNow()            
+            if success then
+                self.combatTable.lastCatalyst = deltaTime
+            end           
+        end
+
+    end 
 
 end
 

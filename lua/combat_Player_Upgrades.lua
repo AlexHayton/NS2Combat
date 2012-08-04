@@ -332,7 +332,6 @@ function Player:Reset_Lite()
     self.combatTable.lastResupply = 0
 	
 	self.combatTable.hasCatalyst = false
-	self.combatTable.activateCatalyst = true
 	self.combatTable.lastCatalyst = 0
 	
 	self.combatTable.hasEMP = false

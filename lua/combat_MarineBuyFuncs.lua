@@ -90,8 +90,8 @@ function CombatMarineBuy_GetWeaponDescription(techId)
         combatWeaponDescription[kTechId.Scan] = "You get Scansupply. A scan will appear after some time and shows all enemys nearby"
         combatWeaponDescription[kTechId.Welder] = "You get a Welder. You can repair buildings or the Armor from Teammates"
         combatWeaponDescription[kTechId.LayMines] = "You get 1 Mine."
-        combatWeaponDescription[kTechId.MACEMP] =  "You're taunt will activate a powerful EMP-Blast"
-		combatWeaponDescription[kTechId.CatPack] =  "You get Catalyst Packs. They will drop after some time."
+        combatWeaponDescription[kTechId.MACEMP] =  "You're taunt will activate a powerful EMP-Blast. It destroys half of the energy (not health) for all enemys nearby"
+		combatWeaponDescription[kTechId.CatPack] =  "You get Catalyst Packs. They will make you move faster and will be dropped when you're shooting or taking damage every 20 sec"
         
         combatWeaponDescription[kTechId.Axe] = "Axe description."
         combatWeaponDescription[kTechId.Pistol] = "Pistol description."

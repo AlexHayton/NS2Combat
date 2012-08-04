@@ -27,7 +27,7 @@ function CombatWeapon:OnPrimaryAttack_Hook(self, player)
 
 	if (player:isa("Marine")) then
 		player:CheckCombatData()
-		player.combatTable.activateCatalyst = true
+		player:CheckCatalyst()
 	end
 
 end
@@ -36,7 +36,7 @@ function CombatWeapon:OnSecondaryAttack_Hook(self, player)
 
 	if (player:isa("Marine")) then
 		player:CheckCombatData()
-		player.combatTable.activateCatalyst = true
+		player:CheckCatalyst()
 	end
 
 end

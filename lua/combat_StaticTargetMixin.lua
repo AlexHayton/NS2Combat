@@ -25,7 +25,7 @@ function StaticTargetMixin:OnTakeDamage(damage, attacker, doer, point)
 			if GetTrickleXp(self) then
 				local maxXp = GetXpValue(self)
 				local dmgXp = math.floor(maxXp * damage / self:GetMaxHealth())
-				// Always enforce a minimum Xp of 1.
+				// Always enforce a minimum Xp of 1.				
 				if dmgXp == 0 then 
 					dmgXp = 1
 				end

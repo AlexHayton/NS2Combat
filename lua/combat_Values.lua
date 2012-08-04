@@ -35,6 +35,7 @@ kNanoShieldDuration = kCombatSpawnProtectTime
 // By default, Aliens win after a certain amount of time...
 // Specified in seconds...
 kCombatTimeLimit = 1200
+kCombatTimeLeftPlayed = 0
 
 // Timers for Scan, Resupply and Catalyst packs.
 kScanTimer = 12
@@ -49,7 +50,7 @@ kInkTimer = 15
 
 // Props
 kPropEffect = "vortex_destroy"
-kPropEffectTimer = 4
+kPropEffectTimer = 2
 
 // Change the GestateTime so every new Class takes the same time
 kSkulkGestateTime = 2

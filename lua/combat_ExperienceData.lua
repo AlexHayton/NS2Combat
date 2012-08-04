@@ -47,8 +47,8 @@ XpValues["Fade"] = 100
 XpValues["Onos"] = 100
 XpValues["Hydra"] = 50
 XpValues["Clog"] = 20
-XpValues["Armory"] = 200
-XpValues["CommandStation"] = 400
+XpValues["Armory"] = 50
+XpValues["CommandStation"] = 200
 XpValues["Hive"] = 400
 
 // xp  for welding, healing
@@ -160,7 +160,8 @@ table.insert(UpsList, BuildUpgrade("Alien", kCombatUpgrades.Adrenaline,			"adren
 // a bit sorting for better sorting in the alien GUI
 table.insert(UpsList, BuildUpgrade("Alien", kCombatUpgrades.TierTwo,			"tier2",			"Tier 2",			kTechId.TwoHives, 			TierTwo, 		nil, 						1, 		kCombatUpgradeTypes.Tech))
 //table.insert(UpsList, BuildUpgrade("Alien", kCombatUpgrades.Feint,		    	"feint",    		"Feint",    		kTechId.Feint,   			nil, 			nil, 						1, 		kCombatUpgradeTypes.Tech))
-table.insert(UpsList, BuildUpgrade("Alien", kCombatUpgrades.TierThree,			"tier3",			"Tier 3",			kTechId.ThreeHives, 		TierThree, 		kCombatUpgrades.TierTwo,	2, 		kCombatUpgradeTypes.Tech))
 
 // new ink abilitiy
 table.insert(UpsList, BuildUpgrade("Alien", kCombatUpgrades.ShadeInk,			"ink",		        "Ink-Taunt",		kTechId.ShadeInk, 		    ShadeInk,		nil, 						1, 		kCombatUpgradeTypes.Tech))
+table.insert(UpsList, BuildUpgrade("Alien", kCombatUpgrades.TierThree,			"tier3",			"Tier 3",			kTechId.ThreeHives, 		TierThree, 		kCombatUpgrades.TierTwo,	2, 		kCombatUpgradeTypes.Tech))
+

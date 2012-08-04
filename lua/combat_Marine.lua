@@ -79,7 +79,7 @@ function CombatMarine:OnTakeDamage_Hook(self, damage, attacker, doer, point)
 
 	// Activate the Catalyst Pack.
 	self:CheckCombatData()
-	self.combatTable.activateCatalyst = true
+	self:CheckCatalyst()
 
 end
 

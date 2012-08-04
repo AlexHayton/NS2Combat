@@ -93,7 +93,9 @@ function CombatPlayer:OnUpdatePlayer_Hook(self, deltaTime)
         if (self:GetLvl() - 1) + kCombatStartUpgradePoints == self:GetLvlFree() then
             if (self.combatTable.lastReminderNotify + deltaTime > kReminderNotifyInterval) then
                 self.combatTable.lastReminderNotify = 0
-				self:SendDirectMessage(combatModifiedMessage)
+				for i, message in ipairs(combatWelcomeMessage) do
+					self:SendDirectMessage(message)  
+				end	
             else
                 self.combatTable.lastReminderNotify = self.combatTable.lastReminderNotify + deltaTime
             end
@@ -169,23 +171,7 @@ function CombatPlayer:OnUpdatePlayer_Hook(self, deltaTime)
                     end
             
                 end 
-				
-				if self.combatTable.hasCatalyst then
-                    if (self.combatTable.lastCatalyst + deltaTime > kCatalystTimer) and self.combatTable.activateCatalyst then
-                        
-                        local success = self:CatalystNow()
-                        
-                        if success then
-                            self.combatTable.lastCatalyst = 0
-							self.combatTable.activateCatalyst = false
-                        end
-                       
-                    else
-                        self.combatTable.lastCatalyst = self.combatTable.lastCatalyst + deltaTime
-                    end
-            
-                end 
-          
+				          
             end	
         end
     end

@@ -128,9 +128,11 @@ function CombatNS2Gamerules:OnClientConnect_Hook(self, client)
     if GetGamerules():GetGameStarted() then
 		local avgXp = Experience_GetAvgXp()
 		// Send the avg as a message to the player (%d doesn't work with SendDirectMessage)
-		player:SendDirectMessage("You joined the game late... you get " .. avgXp .. " XP to spend!")
-		// get AvgXp 
-		player:AddXp(avgXp)
+		if avgXp > 0 then
+		    player:SendDirectMessage("You joined the game late... you get " .. avgXp .. " XP to spend!")
+		    // get AvgXp 
+		    player:AddXp(avgXp)
+        end
 	end    
 
 end
@@ -143,10 +145,34 @@ function CombatNS2Gamerules:OnUpdate_Hook(self, timePassed)
 	// Check that it's Marines vs Aliens...
 	if self:GetGameState() == kGameState.Started then
 		if team1:isa("MarineTeam") and team2:isa("AlienTeam") then
-			if self.timeSinceGameStateChanged > kCombatTimeLimit then
+			if self.timeSinceGameStateChanged >= kCombatTimeLimit then
 				team2.combatTeamWon = true
+			else
+				// send timeleft to all players, but only every min
+				local exactTimeLeft = (kCombatTimeLimit - self.timeSinceGameStateChanged) / 60
+				local timeLeft = math.ceil(exactTimeLeft)
+				
+                if (timeLeft % 5) == 0 and kCombatTimeLeftPlayed ~= timeLeft then
+                    local playersTeam1 = GetEntitiesForTeam("Player", kTeam1Index)
+                    local playersTeam2 = GetEntitiesForTeam("Player", kTeam2Index)
+                    
+                    for index, player in ipairs(playersTeam1) do
+                        player:SendDirectMessage( timeLeft .." min left till Marines have lost")
+                    end
+                    
+                    for index, player in ipairs(playersTeam2) do
+                        player:SendDirectMessage( timeLeft .." min left till Aliens have won")
+                    end
+                    
+                    kCombatTimeLeftPlayed  = timeLeft                
+                end
 			end
 		end
+	else
+	    // reset kCombatTimeLeftPlayed
+	    if kCombatTimeLeftPlayed ~= 0 then
+	        kCombatTimeLeftPlayed = 0
+	    end
 	end
 end
 
