@@ -48,7 +48,7 @@ XpValues["Onos"] = 100
 XpValues["Hydra"] = 50
 XpValues["Clog"] = 20
 XpValues["Armory"] = 50
-XpValues["CommandStation"] = 200
+XpValues["CommandStation"] = 150
 XpValues["Hive"] = 400
 
 // xp  for welding, healing
