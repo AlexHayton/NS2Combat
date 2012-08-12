@@ -11,11 +11,13 @@ Script.Load("lua/fsfod_scripts.lua")
 
 // Loading the Hook classes
 Script.Load("lua/Hud/Marine/combat_GUIMarineHud.lua")
+Script.Load("lua/Hud/Alien/combat_GUIAlienBuyMenu.lua")
 Script.Load("lua/Hud/combat_GUIPlayerResources.lua")
 Script.Load("lua/combat_Player_ClientHook.lua")
 
 // Calling the Hook classes
 CombatGUIMarineHud:OnLoad()
+CombatGUIAlienBuyMenu:OnLoad()
 CombatGUIPlayerResources:OnLoad()
 CombatPlayerClient:OnLoad()
 
