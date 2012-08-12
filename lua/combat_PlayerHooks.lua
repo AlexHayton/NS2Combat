@@ -51,8 +51,6 @@ end
 function CombatPlayer:CopyPlayerDataFrom_Hook(self, player)    
 
 	self.combatTable = player.combatTable
-	self.twoHives = player.twoHives
-	self.threeHives = player.threeHives
 
 	// For marines, give tech upgrades so that the new player has the right armor etc.
 	if (self:isa("Marine") and self:GetTeamNumber() ~= kTeamReadyRoom) then
@@ -217,19 +215,23 @@ end
 function CombatPlayer:UpdateNumHives_Hook(self)
 
     local time = Shared.GetTime()
-    if self.timeOfLastNumHivesUpdate == nil or (time > self.timeOfLastNumHivesUpdate + .5) then
+	if self.timeOfLastNumHivesUpdate == nil or (time > self.timeOfLastNumHivesUpdate + 0.5) then
 
-        if self.twoHives then
-            self:UnlockTierTwo()   
-        end
-        
-        if self.threeHives then
-            self:UnlockTierThree()
-        end
-        
-        self.timeOfLastNumHivesUpdate = time
-        
-    end
+		if self.combatTable then
+			if self.combatTable.twoHives and self.combatTable.twoHives ~= self.twoHives then
+				self.twoHives = true
+				self:UnlockTierTwo()
+			end
+			
+			if self.combatTable.threeHives and self.combatTable.threeHives ~= self.threeHives then
+				self.threeHives = true
+				self:UnlockTierThree()
+			end
+		end
+		
+		self.timeOfLastNumHivesUpdate = time
+		
+	end
 end
 
 

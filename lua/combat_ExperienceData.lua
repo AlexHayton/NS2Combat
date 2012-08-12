@@ -67,11 +67,11 @@ local function GiveJetpack(player, techUpgrade)
 end
 
 local function TierTwo(player, techUpgrade)
-    player.twoHives = true
+    player.combatTable.twoHives = true
 end
 
 local function TierThree(player, techUpgrade)
-    player.threeHives = true
+    player.combatTable.threeHives = true
 end
 
 local function Camouflage(player, techUpgrade)

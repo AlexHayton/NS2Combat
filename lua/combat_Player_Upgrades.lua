@@ -321,8 +321,8 @@ function Player:Reset_Lite()
 	self.combatTable.lastReminderNotify = 0
 	self.combatTable.hasCamouflage = false
 	
-	self.twoHives = false
-	self.threeHives = false
+	self.combatTable.twoHives = false
+	self.combatTable.threeHives = false
 
     // scan and resupp values	
     self.combatTable.hasScan = false
