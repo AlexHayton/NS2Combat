@@ -252,6 +252,9 @@ function CombatPlayingTeam:SpawnPlayer(player)
         end
 		newPlayer:GetTeam():RemovePlayerFromRespawnQueue(newPlayer)
 		
+		// Remove the third-person mode (bug introduced in 216).
+		newPlayer:SetCameraDistance(0)
+		
 		//give him spawn Protect (dont set the time here, just that spawn protect ist active)
 		newPlayer:SetSpawnProtect()
     end
