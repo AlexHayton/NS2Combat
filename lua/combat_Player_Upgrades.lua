@@ -230,6 +230,10 @@ function Player:EvolveTo(newTechId)
         angles.roll = 0.0
         angles.pitch = 0.0
         newPlayer:SetAngles(angles)
+		
+		// Set up the third-person camera.
+		newPlayer:SetCameraDistance(4)
+        newPlayer:SetViewOffsetHeight(.5)
 
         // Eliminate velocity so that we don't slide or jump as an egg
         newPlayer:SetVelocity(Vector(0, 0, 0))
