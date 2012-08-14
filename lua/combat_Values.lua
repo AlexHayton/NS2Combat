@@ -22,6 +22,8 @@ combatWelcomeMessage = {combatModifiedMessage,
 						
 kUpgradeNotifyInterval = 10
 kReminderNotifyInterval = 35
+kDirectMessageFadeTime = 8
+kDirectMessagesNumVisible = 9
 
 // Set the respawn timer
 kCombatRespawnTimer = 10

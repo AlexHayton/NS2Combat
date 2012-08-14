@@ -169,7 +169,28 @@ function CombatPlayer:OnUpdatePlayer_Hook(self, deltaTime)
                     end
             
                 end 
-				          
+				
+				// Handle queued direct messages.
+				if (self.directMessagesActive ~= nil and self.directMessagesActive > 0) then
+					if (Shared.GetTime() - self.timeOfLastDirectMessage > kDirectMessageFadeTime) then
+					
+						// After the fade time has passed, clear old messages from the queue.
+						for msgIndex = 1, math.min(self.directMessagesActive, kDirectMessagesNumVisible) do
+							self.directMessagesActive = self.directMessagesActive - 1
+						end
+						
+						// Send any waiting messages, up to kDirectMessagesNumVisible.
+						if (#self.directMessageQueue > 0) then
+							for msgIndex = 1, math.min(#self.directMessageQueue, kDirectMessagesNumVisible) do
+								local message = table.remove(self.directMessageQueue, 1)
+								self:BuildAndSendDirectMessage(message)
+							end
+							
+							self.timeOfLastDirectMessage = Shared.GetTime()
+						end
+						
+					end
+				end
             end	
         end
     end

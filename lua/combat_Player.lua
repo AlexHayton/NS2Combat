@@ -395,11 +395,38 @@ function Player:spendlvlHints(hint, type)
 end
 
 function Player:SendDirectMessage(message)
-//Sending LVL Msg only to the Player  
-        local playerName = "Combat: " .. self:GetName()
-        local playerLocationId = -1
-        local playerTeamNumber = kTeamReadyRoom
-        local playerTeamType = kNeutralTeamType
+	
+	// Initialise queue if necessary
+	if (self.directMessageQueue == nil) then
+		self.directMessageQueue = {}
+		self.timeOfLastDirectMessage = 0
+		self.directMessagesActive = 0
+	end
 
-        Server.SendNetworkMessage(self, "Chat", BuildChatMessage(true, playerName, playerLocationId, playerTeamNumber, playerTeamType, message), true)
+	// Queue messages that have been sent if there are too many...
+	if (Shared.GetTime() - self.timeOfLastDirectMessage < kDirectMessageFadeTime and self.directMessagesActive + 1 > kDirectMessagesNumVisible) then
+		table.insert(self.directMessageQueue, message)
+	else
+		// Otherwise we're good to send the message normally.
+		self:BuildAndSendDirectMessage(message)
+	end
+	
+	// Update the last sent timer if this is the first message sent.
+	if (self.directMessagesActive == 0) then
+		self.timeOfLastDirectMessage = Shared.GetTime()
+	end
+	self.directMessagesActive = self.directMessagesActive + 1
+	
+end
+
+function Player:BuildAndSendDirectMessage(message)
+
+	//Sending LVL Msg only to the Player  
+	local playerName = "Combat: " .. self:GetName()
+	local playerLocationId = -1
+	local playerTeamNumber = kTeamReadyRoom
+	local playerTeamType = kNeutralTeamType
+
+	Server.SendNetworkMessage(self, "Chat", BuildChatMessage(true, playerName, playerLocationId, playerTeamNumber, playerTeamType, message), true)
+
 end
