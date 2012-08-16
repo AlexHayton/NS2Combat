@@ -1,36 +1,44 @@
 //________________________________
 //
-//   	Combat Mod     
-//	Made by JimWest, 2012
+//   	NS2 Combat Mod     
+//	Made by JimWest and MCMLXXXIV, 2012
 //
-//	Version 0.1
-//	
 //________________________________
 
 // combat_ConsoleCommands.lua
 
-function OnCommandSpendLvl(client, typeCode)
+function OnCommandSpendLvl(client, ...)
         
+    // support multiple types
+    local args = {...}    
+    local upgradeTable = {}
     local player = client:GetControllingPlayer() 
+    
 	if player:isa("Spectator") then
 		player:spendlvlHints("spectator")
-    elseif typeCode then
-		local upgrade = GetUpgradeFromTextCode(typeCode)
-		
-		if upgrade then
-			player:CoEnableUpgrade(upgrade)
-		else
-			local hintType = ""
-			if player:isa("Marine") then
-				hintType = "wrong_type_marine"
-			else
-				hintType = "wrong_type_alien"
-			end
-			
-			player:spendlvlHints(hintType, typeCode)
+    else		
+        for i, typeCode in ipairs(args) do
+            local upgrade = GetUpgradeFromTextCode(typeCode)
+            if not upgrade then 
+                // check for every arg if its a valid update
+                local hintType = ""
+                if player:isa("Marine") then
+                    hintType = "wrong_type_marine"
+                else
+                    hintType = "wrong_type_alien"
+                end			
+                player:spendlvlHints(hintType, typeCode)
+            else
+            // build new table with upgrades
+                table.insert(upgradeTable, upgrade) 
+            end        
+        end       
+
+        if table.maxn(upgradeTable) > 0 then   
+            player:CoEnableUpgrade(upgradeTable)
+        else
+            player:spendlvlHints("no_type")
         end
-    else
-        player:spendlvlHints("no_type")
     end
    
 end
@@ -98,9 +106,9 @@ function OnCommandHelp(client)
 	// Display a banner showing the available commands
 	local player = client:GetControllingPlayer()
 	player:SendDirectMessage("Available commands:")
-	player:SendDirectMessage("/buy or co_spendlvl - use this to buy upgrades")
-	player:SendDirectMessage("/upgrades or co_upgrades - show available upgrades")
-	player:SendDirectMessage("/status or co_status - use this to show your level, xp and available upgrades")
+	player:SendDirectMessage("/buy - use this to buy upgrades")
+	player:SendDirectMessage("/upgrades - show available upgrades")
+	player:SendDirectMessage("/status - use this to show your level, xp and available upgrades")
 
 end
 
@@ -140,9 +148,10 @@ function OnCommandSendUpgrades(client)
 end
 
 // All commands that should be accessible via the chat need to be in this list
-combatCommands = {"co_spendlvl", "co_help", "co_status", "co_upgrades", "/upgrades", "/status", "/buy"}
+combatCommands = {"co_spendlvl", "co_help", "co_status", "co_upgrades", "/upgrades", "/status", "/buy", "/help"}
 
 Event.Hook("Console_co_help",                OnCommandHelp) 
+Event.Hook("Console_/help",                OnCommandHelp) 
 Event.Hook("Console_co_upgrades",                OnCommandUpgrades) 
 Event.Hook("Console_/upgrades",                OnCommandUpgrades) 
 Event.Hook("Console_co_spendlvl",                OnCommandSpendLvl)

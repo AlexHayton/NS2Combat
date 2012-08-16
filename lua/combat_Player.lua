@@ -1,8 +1,8 @@
 //________________________________
 //
-//   	Combat Mod     
-//	Made by JimWest, 2012
-//	
+//   	NS2 Combat Mod     
+//	Made by JimWest and MCMLXXXIV, 2012
+//
 //________________________________
 
 // combat_Player.lua
@@ -19,13 +19,19 @@ Script.Load("lua/combat_Player_Upgrades.lua")
 
 function Player:SetSpawnProtect()
 
-    self.combatSpawnProtect = 1
+    self.combatSpawnProtect = 1    
     
 end
 
 function Player:DeactivateSpawnProtect()
     self.combatSpawnProtect = nil
     self.combatPlayerGotSpawnProtect = nil
+    
+    if self.combatNanoShieldEnt then
+        DestroyEntity(self.combatNanoShieldEnt)
+    end
+    
+    self.combatNanoShieldEnt = nil
 end
 
 function Player:PerformSpawnProtect()
@@ -34,18 +40,22 @@ function Player:PerformSpawnProtect()
     self:SetArmor( self:GetMaxArmor() )
         
     // only make the effects once
-    if not self.combatPlayerGotProtect then
+    if not self.combatPlayerGotSpawnProtect then
         
         if self:isa("Marine") then
+        
+            local nanoShield = CreateEntity(NanoShield.kMapName, self:GetOrigin(), self:GetTeamNumber())
+            nanoShield:SetParent(self)
             self:ActivateNanoShield()
-        else
+            self.combatNanoShieldEnt = nanoShield
+        elseif self:isa("Alien") then
             self:TriggerCatalyst(kCombatSpawnProtectTime)
-            //self:SetHasUmbra(true,kCombatSpawnProtectTime)   
+            //self:SetHasUmbra(false,kCombatSpawnProtectTime)            
+
         end
      
         self.combatPlayerGotSpawnProtect = true
-    end
-    
+    end    
  end
 
 
@@ -62,6 +72,17 @@ function Player:ScanNow()
     
 end
 
+function Player:NeedsResupply()
+	
+    // Ammo packs give ammo to clip as well (so pass true to GetNeedsAmmo())
+    local weapon = self:GetActiveWeapon()
+    local needsAmmo = weapon ~= nil and weapon:isa("ClipWeapon") and weapon:GetNeedsAmmo(false) and not GetIsVortexed(self)
+	local needsHealth = not GetIsVortexed(self) and self:GetHealth() < self:GetMaxHealth()
+	
+	return needsAmmo or needsHealth
+
+end
+
 function Player:ResupplyNow()
 
     local success = false
@@ -69,23 +90,74 @@ function Player:ResupplyNow()
     local mapNameAmmo = LookupTechData(kTechId.AmmoPack, kTechDataMapName)    
     local position = self:GetOrigin()
 
-    if (mapNameHealth and mapNameAmmo) then
+	if (mapNameHealth and mapNameAmmo) then
     
-        local droppackHealth = CreateEntity(mapNameHealth, position, self:GetTeamNumber())
-        local droppackAmmo = CreateEntity(mapNameAmmo , position, self:GetTeamNumber())
-        
-        StartSoundEffectForPlayer(MedPack.kHealthSound, self)        
-        success = true
-        
-        //Destroy them so they can't be used by somebody else (if they are unused)
-        DestroyEntity(droppackHealth)
-        DestroyEntity(droppackAmmo)
-        
-    end
+		local droppackHealth = CreateEntity(mapNameHealth, position, self:GetTeamNumber())
+		local droppackAmmo = CreateEntity(mapNameAmmo , position, self:GetTeamNumber())
+		
+		StartSoundEffectAtOrigin(MedPack.kHealthSound, self:GetOrigin())
+		success = true
+		
+		//Destroy them so they can't be used by somebody else (if they are unused)
+		DestroyEntity(droppackHealth)
+		DestroyEntity(droppackAmmo)
+	end
 
     return success
 
 end
+
+function Player:CatalystNow()
+	
+	local success = false
+	local globalSound = CatPack.kPickupSound
+	local localSound = "sound/NS2.fev/marine/common/mine_warmup"
+	
+	// Use one sound for global, another for local player to give more of an effect!
+	StartSoundEffectAtOrigin(globalSound, self:GetOrigin())
+	StartSoundEffectForPlayer(localSound, self)  
+	self:ApplyCatPack()
+	success = true
+    self:SendDirectMessage("You got now catalyst for " .. CatPack.kDuration .. " sec!")
+    return success
+
+end
+
+function Player:CheckCatalyst()
+	
+	local deltaTime = Shared.GetTime()
+
+    if self.combatTable.hasCatalyst then
+    
+        if self.combatTable.lastCatalyst == 0 then
+            self.combatTable.lastCatalyst = deltaTime
+        end
+        
+        if (deltaTime - self.combatTable.lastCatalyst >= kCatalystTimer) then            
+            local success = self:CatalystNow()            
+            if success then
+                self.combatTable.lastCatalyst = deltaTime
+            end           
+        end
+
+    end 
+
+end
+
+function Player:EMPBlast()
+
+    local empBlast = CreateEntity(EMPBlast.kMapName, self:GetOrigin(), self:GetTeamNumber())
+        
+end
+
+
+function Player:TriggerInk()
+
+    // Create ShadeInk entity in world at this position with a small offset
+    CreateEntity(ShadeInk.kMapName, self:GetOrigin() + Vector(0, 0.2, 0), self:GetTeamNumber())
+
+end
+
 
 function Player:GetXp()
     if self.score then
@@ -162,30 +234,7 @@ function Player:CheckCombatData()
 
 	// Initialise the Combat Tech Tree
 	if not self.combatTable then
-		self.combatTable = {} 
-		self.combatTable.lvl = 1
-		self:ClearLvlFree()
-		self:AddLvlFree(1)
-		self.combatTable.lastNotify = 0
-		self.combatTable.hasCamouflage = false
-		
-		self.twoHives = false
-		self.threeHives = false
-		
-		// scan and resupp values	
-        self.combatTable.hasScan = false
-        self.combatTable.lastScan = 0
-
-        self.combatTable.hasResupply = false
-        self.combatTable.lastResupply = 0
-		
-		// class after respawn for rines
-		self.combatTable.giveClassAfterRespawn = nil
-		
-		// getAvgXP is called before giving the score, so this needs to be implemented here
-		self.score = 0
-		
-		self.combatTable.techtree = {}
+		self:Reset()
 	end
 	
 	if not self.combatTechTree then
@@ -233,8 +282,9 @@ function Player:AddXp(amount, suppressmessage)
 			if not suppressmessage then
 				self:SendDirectMessage("Max-XP reached")
 			end
-            self.score = maxXp
+            self:XpEffect(amount)
             self:CheckLvlUp(self.score, suppressmessage)
+            self:SetScoreboardChanged(true)
         end 
     end   
 end
@@ -246,8 +296,9 @@ function Player:GiveXpMatesNearby(xp)
 
     local playersInRange = GetEntitiesForTeamWithinRange("Player", self:GetTeamNumber(), self:GetOrigin(), mateXpRange)
     
+	// Only give Xp to players who are alive!
     for _, player in ipairs(playersInRange) do
-        if self ~= player then
+        if self ~= player and player:GetIsAlive() then
             player:AddXp(xp)    
         end
     end
@@ -344,11 +395,38 @@ function Player:spendlvlHints(hint, type)
 end
 
 function Player:SendDirectMessage(message)
-//Sending LVL Msg only to the Player  
-        local playerName = "Combat: " .. self:GetName()
-        local playerLocationId = -1
-        local playerTeamNumber = kTeamReadyRoom
-        local playerTeamType = kNeutralTeamType
+	
+	// Initialise queue if necessary
+	if (self.directMessageQueue == nil) then
+		self.directMessageQueue = {}
+		self.timeOfLastDirectMessage = 0
+		self.directMessagesActive = 0
+	end
 
-        Server.SendNetworkMessage(self, "Chat", BuildChatMessage(true, playerName, playerLocationId, playerTeamNumber, playerTeamType, message), true)
+	// Queue messages that have been sent if there are too many...
+	if (Shared.GetTime() - self.timeOfLastDirectMessage < kDirectMessageFadeTime and self.directMessagesActive + 1 > kDirectMessagesNumVisible) then
+		table.insert(self.directMessageQueue, message)
+	else
+		// Otherwise we're good to send the message normally.
+		self:BuildAndSendDirectMessage(message)
+	end
+	
+	// Update the last sent timer if this is the first message sent.
+	if (self.directMessagesActive == 0) then
+		self.timeOfLastDirectMessage = Shared.GetTime()
+	end
+	self.directMessagesActive = self.directMessagesActive + 1
+	
+end
+
+function Player:BuildAndSendDirectMessage(message)
+
+	//Sending LVL Msg only to the Player  
+	local playerName = "Combat: " .. self:GetName()
+	local playerLocationId = -1
+	local playerTeamNumber = kTeamReadyRoom
+	local playerTeamType = kNeutralTeamType
+
+	Server.SendNetworkMessage(self, "Chat", BuildChatMessage(true, playerName, playerLocationId, playerTeamNumber, playerTeamType, message), true)
+
 end

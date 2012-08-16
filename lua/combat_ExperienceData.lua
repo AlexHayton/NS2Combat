@@ -1,8 +1,8 @@
 //________________________________
 //
-//   	Combat Mod     
-//	Made by JimWest, 2012
-//	
+//   	NS2 Combat Mod     
+//	Made by JimWest and MCMLXXXIV, 2012
+//
 //________________________________
 
 // combat_ExperienceData.lua
@@ -21,6 +21,9 @@ XpList[7] = { Level=7, 		XP=1350, 	MarineName="Commander", 			AlienName="Slaught
 XpList[8] = { Level=8, 		XP=1750, 	MarineName="Major", 				AlienName="Eliminator", 	GivenXP=130}
 XpList[9] = { Level=9, 		XP=2200, 	MarineName="Field Marshal", 		AlienName="Nightmare", 		GivenXP=140}
 XpList[10] = { Level=10, 	XP=2700, 	MarineName="General", 				AlienName="Behemoth", 		GivenXP=150}
+
+// default start points
+kCombatStartUpgradePoints = 1
 
 // how much % from the avg xp can new player get
 avgXpAmount = 0.75
@@ -44,9 +47,12 @@ XpValues["Fade"] = 100
 XpValues["Onos"] = 100
 XpValues["Hydra"] = 50
 XpValues["Clog"] = 20
-XpValues["Armory"] = 200
-XpValues["CommandStation"] = 700
-XpValues["Hive"] = 700
+XpValues["Armory"] = 50
+XpValues["CommandStation"] = 150
+XpValues["Hive"] = 400
+
+// xp  for welding, healing
+kCombatHealingXP = 5
 
 local function UpgradeArmor(player, techUpgrade)
 	techUpgrade:ExecuteTechUpgrade(player)
@@ -61,11 +67,11 @@ local function GiveJetpack(player, techUpgrade)
 end
 
 local function TierTwo(player, techUpgrade)
-    player.twoHives = true
+    player.combatTable.twoHives = true
 end
 
 local function TierThree(player, techUpgrade)
-    player.threeHives = true
+    player.combatTable.threeHives = true
 end
 
 local function Camouflage(player, techUpgrade)
@@ -78,6 +84,20 @@ end
 
 local function Resupply(player, techUpgrade)
 	player.combatTable.hasResupply = true
+end
+
+local function Catalyst(player, techUpgrade)
+	player.combatTable.hasCatalyst = true
+end
+
+local function EMP(player, techUpgrade)
+	player.combatTable.hasEMP = true
+	player:SendDirectMessage("You got EMP-taunt, use your taunt key to activate it")
+end
+
+local function ShadeInk(player, techUpgrade)
+    player.combatTable.hasInk = true
+    player:SendDirectMessage("You got Ink-taunt, use your taunt key to activate it")
 end
 
 // Helper function to build upgrades for us.
@@ -118,6 +138,8 @@ table.insert(UpsList, BuildUpgrade("Marine", kCombatUpgrades.Armor3,			"arm3",		
 // Add motion detector, scanner, resup, catpacks as available...
 table.insert(UpsList, BuildUpgrade("Marine", kCombatUpgrades.Scanner,			"scan",				"Scanner",			kTechId.Scan, 			    Scan, 	        nil,                     	1, 		kCombatUpgradeTypes.Tech))
 table.insert(UpsList, BuildUpgrade("Marine", kCombatUpgrades.Resupply,			"resup",			"Resupply",			kTechId.MedPack , 	        Resupply,    	nil, 	                    1, 		kCombatUpgradeTypes.Tech))
+table.insert(UpsList, BuildUpgrade("Marine", kCombatUpgrades.Catalyst,			"cat",				"Catalyst",			kTechId.CatPack , 	        Catalyst,  		nil, 	                    1, 		kCombatUpgradeTypes.Tech))
+table.insert(UpsList, BuildUpgrade("Marine", kCombatUpgrades.EMP,   			"emp",			    "EMP-Taunt",		kTechId.MACEMP , 	        EMP,        	nil, 	                    1, 		kCombatUpgradeTypes.Tech))
 
 
 // Alien Upgrades
@@ -137,5 +159,9 @@ table.insert(UpsList, BuildUpgrade("Alien", kCombatUpgrades.Celerity,			"cele",	
 table.insert(UpsList, BuildUpgrade("Alien", kCombatUpgrades.Adrenaline,			"adrenaline",		"Adrenaline",		kTechId.Adrenaline, 		nil, 			nil, 						1, 		kCombatUpgradeTypes.Tech))
 // a bit sorting for better sorting in the alien GUI
 table.insert(UpsList, BuildUpgrade("Alien", kCombatUpgrades.TierTwo,			"tier2",			"Tier 2",			kTechId.TwoHives, 			TierTwo, 		nil, 						1, 		kCombatUpgradeTypes.Tech))
-table.insert(UpsList, BuildUpgrade("Alien", kCombatUpgrades.Feint,		    	"feint",    		"Feint",    		kTechId.Feint,   			nil, 			nil, 						1, 		kCombatUpgradeTypes.Tech))
+//table.insert(UpsList, BuildUpgrade("Alien", kCombatUpgrades.Feint,		    	"feint",    		"Feint",    		kTechId.Feint,   			nil, 			nil, 						1, 		kCombatUpgradeTypes.Tech))
+
+// new ink abilitiy
+table.insert(UpsList, BuildUpgrade("Alien", kCombatUpgrades.ShadeInk,			"ink",		        "Ink-Taunt",		kTechId.ShadeInk, 		    ShadeInk,		nil, 						1, 		kCombatUpgradeTypes.Tech))
 table.insert(UpsList, BuildUpgrade("Alien", kCombatUpgrades.TierThree,			"tier3",			"Tier 3",			kTechId.ThreeHives, 		TierThree, 		kCombatUpgrades.TierTwo,	2, 		kCombatUpgradeTypes.Tech))
+

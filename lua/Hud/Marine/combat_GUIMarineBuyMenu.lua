@@ -1,10 +1,8 @@
 //________________________________
 //
-//   	combat Mod     
-//	Made by JimWest, 2012
+//   	NS2 Combat Mod     
+//	Made by JimWest and MCMLXXXIV, 2012
 //
-//	Version 0.1
-//	
 //________________________________
 
 // combat_GUIMarineBuyMenu.lua
@@ -86,6 +84,8 @@ local function GetSmallIconPixelCoordinates(itemTechId)
         kMarineTechIdToMaterialOffset[kTechId.Weapons3] = 57        
         kMarineTechIdToMaterialOffset[kTechId.MedPack] = 37
         kMarineTechIdToMaterialOffset[kTechId.Scan] = 41
+        kMarineTechIdToMaterialOffset[kTechId.MACEMP] = 62
+		kMarineTechIdToMaterialOffset[kTechId.CatPack] = 45
     
     end
     
@@ -561,8 +561,8 @@ function combat_GUIMarineBuyMenu:_UpdateContent(deltaTime)
     
     if techId then
     
-        local researched = self.player:GotRequirements(self.hoverUpgrade)        
-        local itemCost = self.hoverUpgrade:GetLevels()
+        local researched = self.player:GotRequirements(self.hoverUpgrade)                
+        local itemCost = ConditionalValue(self.hoverUpgrade, self.hoverUpgrade:GetLevels(), 0)
         local upgradesCost = 0
         local canAfford = PlayerUI_GetPlayerResources() >= itemCost + upgradesCost
 

@@ -1,29 +1,14 @@
 //________________________________
 //
-//   	Combat Mod     
-//	Made by JimWest, 2012
-//	
+//   	NS2 Combat Mod     
+//	Made by JimWest and MCMLXXXIV, 2012
+//
 //________________________________
 
-// combat_Structure.lua
-
-
-if(not CombatStructure) then
-    CombatStructure = {}
-end
-
-
-local HotReload = ClassHooker:Mixin("CombatStructure")
-    
-function CombatStructure:OnLoad()
-    
-    ClassHooker:SetClassCreatedIn("Structure", "lua/Structure.lua") 
-    self:PostHookClassFunction("Structure", "OnTakeDamage", "OnTakeDamage_Hook") 
-    
-end
+// combat_StaticTarget.lua
 
 // Give some XP to the damaging entity.
-function CombatStructure:OnTakeDamage_Hook(self, damage, attacker, doer, point)
+function StaticTargetMixin:OnTakeDamage(damage, attacker, doer, point)
 
     // Give XP to attacker.
     local pointOwner = attacker
@@ -40,6 +25,10 @@ function CombatStructure:OnTakeDamage_Hook(self, damage, attacker, doer, point)
 			if GetTrickleXp(self) then
 				local maxXp = GetXpValue(self)
 				local dmgXp = math.floor(maxXp * damage / self:GetMaxHealth())
+				// Always enforce a minimum Xp of 1.				
+				if dmgXp == 0 then 
+					dmgXp = 1
+				end
 				
 				// Award XP but suppress the message.
 				pointOwner:AddXp(dmgXp, true)
@@ -47,8 +36,4 @@ function CombatStructure:OnTakeDamage_Hook(self, damage, attacker, doer, point)
 		end
 	end
     
-end
-
-if(hotreload) then
-    CombatStructure:OnLoad()
 end

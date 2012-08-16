@@ -1,10 +1,8 @@
 //________________________________
 //
-//   	Combat Mod     
-//	Made by JimWest, 2012
+//   	NS2 Combat Mod     
+//	Made by JimWest and MCMLXXXIV, 2012
 //
-//	Version 0.1
-//	
 //________________________________
 
 // combat_PointGiverMixin.lua
@@ -26,6 +24,8 @@ function PointGiverMixin:OnKill(attacker, doer, point, direction)
     // to fix a bug, check before if the pointOwner is a Player
    if pointOwner and pointOwner:isa("Player") then
         if(pointOwner:GetTeamNumber() ~= self:GetTeamNumber()) then
+			// add a kill for the scoreboard
+			pointOwner:AddKill()
 			// Only add Xp if killing a player or player structure. Structures now get partial Xp for damage.
 			if not GetTrickleXp(self) then
 				local XpValue = GetXpValue(self)

@@ -1,8 +1,8 @@
 //________________________________
 //
-//   	Combat Mod     
-//	Made by JimWest, 2012
-//	
+//   	NS2 Combat Mod     
+//	Made by JimWest and MCMLXXXIV, 2012
+//
 //________________________________
 
 // combat_Marine.lua
@@ -21,6 +21,7 @@ function CombatMarine:OnLoad()
     self:ReplaceClassFunction("Marine", "OnKill", "MarineOnKill_Hook") 
     self:ReplaceClassFunction("Marine", "Drop", "Drop_Hook")
 	self:ReplaceClassFunction("Marine", "GiveJetpack", "GiveJetpack_Hook")
+	self:PostHookClassFunction("Marine", "OnTakeDamage", "OnTakeDamage_Hook")
     
 end
 
@@ -41,10 +42,8 @@ function CombatMarine:MarineOnKill_Hook(self, damage, attacker, doer, point, dir
         self:GetTeam():TriggerAlert(kTechId.MarineAlertSoldierLost, self)
     end
     
+    // Note: Flashlight is powered by Marine's beating heart. Eco friendly.
     self:SetFlashlightOn(false)
-    
-    // Remember our squad and position on death so we can beam back to them
-    self.lastSquad = self:GetSquad()
     self.originOnDeath = self:GetOrigin()
 	
 end
@@ -74,6 +73,14 @@ function CombatMarine:GiveJetpack_Hook(self)
     
 	return jetpackMarine
 	
+end
+
+function CombatMarine:OnTakeDamage_Hook(self, damage, attacker, doer, point)
+
+	// Activate the Catalyst Pack.
+	self:CheckCombatData()
+	self:CheckCatalyst()
+
 end
 
 if(hotreload) then

@@ -1,8 +1,8 @@
 //________________________________
 //
-//   	Combat Mod     
-//	Made by JimWest, 2012
-//	
+//   	NS2 Combat Mod     
+//	Made by JimWest and MCMLXXXIV, 2012
+//
 //________________________________
 
 // combat_CombatUpgrade.lua
@@ -10,14 +10,14 @@
 kCombatUpgrades = enum({// Marine upgrades
 						'Mines', 'Welder', 'Shotgun', 'Flamethrower', 'GrenadeLauncher', 
 						'Weapons1', 'Weapons2', 'Weapons3', 'Armor1', 'Armor2', 'Armor3', 
-						'MotionDetector', 'Scanner', 'CatalystPacks', 'Resupply', 
+						'MotionDetector', 'Scanner', 'Catalyst', 'Resupply', 'EMP',
 						'Jetpack', 'Exosuit',
 						
 						// Alien upgrades
 						'Gorge', 'Lerk', 'Fade', 'Onos', 
 						'TierTwo', 'TierThree',
 						'Carapace', 'Regeneration', 'Silence', 'Camouflage', 'Celerity',
-                        'Adrenaline', 'Feint'})
+                        'Adrenaline', 'Feint', 'ShadeInk'})
 						
 // The order of these is important...
 kCombatUpgradeTypes = enum({'Class', 'Tech', 'Weapon'})
@@ -114,7 +114,7 @@ function CombatUpgrade:GiveItem(player)
 
 end
 
-function CombatUpgrade:DoUpgrade(player)
+function CombatUpgrade:DoUpgrade(player, wait, upgradeList)
 	local techId = self:GetTechId()
 	local kMapName = LookupTechData(techId, kTechDataMapName)
 	
@@ -131,5 +131,11 @@ function CombatUpgrade:DoUpgrade(player)
 	end
 	
 	// Do specific stuff for aliens or marines.
-	self:TeamSpecificLogic(player)
+	if wait ~= nil then
+	    self:TeamSpecificLogic(player)
+    else
+        if not wait then
+            self:TeamSpecificLogic(player)
+        end
+    end
 end

@@ -1,10 +1,8 @@
 //________________________________
 //
-//   	combat Mod     
-//	Made by JimWest, 2012
+//   	NS2 Combat Mod     
+//	Made by JimWest and MCMLXXXIV, 2012
 //
-//	Version 0.1
-//	
 //________________________________
 
 // combat_Player_SharedUpgrade.lua
@@ -56,9 +54,20 @@ end
 
 
 // sends the buy command to the console
-function Player:Combat_PurchaseItemAndUpgrades(textCode)
+function Player:Combat_PurchaseItemAndUpgrades(textCodes)
 
-    Shared.ConsoleCommand("/buy " .. tostring(textCode))
+    local buyString = ""
+    
+    if type(textCodes) == "table" then    
+        for i, textCode in ipairs(textCodes) do
+            buyString = (buyString  .. textCode .. " ")
+        end        
+    else
+        buyString = textCodes
+    end
+    
+
+    Shared.ConsoleCommand("/buy " .. buyString)
 
 end
 

@@ -1,66 +1,11 @@
 //________________________________
 //
-//   	Combat Mod     
-//	Made by JimWest, 2012
-//	
+//   	NS2 Combat Mod     
+//	Made by JimWest and MCMLXXXIV, 2012
+//
 //________________________________
 
 // combat_AlienBuyFuncs.lua
-      
-// helper Functions for the List, text etc  
-
-
-
-function CombatAlienBuy_GetAbilitiesFor(lifeFormTechId)
-
-    local abilityIds = {}
-
-    local player = Client.GetLocalPlayer()
-    
-    /* currently not working
-    if player and player:isa("Alien") then
-    
-        local tierTwoTech = GetAlienTierTwoFor(lifeFormTechId)
-        if tierTwoTech then
-            table.insert(abilityIds, tierTwoTech)
-        end
-        
-        local tierThreeTech = GetAlienTierThreeFor(lifeFormTechId)
-        if tierThreeTech then
-            table.insert(abilityIds, tierThreeTech)
-        end
-        
-        
-    
-    end
-    */
-    
-    return abilityIds
-
-end
-
-
-local function GetUnpurchasedTechIds(techId)
-
-    // get All ups for the aliens
-    //TODO : delete purchased ups
-    local allUps = GetAllUpgrades("Allien") 
-    local techUps = GetUpgradesOfType(allUps, kCombatUpgradeTypes.Tech)
-    
-    local addOnUpgrades = {}   
-    local player = Client.GetLocalPlayer()
-    
-    for i, upgrade in ipairs(techUps) do
-        if not player:GotItemAlready(upgrade) then
-            table.insert(addOnUpgrades, upgrade:GetTechId())
-        end
-    end
-        
-    return addOnUpgrades
-    
-end
-
-
 local function GetPurchasedTechIds(techId)
     
     local player = Client.GetLocalPlayer()
@@ -86,8 +31,9 @@ local function GetPurchasedTechIds(techId)
     
 end
 
+
 // iconx, icony, name, tooltip, research, cost. Need to change that to change the costs
-function CombatAlienBuy_GetUnpurchasedUpgradeInfoArray(techIdTable)
+function GetUnpurchasedUpgradeInfoArray(techIdTable)
 
     local t = {}
     
@@ -132,7 +78,32 @@ function CombatAlienBuy_GetUnpurchasedUpgradeInfoArray(techIdTable)
     
 end
 
-function CombatAlienBuy_GetPurchasedUpgradeInfoArray(techIdTable)
+
+
+
+function GetUnpurchasedTechIds(techId)
+
+    // get All ups for the aliens
+    //TODO : delete purchased ups
+    local allUps = GetAllUpgrades("Alien") 
+    local techUps = GetUpgradesOfType(allUps, kCombatUpgradeTypes.Tech)
+    
+    local addOnUpgrades = {}   
+    local player = Client.GetLocalPlayer()
+    
+    for i, upgrade in ipairs(techUps) do
+        if not player:GotItemAlready(upgrade) then
+            table.insert(addOnUpgrades, upgrade:GetTechId())
+        end
+    end
+        
+    return addOnUpgrades
+    
+end
+
+
+
+function AlienBuy_GetPurchasedUpgradeInfoArray(techIdTable)
 
     local t = {}
     
@@ -169,58 +140,14 @@ function CombatAlienBuy_GetPurchasedUpgradeInfoArray(techIdTable)
     
 end
 
-
-// return the unpurchased ups from the UpsList
-function CombatAlienBuy_GetUnpurchasedUpgrades(idx)
-    if idx == nil then
-        Print("AlienBuy_GetUnpurchasedUpgrades(nil) called")
-        return {}
-    end
-    
-    return CombatAlienBuy_GetUnpurchasedUpgradeInfoArray(GetUnpurchasedTechIds(IndexToAlienTechId(idx)))   
-
-end
-
-
-function CombatAlienBuy_GetPurchasedUpgrades(idx)
+function AlienBuy_GetPurchasedUpgrades(idx)
 
     local player = Client.GetLocalPlayer()
-    return CombatAlienBuy_GetPurchasedUpgradeInfoArray(GetPurchasedTechIds(IndexToAlienTechId(idx)))
+    return AlienBuy_GetPurchasedUpgradeInfoArray(GetPurchasedTechIds(IndexToAlienTechId(idx)))
     
 end
 
-// sends the hover Infos from the classes to the menu
-function CombatAlienBuy_GetClassStats(idx)
-
-    if idx == nil then
-        Print("AlienBuy_GetClassStats(nil) called")
-    end
-    
-    // name, hp, ap, cost
-    local techId = IndexToAlienTechId(idx)
-    local upgrade = GetUpgradeFromTechId(techId)
-    local cost = 0
-     
-    if upgrade then
-        cost = upgrade:GetLevels()
-    end
-
-    if techId == kTechId.Fade then
-        return {"Fade", Fade.kHealth, Fade.kArmor, cost }
-    elseif techId == kTechId.Gorge then
-        return {"Gorge", kGorgeHealth, kGorgeArmor, cost}
-    elseif techId == kTechId.Lerk then
-        return {"Lerk", kLerkHealth, kLerkArmor, cost}
-    elseif techId == kTechId.Onos then
-        return {"Onos", Onos.kHealth, Onos.kArmor, cost}
-    else
-        return {"Skulk", Skulk.kHealth, Skulk.kArmor, cost}
-    end   
-
-end
-
-
-function CombatAlienBuy_GetGotRequirements(techId)
+function AlienBuy_GetGotRequirements(techId)
 
     local player = Client.GetLocalPlayer()
     if player then    
@@ -234,16 +161,22 @@ function CombatAlienBuy_GetGotRequirements(techId)
 end
 
 
-function CombatAlienBuy_GetTechIdForAlien(idx)
+function AlienBuy_GetTechIdForAlien(idx)
     
     return IndexToAlienTechId(idx)
 
 end
 
 
-function CombatAlienBuy_GetAlienCost(alienType)
 
-    local techId = CombatAlienBuy_GetTechIdForAlien(alienType)    
+
+
+/**
+ * Return cost for the base alien type
+ */
+function AlienBuy_GetAlienCost(alienType)
+
+    local techId = AlienBuy_GetTechIdForAlien(alienType)    
     local upgrade = GetUpgradeFromTechId(techId)
     
     if upgrade then
@@ -253,20 +186,72 @@ function CombatAlienBuy_GetAlienCost(alienType)
     return 0
 end
 
+/**
+ * Return current alien type
+ */
+function AlienBuy_GetCurrentAlien()
+    local player = Client.GetLocalPlayer()
+    local techId = player:GetTechId()
+    local index = AlienTechIdToIndex(techId)
+    
+    index = ConditionalValue( index < 1, 5, index) 
+    
+    ASSERT(index >= 1 and index <= table.count(indexToAlienTechIdTable), "AlienBuy_GetCurrentAlien(" .. ToString(techId) .. "): returning invalid index " .. ToString(index) .. " for " .. SafeClassName(player))
+    
+    return index
+    
+end
 
-function CombatAlienBuy_Purchase(purchaseId)
+function AlienBuy_Purchase(purchases)
 
     local player = Client.GetLocalPlayer()
+    local textCodes = {}
     if player then
-        local upgrade = GetUpgradeFromTechId(purchaseId)
-        if upgrade then
-            local textCode = upgrade:GetTextCode()
-            player:Combat_PurchaseItemAndUpgrades(textCode)
+        for i, purchaseId in ipairs(purchases) do
+            local upgrade = GetUpgradeFromTechId(purchaseId)
+            if upgrade then
+                local textCode = upgrade:GetTextCode()
+                table.insert(textCodes, textCode)
+            end
+        end
+        
+        if table.maxn(textCodes) > 0 then
+            player:Combat_PurchaseItemAndUpgrades(textCodes)
         end
     end
 
 end
 
+function AlienBuy_GetAbilitiesFor(lifeFormTechId)
 
+    local abilityIds = {}
 
+    local player = Client.GetLocalPlayer()
+    
+    /* currently not working
+    if player and player:isa("Alien") then
+    
+        local tierTwoTech = GetAlienTierTwoFor(lifeFormTechId)
+        if tierTwoTech then
+            table.insert(abilityIds, tierTwoTech)
+        end
+        
+        local tierThreeTech = GetAlienTierThreeFor(lifeFormTechId)
+        if tierThreeTech then
+            table.insert(abilityIds, tierThreeTech)
+        end
+        
+        
+    
+    end
+    */
+    
+    return abilityIds
 
+end
+
+function AlienBuy_IsAlienResearched(alienType)
+
+	return true
+
+end
