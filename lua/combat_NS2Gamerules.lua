@@ -148,23 +148,38 @@ function CombatNS2Gamerules:OnUpdate_Hook(self, timePassed)
 			if self.timeSinceGameStateChanged >= kCombatTimeLimit then
 				team2.combatTeamWon = true
 			else
-				// send timeleft to all players, but only every min
-				local exactTimeLeft = (kCombatTimeLimit - self.timeSinceGameStateChanged) / 60
+				// send timeleft to all players, but only every few min
+				local exactTimeLeft = (kCombatTimeLimit - self.timeSinceGameStateChanged)
 				local timeLeft = math.ceil(exactTimeLeft)
 				
-                if (timeLeft % 5) == 0 and kCombatTimeLeftPlayed ~= timeLeft then
+                if 	kCombatTimeLeftPlayed ~= timeLeft and
+					((timeLeft % kCombatTimeReminderInterval) == 0 or 
+					 (timeLeft == 60) or (timeLeft == 30) or
+					 (timeLeft == 20) or (timeLeft == 10) or
+					 (timeLeft <= 5)) then
                     local playersTeam1 = GetEntitiesForTeam("Player", kTeam1Index)
                     local playersTeam2 = GetEntitiesForTeam("Player", kTeam2Index)
+					
+					local timeLeftText
+					if (timeLeft > 60) then
+						timeLeftText = math.ceil(timeLeft/60) .." minutes"
+					elseif (timeLeft == 60) then
+						timeLeftText = "1 minute"
+					elseif (timeLeft == 1) then
+						timeLeftText = "1 second"
+					else
+						timeLeftText = timeLeft .." seconds"
+					end
                     
                     for index, player in ipairs(playersTeam1) do
-                        player:SendDirectMessage( timeLeft .." min left till Marines have lost")
+                        player:SendDirectMessage( timeLeftText .." left until Marines have lost!")
                     end
                     
                     for index, player in ipairs(playersTeam2) do
-                        player:SendDirectMessage( timeLeft .." min left till Aliens have won")
+                        player:SendDirectMessage( timeLeftText .." left until Aliens have won!")
                     end
                     
-                    kCombatTimeLeftPlayed  = timeLeft                
+                    kCombatTimeLeftPlayed = timeLeft                
                 end
 			end
 		end
@@ -237,7 +252,14 @@ function CombatNS2Gamerules:ChooseTechPoint_Hook(handle, self, techPoints, teamN
 end
 
 
-function CombatNS2Gamerules:ResetGame_Hook()
+function CombatNS2Gamerules:ResetGame_Hook(self)
+
+	// Reset teams and timers
+	local team1 = self:GetTeam(1)
+	local team2 = self:GetTeam(2)
+	team1.combatTeamWon = nil
+	team2.combatTeamWon = nil
+	self.timeSinceGameStateChanged = 0
 
     // reset SpawnCombo to set them again
     combatSpawnCombo = nil
