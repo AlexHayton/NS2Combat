@@ -22,6 +22,7 @@ function CombatPlayer:OnLoad()
 	self:ReplaceClassFunction("Player", "GetTechTree", "GetTechTree_Hook") 
 	self:PostHookClassFunction("Player", "OnUpdatePlayer", "OnUpdatePlayer_Hook")
 	self:PostHookClassFunction("Player", "Taunt", "Taunt_Hook")
+	self:PostHookClassFunction("Player", "OnCreate", "OnCreate_Hook")
 
     self:ReplaceFunction("GetIsTechAvailable", "GetIsTechAvailable_Hook")
     self:ReplaceClassFunction("Alien", "LockTierTwo",function() end)
@@ -67,131 +68,155 @@ function CombatPlayer:GetTechTree_Hook(self)
 
 end
 
-// Various updates and timers in here.
-function CombatPlayer:OnUpdatePlayer_Hook(self, deltaTime)
+function CombatPlayer:OnCreate_Hook(self)
+
+	// Set up the timers for repetitive check events.
+	// This should improve performance somewhat as well.
+	self:AddTimedCallback(CombatHandleQueuedMessages, 1)
+	self:AddTimedCallback(CombatHandleUpgradeNotifications, kCombatUpgradeNotifyInterval)
+	self:AddTimedCallback(CombatHandleNewPlayerReminder, kCombatReminderNotifyInterval)
+	self.lastReminderNotify = Shared.GetTime()
+
+end
+
+function CombatHandleQueuedMessages(self)
+
+	// Handle queued direct messages.
+	if (self.directMessagesActive ~= nil and self.directMessagesActive > 0) then
+		if (Shared.GetTime() - self.timeOfLastDirectMessage > kDirectMessageFadeTime) then
+		
+			// After the fade time has passed, clear old messages from the queue.
+			for msgIndex = 1, math.min(self.directMessagesActive, kDirectMessagesNumVisible) do
+				self.directMessagesActive = self.directMessagesActive - 1
+			end
+			
+			// Send any waiting messages, up to kDirectMessagesNumVisible.
+			if (#self.directMessageQueue > 0) then
+				for msgIndex = 1, math.min(#self.directMessageQueue, kDirectMessagesNumVisible) do
+					local message = table.remove(self.directMessageQueue, 1)
+					self:BuildAndSendDirectMessage(message)
+				end
+				
+				self.timeOfLastDirectMessage = Shared.GetTime()
+			end
+			
+		end
+	end
 	
+	return true
+	
+end
+
+function CombatHandleUpgradeNotifications(self)
+
 	// don't remind players in the ReadyRoom
 	if (self:GetTeamNumber() ~= kTeamReadyRoom) and (self:GetTeamNumber() ~= kSpectatorIndex) then
-	    // set ArmsLab always true so the up icons are white and not red	    
-	    self.hasArmsLab = true
 	    
         // Remind players once every so often when they have upgrades to spend.        
         local lvlFree = self:GetLvlFree()
         if lvlFree > 0 then
-            if (self.combatTable.lastUpgradeNotify + deltaTime > kUpgradeNotifyInterval) then
-                self.combatTable.lastUpgradeNotify = 0
-                self:spendlvlHints("freeLvl")
-            else
-                self.combatTable.lastUpgradeNotify = self.combatTable.lastUpgradeNotify + deltaTime
-            end
+            self:spendlvlHints("freeLvl")
         end
-		
-		// If the player hasn't spent their upgrades at all, remind them again
-		// that this is combat mode after a longer interval.
-        if (self:GetLvl() - 1) + kCombatStartUpgradePoints == self:GetLvlFree() then
-            if (self.combatTable.lastReminderNotify + deltaTime > kReminderNotifyInterval) then
-                self.combatTable.lastReminderNotify = 0
-				for i, message in ipairs(combatWelcomeMessage) do
-					self:SendDirectMessage(message)  
-				end	
-            else
-                self.combatTable.lastReminderNotify = self.combatTable.lastReminderNotify + deltaTime
-            end
-        end
-        
-        // Spawn Protect
-        if self.combatSpawnProtect then
-            if self:GetIsAlive() then
-                if self.combatSpawnProtect == 1 then
-                    // set the real spawn protect time here
-                    self.combatSpawnProtect = Shared.GetTime() +  kCombatSpawnProtectTime
-                elseif
-                    Shared.GetTime() >= self.combatSpawnProtect then
-                    // end spawn protect
-                    self:DeactivateSpawnProtect()
-                else
-                    self:PerformSpawnProtect()
-                end
-            end
-        end
-        
-        if self.combatTable then
-            // only trigger Scan and Ressuply when player is alive
-            if self:GetIsAlive() then
 
-                if self.combatTable.hasCamouflage then
-                    if HasMixin(self, "Cloakable") then
-                        self:SetIsCloaked(true, 1, false)
-                
-                        // Trigger uncloak when you reach a certain speed, based on lifeform's max speed.
-                        local velocity = self:GetVelocity():GetLength()
-                        
-                        if velocity >= (self:GetMaxSpeed(true) * kCamouflageUncloakFactor) then
-                            self:SetIsCloaked(false)
-                            self.cloakChargeTime = kCamouflageTime
-                        end
-                    end
-                end 
+	end
+	
+	return true
+	
+end
 
-                // Provide scan and resupply function
-                if self.combatTable.hasScan then
-                    // SCAN!!
-                    if (self.combatTable.lastScan + deltaTime > kScanTimer) then
-                        
-                        local success = self:ScanNow()
-                        
-                        if success then
-                            self.combatTable.lastScan = 0	            
-                        end
-                        
-                    else
-                        self.combatTable.lastScan = self.combatTable.lastScan + deltaTime
-                    end
-                end 
-                
-                if self.combatTable.hasResupply then
-                    if (self.combatTable.lastResupply + deltaTime > kResupplyTimer) then
-                        
-						// Keep the timer going, even if we don't need to resupply.
-						local success = false
-						if (self:NeedsResupply()) then
-							success = self:ResupplyNow()
-						else
-							success = true
-						end
-                        
-                        if success then
-                            self.combatTable.lastResupply = 0
-                        end
-                       
-                    else
-                        self.combatTable.lastResupply = self.combatTable.lastResupply + deltaTime
-                    end
+function CombatHandleNewPlayerReminder(self)
+
+	// If the player hasn't spent their upgrades at all, remind them again
+	// that this is combat mode after a longer interval.
+	if (self:GetLvl() - 1) + kCombatStartUpgradePoints == self:GetLvlFree() then
+		if (Shared.GetTime() - self.lastReminderNotify > kCombatReminderNotifyInterval) then
+			self.combatTable.lastReminderNotify = Shared.GetTime()
+			for i, message in ipairs(combatWelcomeMessage) do
+				self:SendDirectMessage(message)  
+			end	
+		end
+	end
+	
+	return true
+	
+end
+
+// Various updates and timers in here.
+function CombatPlayer:OnUpdatePlayer_Hook(self, deltaTime)
             
-                end 
-				
-				// Handle queued direct messages.
-				if (self.directMessagesActive ~= nil and self.directMessagesActive > 0) then
-					if (Shared.GetTime() - self.timeOfLastDirectMessage > kDirectMessageFadeTime) then
+	// set ArmsLab always true so the up icons are white and not red	    
+	self.hasArmsLab = true
+		
+	// Spawn Protect
+	if self.combatSpawnProtect then
+		if self:GetIsAlive() then
+			if self.combatSpawnProtect == 1 then
+				// set the real spawn protect time here
+				self.combatSpawnProtect = Shared.GetTime() +  kCombatSpawnProtectTime
+			elseif
+				Shared.GetTime() >= self.combatSpawnProtect then
+				// end spawn protect
+				self:DeactivateSpawnProtect()
+			else
+				self:PerformSpawnProtect()
+			end
+		end
+	end
+	
+	if self.combatTable then
+		// only trigger Scan and Ressuply when player is alive
+		if self:GetIsAlive() then
+
+			if self.combatTable.hasCamouflage then
+				if HasMixin(self, "Cloakable") then
+					self:SetIsCloaked(true, 1, false)
+			
+					// Trigger uncloak when you reach a certain speed, based on lifeform's max speed.
+					local velocity = self:GetVelocity():GetLength()
 					
-						// After the fade time has passed, clear old messages from the queue.
-						for msgIndex = 1, math.min(self.directMessagesActive, kDirectMessagesNumVisible) do
-							self.directMessagesActive = self.directMessagesActive - 1
-						end
-						
-						// Send any waiting messages, up to kDirectMessagesNumVisible.
-						if (#self.directMessageQueue > 0) then
-							for msgIndex = 1, math.min(#self.directMessageQueue, kDirectMessagesNumVisible) do
-								local message = table.remove(self.directMessageQueue, 1)
-								self:BuildAndSendDirectMessage(message)
-							end
-							
-							self.timeOfLastDirectMessage = Shared.GetTime()
-						end
-						
+					if velocity >= (self:GetMaxSpeed(true) * kCamouflageUncloakFactor) then
+						self:SetIsCloaked(false)
+						self.cloakChargeTime = kCamouflageTime
 					end
 				end
-            end	
+			end 
+
+			// Provide scan and resupply function
+			if self.combatTable.hasScan then
+				// SCAN!!
+				if (self.combatTable.lastScan + deltaTime > kScanTimer) then
+					
+					local success = self:ScanNow()
+					
+					if success then
+						self.combatTable.lastScan = 0	            
+					end
+					
+				else
+					self.combatTable.lastScan = self.combatTable.lastScan + deltaTime
+				end
+			end 
+			
+			if self.combatTable.hasResupply then
+				if (self.combatTable.lastResupply + deltaTime > kResupplyTimer) then
+					
+					// Keep the timer going, even if we don't need to resupply.
+					local success = false
+					if (self:NeedsResupply()) then
+						success = self:ResupplyNow()
+					else
+						success = true
+					end
+					
+					if success then
+						self.combatTable.lastResupply = 0
+					end
+				   
+				else
+					self.combatTable.lastResupply = self.combatTable.lastResupply + deltaTime
+				end
+		
+			end 
         end
     end
 end

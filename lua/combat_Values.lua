@@ -20,8 +20,8 @@ combatWelcomeMessage = {combatModifiedMessage,
                         "For more information type /help in the chat or console."
                         }
 						
-kUpgradeNotifyInterval = 10
-kReminderNotifyInterval = 35
+kCombatUpgradeNotifyInterval = 10
+kCombatReminderNotifyInterval = 35
 kDirectMessageFadeTime = 8
 kDirectMessagesNumVisible = 9
 
@@ -36,8 +36,9 @@ kNanoShieldDuration = kCombatSpawnProtectTime
 
 // By default, Aliens win after a certain amount of time...
 // Specified in seconds...
-kCombatTimeLimit = 1200
+kCombatTimeLimit = 90
 kCombatTimeLeftPlayed = 0
+kCombatTimeReminderInterval = 300
 
 // Timers for Scan, Resupply and Catalyst packs.
 kScanTimer = 12
@@ -54,19 +55,19 @@ kInkTimer = 15
 kPropEffect = "vortex_destroy"
 kPropEffectTimer = 2
 
-// Change the GestateTime so every new Class takes the same time
+// Gestate Times
 kSkulkGestateTime = 2
-kGorgeGestateTime = 2
-kLerkGestateTime = 2
-kFadeGestateTime = 2
-kOnosGestateTime = 2
+kGorgeGestateTime = 3
+kLerkGestateTime = 4
+kFadeGestateTime = 5
+kOnosGestateTime = 8
 
 // No eggs
 kAlienEggsPerHive = 0
 
 // Tweaks for weapons and upgrades
 // Camouflage
-kCamouflageTime = 3
+kCamouflageTime = 2
 kCamouflageUncloakFactor = 2 / 3
 
 // Gorge Healspray heals more (and makes a bit more damage)
