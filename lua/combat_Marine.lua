@@ -18,7 +18,7 @@ local HotReload = ClassHooker:Mixin("CombatMarine")
 function CombatMarine:OnLoad()
     
     ClassHooker:SetClassCreatedIn("Marine", "lua/Marine.lua") 
-    self:ReplaceClassFunction("Marine", "OnKill", "MarineOnKill_Hook") 
+	self:RawHookClassFunction("Marine", "OnKill", "MarineOnKill_Hook") 
     self:ReplaceClassFunction("Marine", "Drop", "Drop_Hook")
 	self:ReplaceClassFunction("Marine", "GiveJetpack", "GiveJetpack_Hook")
 	self:PostHookClassFunction("Marine", "OnTakeDamage", "OnTakeDamage_Hook")
@@ -33,18 +33,6 @@ end
 function CombatMarine:MarineOnKill_Hook(self, damage, attacker, doer, point, direction)
 
     self:DestroyWeapons()
-    
-    Player.OnKill(self, damage, attacker, doer, point, direction)
-    self:PlaySound(Marine.kDieSoundName)
-    
-    // Don't play alert if we suicide
-    if player ~= self then
-        self:GetTeam():TriggerAlert(kTechId.MarineAlertSoldierLost, self)
-    end
-    
-    // Note: Flashlight is powered by Marine's beating heart. Eco friendly.
-    self:SetFlashlightOn(false)
-    self.originOnDeath = self:GetOrigin()
 	
 end
 
