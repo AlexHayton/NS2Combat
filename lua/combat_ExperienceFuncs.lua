@@ -53,7 +53,7 @@ function Experience_GetLvl(xp)
 		return maxLvl
 	end
 	
-	// ToDo: Do a binary search instead. We're going to be here a lot!
+	// ToDo: Do a faster search instead. We're going to be here a lot!
 	for index, thislevel in ipairs(XpList) do
 	
 		if xp >= thislevel["XP"] and 
