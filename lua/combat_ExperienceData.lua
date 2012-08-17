@@ -90,6 +90,10 @@ local function Catalyst(player, techUpgrade)
 	player.combatTable.hasCatalyst = true
 end
 
+local function FastReload(player, techUpgrade)
+	player.combatTable.hasFastReload = true
+end
+
 local function EMP(player, techUpgrade)
 	player.combatTable.hasEMP = true
 	player:SendDirectMessage("You got EMP-taunt, use your taunt key to activate it")
@@ -125,7 +129,7 @@ table.insert(UpsList, BuildUpgrade("Marine", kCombatUpgrades.Mines,				"mines",	
 table.insert(UpsList, BuildUpgrade("Marine", kCombatUpgrades.Welder,			"welder",			"Welder",			kTechId.Welder, 			nil, 			nil, 						1, 		kCombatUpgradeTypes.Weapon))
 table.insert(UpsList, BuildUpgrade("Marine", kCombatUpgrades.Shotgun,			"sg",				"Shotgun",			kTechId.Shotgun, 			nil, 			kCombatUpgrades.Weapons1, 	1, 		kCombatUpgradeTypes.Weapon))
 table.insert(UpsList, BuildUpgrade("Marine", kCombatUpgrades.Flamethrower,		"flame",			"Flamethrower",		kTechId.Flamethrower, 		nil, 			kCombatUpgrades.Shotgun, 	1, 		kCombatUpgradeTypes.Weapon))
-table.insert(UpsList, BuildUpgrade("Marine", kCombatUpgrades.GrenadeLauncher,	"gl",				"GrenadeLauncher",	kTechId.GrenadeLauncher, 	nil, 			kCombatUpgrades.Shotgun, 	1, 		kCombatUpgradeTypes.Weapon))
+table.insert(UpsList, BuildUpgrade("Marine", kCombatUpgrades.GrenadeLauncher,	"gl",				"Grenade Launcher",	kTechId.GrenadeLauncher, 	nil, 			kCombatUpgrades.Shotgun, 	1, 		kCombatUpgradeTypes.Weapon))
 
 // Tech
 table.insert(UpsList, BuildUpgrade("Marine", kCombatUpgrades.Weapons1,			"dmg1",				"Damage 1",			kTechId.Weapons1, 			nil, 			nil, 						1, 		kCombatUpgradeTypes.Tech))
@@ -140,6 +144,7 @@ table.insert(UpsList, BuildUpgrade("Marine", kCombatUpgrades.Scanner,			"scan",	
 table.insert(UpsList, BuildUpgrade("Marine", kCombatUpgrades.Resupply,			"resup",			"Resupply",			kTechId.MedPack , 	        Resupply,    	nil, 	                    1, 		kCombatUpgradeTypes.Tech))
 table.insert(UpsList, BuildUpgrade("Marine", kCombatUpgrades.Catalyst,			"cat",				"Catalyst",			kTechId.CatPack , 	        Catalyst,  		nil, 	                    1, 		kCombatUpgradeTypes.Tech))
 table.insert(UpsList, BuildUpgrade("Marine", kCombatUpgrades.EMP,   			"emp",			    "EMP-Taunt",		kTechId.MACEMP , 	        EMP,        	nil, 	                    1, 		kCombatUpgradeTypes.Tech))
+//table.insert(UpsList, BuildUpgrade("Marine", kCombatUpgrades.FastReload,   		"fastreload",		"Fast Reload",		kTechId.SocketPowerNode , 	FastReload,     nil, 	                    1, 		kCombatUpgradeTypes.Tech))
 
 
 // Alien Upgrades
@@ -159,7 +164,6 @@ table.insert(UpsList, BuildUpgrade("Alien", kCombatUpgrades.Celerity,			"cele",	
 table.insert(UpsList, BuildUpgrade("Alien", kCombatUpgrades.Adrenaline,			"adrenaline",		"Adrenaline",		kTechId.Adrenaline, 		nil, 			nil, 						1, 		kCombatUpgradeTypes.Tech))
 // a bit sorting for better sorting in the alien GUI
 table.insert(UpsList, BuildUpgrade("Alien", kCombatUpgrades.TierTwo,			"tier2",			"Tier 2",			kTechId.TwoHives, 			TierTwo, 		nil, 						1, 		kCombatUpgradeTypes.Tech))
-//table.insert(UpsList, BuildUpgrade("Alien", kCombatUpgrades.Feint,		    	"feint",    		"Feint",    		kTechId.Feint,   			nil, 			nil, 						1, 		kCombatUpgradeTypes.Tech))
 
 // new ink abilitiy
 table.insert(UpsList, BuildUpgrade("Alien", kCombatUpgrades.ShadeInk,			"ink",		        "Ink-Taunt",		kTechId.ShadeInk, 		    ShadeInk,		nil, 						1, 		kCombatUpgradeTypes.Tech))
