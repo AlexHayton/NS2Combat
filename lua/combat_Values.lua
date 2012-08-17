@@ -36,7 +36,7 @@ kNanoShieldDuration = kCombatSpawnProtectTime
 
 // By default, Aliens win after a certain amount of time...
 // Specified in seconds...
-kCombatTimeLimit = 90
+kCombatTimeLimit = 1200
 kCombatTimeLeftPlayed = 0
 kCombatTimeReminderInterval = 300
 
@@ -64,6 +64,9 @@ kOnosGestateTime = 8
 
 // No eggs
 kAlienEggsPerHive = 0
+
+// Don't try to increase the Infestation radius above kMaxRadius - you will get errors in Infestation.lua
+//kHiveInfestationRadius = 20
 
 // Tweaks for weapons and upgrades
 // Camouflage
