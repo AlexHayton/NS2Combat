@@ -236,20 +236,21 @@ function CombatPlayingTeam:SpawnPlayer(player)
 
     if player.combatTable and player.combatTable.giveClassAfterRespawn then
         success, newPlayer  = player:GetTeam():ReplaceRespawnPlayer(player, nil, nil, player.combatTable.giveClassAfterRespawn)
-        newPlayer:GiveUpsBack()   
     else
 		// Spawn normally		
-		// Give the ups back too		
-        success, newPlayer = player:GetTeam():ReplaceRespawnPlayer(player, nil, nil)   
-        newPlayer:GiveUpsBack()    
+        success, newPlayer = player:GetTeam():ReplaceRespawnPlayer(player, nil, nil)
     end
-    
-    if success then
+	
+	if success then
+		// Give any upgrades back
+        newPlayer:GiveUpsBack()    
+	
         // Make a nice effect when you spawn.
 		// Aliens hatch due the CoEvolve function
         if newPlayer:isa("Marine") then
             newPlayer:TriggerEffects("infantry_portal_spawn")
         end
+		newPlayer:TriggerEffects("spawnSoundEffects")
 		newPlayer:GetTeam():RemovePlayerFromRespawnQueue(newPlayer)
 		
 		// Remove the third-person mode (bug introduced in 216).
