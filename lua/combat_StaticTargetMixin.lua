@@ -5,7 +5,12 @@
 //
 //________________________________
 
-// combat_StaticTarget.lua
+// combat_StaticTarget.luaq
+local function setDecimalPlaces(num, idp)
+    local mult = 10^(idp or 0)
+    if num >= 0 then return math.floor(num * mult) / mult
+    else return math.ceil(num * mult) / mult end
+end
 
 // Give some XP to the damaging entity.
 function StaticTargetMixin:OnTakeDamage(damage, attacker, doer, point)
@@ -24,11 +29,7 @@ function StaticTargetMixin:OnTakeDamage(damage, attacker, doer, point)
 		if(pointOwner:GetTeamNumber() ~= self:GetTeamNumber()) then
 			if GetTrickleXp(self) then
 				local maxXp = GetXpValue(self)
-				local dmgXp = math.floor(maxXp * damage / self:GetMaxHealth())
-				// Always enforce a minimum Xp of 1.				
-				if dmgXp == 0 then 
-					dmgXp = 1
-				end
+				local dmgXp = setDecimalPlaces(maxXp * damage / self:GetMaxHealth(), 1)
 				
 				// Award XP but suppress the message.
 				pointOwner:AddXp(dmgXp, true)
