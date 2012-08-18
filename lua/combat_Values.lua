@@ -56,11 +56,12 @@ kPropEffect = "vortex_destroy"
 kPropEffectTimer = 2
 
 // Gestate Times
-kSkulkGestateTime = 2
-kGorgeGestateTime = 3
-kLerkGestateTime = 4
-kFadeGestateTime = 5
-kOnosGestateTime = 8
+kGestateTime = {}
+kGestateTime[kTechId.Skulk] = 2
+kGestateTime[kTechId.Gorge] = 3
+kGestateTime[kTechId.Lerk] = 4
+kGestateTime[kTechId.Fade] = 5
+kGestateTime[kTechId.Onos] = 8
 
 // No eggs
 kAlienEggsPerHive = 0
