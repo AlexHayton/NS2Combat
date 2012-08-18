@@ -23,10 +23,9 @@ function CombatPlayer:OnLoad()
 	self:PostHookClassFunction("Player", "OnUpdatePlayer", "OnUpdatePlayer_Hook")
 	self:PostHookClassFunction("Player", "Taunt", "Taunt_Hook")
 	self:PostHookClassFunction("Player", "OnCreate", "OnCreate_Hook")
+	self:PostHookClassFunction("Player", "UpdateArmorAmount", "UpdateArmorAmount_Hook")
 
     self:ReplaceFunction("GetIsTechAvailable", "GetIsTechAvailable_Hook")
-    self:ReplaceClassFunction("Alien", "LockTierTwo",function() end)
-    self:ReplaceClassFunction("Alien", "UpdateNumHives","UpdateNumHives_Hook")
     
 end
 
@@ -246,6 +245,16 @@ function CombatPlayer:Taunt_Hook(self)
     
 end
 
+function CombatPlayer:UpdateArmorAmount_Hook(self)
+
+	// Always set the hives back to false, so that later on we can enable tier 2/3 even after embryo.
+	if (self:isa("Alien") and self:GetTeamNumber() ~= kTeamReadyRoom) then
+		self.twoHives = false
+		self.threeHives = false
+	end
+
+end
+
 
 //___________________
 // Hooks Alien_Upgrade
@@ -257,29 +266,6 @@ function CombatPlayer:GetIsTechAvailable_Hook(self, teamNumber, techId)
     return true
 
 end
-
-function CombatPlayer:UpdateNumHives_Hook(self)
-
-    local time = Shared.GetTime()
-	if self.timeOfLastNumHivesUpdate == nil or (time > self.timeOfLastNumHivesUpdate + 0.5) then
-
-		if self.combatTable then
-			if self.combatTable.twoHives and self.combatTable.twoHives ~= self.twoHives then
-				self.twoHives = true
-				self:UnlockTierTwo()
-			end
-			
-			if self.combatTable.threeHives and self.combatTable.threeHives ~= self.threeHives then
-				self.threeHives = true
-				self:UnlockTierThree()
-			end
-		end
-		
-		self.timeOfLastNumHivesUpdate = time
-		
-	end
-end
-
 
 if(hotreload) then
     CombatPlayer:OnLoad()
