@@ -159,11 +159,10 @@ function CombatPlayingTeam:Update_Hook(self, timePassed)
 	// Spawn all players in the queue once every 10 seconds or so.
 	if (#self.respawnQueue > 0) then
 		
-		// Are we ready to spawn? This is based on the time since the last spawn...
+		// Are we ready to spawn? This is based on the time since the last spawn wave...
 		local timeToSpawn = (self.timeSinceLastSpawn >= kCombatRespawnTimer)
 		
 		if timeToSpawn then
-		
 			// Reset the spawn timer.
 			CombatPlayingTeam:ResetSpawnTimer(self)
 			
@@ -173,7 +172,10 @@ function CombatPlayingTeam:Update_Hook(self, timePassed)
 			local thisPlayer = self:GetOldestQueuedPlayer()
 			
 			while (lastPlayer == thisPlayer) or (thisPlayer ~= nil) do
-				CombatPlayingTeam:SpawnPlayer(thisPlayer)				
+				local success = CombatPlayingTeam:SpawnPlayer(thisPlayer)
+				// Don't crash the server when no more players can spawn...
+				if not success then break end
+				
 				lastPlayer = thisPlayer
 				thisPlayer = self:GetOldestQueuedPlayer()
 			end
