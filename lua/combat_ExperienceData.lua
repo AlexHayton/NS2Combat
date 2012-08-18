@@ -23,7 +23,7 @@ XpList[9] = { Level=9, 		XP=2200, 	MarineName="Field Marshal", 		AlienName="Nigh
 XpList[10] = { Level=10, 	XP=2700, 	MarineName="General", 				AlienName="Behemoth", 		GivenXP=150}
 
 // default start points
-kCombatStartUpgradePoints = 1
+kCombatStartUpgradePoints = 0
 
 // how much % from the avg xp can new player get
 avgXpAmount = 0.75
@@ -45,7 +45,7 @@ XpValues["Gorge"] = 100
 XpValues["Lerk"] = 100
 XpValues["Fade"] = 100
 XpValues["Onos"] = 100
-XpValues["Hydra"] = 50
+XpValues["Hydra"] = 30
 XpValues["Clog"] = 20
 XpValues["Armory"] = 50
 XpValues["CommandStation"] = 150
@@ -163,7 +163,7 @@ table.insert(UpsList, BuildUpgrade("Alien", kCombatUpgrades.Camouflage,			"camo"
 table.insert(UpsList, BuildUpgrade("Alien", kCombatUpgrades.Celerity,			"cele",				"Celerity",			kTechId.Celerity, 			nil, 			nil, 						1, 		kCombatUpgradeTypes.Tech))
 table.insert(UpsList, BuildUpgrade("Alien", kCombatUpgrades.Adrenaline,			"adrenaline",		"Adrenaline",		kTechId.Adrenaline, 		nil, 			nil, 						1, 		kCombatUpgradeTypes.Tech))
 // a bit sorting for better sorting in the alien GUI
-table.insert(UpsList, BuildUpgrade("Alien", kCombatUpgrades.TierTwo,			"tier2",			"Tier 2",			kTechId.TwoHives, 			TierTwo, 		nil, 						1, 		kCombatUpgradeTypes.Tech))
+table.insert(UpsList, BuildUpgrade("Alien", kCombatUpgrades.TierTwo,			"tier2",			"Tier 2",			kTechId.TwoHives, 			TierTwo, 		nil, 						2, 		kCombatUpgradeTypes.Tech))
 
 // new ink abilitiy
 table.insert(UpsList, BuildUpgrade("Alien", kCombatUpgrades.ShadeInk,			"ink",		        "Ink-Taunt",		kTechId.ShadeInk, 		    ShadeInk,		nil, 						1, 		kCombatUpgradeTypes.Tech))
