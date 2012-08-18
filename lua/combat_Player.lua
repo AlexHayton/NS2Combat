@@ -336,7 +336,9 @@ function Player:CheckLvlUp(xp, suppressmessage)
 	end     
 	
 	if self:GetLvl() < maxLvl and not suppressmessage then
-		self:SendDirectMessage( self:GetXp() .. " XP: " .. (XpList[self:GetLvl() + 1]["XP"] - self:GetXp()).. " XP until next level!")
+		// Fix the decimal places here...
+		local currentXp = math.floor(self:GetXp())
+		self:SendDirectMessage(currentXp .. " XP: " .. (XpList[self:GetLvl() + 1]["XP"] - currentXp).. " XP until next level!")
 	end
 	
 end
