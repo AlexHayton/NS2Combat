@@ -151,12 +151,7 @@ function Player:ApplyAllUpgrades(upgradeTypes, singleUpgrade)
             end
             
         else
-            if type(singleUpgrade) == "table" then
-				// If evolving into a class, trigger a longer gestate time later in the chain...
-				if singleUpgrade[1]:GetType() == kCombatUpgradeTypes.Class then
-					self.combatTable.classEvolve = true
-				end
-			
+            if type(singleUpgrade) == "table" then			
                 // if its a table, special logic for aliens
                 for i, upgrade in ipairs(singleUpgrade) do
                     upgrade:DoUpgrade(self)
@@ -259,6 +254,7 @@ function Player:EvolveTo(newTechId)
 		lifeform = self:GetTechId()
 		if newAlienExtents then
 			lifeform = newTechId
+			self.combatTable.classEvolve = true
 		end
 
 		// Handle special upgrades.

@@ -62,6 +62,7 @@ kGestateTime[kTechId.Gorge] = 3
 kGestateTime[kTechId.Lerk] = 4
 kGestateTime[kTechId.Fade] = 5
 kGestateTime[kTechId.Onos] = 8
+kSkulkGestateTime = kGestateTime[kTechId.Skulk]
 
 // No eggs
 kAlienEggsPerHive = 0
@@ -71,7 +72,7 @@ kAlienEggsPerHive = 0
 
 // Tweaks for weapons and upgrades
 // Camouflage
-kCamouflageTime = 2
+kCamouflageTime = 1.5
 kCamouflageUncloakFactor = 2 / 3
 
 // Gorge Healspray heals more (and makes a bit more damage)
@@ -119,8 +120,9 @@ kCelerityCost = generalCost
 kHyperMutationCost = generalCost
 
 // Health values
-// Give the armory more health
+// Make the marine structures slightly less squishy...
 kArmoryHealth = 2500
+kCommandStationHealth = 3500
 
 // dont Track the CombatMod anylonger (later we could maybe make our own tracking site?
 kStatisticsURL = ""
