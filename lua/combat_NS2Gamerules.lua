@@ -95,7 +95,7 @@ function CombatNS2Gamerules:JoinTeam_Hook(self, player, newTeamNumber, force)
 		newPlayer:Reset_Lite()
 
 		//newPlayer.combatTable.xp = player:GetXp()
-		newPlayer:AddLvlFree(player:GetLvl())
+		newPlayer:AddLvlFree(player:GetLvl() - 1 + kCombatStartUpgradePoints)
 		
 		//set spawn protect
 		newPlayer:SetSpawnProtect()
