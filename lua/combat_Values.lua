@@ -20,8 +20,8 @@ combatWelcomeMessage = {combatModifiedMessage,
                         "For more information type /help in the chat or console."
                         }
 						
-kUpgradeNotifyInterval = 10
-kReminderNotifyInterval = 35
+kCombatUpgradeNotifyInterval = 10
+kCombatReminderNotifyInterval = 35
 kDirectMessageFadeTime = 8
 kDirectMessagesNumVisible = 9
 
@@ -38,6 +38,7 @@ kNanoShieldDuration = kCombatSpawnProtectTime
 // Specified in seconds...
 kCombatTimeLimit = 1200
 kCombatTimeLeftPlayed = 0
+kCombatTimeReminderInterval = 300
 
 // Timers for Scan, Resupply and Catalyst packs.
 kScanTimer = 12
@@ -54,19 +55,24 @@ kInkTimer = 15
 kPropEffect = "vortex_destroy"
 kPropEffectTimer = 2
 
-// Change the GestateTime so every new Class takes the same time
-kSkulkGestateTime = 2
-kGorgeGestateTime = 2
-kLerkGestateTime = 2
-kFadeGestateTime = 2
-kOnosGestateTime = 2
+// Gestate Times
+kGestateTime = {}
+kGestateTime[kTechId.Skulk] = 2
+kGestateTime[kTechId.Gorge] = 3
+kGestateTime[kTechId.Lerk] = 4
+kGestateTime[kTechId.Fade] = 5
+kGestateTime[kTechId.Onos] = 8
+kSkulkGestateTime = kGestateTime[kTechId.Skulk]
 
 // No eggs
 kAlienEggsPerHive = 0
 
+// Don't try to increase the Infestation radius above kMaxRadius - you will get errors in Infestation.lua
+//kHiveInfestationRadius = 20
+
 // Tweaks for weapons and upgrades
 // Camouflage
-kCamouflageTime = 3
+kCamouflageTime = 1.5
 kCamouflageUncloakFactor = 2 / 3
 
 // Gorge Healspray heals more (and makes a bit more damage)
@@ -114,8 +120,9 @@ kCelerityCost = generalCost
 kHyperMutationCost = generalCost
 
 // Health values
-// Give the armory more health
+// Make the marine structures slightly less squishy...
 kArmoryHealth = 2500
+kCommandStationHealth = 3500
 
 // dont Track the CombatMod anylonger (later we could maybe make our own tracking site?
 kStatisticsURL = ""

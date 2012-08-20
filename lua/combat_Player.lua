@@ -265,27 +265,23 @@ end
 function Player:AddXp(amount, suppressmessage)
 	
     self:CheckCombatData()
-    self:TriggerEffects("res_received")
+	//self:TriggerEffects("issueOrderSounds")
 	
 	// check if amount isn't nil, could cause an error
 	if amount then
+		if (amount > 10) then
+			self:TriggerEffects("res_received")
+		end
+	
         // Make sure we don't go over the max XP.
-        if (self:GetXp() + amount) <= maxXp then
-
-			// show the cool effect, no direct Message is needed anymore
-			self:XpEffect(amount)
-            self:CheckLvlUp(self.score, suppressmessage) 
-			self:SetScoreboardChanged(true)
-
-        else
-            // Max Lvl reached
-			if not suppressmessage then
+        if (self:GetXp() + amount) > maxXp and not suppressmessage then
 				self:SendDirectMessage("Max-XP reached")
-			end
-            self:XpEffect(amount)
-            self:CheckLvlUp(self.score, suppressmessage)
-            self:SetScoreboardChanged(true)
-        end 
+		end
+		
+		// show the cool effect, no direct Message is needed anymore
+		self:XpEffect(amount)
+		self:CheckLvlUp(self.score, suppressmessage) 
+		self:SetScoreboardChanged(true)
     end   
 end
 
@@ -332,12 +328,17 @@ function Player:CheckLvlUp(xp, suppressmessage)
         self.resources = self.resources + numberLevels
 		self.combatTable.lvl = self:GetLvl()
 		
+		// Trigger a sound on level up
+		self:TriggerEffects("taunt")
+		
 		local LvlName = Experience_GetLvlName(self:GetLvl(), self:GetTeamNumber())
 		self:SendDirectMessage( "!! Level UP !! New Lvl: " .. LvlName .. " (" .. self:GetLvl() .. ")")
 	end     
 	
 	if self:GetLvl() < maxLvl and not suppressmessage then
-		self:SendDirectMessage( self:GetXp() .. " XP: " .. (XpList[self:GetLvl() + 1]["XP"] - self:GetXp()).. " XP until next level!")
+		// Fix the decimal places here...
+		local currentXp = math.floor(self:GetXp())
+		self:SendDirectMessage(currentXp .. " XP: " .. (XpList[self:GetLvl() + 1]["XP"] - currentXp).. " XP until next level!")
 	end
 	
 end

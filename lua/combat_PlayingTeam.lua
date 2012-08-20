@@ -159,11 +159,10 @@ function CombatPlayingTeam:Update_Hook(self, timePassed)
 	// Spawn all players in the queue once every 10 seconds or so.
 	if (#self.respawnQueue > 0) then
 		
-		// Are we ready to spawn? This is based on the time since the last spawn...
+		// Are we ready to spawn? This is based on the time since the last spawn wave...
 		local timeToSpawn = (self.timeSinceLastSpawn >= kCombatRespawnTimer)
 		
 		if timeToSpawn then
-		
 			// Reset the spawn timer.
 			CombatPlayingTeam:ResetSpawnTimer(self)
 			
@@ -173,9 +172,19 @@ function CombatPlayingTeam:Update_Hook(self, timePassed)
 			local thisPlayer = self:GetOldestQueuedPlayer()
 			
 			while (lastPlayer == thisPlayer) or (thisPlayer ~= nil) do
-				CombatPlayingTeam:SpawnPlayer(thisPlayer)				
+				local success = CombatPlayingTeam:SpawnPlayer(thisPlayer)
+				// Don't crash the server when no more players can spawn...
+				if not success then break end
+				
 				lastPlayer = thisPlayer
 				thisPlayer = self:GetOldestQueuedPlayer()
+			end
+			
+			// If there are any players left, send them a message about why they didn't spawn.
+			if (#self.respawnQueue > 0) then
+				for i, player in ipairs(respawnQueue) do
+					player:SendDirectMessage("Could not find a valid spawn location for you... You will spawn in the next wave instead!")
+				end
 			end
 		else
 			// Send any 'waiting to respawn' messages (normally these only go to AlienSpectators)
@@ -236,20 +245,21 @@ function CombatPlayingTeam:SpawnPlayer(player)
 
     if player.combatTable and player.combatTable.giveClassAfterRespawn then
         success, newPlayer  = player:GetTeam():ReplaceRespawnPlayer(player, nil, nil, player.combatTable.giveClassAfterRespawn)
-        newPlayer:GiveUpsBack()   
     else
 		// Spawn normally		
-		// Give the ups back too		
-        success, newPlayer = player:GetTeam():ReplaceRespawnPlayer(player, nil, nil)   
-        newPlayer:GiveUpsBack()    
+        success, newPlayer = player:GetTeam():ReplaceRespawnPlayer(player, nil, nil)
     end
-    
-    if success then
+	
+	if success then
+		// Give any upgrades back
+        newPlayer:GiveUpsBack()    
+	
         // Make a nice effect when you spawn.
 		// Aliens hatch due the CoEvolve function
         if newPlayer:isa("Marine") then
             newPlayer:TriggerEffects("infantry_portal_spawn")
         end
+		newPlayer:TriggerEffects("spawnSoundEffects")
 		newPlayer:GetTeam():RemovePlayerFromRespawnQueue(newPlayer)
 		
 		// Remove the third-person mode (bug introduced in 216).

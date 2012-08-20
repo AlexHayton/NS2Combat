@@ -41,6 +41,7 @@ function CombatMarineTeam:InitTechTree_Hook(self)
     // Commander abilities
     self.techTree:AddTargetedActivation(kTechId.NanoShield,       kTechId.None,                kTechId.None)
     self.techTree:AddTargetedActivation(kTechId.Scan,             kTechId.None,         	   kTechId.None)
+	self.techTree:AddActivation(kTechId.MACEMP,                   kTechId.None,                kTechId.None)      
 
     // Armory upgrades
     self.techTree:AddResearchNode(kTechId.RifleUpgradeTech,       kTechId.None,              kTechId.None)

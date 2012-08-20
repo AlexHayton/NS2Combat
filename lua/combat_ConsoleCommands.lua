@@ -48,6 +48,8 @@ function OnCommandAddXp(client, amount)
 
         local player = client:GetControllingPlayer()        
         if Shared.GetCheatsEnabled() then
+			amount = tonumber(amount)
+			
             if amount then            
                 player:AddXp(amount)
             else

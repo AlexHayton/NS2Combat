@@ -26,7 +26,16 @@ function CombatEmbryo:SetGestationData_Hook(self, techIds, previousTechId, healt
 
 	// Override the gestation times...
 	self.gestationTime = kSkulkGestateTime
-
+	
+	if (self.combatTable.classEvolve) then
+		local newGestateTime = kGestateTime[previousTechId]
+		if newGestateTime ~= nil then
+			self.gestationTime = newGestateTime
+		end
+		
+		self.combatTable.classEvolve = nil
+	end
+		
 end
 
 if(HotReload) then

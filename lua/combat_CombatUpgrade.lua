@@ -11,7 +11,7 @@ kCombatUpgrades = enum({// Marine upgrades
 						'Mines', 'Welder', 'Shotgun', 'Flamethrower', 'GrenadeLauncher', 
 						'Weapons1', 'Weapons2', 'Weapons3', 'Armor1', 'Armor2', 'Armor3', 
 						'MotionDetector', 'Scanner', 'Catalyst', 'Resupply', 'EMP',
-						'Jetpack', 'Exosuit',
+						'Jetpack', 'Exosuit', 'FastReload',
 						
 						// Alien upgrades
 						'Gorge', 'Lerk', 'Fade', 'Onos', 
@@ -114,7 +114,7 @@ function CombatUpgrade:GiveItem(player)
 
 end
 
-function CombatUpgrade:DoUpgrade(player, wait, upgradeList)
+function CombatUpgrade:DoUpgrade(player)
 	local techId = self:GetTechId()
 	local kMapName = LookupTechData(techId, kTechDataMapName)
 	
@@ -131,11 +131,5 @@ function CombatUpgrade:DoUpgrade(player, wait, upgradeList)
 	end
 	
 	// Do specific stuff for aliens or marines.
-	if wait ~= nil then
-	    self:TeamSpecificLogic(player)
-    else
-        if not wait then
-            self:TeamSpecificLogic(player)
-        end
-    end
+    self:TeamSpecificLogic(player)
 end

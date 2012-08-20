@@ -29,7 +29,7 @@ end
 function Player:CoEnableUpgrade(upgrades)
 
 	self:CheckCombatData()
-	local vaildUpgrades = {}
+	local validUpgrades = {}
 	// support multiple upgrades
 	
 	for i, upgrade in ipairs(upgrades) do
@@ -86,7 +86,7 @@ function Player:CoEnableUpgrade(upgrades)
         elseif self:GetLvlFree() < neededLvl then
             self:spendlvlHints("neededLvl", neededLvl)
         else
-            table.insert(vaildUpgrades, upgrade)
+            table.insert(validUpgrades, upgrade)
             // insert the up to the personal techtree
             table.insert(self.combatTable.techtree, upgrade)
             // subtract the needed lvl
@@ -103,12 +103,12 @@ function Player:CoEnableUpgrade(upgrades)
 	end		
 	
 	// Apply all missing upgrades.
-    if table.maxn(vaildUpgrades) > 0 then
+    if table.maxn(validUpgrades) > 0 then
         if self:isa("Alien")  then
             // special treatment for aliens cause they will hatch with all upgrades)
-            self:ApplyAllUpgrades(nil, vaildUpgrades)
+            self:ApplyAllUpgrades(nil, validUpgrades)
         else
-            for i, upgrade in ipairs(vaildUpgrades) do
+            for i, upgrade in ipairs(validUpgrades) do
                 self:ApplyAllUpgrades(nil, upgrade)
             end    
         end
@@ -133,8 +133,6 @@ function Player:ApplyAllUpgrades(upgradeTypes, singleUpgrade)
                 local upgradesOfType = GetUpgradesOfType(techTree, upgradeType)
                 
                 for index, upgrade in ipairs(upgradesOfType) do
-                    //if not upgrade:GetIsApplied() then
-                    
                     // Only apply the currently active lifeform upgrade...
                     if upgradeType == kCombatUpgradeTypes.Class then
                         if upgrade == self.combatTable.currentLifeForm then
@@ -148,18 +146,18 @@ function Player:ApplyAllUpgrades(upgradeTypes, singleUpgrade)
                     else
                         upgrade:DoUpgrade(self)
                     end
-                    //end
                 end
                 
             end
             
         else
-            if type(singleUpgrade) == "table" then
+            if type(singleUpgrade) == "table" then			
                 // if its a table, special logic for aliens
                 for i, upgrade in ipairs(singleUpgrade) do
-                    upgrade:DoUpgrade(self, true)
+                    upgrade:DoUpgrade(self)
                 end
-                singleUpgrade[1]:DoUpgrade(self, false)
+				
+				singleUpgrade[1]:DoUpgrade(self)
             else
                 singleUpgrade:DoUpgrade(self)
             end
@@ -256,6 +254,7 @@ function Player:EvolveTo(newTechId)
 		lifeform = self:GetTechId()
 		if newAlienExtents then
 			lifeform = newTechId
+			self.combatTable.classEvolve = true
 		end
 
 		// Handle special upgrades.
