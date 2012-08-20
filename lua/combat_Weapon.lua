@@ -12,8 +12,7 @@ if(not CombatWeapon) then
     CombatWeapon = {}
 end
 
-
-local HotReload = ClassHooker:Mixin("CombatWeapon")
+ClassHooker:Mixin("CombatWeapon")
     
 function CombatWeapon:OnLoad()
     
@@ -32,6 +31,7 @@ function CombatWeapon:OnPrimaryAttack_Hook(self, player)
 
 end
 
+
 function CombatWeapon:OnSecondaryAttack_Hook(self, player)
 
 	if (player:isa("Marine")) then
@@ -41,6 +41,4 @@ function CombatWeapon:OnSecondaryAttack_Hook(self, player)
 
 end
 
-if(HotReload) then
-    CombatWeapon:OnLoad()
-end
+CombatWeapon:OnLoad()

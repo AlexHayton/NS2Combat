@@ -11,7 +11,7 @@ if(not CombatNS2Gamerules) then
   CombatNS2Gamerules = {}
 end
 
-local HotReload = ClassHooker:Mixin("CombatNS2Gamerules")
+ClassHooker:Mixin("CombatNS2Gamerules")
 
 function CombatNS2Gamerules:OnLoad()
 
@@ -268,7 +268,4 @@ function CombatNS2Gamerules:ResetGame_Hook(self)
 
 end
 
-
-if(HotReload) then
-    CombatNS2Gamerules:OnLoad()
-end
+CombatNS2Gamerules:OnLoad()

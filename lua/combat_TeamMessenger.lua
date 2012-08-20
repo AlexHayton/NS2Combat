@@ -12,7 +12,7 @@ if(not HotReload) then
   CombatTeamMessenger = {}
 end
 
-local HotReload = ClassHooker:Mixin("CombatTeamMessenger")
+ClassHooker:Mixin("CombatTeamMessenger")
 
 function CombatTeamMessenger:OnLoad()
 

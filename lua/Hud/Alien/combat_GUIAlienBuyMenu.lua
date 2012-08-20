@@ -11,7 +11,7 @@ if(not CombatGUIAlienBuyMenu) then
   CombatGUIAlienBuyMenu = {}
 end
 
-local HotReload = ClassHooker:Mixin("CombatGUIAlienBuyMenu")
+ClassHooker:Mixin("CombatGUIAlienBuyMenu")
     
 function CombatGUIAlienBuyMenu:OnLoad()
 

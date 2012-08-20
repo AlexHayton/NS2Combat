@@ -70,6 +70,4 @@ function CombatMarine:OnTakeDamage_Hook(self, damage, attacker, doer, point)
 
 end
 
-if(hotreload) then
-    CombatMarine:OnLoad()
-end
+CombatMarine:OnLoad()

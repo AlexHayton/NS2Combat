@@ -12,7 +12,7 @@ if(not CombatGUIPlayerResources) then
   CombatGUIPlayerResources = {}
 end
 
-local HotReload = ClassHooker:Mixin("CombatGUIPlayerResources")
+ClassHooker:Mixin("CombatGUIPlayerResources")
     
 function CombatGUIPlayerResources:OnLoad()
 
@@ -39,7 +39,4 @@ function CombatGUIPlayerResources:Initialize_Hook(self, style)
 
 end
 
-
-if(hotreload) then
-    CombatGUIPlayerResources:OnLoad()
-end
+CombatGUIPlayerResources:OnLoad()

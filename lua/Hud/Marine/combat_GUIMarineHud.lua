@@ -12,7 +12,7 @@ if(not CombatGUIMarineHud) then
   CombatGUIMarineHud = {}
 end
 
-local HotReload = ClassHooker:Mixin("CombatGUIMarineHud")
+ClassHooker:Mixin("CombatGUIMarineHud")
     
 function CombatGUIMarineHud:OnLoad()
 
@@ -31,7 +31,4 @@ function CombatGUIMarineHud:Update_Hook(self, deltaTime)
 
 end
 
-
-if(hotreload) then
-    CombatGUIMarineHud:OnLoad()
-end
+CombatGUIMarineHud:OnLoad()

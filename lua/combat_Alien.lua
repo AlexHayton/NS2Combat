@@ -7,12 +7,12 @@
 
 // combat_Alien.lua
 
-if(not CombatAlien) then
+local HotReload = CombatAlien
+if(not HotReload) then
     CombatAlien = {}
 end
 
-
-local HotReload = ClassHooker:Mixin("CombatAlien")
+ClassHooker:Mixin("CombatAlien")
     
 function CombatAlien:OnLoad()
    
@@ -42,3 +42,5 @@ function CombatAlien:UpdateNumHives_Hook(self)
 		
 	end
 end
+
+CombatAlien:OnLoad()

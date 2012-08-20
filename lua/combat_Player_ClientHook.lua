@@ -12,7 +12,7 @@ if(not HotReload) then
   CombatPlayerClient = {}
 end
 
-local HotReload = ClassHooker:Mixin("CombatPlayerClient")
+ClassHooker:Mixin("CombatPlayerClient")
 
 function CombatPlayerClient:OnLoad()
 

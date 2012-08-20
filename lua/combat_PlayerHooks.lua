@@ -12,7 +12,7 @@ if(not HotReload) then
   CombatPlayer = {}
 end
 
-local HotReload = ClassHooker:Mixin("CombatPlayer")
+ClassHooker:Mixin("CombatPlayer")
     
 function CombatPlayer:OnLoad()
    
@@ -267,6 +267,4 @@ function CombatPlayer:GetIsTechAvailable_Hook(self, teamNumber, techId)
 
 end
 
-if(hotreload) then
-    CombatPlayer:OnLoad()
-end
+CombatPlayer:OnLoad()
