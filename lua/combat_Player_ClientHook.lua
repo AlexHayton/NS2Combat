@@ -1,8 +1,8 @@
 //________________________________
 //
-//   	Combat Mod     
-//	Made by JimWest, 2012
-//	
+//   	NS2 Combat Mod     
+//	Made by JimWest and MCMLXXXIV, 2012
+//
 //________________________________
 
 // combat_Player_ClientHook.lua
@@ -18,11 +18,30 @@ function CombatPlayerClient:OnLoad()
 
     ClassHooker:SetClassCreatedIn("Player", "lua/Player.lua") 
 	self:ReplaceClassFunction("Player", "Buy", "Buy_Hook_Marine")
+	self:PostHookClassFunction("Alien", "Buy", "Buy_Hook")
 	self:HookClassFunction("Player", "OnInitLocalClient", "OnInitLocalClient_Hook")
-	self:ReplaceClassFunction("Alien", "Buy", "Buy_Hook_Alien")
     self:ReplaceClassFunction("Marine", "CloseMenu", "CloseMenu_Hook")
     
     self:PostHookFunction("InitTechTreeMaterialOffsets", "InitTechTreeMaterialOffsets_Hook")
+end
+
+// starting the costum buy menu for marines
+function CombatPlayerClient:Buy_Hook(self)
+
+   // Don't allow display in the ready room, or as phantom
+    if Client.GetLocalPlayer() == self then
+        if self:GetTeamNumber() ~= 0 then
+            if not self.buyMenu then
+                self.combatBuy = true
+            else
+                self.combatBuy = false
+            end
+            
+
+        end
+        
+    end
+
 end
 
 // starting the costum buy menu for marines
@@ -50,37 +69,11 @@ function CombatPlayerClient:Buy_Hook_Marine(self)
 end
 
 
+
 // get the ups from the server (only worked that way)
 function CombatPlayerClient:OnInitLocalClient_Hook(self)
 
     Shared.ConsoleCommand("co_sendupgrades") 
-
-end
-
-
-// starting the costum buy menu for aliens
-function CombatPlayerClient:Buy_Hook_Alien(self)
-
-   // Don't allow display in the ready room, or as phantom
-    if Client.GetLocalPlayer() == self then
-    
-        if self:GetTeamNumber() ~= 0 and self:GetHasRoomToEvolve() and self:GetIsOnGround() then
-        
-            if not self.buyMenu then
-                // open the buy menu
-                self.combatBuy = true
-                self.buyMenu = GetGUIManager():CreateGUIScript("Hud/Alien/combat_GUIAlienBuyMenu")
-                MouseTracker_SetIsVisible(true, "ui/Cursor_MenuDefault.dds", true)
-            else
-                self.combatBuy = false
-                self:CloseMenu()
-            end
-            
-        else
-            self:PlayEvolveErrorSound()
-        end
-        
-    end
 
 end
 

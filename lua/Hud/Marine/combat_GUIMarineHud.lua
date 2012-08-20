@@ -1,10 +1,8 @@
 //________________________________
 //
-//   	Combat Mod     
+//   	NS2 Combat Mod     
 //	Made by JimWest and MCMLXXXIV, 2012
 //
-//	Version 0.1
-//	
 //________________________________
 
 // combat_GUIMarineHud.lua
@@ -20,9 +18,7 @@ function CombatGUIMarineHud:OnLoad()
 
     ClassHooker:SetClassCreatedIn("GUIMarineHUD", "lua/Hud/Marine/GUIMarineHud.lua") 
     self:PostHookClassFunction("GUIMarineHUD", "Update", "Update_Hook")
-	
-	ClassHooker:SetClassCreatedIn("GUIPlayerResource", "lua/Hud/GUIPlayerResource.lua") 
-    self:PostHookClassFunction("GUIPlayerResource", "Update", "UpdateResource_Hook")
+
 
 end
 
@@ -35,12 +31,6 @@ function CombatGUIMarineHud:Update_Hook(self, deltaTime)
 
 end
 
-// Hide the TEAM RES
-function CombatGUIMarineHud:UpdateResource_Hook(self, deltaTime, parameters)
-
-	self.teamText:SetText("")
-
-end
 
 if(hotreload) then
     CombatGUIMarineHud:OnLoad()

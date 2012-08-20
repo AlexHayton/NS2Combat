@@ -1,8 +1,8 @@
 //________________________________
 //
-//   	Combat Mod     
-//	Made by JimWest, 2012
-//	
+//   	NS2 Combat Mod     
+//	Made by JimWest and MCMLXXXIV, 2012
+//
 //________________________________
 
 // combat_VersionsCheck.lua
@@ -24,7 +24,9 @@ local CombatCheckVersion = function(data)
     
     if string.sub(data , 1, 1) ~= "<" then
         local WebVersion = tonumber(string.sub(data, string.len("kCombatLocalVersion = "), string.len("kCombatLocalVersion = ") + 6))
-        if WebVersion <= kCombatLocalVersion then
+		if WebVersion == nil then
+			Shared.Message("Could not download version check information!")
+        elseif WebVersion <= kCombatLocalVersion then
             Shared.Message("CombatMod is on the newest version")
         else
             Shared.Message("Warning: CombatMod is Out of Date, your version is: " .. ToString(kCombatLocalVersion) .. " , newest version is: " .. ToString(WebVersion))
@@ -41,5 +43,6 @@ local CombatCheckVersion = function(data)
 end
 
 function CombatInitCheckVersion()
-    Shared.GetWebpage(kCombatVersionPath, CombatCheckVersion)
+	local params = {}
+	Shared.SendHTTPRequest(kCombatVersionPath, "GET", params, CombatCheckVersion)
 end

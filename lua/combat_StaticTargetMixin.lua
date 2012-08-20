@@ -1,11 +1,17 @@
 //________________________________
 //
-//   	Combat Mod     
-//	Made by JimWest, 2012
-//	
+//   	NS2 Combat Mod     
+//	Made by JimWest and MCMLXXXIV, 2012
+//
 //________________________________
 
-// combat_StaticTarget.lua
+// combat_StaticTargetMixin.lua
+
+local function setDecimalPlaces(num, idp)
+    local mult = 10^(idp or 0)
+    if num >= 0 then return math.floor(num * mult) / mult
+    else return math.ceil(num * mult) / mult end
+end
 
 // Give some XP to the damaging entity.
 function StaticTargetMixin:OnTakeDamage(damage, attacker, doer, point)
@@ -24,7 +30,7 @@ function StaticTargetMixin:OnTakeDamage(damage, attacker, doer, point)
 		if(pointOwner:GetTeamNumber() ~= self:GetTeamNumber()) then
 			if GetTrickleXp(self) then
 				local maxXp = GetXpValue(self)
-				local dmgXp = math.floor(maxXp * damage / self:GetMaxHealth())
+				local dmgXp = setDecimalPlaces(maxXp * damage / self:GetMaxHealth(), 1)
 				
 				// Award XP but suppress the message.
 				pointOwner:AddXp(dmgXp, true)
@@ -33,5 +39,3 @@ function StaticTargetMixin:OnTakeDamage(damage, attacker, doer, point)
 	end
     
 end
-
-CombatStructure:OnLoad()

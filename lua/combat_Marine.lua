@@ -1,8 +1,8 @@
 //________________________________
 //
-//   	Combat Mod     
-//	Made by JimWest, 2012
-//	
+//   	NS2 Combat Mod     
+//	Made by JimWest and MCMLXXXIV, 2012
+//
 //________________________________
 
 // combat_Marine.lua
@@ -17,9 +17,10 @@ ClassHooker:Mixin("CombatMarine")
 function CombatMarine:OnLoad()
     
     ClassHooker:SetClassCreatedIn("Marine", "lua/Marine.lua") 
-    self:ReplaceClassFunction("Marine", "OnKill", "MarineOnKill_Hook") 
+	self:RawHookClassFunction("Marine", "OnKill", "MarineOnKill_Hook") 
     self:ReplaceClassFunction("Marine", "Drop", "Drop_Hook")
 	self:ReplaceClassFunction("Marine", "GiveJetpack", "GiveJetpack_Hook")
+	self:PostHookClassFunction("Marine", "OnTakeDamage", "OnTakeDamage_Hook")
     
 end
 
@@ -31,20 +32,6 @@ end
 function CombatMarine:MarineOnKill_Hook(self, damage, attacker, doer, point, direction)
 
     self:DestroyWeapons()
-    
-    Player.OnKill(self, damage, attacker, doer, point, direction)
-    self:PlaySound(Marine.kDieSoundName)
-    
-    // Don't play alert if we suicide
-    if player ~= self then
-        self:GetTeam():TriggerAlert(kTechId.MarineAlertSoldierLost, self)
-    end
-    
-    self:SetFlashlightOn(false)
-    
-    // Remember our squad and position on death so we can beam back to them
-    self.lastSquad = self:GetSquad()
-    self.originOnDeath = self:GetOrigin()
 	
 end
 
@@ -75,4 +62,14 @@ function CombatMarine:GiveJetpack_Hook(self)
 	
 end
 
-CombatMarine:OnLoad()
+function CombatMarine:OnTakeDamage_Hook(self, damage, attacker, doer, point)
+
+	// Activate the Catalyst Pack.
+	self:CheckCombatData()
+	self:CheckCatalyst()
+
+end
+
+if(hotreload) then
+    CombatMarine:OnLoad()
+end

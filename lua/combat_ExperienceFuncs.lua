@@ -1,8 +1,8 @@
 //________________________________
 //
-//   	Combat Mod     
-//	Made by JimWest, 2012
-//	
+//   	NS2 Combat Mod     
+//	Made by JimWest and MCMLXXXIV, 2012
+//
 //________________________________
 
 // combat_ExperienceFuncs.lua
@@ -53,7 +53,7 @@ function Experience_GetLvl(xp)
 		return maxLvl
 	end
 	
-	// ToDo: Do a binary search instead. We're going to be here a lot!
+	// ToDo: Do a faster search instead. We're going to be here a lot!
 	for index, thislevel in ipairs(XpList) do
 	
 		if xp >= thislevel["XP"] and 
