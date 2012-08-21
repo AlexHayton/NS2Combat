@@ -10,9 +10,8 @@
 local HotReload = CombatMarine
 if(not HotReload) then
   CombatMarine = {}
+  ClassHooker:Mixin("CombatMarine")
 end
-
-ClassHooker:Mixin("CombatMarine")
     
 function CombatMarine:OnLoad()
     
@@ -70,4 +69,6 @@ function CombatMarine:OnTakeDamage_Hook(self, damage, attacker, doer, point)
 
 end
 
-CombatMarine:OnLoad()
+if (not HotReload) then
+	CombatMarine:OnLoad()
+end

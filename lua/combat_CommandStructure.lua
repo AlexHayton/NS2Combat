@@ -10,9 +10,8 @@
 local HotReload = CombatCommandStructure
 if(not HotReload) then
   CombatCommandStructure = {}
+  ClassHooker:Mixin("CombatCommandStructure")
 end
-
-ClassHooker:Mixin("CombatCommandStructure")
     
 function CombatCommandStructure:OnLoad()
 
@@ -28,4 +27,6 @@ function CombatCommandStructure:UpdateCommanderLogin_Hook(self, force)
             
 end
 
-CombatCommandStructure:OnLoad()
+if (not HotReload) then
+	CombatCommandStructure:OnLoad()
+end

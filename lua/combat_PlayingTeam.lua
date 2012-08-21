@@ -10,9 +10,8 @@
 local HotReload = CombatPlayingTeam
 if(not HotReload) then
   CombatPlayingTeam = {}
+  ClassHooker:Mixin("CombatPlayingTeam")
 end
-
-ClassHooker:Mixin("CombatPlayingTeam")
     
 function CombatPlayingTeam:OnLoad()
 
@@ -283,4 +282,6 @@ function CombatPlayingTeam:RespawnPlayer_Hook(handle, self, player, origin, angl
     
 end
 
-CombatPlayingTeam:OnLoad()
+if (not HotReload) then
+	CombatPlayingTeam:OnLoad()
+end

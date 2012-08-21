@@ -41,4 +41,5 @@ function CombatWeapon:OnSecondaryAttack_Hook(self, player)
 
 end
 
+
 CombatWeapon:OnLoad()

@@ -10,9 +10,8 @@
 local HotReload = CombatArmory
 if(not HotReload) then
   CombatArmory = {}
+  ClassHooker:Mixin("CombatArmory")
 end
-
-ClassHooker:Mixin("CombatArmory")
     
 function CombatArmory:OnLoad()
     
@@ -28,4 +27,6 @@ function CombatArmory:GetRequiresPower_Hook(self)
     
 end
 
-CombatArmory:OnLoad()
+if (not HotReload) then
+	CombatArmory:OnLoad()
+end

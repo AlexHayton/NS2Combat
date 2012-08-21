@@ -7,11 +7,11 @@
 
 // combat_GUIAlienBuyMenu.lua
 
-if(not CombatGUIAlienBuyMenu) then
+local HotReload = CombatGUIAlienBuyMenu
+if(not HotReload) then
   CombatGUIAlienBuyMenu = {}
+  ClassHooker:Mixin("CombatGUIAlienBuyMenu")
 end
-
-ClassHooker:Mixin("CombatGUIAlienBuyMenu")
     
 function CombatGUIAlienBuyMenu:OnLoad()
 
@@ -467,4 +467,8 @@ function CombatGUIAlienBuyMenu:_HandleUpgradeClicked_Hook(self, mouseX, mouseY)
     
     return inputHandled
 
+end
+
+if (not HotReload) then
+	CombatGUIAlienBuyMenu:OnLoad()
 end

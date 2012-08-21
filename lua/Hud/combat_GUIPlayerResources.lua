@@ -8,11 +8,11 @@
 // combat_GUIPlayerResources.lua
 
 
-if(not CombatGUIPlayerResources) then
+local HotReload = CombatGUIPlayerResources
+if(not HotReload) then
   CombatGUIPlayerResources = {}
+  ClassHooker:Mixin("CombatGUIPlayerResources")
 end
-
-ClassHooker:Mixin("CombatGUIPlayerResources")
     
 function CombatGUIPlayerResources:OnLoad()
 
@@ -39,4 +39,6 @@ function CombatGUIPlayerResources:Initialize_Hook(self, style)
 
 end
 
-CombatGUIPlayerResources:OnLoad()
+if (not HotReload) then
+	CombatGUIPlayerResources:OnLoad()
+end

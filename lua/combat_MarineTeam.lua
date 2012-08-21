@@ -10,9 +10,8 @@
 local HotReload = CombatMarineTeam
 if(not HotReload) then
   CombatMarineTeam = {}
+  ClassHooker:Mixin("CombatMarineTeam")
 end
-
-ClassHooker:Mixin("CombatMarineTeam")
 
 function CombatMarineTeam:OnLoad()
 
@@ -153,4 +152,6 @@ function CombatMarineTeam:Update_Hook(self, timePassed)
     
 end
 
-CombatMarineTeam:OnLoad()
+if (not HotReload) then
+	CombatMarineTeam:OnLoad()
+end

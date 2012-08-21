@@ -10,9 +10,8 @@
 local HotReload = CombatTechTree
 if(not HotReload) then
   CombatTechTree = {}
+  ClassHooker:Mixin("CombatTechTree")
 end
-
-ClassHooker:Mixin("CombatTechTree")
 
 function CombatTechTree:OnLoad()
 
@@ -41,4 +40,6 @@ function CombatTechTree:GetHasTech_Hook(callingEntity, techId, silenceError)
     
 end
 
-CombatTechTree:OnLoad()
+if (not HotReload) then
+	CombatTechTree:OnLoad()
+end

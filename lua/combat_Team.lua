@@ -10,9 +10,8 @@
 local HotReload = CombatTeam
 if(not HotReload) then
   CombatTeam = {}
+  ClassHooker:Mixin("CombatTeam")
 end
-
-ClassHooker:Mixin("CombatTeam")
 
 function CombatTeam:OnLoad()
 
@@ -29,4 +28,6 @@ function CombatTeam:GetNumPlayersInQueue_Hook(self)
     return 0
 end
 
-CombatTeam:OnLoad()
+if (not HotReload) then
+	CombatTeam:OnLoad()
+end

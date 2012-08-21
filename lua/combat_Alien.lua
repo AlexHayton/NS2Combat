@@ -10,9 +10,8 @@
 local HotReload = CombatAlien
 if(not HotReload) then
     CombatAlien = {}
+	ClassHooker:Mixin("CombatAlien")
 end
-
-ClassHooker:Mixin("CombatAlien")
     
 function CombatAlien:OnLoad()
    
@@ -43,4 +42,6 @@ function CombatAlien:UpdateNumHives_Hook(self)
 	end
 end
 
-CombatAlien:OnLoad()
+if (not HotReload) then
+	CombatAlien:OnLoad()
+end

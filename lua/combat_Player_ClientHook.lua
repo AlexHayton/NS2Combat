@@ -10,9 +10,8 @@
 local HotReload = CombatPlayerClient
 if(not HotReload) then
   CombatPlayerClient = {}
+  ClassHooker:Mixin("CombatPlayerClient")
 end
-
-ClassHooker:Mixin("CombatPlayerClient")
 
 function CombatPlayerClient:OnLoad()
 
@@ -101,4 +100,6 @@ function CombatPlayerClient:InitTechTreeMaterialOffsets_Hook()
     kAlienTechIdToMaterialOffset[kTechId.ThreeHives] = 77
 end
 
-CombatPlayerClient:OnLoad()
+if (not HotReload) then
+	CombatPlayerClient:OnLoad()
+end

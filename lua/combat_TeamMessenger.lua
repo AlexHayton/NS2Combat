@@ -10,9 +10,8 @@
 local HotReload = CombatTeamMessenger
 if(not HotReload) then
   CombatTeamMessenger = {}
+  ClassHooker:Mixin("CombatTeamMessenger")
 end
-
-ClassHooker:Mixin("CombatTeamMessenger")
 
 function CombatTeamMessenger:OnLoad()
 
@@ -34,4 +33,6 @@ function CombatTeamMessenger:SendTeamMessage_Hook(team, messageType, optionalDat
 	
 end
 
-CombatTeamMessenger:OnLoad()
+if (not HotReload) then
+	CombatTeamMessenger:OnLoad()
+end

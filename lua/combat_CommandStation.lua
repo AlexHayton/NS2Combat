@@ -10,9 +10,8 @@
 local HotReload = CombatCommandStation
 if(not HotReload) then
   CombatCommandStation = {}
+  ClassHooker:Mixin("CombatCommandStation")
 end
-
-ClassHooker:Mixin("CombatCommandStation")
     
 function CombatCommandStation:OnLoad()
 
@@ -28,4 +27,6 @@ function CombatCommandStation:UpdateCommanderLogin_Hook(self, force)
             
 end
 
-CombatCommandStation:OnLoad()
+if (not HotReload) then
+	CombatCommandStation:OnLoad()
+end

@@ -10,9 +10,8 @@
 local HotReload = CombatPowerPoint
 if(not HotReload) then
   CombatPowerPoint = {}
+  ClassHooker:Mixin("CombatPowerPoint")
 end
-
-ClassHooker:Mixin("CombatPowerPoint")
 
 function CombatPowerPoint:OnLoad()
     ClassHooker:SetClassCreatedIn("PowerPoint", "lua/PowerPoint.lua") 
@@ -23,4 +22,6 @@ function CombatPowerPoint:PowerPointGetCanTakeDamageOverride_Hook(self)
     return false
 end
 
-CombatPowerPoint:OnLoad()
+if (not HotReload) then
+	CombatPowerPoint:OnLoad()
+end

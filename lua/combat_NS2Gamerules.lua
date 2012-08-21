@@ -7,11 +7,12 @@
 
 // combat_NS2Gamerules.lua
 
-if(not CombatNS2Gamerules) then
-  CombatNS2Gamerules = {}
-end
 
-ClassHooker:Mixin("CombatNS2Gamerules")
+local HotReload = CombatNS2Gamerules
+if(not HotReload) then
+    CombatNS2Gamerules = {}
+	ClassHooker:Mixin("CombatNS2Gamerules")
+end
 
 function CombatNS2Gamerules:OnLoad()
 
@@ -268,4 +269,6 @@ function CombatNS2Gamerules:ResetGame_Hook(self)
 
 end
 
-CombatNS2Gamerules:OnLoad()
+if (not HotReload) then
+	CombatNS2Gamerules:OnLoad()
+end

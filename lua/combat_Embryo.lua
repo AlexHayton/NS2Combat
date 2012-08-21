@@ -10,9 +10,8 @@
 local HotReload = CombatEmbryo
 if(not HotReload) then
   CombatEmbryo = {}
+  ClassHooker:Mixin("CombatEmbryo")
 end
-
-ClassHooker:Mixin("CombatEmbryo")
     
 function CombatEmbryo:OnLoad()
     
@@ -37,4 +36,6 @@ function CombatEmbryo:SetGestationData_Hook(self, techIds, previousTechId, healt
 		
 end
 
-CombatEmbryo:OnLoad()
+if (not HotReload) then
+	CombatEmbryo:OnLoad()
+end
