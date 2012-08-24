@@ -10,12 +10,14 @@ Script.Load("lua/PathUtil.lua")
 Script.Load("lua/fsfod_scripts.lua")
 
 // Loading the Hook classes
+Script.Load("lua/combat_Utility.lua")
 Script.Load("lua/Hud/Marine/combat_GUIMarineHud.lua")
 Script.Load("lua/Hud/Alien/combat_GUIAlienBuyMenu.lua")
 Script.Load("lua/Hud/combat_GUIPlayerResources.lua")
 Script.Load("lua/combat_Player_ClientHook.lua")
 
 // Calling the Hook classes
+CombatUtility:OnLoad()
 CombatGUIMarineHud:OnLoad()
 CombatGUIAlienBuyMenu:OnLoad()
 CombatGUIPlayerResources:OnLoad()
@@ -23,6 +25,10 @@ CombatPlayerClient:OnLoad()
 
 // Load the normal Ns2 Server Scripts
 Script.Load("lua/Client.lua")
+
+if kDebugPrecache then
+	CombatUtility:LoadAssetList()
+end
 
 // new functions, no hooks
 // to provide the client also with all Ups (for the GUI)

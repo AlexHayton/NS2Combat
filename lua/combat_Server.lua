@@ -13,6 +13,7 @@ Script.Load("lua/fsfod_scripts.lua")
 
 // Loading the Hook classes
 // TODO: Maybe we don't need the OnLoad?
+Script.Load("lua/combat_Utility.lua")
 Script.Load("lua/combat_TechTreeHooks.lua")
 Script.Load("lua/combat_NS2Gamerules.lua")
 Script.Load("lua/combat_Team.lua")
@@ -30,6 +31,7 @@ Script.Load("lua/combat_Armory.lua")
 Script.Load("lua/combat_Weapon.lua")
 
 // Calling the Hook classes
+CombatUtility:OnLoad()
 CombatTechTree:OnLoad()
 CombatNS2Gamerules:OnLoad()
 CombatTeam:OnLoad()
@@ -48,6 +50,10 @@ CombatWeapon:OnLoad()
 
 // Load the normal Ns2 Server Scripts
 Script.Load("lua/Server.lua")
+
+if kDebugPrecache then
+	CombatUtility:LoadAssetList()
+end
 
 // new functions, no hooks
 Script.Load("lua/combat_TechTree.lua")
