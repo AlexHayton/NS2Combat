@@ -7,23 +7,10 @@
 
 // combat_CommandStructure.lua
 
-if(not CombatCommandStructure) then
-  CombatCommandStructure = {}
-end
+function CommandStructure:OnAttached(attached)
 
+	if attached then
+		attached.showObjective = true
+	end
 
-local HotReload = ClassHooker:Mixin("CombatCommandStructure")
-    
-function CombatCommandStructure:OnLoad()
-
-    ClassHooker:SetClassCreatedIn("CommandStructure", "lua/CommandStructure.lua") 
-    self:ReplaceClassFunction("CommandStructure", "UpdateCommanderLogin", "UpdateCommanderLogin_Hook")
-	
-end
-
-function CombatCommandStructure:UpdateCommanderLogin_Hook(self, force)
-
-	self.occupied = true
-    self.commanderId = Entity.invalidId
-            
 end
