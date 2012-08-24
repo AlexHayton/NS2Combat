@@ -75,10 +75,25 @@ end
 function Player:NeedsResupply()
 	
     // Ammo packs give ammo to clip as well (so pass true to GetNeedsAmmo())
+    // check every weapon the player got
     local weapon = self:GetActiveWeapon()
-    local needsAmmo = weapon ~= nil and weapon:isa("ClipWeapon") and weapon:GetNeedsAmmo(false) and not GetIsVortexed(self)
-	local needsHealth = not GetIsVortexed(self) and self:GetHealth() < self:GetMaxHealth()
-	
+    local needsHealth = not GetIsVortexed(self) and self:GetHealth() < self:GetMaxHealth()
+    local needsAmmo = false
+
+    for i = 0, self:GetNumChildren() - 1 do
+    
+        local child = self:GetChildAtIndex(i)
+        if child:isa("ClipWeapon") then
+            
+            needsAmmo = child ~= nil and child:GetNeedsAmmo(false) and not GetIsVortexed(self)
+            if needsAmmo then
+                break
+            end      
+                
+        end
+        
+    end
+        
 	return needsAmmo or needsHealth
 
 end
@@ -86,24 +101,42 @@ end
 function Player:ResupplyNow()
 
     local success = false
-    local mapNameHealth = LookupTechData(kTechId.MedPack, kTechDataMapName)
-    local mapNameAmmo = LookupTechData(kTechId.AmmoPack, kTechDataMapName)    
+    local mapNameHealth = LookupTechData(kTechId.MedPack, kTechDataMapName) 
     local position = self:GetOrigin()
 
-	if (mapNameHealth and mapNameAmmo) then
+	if (mapNameHealth) then
     
 		local droppackHealth = CreateEntity(mapNameHealth, position, self:GetTeamNumber())
-		local droppackAmmo = CreateEntity(mapNameAmmo , position, self:GetTeamNumber())
+		// dont drop a ammo pack, give ammo via a new function
+		self:GiveAllAmmo()
 		
 		StartSoundEffectAtOrigin(MedPack.kHealthSound, self:GetOrigin())
 		success = true
 		
 		//Destroy them so they can't be used by somebody else (if they are unused)
-		DestroyEntity(droppackHealth)
-		DestroyEntity(droppackAmmo)
+		DestroyEntity(droppackHealth)		
 	end
 
     return success
+
+end
+
+function Player:GiveAllAmmo()
+
+    for i = 0, self:GetNumChildren() - 1 do
+
+        local child = self:GetChildAtIndex(i)
+        if child:isa("ClipWeapon") then
+            
+            if child:GetNeedsAmmo(false) then
+                child:GiveAmmo(AmmoPack.kNumClips, false)
+            end
+                
+        end
+        
+    end
+
+    StartSoundEffectAtOrigin(AmmoPack.kPickupSound, self:GetOrigin())
 
 end
 
