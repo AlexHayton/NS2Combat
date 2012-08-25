@@ -7,12 +7,11 @@
 
 // combat_CommandStation.lua
 
-if(not CombatCommandStation) then
+local HotReload = CombatCommandStation
+if(not HotReload) then
   CombatCommandStation = {}
+  ClassHooker:Mixin("CombatCommandStation")
 end
-
-
-local HotReload = ClassHooker:Mixin("CombatCommandStation")
     
 function CombatCommandStation:OnLoad()
 
@@ -26,4 +25,8 @@ function CombatCommandStation:UpdateCommanderLogin_Hook(self, force)
 	self.occupied = true
     self.commanderId = Entity.invalidId
             
+end
+
+if (not HotReload) then
+	CombatCommandStation:OnLoad()
 end

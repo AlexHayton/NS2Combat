@@ -7,11 +7,11 @@
 
 // combat_TechTreeHooks.lua
 
-if(not CombatTechTree) then
+local HotReload = CombatTechTree
+if(not HotReload) then
   CombatTechTree = {}
+  ClassHooker:Mixin("CombatTechTree")
 end
-
-local HotReload = ClassHooker:Mixin("CombatTechTree")
 
 function CombatTechTree:OnLoad()
 
@@ -40,34 +40,6 @@ function CombatTechTree:GetHasTech_Hook(callingEntity, techId, silenceError)
     
 end
 
-/*
-// when techIds from our combat, just say true
-function CombatTechTree:GetIsTechAvailable_Hook(self, HookHandle, techId)
-
-    local isCombatUp = false    
-
-    if UpsList then
-        for index, upgrade in pairs(UpsList) do
-            if techId == upgrade:GetTechId() then
-                isCombatUp = true
-            end
-        end
-	end
-	
-    if isCombatUp then        
-        return true
-    else    
-        local techNode = self:GetTechNode(techId)
-        if techNode then
-            return techNode:GetAvailable()
-        end 
-        
-        return false    
-    end 
-
-end
-*/
-
-if(HotReload) then
-    CombatTechTree:OnLoad()
+if (not HotReload) then
+	CombatTechTree:OnLoad()
 end

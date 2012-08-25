@@ -7,11 +7,11 @@
 
 // combat_Player_ClientHook.lua
 
-if(not CombatTechTree) then
+local HotReload = CombatPlayerClient
+if(not HotReload) then
   CombatPlayerClient = {}
+  ClassHooker:Mixin("CombatPlayerClient")
 end
-
-local HotReload = ClassHooker:Mixin("CombatPlayerClient")
 
 function CombatPlayerClient:OnLoad()
 
@@ -100,7 +100,6 @@ function CombatPlayerClient:InitTechTreeMaterialOffsets_Hook()
     kAlienTechIdToMaterialOffset[kTechId.ThreeHives] = 77
 end
 
-
-if(HotReload) then
-    CombatPlayerClient:OnLoad()
+if (not HotReload) then
+	CombatPlayerClient:OnLoad()
 end

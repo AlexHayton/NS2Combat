@@ -5,26 +5,23 @@
 //
 //________________________________
 
-// combat_Balance.lua
+// combat_PowerPoint.lua
 
-if(not CombatBalance) then
-  CombatBalance = {}
+local HotReload = CombatPowerPoint
+if(not HotReload) then
+  CombatPowerPoint = {}
+  ClassHooker:Mixin("CombatPowerPoint")
 end
 
-
-local HotReload = ClassHooker:Mixin("CombatBalance")
-
-function CombatBalance:OnLoad()
+function CombatPowerPoint:OnLoad()
     ClassHooker:SetClassCreatedIn("PowerPoint", "lua/PowerPoint.lua") 
     self:ReplaceClassFunction("PowerPoint", "GetCanTakeDamageOverride", "PowerPointGetCanTakeDamageOverride_Hook")
 end
 
-
-function CombatBalance:PowerPointGetCanTakeDamageOverride_Hook(self)
+function CombatPowerPoint:PowerPointGetCanTakeDamageOverride_Hook(self)
     return false
 end
 
-
-if(hotreload) then
-    CombatBalance:OnLoad()
+if (not HotReload) then
+	CombatPowerPoint:OnLoad()
 end

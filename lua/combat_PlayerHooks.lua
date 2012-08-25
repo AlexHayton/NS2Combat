@@ -7,12 +7,11 @@
 
 // combat_PlayerHooks.lua
 
-if(not CombatPlayer) then
-    CombatPlayer = {}
+local HotReload = CombatPlayer
+if(not HotReload) then
+  CombatPlayer = {}
+  ClassHooker:Mixin("CombatPlayer")
 end
-
-
-local HotReload = ClassHooker:Mixin("CombatPlayer")
     
 function CombatPlayer:OnLoad()
    
@@ -267,6 +266,6 @@ function CombatPlayer:GetIsTechAvailable_Hook(self, teamNumber, techId)
 
 end
 
-if(hotreload) then
-    CombatPlayer:OnLoad()
+if (not HotReload) then
+	CombatPlayer:OnLoad()
 end

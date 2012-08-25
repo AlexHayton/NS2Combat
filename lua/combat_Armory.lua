@@ -7,13 +7,11 @@
 
 // combat_Armory.lua
 
-
-if(not CombatArmory) then
-    CombatArmory = {}
+local HotReload = CombatArmory
+if(not HotReload) then
+  CombatArmory = {}
+  ClassHooker:Mixin("CombatArmory")
 end
-
-
-local HotReload = ClassHooker:Mixin("CombatArmory")
     
 function CombatArmory:OnLoad()
     
@@ -29,6 +27,6 @@ function CombatArmory:GetRequiresPower_Hook(self)
     
 end
 
-if(HotReload) then
-    CombatArmory:OnLoad()
+if (not HotReload) then
+	CombatArmory:OnLoad()
 end

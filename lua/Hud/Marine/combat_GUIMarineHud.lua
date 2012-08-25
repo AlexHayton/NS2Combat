@@ -7,12 +7,11 @@
 
 // combat_GUIMarineHud.lua
 
-
-if(not CombatGUIMarineHud) then
+local HotReload = CombatGUIMarineHud
+if(not HotReload) then
   CombatGUIMarineHud = {}
+  ClassHooker:Mixin("CombatGUIMarineHud")
 end
-
-local HotReload = ClassHooker:Mixin("CombatGUIMarineHud")
     
 function CombatGUIMarineHud:OnLoad()
 
@@ -31,7 +30,6 @@ function CombatGUIMarineHud:Update_Hook(self, deltaTime)
 
 end
 
-
-if(hotreload) then
-    CombatGUIMarineHud:OnLoad()
+if (not HotReload) then
+	CombatGUIMarineHud:OnLoad()
 end

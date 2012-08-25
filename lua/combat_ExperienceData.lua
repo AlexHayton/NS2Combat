@@ -10,7 +10,10 @@
 // XP-List
 //Table for 
 //    LVL,  needed XP to reach, RineName, AlienName, givenXP to killer     
-XpList = {}  
+local HotReload = XpList
+if(not HotReload) then
+	XpList = {}
+end
 XpList[1] = { Level=1, 		XP=0,		MarineName="Private", 				AlienName="Hatchling", 		GivenXP=60}
 XpList[2] = { Level=2, 		XP=100, 	MarineName="Private First Class", 	AlienName="Xenoform", 		GivenXP=70}
 XpList[3] = { Level=3, 		XP=250, 	MarineName="Corporal", 				AlienName="Minion", 		GivenXP=80}
@@ -38,7 +41,9 @@ mateXpRange = 15
 
 // XP-Values
 // Scores for various creatures and structures.
-XpValues = {}
+if(not HotReload) then
+	XpValues = {}
+end
 XpValues["Marine"] = 100
 XpValues["Skulk"] = 100
 XpValues["Gorge"] = 100
@@ -118,7 +123,12 @@ local function BuildUpgrade(team, upgradeId, upgradeTextCode, upgradeDescription
 	return upgrade
 end
 
-UpsList = {}
+if(not HotReload) then
+	UpsList = {}
+end
+// Clear the table
+for k,v in pairs(UpsList) do UpsList[k]=nil end
+
 // Marine Upgrades
 // Parameters:        				team,	 upgradeId, 						upgradeTextCode, 	upgradeDesc, 		upgradeTechId, 				upgradeFunc, 	requirements, 				levels, upgradeType
 // Start with classes

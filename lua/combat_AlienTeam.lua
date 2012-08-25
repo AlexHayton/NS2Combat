@@ -7,11 +7,11 @@
 
 // combat_AlienTeam.lua
 
-if(not CombatAlienTeam) then
+local HotReload = CombatAlienTeam
+if(not HotReload) then
   CombatAlienTeam = {}
+  ClassHooker:Mixin("CombatAlienTeam")
 end
-
-local HotReload = ClassHooker:Mixin("CombatAlienTeam")
 
 function CombatAlienTeam:OnLoad()
 
@@ -156,6 +156,6 @@ function CombatAlienTeam:GetNumHives_Hook()
     
 end
 
-if(HotReload) then
-    CombatAlienTeam:OnLoad()
+if (not HotReload) then
+	CombatAlienTeam:OnLoad()
 end

@@ -15,12 +15,6 @@ Script.Load("lua/Hud/Alien/combat_GUIAlienBuyMenu.lua")
 Script.Load("lua/Hud/combat_GUIPlayerResources.lua")
 Script.Load("lua/combat_Player_ClientHook.lua")
 
-// Calling the Hook classes
-CombatGUIMarineHud:OnLoad()
-CombatGUIAlienBuyMenu:OnLoad()
-CombatGUIPlayerResources:OnLoad()
-CombatPlayerClient:OnLoad()
-
 // Load the normal Ns2 Server Scripts
 Script.Load("lua/Client.lua")
 

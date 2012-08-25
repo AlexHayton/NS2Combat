@@ -7,11 +7,11 @@
 
 // combat_Hive.lua
 
-if(not CombatHive) then
+local HotReload = CombatHive
+if(not HotReload) then
   CombatHive = {}
+  ClassHooker:Mixin("CombatHive")
 end
-
-ClassHooker:Mixin("CombatHive")
     
 function CombatHive:OnLoad()
 
@@ -24,4 +24,8 @@ function CombatHive:OnCreate_Hook(self)
 
 	self:SetMature()
             
+end
+
+if (not HotReload) then
+	CombatHive:OnLoad()
 end

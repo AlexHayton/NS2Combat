@@ -7,13 +7,11 @@
 
 // combat_PlayingTeam.lua
 
-
-if(not CombatPlayingTeam) then
+local HotReload = CombatPlayingTeam
+if(not HotReload) then
   CombatPlayingTeam = {}
+  ClassHooker:Mixin("CombatPlayingTeam")
 end
-
-
-local HotReload = ClassHooker:Mixin("CombatPlayingTeam")
     
 function CombatPlayingTeam:OnLoad()
 
@@ -284,6 +282,6 @@ function CombatPlayingTeam:RespawnPlayer_Hook(handle, self, player, origin, angl
     
 end
 
-if(hotreload) then
-    CombatPlayingTeam:OnLoad()
+if (not HotReload) then
+	CombatPlayingTeam:OnLoad()
 end

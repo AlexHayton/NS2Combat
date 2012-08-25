@@ -100,7 +100,7 @@ function CombatUpgrade:ExecuteTechUpgrade(player)
 	node:SetHasTech(true)
 	techTree:SetTechNodeChanged(node)
 	techTree:SetTechChanged()
-	// Update the tech tree and send updates to the client. Don't know why, but it's only working when we send it hear
+	// Update the tech tree and send updates to the client. Don't know why, but it's only working when we send it here.
     techTree:SendTechTreeBase(player)
 
     // GiveUpgrade caused only problems, its working without	
