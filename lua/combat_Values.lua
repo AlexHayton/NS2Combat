@@ -20,8 +20,8 @@ combatWelcomeMessage = {combatModifiedMessage,
                         "For more information type /help in the chat or console."
                         }
 						
-kCombatUpgradeNotifyInterval = 10
-kCombatReminderNotifyInterval = 35
+kCombatUpgradeNotifyInterval = 20
+kCombatReminderNotifyInterval = 45
 kDirectMessageFadeTime = 8
 kDirectMessagesNumVisible = 9
 

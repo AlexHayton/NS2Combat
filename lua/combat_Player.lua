@@ -423,7 +423,7 @@ function Player:spendlvlHints(hint, type)
 	elseif hint == "freeLvl" then
 	    local lvlFree = self:GetLvlFree()
 	    local upgradeWord = (lvlFree > 1) and "upgrades" or "upgrade"
-	    self:SendDirectMessage("You have " .. lvlFree .. " " .. upgradeWord .. " to spend. Use /buy or co_spendlvl in chat to buy upgrades.")   
+	    self:SendDirectMessage("You have " .. lvlFree .. " " .. upgradeWord .. " to spend. Use \"/buy <upgrade>\" in chat to buy upgrades.")   
 	
     end
 end
