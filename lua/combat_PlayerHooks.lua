@@ -126,6 +126,7 @@ function CombatHandleNewPlayerReminder(self)
 
 	// If the player hasn't spent their upgrades at all, remind them again
 	// that this is combat mode after a longer interval.
+	self:CheckCombatData()
 	if (self:GetLvl() - 1) + kCombatStartUpgradePoints == self:GetLvlFree() then
 		if (Shared.GetTime() - self.lastReminderNotify > kCombatReminderNotifyInterval) then
 			self.combatTable.lastReminderNotify = Shared.GetTime()
