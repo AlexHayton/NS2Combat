@@ -14,7 +14,7 @@
 combatSpawnList = {}
 
 // ns2_tram
-combatSpawnList.ns2_tram = {}
+/*combatSpawnList.ns2_tram = {}
 table.insert(combatSpawnList.ns2_tram,   
     {
     Spawn = {"Shipping", "Repair Room"},
@@ -55,8 +55,9 @@ table.insert(combatSpawnList.ns2_tram,
             {Vector(607, -216, 2275.12), Angles(0, 0, 0), Vector(2.04, 1, 0.74)},
             }
     }) 
-   
-   /*
+*/
+  
+  /*
                 {"Elevator Transfer", "Server"}
                 }
 

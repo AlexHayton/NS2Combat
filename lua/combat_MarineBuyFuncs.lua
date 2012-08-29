@@ -43,6 +43,8 @@ function CombatMarineBuy_GUISortUps(upgradeList)
 		
         // 4
         kTechId.Jetpack,     
+		kTechId.Exosuit,
+		kTechId.DualMinigunExosuit
     }
     
     local sortedList = {}    

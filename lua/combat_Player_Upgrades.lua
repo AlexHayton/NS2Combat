@@ -77,7 +77,7 @@ function Player:CoEnableUpgrade(upgrades)
         // Sanity checks before we actually go further.
         if requirements then
             self:spendlvlHints("neededOtherUp", GetUpgradeFromId(requirements):GetTextCode())
-        elseif not self:isa(team) then
+        elseif (not self:isa(team)) or (self:isa("Exo") and team == "Marine") then
             self:spendlvlHints("wrong_team", team)
         elseif alreadyGotUpgrade then
             self:spendlvlHints("already_owned", upgrade:GetTextCode())
