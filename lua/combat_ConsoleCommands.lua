@@ -22,7 +22,7 @@ function OnCommandSpendLvl(client, ...)
             if not upgrade then 
                 // check for every arg if its a valid update
                 local hintType = ""
-                if player:isa("Marine") then
+                if player:isa("Marine") or player:isa("Exo") then
                     hintType = "wrong_type_marine"
                 else
                     hintType = "wrong_type_alien"
@@ -120,7 +120,7 @@ function OnCommandUpgrades(client)
 	local player = client:GetControllingPlayer()
 	local upgradeList = nil
 	
-	if player:isa("Marine") then
+	if player:isa("Marine") or player:isa("Exo") then
 		upgradeList = GetAllUpgrades("Marine")
 	else
 		upgradeList = GetAllUpgrades("Alien")

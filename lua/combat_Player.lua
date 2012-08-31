@@ -420,6 +420,12 @@ function Player:spendlvlHints(hint, type)
 		end
 		self:SendDirectMessage( "Cannot take this upgrade. You are not " .. teamtext .. "!" )   
 		
+	elseif hint == "exoCannotFly" then
+		self:SendDirectMessage( "Cannot buy the exo suit if you already have jetpack!" )
+	
+	elseif hint == "jetpackCannotExo" then
+		self:SendDirectMessage( "Cannot buy the jetpack if you already have exo!" )
+		
 	elseif hint == "freeLvl" then
 	    local lvlFree = self:GetLvlFree()
 	    local upgradeWord = (lvlFree > 1) and "upgrades" or "upgrade"

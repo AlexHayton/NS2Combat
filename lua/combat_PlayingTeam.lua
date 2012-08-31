@@ -254,7 +254,7 @@ function CombatPlayingTeam:SpawnPlayer(player)
 	
         // Make a nice effect when you spawn.
 		// Aliens hatch due the CoEvolve function
-        if newPlayer:isa("Marine") then
+        if newPlayer:isa("Marine") or self:isa("Exo") then
             newPlayer:TriggerEffects("infantry_portal_spawn")
         end
 		newPlayer:TriggerEffects("spawnSoundEffects")

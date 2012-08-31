@@ -36,6 +36,7 @@ function Player:CoEnableUpgrade(upgrades)
 	
         local alreadyGotUpgrade = false
         local noRoom = false
+		local gotJetpack = false
         local requirements = upgrade:GetRequirements()
         local techId = upgrade:GetTechId()
         local neededLvl = upgrade:GetLevels()
@@ -56,6 +57,11 @@ function Player:CoEnableUpgrade(upgrades)
             if entry:GetId() == upgrade:GetId() then
                alreadyGotUpgrade = true
             end
+			
+			// Check for whether we have the jetpack upgrade here...
+			if entry:GetId() == kCombatUpgrades.Jetpack then
+				gotJetpack = true
+			end
         end
         
         // Check whether we have room to evolve
@@ -85,6 +91,10 @@ function Player:CoEnableUpgrade(upgrades)
             self:spendlvlHints("no_room")
         elseif self:GetLvlFree() < neededLvl then
             self:spendlvlHints("neededLvl", neededLvl)
+		elseif self:isa("Exo") and upgrade:GetId() == kCombatUpgrades.Jetpack then
+			self:spendlvlHints("exoCannotFly")
+		elseif self:isa("JetpackMarine") and upgrade:GetId() == kCombatUpgrades.Exo then
+			self:spendlvlHints("jetpackCannotExo")
         else
             table.insert(validUpgrades, upgrade)
             // insert the up to the personal techtree
@@ -110,10 +120,37 @@ function Player:CoEnableUpgrade(upgrades)
         else
             for i, upgrade in ipairs(validUpgrades) do
                 self:ApplyAllUpgrades(nil, upgrade)
+				
+				// Refund the non-exo upgrades if we bought exo...
+				if upgrade:GetId() == kCombatUpgrades.Exo then
+					self:RefundNonExoUpgrades()
+				end
             end    
         end
     end
 
+end
+
+// Refund upgrades that the exo suit can't use...
+function Player:RefundNonExoUpgrades()
+
+	local nonExoUpgrades = {}
+	table.insert(nonExoUpgrades, kCombatUpgrades.Mines)
+	table.insert(nonExoUpgrades, kCombatUpgrades.Welder)
+	table.insert(nonExoUpgrades, kCombatUpgrades.Shotgun)
+	table.insert(nonExoUpgrades, kCombatUpgrades.Flamethrower)
+	table.insert(nonExoUpgrades, kCombatUpgrades.GrenadeLauncher)
+		
+	// Refund each of the weapons the player had bought...
+	for i, upgradeToCheck in nonExoUpgrades do
+		for i, upgrade in self.combatTable.techtree do
+			if upgradeToCheck == upgrade:GetId() then
+				table.remove(self.combatTable.techtree, upgrade)
+				player:AddLvlFree(upgrade:GetLevels())
+				self:SendDirectMessage("Refunded " + upgrade:GetLevels() " upgrade point(s) for your " + upgrade:GetDescription())
+			end
+		end
+	end
 end
 
 function Player:ApplyAllUpgrades(upgradeTypes, singleUpgrade)
@@ -139,7 +176,7 @@ function Player:ApplyAllUpgrades(upgradeTypes, singleUpgrade)
                             upgrade:DoUpgrade(self)
                         else
                             // to enable jp and exo
-                            if  self:isa("Marine") then
+                            if  self:isa("Marine") or self:isa("Exo") then
                                 upgrade:DoUpgrade(self)
                             end
                         end
