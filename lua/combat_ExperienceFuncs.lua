@@ -30,44 +30,6 @@ function Experience_GetAvgXp()
 
 end
 
-function Experience_GetLvlName(lvl, team)
-
-	local LvlName = ""
-	// ToDo: Support Marine vs Marine?
-	if (team == 1) then
-		LvlName = XpList[lvl]["MarineName"]
-	else
-		LvlName = XpList[lvl]["AlienName"]
-	end
-	
-	return LvlName
-	
-end
-
-function Experience_GetLvl(xp)
-
-	local returnlevel = 1
-
-	// Look up the level of this amount of Xp
-	if xp >= maxXp then 
-		return maxLvl
-	end
-	
-	// ToDo: Do a faster search instead. We're going to be here a lot!
-	for index, thislevel in ipairs(XpList) do
-	
-		if xp >= thislevel["XP"] and 
-		   xp < XpList[index+1]["XP"] then
-		
-			returnlevel = thislevel["Level"]
-		
-		end
-		
-	end
-
-	return returnlevel
-end
-
 function GetXpValue(entity)
 
 	if entity:isa("Player") then

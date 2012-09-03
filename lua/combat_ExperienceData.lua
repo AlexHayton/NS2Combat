@@ -7,31 +7,13 @@
 
 // combat_ExperienceData.lua
 
-// XP-List
-//Table for 
-//    LVL,  needed XP to reach, RineName, AlienName, givenXP to killer     
-local HotReload = XpList
-if(not HotReload) then
-	XpList = {}
-end
-XpList[1] = { Level=1, 		XP=0,		MarineName="Private", 				AlienName="Hatchling", 		GivenXP=60}
-XpList[2] = { Level=2, 		XP=100, 	MarineName="Private First Class", 	AlienName="Xenoform", 		GivenXP=70}
-XpList[3] = { Level=3, 		XP=250, 	MarineName="Corporal", 				AlienName="Minion", 		GivenXP=80}
-XpList[4] = { Level=4, 		XP=500, 	MarineName="Sergeant", 				AlienName="Ambusher", 		GivenXP=90}
-XpList[5] = { Level=5, 		XP=800, 	MarineName="Lieutenant", 			AlienName="Attacker", 		GivenXP=100}
-XpList[6] = { Level=6, 		XP=1100, 	MarineName="Captain", 				AlienName="Rampager", 		GivenXP=110}
-XpList[7] = { Level=7, 		XP=1450, 	MarineName="Commander", 			AlienName="Slaughterer", 	GivenXP=120}
-XpList[8] = { Level=8, 		XP=1900, 	MarineName="Major", 				AlienName="Eliminator", 	GivenXP=130}
-XpList[9] = { Level=9, 		XP=2300, 	MarineName="Field Marshal", 		AlienName="Nightmare", 		GivenXP=140}
-XpList[10] = { Level=10, 	XP=2800, 	MarineName="General", 				AlienName="Behemoth", 		GivenXP=150}
+Script.Load("lua/combat_ExperienceLevels.lua")
 
 // default start points
 kCombatStartUpgradePoints = 0
 
 // how much % from the avg xp can new player get
 avgXpAmount = 0.75
-maxLvl = table.maxn(XpList)
-maxXp = XpList[maxLvl]["XP"]
 
 // how much % from the xp are the m8 nearby getting and the range
 mateXpAmount = 0.4

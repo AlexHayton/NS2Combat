@@ -19,6 +19,7 @@ function CombatPlayerClient:OnLoad()
 	self:ReplaceClassFunction("Player", "Buy", "Buy_Hook_Marine")
 	self:PostHookClassFunction("Alien", "Buy", "Buy_Hook")
 	self:HookClassFunction("Player", "OnInitLocalClient", "OnInitLocalClient_Hook")
+	self:PostHookClassFunction("Player", "OnInitLocalClient", "OnInitLocalClient_Post")
     self:ReplaceClassFunction("Marine", "CloseMenu", "CloseMenu_Hook")
     
     self:PostHookFunction("InitTechTreeMaterialOffsets", "InitTechTreeMaterialOffsets_Hook")
@@ -67,12 +68,17 @@ function CombatPlayerClient:Buy_Hook_Marine(self)
 
 end
 
-
-
 // get the ups from the server (only worked that way)
 function CombatPlayerClient:OnInitLocalClient_Hook(self)
 
     Shared.ConsoleCommand("co_sendupgrades") 
+
+end
+
+// Load the Experience Bar GUI.
+function CombatPlayerClient:OnInitLocalClient_Post(self)
+	
+	GetGUIManager():CreateGUIScriptSingle("combat_GUIExperience")
 
 end
 
