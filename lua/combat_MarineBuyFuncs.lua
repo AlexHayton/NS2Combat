@@ -111,7 +111,8 @@ function CombatMarineBuy_GetWeaponDescription(techId)
         combatWeaponDescription[kTechId.Armor3] = "Armor 3 tech Upgrade. You need Armor 2 first"
 
         combatWeaponDescription[kTechId.Jetpack] = "You get a Jetpack, but you need Armor 2 first."
-        combatWeaponDescription[kTechId.Exosuit] = "Exosuit description."
+        combatWeaponDescription[kTechId.Exosuit] = "Suit up! You will need Armor 2 first..."
+		combatWeaponDescription[kTechId.DualMinigunExosuit] = "Dual Miniguns for the Exosuit."
     
     end
     

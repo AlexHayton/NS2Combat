@@ -65,8 +65,7 @@ local function GetSmallIconPixelCoordinates(itemTechId)
         
         // class 
         kMarineTechIdToMaterialOffset[kTechId.Jetpack] = 40
-        //kMarineTechIdToMaterialOffset[kTechId.Exo] = 61        
-        //kMarineTechIdToMaterialOffset[kTechId.Exosuit] = 77
+        kMarineTechIdToMaterialOffset[kTechId.Exosuit] = 77
         
         // weapons        
         kMarineTechIdToMaterialOffset[kTechId.LayMines] = 80
@@ -74,6 +73,8 @@ local function GetSmallIconPixelCoordinates(itemTechId)
         kMarineTechIdToMaterialOffset[kTechId.Shotgun] = 48
         kMarineTechIdToMaterialOffset[kTechId.GrenadeLauncher] = 72
         kMarineTechIdToMaterialOffset[kTechId.Flamethrower] = 42
+		kMarineTechIdToMaterialOffset[kTechId.Mine] = 80
+		kMarineTechIdToMaterialOffset[kTechId.DualMinigunExosuit] = 10
         
         // tech        
         kMarineTechIdToMaterialOffset[kTechId.Armor1] = 49
@@ -161,7 +162,7 @@ function combat_GUIMarineBuyMenu:OnClose()
     // Check if GUIMarineBuyMenu is what is causing itself to close.
     if not self.closingMenu then
         // Play the close sound since we didn't trigger the close.
-        self.player.combatBuy = false
+        self.player.buyMenu = false
         MarineBuy_OnClose()
     end
 
@@ -197,6 +198,7 @@ function combat_GUIMarineBuyMenu:Update(deltaTime)
 
     GUIAnimatedScript.Update(self, deltaTime)
 
+	self.player = Client.GetLocalPlayer()
     self:_UpdateBackground(deltaTime)
     self:_UpdateEquipped(deltaTime)
     self:_UpdateItemButtons(deltaTime)
