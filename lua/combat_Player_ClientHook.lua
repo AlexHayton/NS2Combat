@@ -19,12 +19,13 @@ function CombatPlayerClient:OnLoad()
 	self:ReplaceClassFunction("Player", "Buy", "Buy_Hook_Marine")
 	self:PostHookClassFunction("Alien", "Buy", "Buy_Hook")
 	self:HookClassFunction("Player", "OnInitLocalClient", "OnInitLocalClient_Hook")
-    self:ReplaceClassFunction("Marine", "CloseMenu", "CloseMenu_Hook")
+    self:ReplaceClassFunction("Player", "CloseMenu", "CloseMenu_Hook")
+	self:ReplaceClassFunction("Marine", "CloseMenu", "CloseMenu_Hook")
     
     self:PostHookFunction("InitTechTreeMaterialOffsets", "InitTechTreeMaterialOffsets_Hook")
 end
 
-// starting the costum buy menu for marines
+// starting the custom buy menu for aliens
 function CombatPlayerClient:Buy_Hook(self)
 
    // Don't allow display in the ready room, or as phantom
@@ -43,7 +44,10 @@ function CombatPlayerClient:Buy_Hook(self)
 
 end
 
-// starting the costum buy menu for marines
+// Terrible Terrible hack. Yuck.
+local g_MarineBuyMenu = nil
+
+// starting the custom buy menu for marines
 function CombatPlayerClient:Buy_Hook_Marine(self)
 
    // Don't allow display in the ready room, or as phantom
@@ -54,6 +58,7 @@ function CombatPlayerClient:Buy_Hook_Marine(self)
                 // open the buy menu
                 self.combatBuy = true
                 self.buyMenu = GetGUIManager():CreateGUIScript("Hud/Marine/combat_GUIMarineBuyMenu")
+				g_MarineBuyMenu = self.buyMenu
                 MouseTracker_SetIsVisible(true, "ui/Cursor_MenuDefault.dds", true)
             else
                 self.combatBuy = false
@@ -79,10 +84,11 @@ end
 // costum CloseMenu that our buy menu will not be closed all the time (cause no structure is nearby)
 function CombatPlayerClient:CloseMenu_Hook(self)
 
-    if self.buyMenu then
+    if self.buyMenu or g_MarineBuyMenu then
         // only close it if its not the combatBuy
         if not self.combatBuy then    
-            GetGUIManager():DestroyGUIScript(self.buyMenu)
+            GetGUIManager():DestroyGUIScript(g_MarineBuyMenu)
+			g_MarineBuyMenu = nil
             self.buyMenu = nil
             MouseTracker_SetIsVisible(false)
             return true
