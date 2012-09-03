@@ -52,7 +52,7 @@ function CombatPlayer:CopyPlayerDataFrom_Hook(self, player)
 	self.combatTable = player.combatTable
 
 	// For marines, give tech upgrades so that the new player has the right armor etc.
-	if (self:isa("Marine") or self:isa("Exo") and self:GetTeamNumber() ~= kTeamReadyRoom) then
+	if (self:isa("Marine") or self:isa("Exo")) and (self:GetTeamNumber() ~= kTeamReadyRoom) then
 		self:ApplyAllUpgrades({ kCombatUpgradeTypes.Tech })
 	end
 	

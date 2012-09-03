@@ -24,7 +24,7 @@ end
 
 function CombatWeapon:OnPrimaryAttack_Hook(self, player)
 
-	if (player:isa("Marine") or self:isa("Exo")) then
+	if (player:isa("Marine") or player:isa("Exo")) then
 		player:CheckCombatData()
 		player:CheckCatalyst()
 	end
@@ -34,7 +34,7 @@ end
 
 function CombatWeapon:OnSecondaryAttack_Hook(self, player)
 
-	if (player:isa("Marine") or self:isa("Exo")) then
+	if (player:isa("Marine") or player:isa("Exo")) then
 		player:CheckCombatData()
 		player:CheckCatalyst()
 	end
