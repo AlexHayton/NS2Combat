@@ -9,9 +9,9 @@
 
 class 'CombatMarineUpgrade' (CombatUpgrade)
 
-function CombatMarineUpgrade:Initialize(upgradeId, upgradeTextCode, upgradeDescription, upgradeTechId, upgradeFunc, requirements, levels, upgradeType)
+function CombatMarineUpgrade:Initialize(upgradeId, upgradeTextCode, upgradeDescription, upgradeTechId, upgradeFunc, requirements, levels, upgradeType, mutuallyExclusive)
 
-	CombatUpgrade.Initialize(self, "Marine", upgradeId, upgradeTextCode, upgradeDescription, upgradeTechId, upgradeFunc, requirements, levels, upgradeType)
+	CombatUpgrade.Initialize(self, "Marine", upgradeId, upgradeTextCode, upgradeDescription, upgradeTechId, upgradeFunc, requirements, levels, upgradeType, mutuallyExclusive)
 
 end
 

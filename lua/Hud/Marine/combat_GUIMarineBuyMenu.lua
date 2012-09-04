@@ -160,9 +160,9 @@ end
 function combat_GUIMarineBuyMenu:OnClose()
 
     // Check if GUIMarineBuyMenu is what is causing itself to close.
+	self.player.combatBuy = false
     if not self.closingMenu then
         // Play the close sound since we didn't trigger the close.
-        self.player.buyMenu = false
         MarineBuy_OnClose()
     end
 
