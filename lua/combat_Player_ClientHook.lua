@@ -22,6 +22,7 @@ function CombatPlayerClient:OnLoad()
 	self:PostHookClassFunction("Player", "OnInitLocalClient", "OnInitLocalClient_Post")
     self:ReplaceClassFunction("Player", "CloseMenu", "CloseMenu_Hook")
     self:ReplaceClassFunction("Marine", "CloseMenu", "CloseMenu_Hook")
+	self:PostHookClassfunction("Marine", "UpdateClientEffects", "UpdateClientEffects_Hook")
     
     self:PostHookFunction("InitTechTreeMaterialOffsets", "InitTechTreeMaterialOffsets_Hook")
 end
@@ -102,6 +103,15 @@ function CombatPlayerClient:CloseMenu_Hook(self)
     end
    
     return false
+end
+
+// Stop the regular buy menu from staying open.
+function CombatPlayerClient:UpdateClientEffects_Hook(self)
+
+	if self.buyMenu then
+        self:CloseMenu()
+    end    
+	
 end
 
 // that tier2 and tier3 have the right icons
