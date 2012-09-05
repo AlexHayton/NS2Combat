@@ -41,25 +41,31 @@ function CombatNS2Gamerules:JoinTeam_Hook(self, player, newTeamNumber, force)
 	// So we need to replace instead. Sorry!
 	local success = false
         
-	// Join new team
-	if(player and player:GetTeamNumber() ~= newTeamNumber or force) then
-	
-		local team = self:GetTeam(newTeamNumber)
-		local oldTeam = self:GetTeam(player:GetTeamNumber())
+		// Join new team
+        if player and player:GetTeamNumber() ~= newTeamNumber or force then
 		
-		// Remove the player from the old queue if they happen to be in one
-		if oldTeam ~= nil then
-			oldTeam:RemovePlayerFromRespawnQueue(player)
-		end
-		
-		// Spawn immediately if going to ready room, game hasn't started, cheats on, or game started recently
-		if newTeamNumber == kTeamReadyRoom or self:GetCanSpawnImmediately() or force then
-			success, newPlayer = team:ReplaceRespawnPlayer(player, nil, nil)
+			local team = self:GetTeam(newTeamNumber)
+			local oldTeam = self:GetTeam(player:GetTeamNumber())
+			
+			// Remove the player from the old queue if they happen to be in one
+			if oldTeam ~= nil then
+				oldTeam:RemovePlayerFromRespawnQueue(player)
+			end
+			
+			// Spawn immediately if going to ready room, game hasn't started, cheats on, or game started recently
+			if newTeamNumber == kTeamReadyRoom or self:GetCanSpawnImmediately() or force then
+				
+				success, newPlayer = team:ReplaceRespawnPlayer(player, nil, nil)
+					
+				local teamTechPoint = team.GetInitialTechPoint and team:GetInitialTechPoint()
+				if teamTechPoint then
+					newPlayer:OnInitialSpawn(teamTechPoint:GetOrigin())
+				end
+                
 		else
 		
 			// Destroy the existing player and create a spectator in their place.
-			local mapName = ConditionalValue(team:isa("AlienTeam"), AlienSpectator.kMapName, Spectator.kMapName)
-			newPlayer = player:Replace(mapName, newTeamNumber)			
+            newPlayer = player:Replace(team:GetSpectatorMapName(), newTeamNumber)
 			
 			// Queue up the spectator for respawn.
 			team:PutPlayerInRespawnQueue(newPlayer, Shared.GetTime())
@@ -103,7 +109,8 @@ function CombatNS2Gamerules:JoinTeam_Hook(self, player, newTeamNumber, force)
 		
 	end
 	
-	return success, newPlayer
+	// Return old player
+	return success, player
 		
 end
 
