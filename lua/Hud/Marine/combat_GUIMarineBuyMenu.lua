@@ -17,7 +17,7 @@ combat_GUIMarineBuyMenu.kRepeatingBackground = "ui/menu/grid.dds"
 combat_GUIMarineBuyMenu.kContentBgTexture = "ui/menu/repeating_bg.dds"
 combat_GUIMarineBuyMenu.kContentBgBackTexture = "ui/menu/repeating_bg_black.dds"
 combat_GUIMarineBuyMenu.kResourceIconTexture = "ui/pres_icon_big.dds"
-combat_GUIMarineBuyMenu.kSmallIconTexture = "ui/marine_buildmenu.dds"
+combat_GUIMarineBuyMenu.kSmallIconTexture = "ui/marine_buildmenu_insight.dds"
 combat_GUIMarineBuyMenu.kBigIconTexture = "ui/marine_buy_bigicons.dds"
 combat_GUIMarineBuyMenu.kButtonTexture = "ui/marine_buymenu_button.dds"
 combat_GUIMarineBuyMenu.kMenuSelectionTexture = "ui/marine_buymenu_selector.dds"
@@ -65,7 +65,7 @@ local function GetSmallIconPixelCoordinates(itemTechId)
         
         // class 
         kMarineTechIdToMaterialOffset[kTechId.Jetpack] = 40
-        kMarineTechIdToMaterialOffset[kTechId.Exosuit] = 77
+        kMarineTechIdToMaterialOffset[kTechId.Exosuit] = 76
         
         // weapons        
         kMarineTechIdToMaterialOffset[kTechId.LayMines] = 80
@@ -74,7 +74,7 @@ local function GetSmallIconPixelCoordinates(itemTechId)
         kMarineTechIdToMaterialOffset[kTechId.GrenadeLauncher] = 72
         kMarineTechIdToMaterialOffset[kTechId.Flamethrower] = 42
 		kMarineTechIdToMaterialOffset[kTechId.Mine] = 80
-		kMarineTechIdToMaterialOffset[kTechId.DualMinigunExosuit] = 10
+		kMarineTechIdToMaterialOffset[kTechId.DualMinigunExosuit] = 77
         
         // tech        
         kMarineTechIdToMaterialOffset[kTechId.Armor1] = 49
