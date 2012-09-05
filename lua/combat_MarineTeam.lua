@@ -114,14 +114,16 @@ function CombatMarineTeam:SpawnInitialStructures_Hook(self, techPoint)
 	// spawn initial Armory for marine team
     
     local techPointOrigin = techPoint:GetOrigin() + Vector(0, 2, 0)
-    
-    for i = 1, 50 do
+	local armorySpawned = false
+	
+    for i = 1, kSpawnMaxRetries do
 
-        if self.ipsToConstruct == 0 then
+        if armorySpawned then
             break
         end    
 
-        local origin = CalculateRandomSpawn(nil, techPointOrigin, kTechId.Armory, true, kInfantryPortalMinSpawnDistance * 1, kInfantryPortalMinSpawnDistance * 2.5, 3)
+		// Increase the spawn distance on a gradual basis.
+        local origin = CalculateRandomSpawn(nil, techPointOrigin, kTechId.Armory, true, kSpawnMinDistance, (kSpawnMaxDistance * i / kSpawnMaxRetries), nil)
 
         if origin then
         
@@ -133,7 +135,8 @@ function CombatMarineTeam:SpawnInitialStructures_Hook(self, techPoint)
             
             armory:SetConstructionComplete() 
             
-            self.ipsToConstruct = self.ipsToConstruct - 1
+			armorySpawned = true
+            self.ipsToConstruct = 0
             
         end
     

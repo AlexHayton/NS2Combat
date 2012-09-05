@@ -14,6 +14,7 @@ Script.Load("lua/fsfod_scripts.lua")
 // Loading the Hook classes
 // TODO: Maybe we don't need the OnLoad?
 Script.Load("lua/combat_TechTreeHooks.lua")
+Script.Load("lua/combat_Utility.lua")
 Script.Load("lua/combat_NS2Gamerules.lua")
 Script.Load("lua/combat_Team.lua")
 Script.Load("lua/combat_PlayingTeam.lua")
