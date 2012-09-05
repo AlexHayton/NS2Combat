@@ -265,7 +265,9 @@ function CombatNS2Gamerules:ResetGame_Hook(self)
     // reset SpawnCombo to set them again
     combatSpawnCombo = nil
     combatSpawnComboIndex  = nil
-    CombatDeleteProps()
+    
+    // we deactivated the prop system so this is not needed at the moment
+    //CombatDeleteProps()
 
 end
 
