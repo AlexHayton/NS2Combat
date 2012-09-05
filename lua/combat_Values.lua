@@ -40,20 +40,21 @@ kSpawnMaxVertical = 20
 
 // By default, Aliens win after a certain amount of time...
 // Specified in seconds...
-kCombatTimeLimit = 1200
+kCombatTimeLimit = 1800
 kCombatTimeLeftPlayed = 0
 kCombatTimeReminderInterval = 300
 
 // Timers for Scan, Resupply and Catalyst packs.
-kScanTimer = 12
+kScanTimer = 14
 kResupplyTimer = 10
-kCatalystTimer = 20
+kCatalystTimer = 14
 // scan Duration, maybe we need to tune it a bit
-kScanDuration = 5
-kScanRadius = 30
+kScanDuration = 7
+kScanRadius = 40
 
-kEMPTimer = 20
-kInkTimer = 15
+// Make these less "spammy"
+kEMPTimer = 30
+kInkTimer = 30
 
 // Props
 kPropEffect = "vortex_destroy"
@@ -82,7 +83,7 @@ kCamouflageUncloakFactor = 2 / 3
 // Gorge Healspray heals more (and makes a bit more damage)
 kHealsprayDamage = 10
 // Conversely, reduce the welder's effectiveness from its original value of 150.
-kStructureWeldRate = 100
+kStructureWeldRate = 120
 
 // Alien vision should be free
 kAlienVisionCost = 0
