@@ -119,10 +119,11 @@ function Player:CoEnableUpgrade(upgrades)
             self:ApplyAllUpgrades(nil, validUpgrades)
         else
             for i, upgrade in ipairs(validUpgrades) do
-                self:ApplyAllUpgrades(nil, upgrade)
 				
 				// Refund the mutually exclusive upgrades if we bought e.g. exo...
 				self:RefundMutuallyExclusiveUpgrades(upgrade)
+				
+                self:ApplyAllUpgrades(nil, upgrade)
             end    
         end
     end
