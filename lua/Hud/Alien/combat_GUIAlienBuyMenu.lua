@@ -26,8 +26,6 @@ end
 function CombatGUIAlienBuyMenu:Initialize_Hook(self)
 
 	GUIAlienBuyMenu.kMaxNumberOfUpgradeButtons = 10
-	
-	//_InitializeUpgradeButtons
 
 end
 
