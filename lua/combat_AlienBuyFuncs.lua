@@ -31,6 +31,12 @@ local function GetPurchasedTechIds(techId)
     
 end
 
+function AlienUI_GetUpgradesForCategory(category)
+
+    return { category }
+
+end
+
 
 // iconx, icony, name, tooltip, research, cost. Need to change that to change the costs
 function GetUnpurchasedUpgradeInfoArray(techIdTable)
@@ -143,7 +149,7 @@ function AlienBuy_GetPurchasedUpgrades(idx)
     
 end
 
-function AlienBuy_GetGotRequirements(techId)
+function AlienBuy_GetIsUpgradeAllowed(techId, upgradeList)
 
     local player = Client.GetLocalPlayer()
     if player then    
