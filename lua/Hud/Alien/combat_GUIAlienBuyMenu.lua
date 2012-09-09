@@ -74,6 +74,8 @@ function CombatGUIAlienBuyMenu:_InitializeUpgradeButtons_Hook(self)
 	// For the purposes of this just use the TechId as the slot category.
 	for i, upgradeButton in ipairs(self.upgradeButtons) do
 		upgradeButton.Category = upgradeButton.TechId
+		// Find the upgrade in UpsList
+		upgradeButton.Cost = GetUpgradeFromTechId(upgradeButton.TechId):GetLevels()
 	end
 
 end
@@ -81,10 +83,26 @@ end
 local function GetSelectedUpgradesCost(self)
 
     local cost = 0
+	local purchasedTech = GetPurchasedTechIds()
+	
+	// Only count upgrades that we've selected and don't already own.
     for i, currentButton in ipairs(self.upgradeButtons) do
     
         if currentButton.Selected then
-            cost = cost + currentButton.Cost
+			
+			local isPurchased = false
+			
+			for j, purchasedTechId in ipairs(purchasedTech) do
+				if currentButton.TechId == purchasedTechId then
+				    isPurchased = true
+				end
+			end
+			
+			// If the upgrade isn't purchased add the cost.
+			if not isPurchased then
+				cost = cost + currentButton.Cost
+			end
+			
         end
         
     end

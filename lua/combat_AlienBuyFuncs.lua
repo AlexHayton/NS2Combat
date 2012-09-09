@@ -6,7 +6,7 @@
 //________________________________
 
 // combat_AlienBuyFuncs.lua
-local function GetPurchasedTechIds(techId)
+function GetPurchasedTechIds(techId)
     
     local player = Client.GetLocalPlayer()
     
