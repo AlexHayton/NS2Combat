@@ -263,8 +263,14 @@ function CombatPlayingTeam:SpawnPlayer(player)
 		// Remove the third-person mode (bug introduced in 216).
 		newPlayer:SetCameraDistance(0)
 		
-		//give him spawn Protect (dont set the time here, just that spawn protect ist active)
+		//give him spawn Protect (dont set the time here, just that spawn protect is active)
 		newPlayer:SetSpawnProtect()
+		
+		// Try to fix the welder bug
+		if newPlayer.combatTable.justGotWelder then
+			newPlayer.combatTable.justGotWelder = false
+			newPlayer:SwitchWeapon(1)
+		end
     end
 
     return success

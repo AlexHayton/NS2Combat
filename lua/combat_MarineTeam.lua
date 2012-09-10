@@ -106,6 +106,9 @@ end
 // Hooks MarineTeam
 //___________________
 
+local kArmorySpawnMinDistance = 6
+local kArmorySpawnMaxDistance = 30
+
 function CombatMarineTeam:SpawnInitialStructures_Hook(self, techPoint)
 
     local tower, commandStation = PlayingTeam.SpawnInitialStructures(self, techPoint)    
@@ -123,7 +126,7 @@ function CombatMarineTeam:SpawnInitialStructures_Hook(self, techPoint)
         end    
 
 		// Increase the spawn distance on a gradual basis.
-        local origin = CalculateRandomSpawn(nil, techPointOrigin, kTechId.Armory, true, kSpawnMinDistance, (kSpawnMaxDistance * i / kSpawnMaxRetries), nil)
+        local origin = CalculateRandomSpawn(nil, techPointOrigin, kTechId.Armory, true, kArmorySpawnMinDistance, (kArmorySpawnMaxDistance * i / kSpawnMaxRetries), nil)
 
         if origin then
         

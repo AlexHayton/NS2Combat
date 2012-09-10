@@ -96,14 +96,17 @@ end
 
 local function Scan(player, techUpgrade)
 	player.combatTable.hasScan = true
+	player.combatTable.lastScan = 0
 end
 
 local function Resupply(player, techUpgrade)
 	player.combatTable.hasResupply = true
+	player.combatTable.lastResupply = 0
 end
 
 local function Catalyst(player, techUpgrade)
 	player.combatTable.hasCatalyst = true
+	player.combatTable.lastCatalyst = 0
 end
 
 local function FastReload(player, techUpgrade)
@@ -112,12 +115,22 @@ end
 
 local function EMP(player, techUpgrade)
 	player.combatTable.hasEMP = true
+	player.combatTable.lastEMP = 0
 	player:SendDirectMessage("You got EMP-taunt, use your taunt key to activate it")
 end
 
 local function ShadeInk(player, techUpgrade)
     player.combatTable.hasInk = true
+	player.combatTable.lastInk = 0
     player:SendDirectMessage("You got Ink-taunt, use your taunt key to activate it")
+end
+
+local function GiveWelder(player, techUpgrade)
+	techUpgrade:ExecuteTechUpgrade(player)
+	player.combatTable.justGotWelder = true
+	
+	// SwitchWeapon here doesn't work - move it further along...
+	//player:SwitchWeapon(1)
 end
 
 // Helper function to build upgrades for us.
@@ -148,7 +161,7 @@ table.insert(UpsList, BuildUpgrade("Marine", kCombatUpgrades.Exosuit,   			"exo"
                                                                                                                                                                                                                                                 
 // Weapons                                                                                                                                                                                                                                      
 table.insert(UpsList, BuildUpgrade("Marine", kCombatUpgrades.Mines,					"mines",			"Mines",			kTechId.LayMines, 				nil, 				nil, 						1, 		kCombatUpgradeTypes.Weapon, kCombatUpgrades.Exosuit)) 
-table.insert(UpsList, BuildUpgrade("Marine", kCombatUpgrades.Welder,				"welder",			"Welder",			kTechId.Welder, 				nil, 				nil, 						1, 		kCombatUpgradeTypes.Weapon, kCombatUpgrades.Exosuit)) 
+table.insert(UpsList, BuildUpgrade("Marine", kCombatUpgrades.Welder,				"welder",			"Welder",			kTechId.Welder, 				GiveWelder, 		nil, 						1, 		kCombatUpgradeTypes.Weapon, kCombatUpgrades.Exosuit)) 
 table.insert(UpsList, BuildUpgrade("Marine", kCombatUpgrades.Shotgun,				"sg",				"Shotgun",			kTechId.Shotgun, 				nil, 				kCombatUpgrades.Weapons1, 	1, 		kCombatUpgradeTypes.Weapon, kCombatUpgrades.Exosuit)) 
 table.insert(UpsList, BuildUpgrade("Marine", kCombatUpgrades.Flamethrower,			"flame",			"Flamethrower",		kTechId.Flamethrower, 			nil, 				kCombatUpgrades.Shotgun, 	1, 		kCombatUpgradeTypes.Weapon, kCombatUpgrades.Exosuit)) 	
 table.insert(UpsList, BuildUpgrade("Marine", kCombatUpgrades.GrenadeLauncher,		"gl",				"Grenade Launcher",	kTechId.GrenadeLauncher, 		nil, 				kCombatUpgrades.Shotgun, 	1, 		kCombatUpgradeTypes.Weapon, kCombatUpgrades.Exosuit)) 

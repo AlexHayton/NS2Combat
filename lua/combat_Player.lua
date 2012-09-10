@@ -159,18 +159,14 @@ end
 
 function Player:CheckCatalyst()
 	
-	local deltaTime = Shared.GetTime()
+	local timeNow = Shared.GetTime()
 
     if self.combatTable.hasCatalyst then
-    
-        if self.combatTable.lastCatalyst == 0 then
-            self.combatTable.lastCatalyst = deltaTime
-        end
         
-        if (deltaTime - self.combatTable.lastCatalyst >= kCatalystTimer) then            
+        if (self.combatTable.lastCatalyst == 0) or (timeNow - self.combatTable.lastCatalyst >= kCatalystTimer) then            
             local success = self:CatalystNow()            
             if success then
-                self.combatTable.lastCatalyst = deltaTime
+                self.combatTable.lastCatalyst = timeNow
             end           
         end
 

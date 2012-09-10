@@ -33,9 +33,10 @@ kAlienWaveSpawnInterval = 10
 kCombatSpawnProtectTime = 4
 // nano shield = spawn Protection
 kNanoShieldDuration = kCombatSpawnProtectTime 
-kSpawnMaxRetries = 100
-kSpawnMinDistance = 6
-kSpawnMaxDistance = 30
+kSpawnMaxRetries = 20
+kSpawnMinDistance = 5
+kSpawnMaxDistance = 40
+kSpawnMaxVertical = 15
 
 // By default, Aliens win after a certain amount of time...
 // Specified in seconds...
