@@ -221,7 +221,13 @@ end
 
 function CombatGUIAlienBuyMenu:Update_Hook(self, deltaTime)
 
+	// Call our version of the evolve button script.
 	UpdateEvolveButton(self)
+	
+	// Hide all the slots.
+	for i, slot in ipairs(self.slots) do
+		slot.Graphic:SetIsVisible(false)
+	end
 
 end
 
