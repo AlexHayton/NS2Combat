@@ -49,8 +49,9 @@ function Player:PerformSpawnProtect()
             self:ActivateNanoShield()
             self.combatNanoShieldEnt = nanoShield
         elseif self:isa("Alien") then
-            self:TriggerCatalyst(kCombatSpawnProtectTime)
-            //self:SetHasUmbra(false,kCombatSpawnProtectTime)            
+		
+            //self:TriggerCatalyst(kCombatSpawnProtectTime)
+            self:SetHasUmbra(true,kCombatSpawnProtectTime)       
 
         end
      
