@@ -34,9 +34,9 @@ kCombatSpawnProtectTime = 4
 // nano shield = spawn Protection
 kNanoShieldDuration = kCombatSpawnProtectTime 
 kSpawnMaxRetries = 20
-kSpawnMinDistance = 5
-kSpawnMaxDistance = 40
-kSpawnMaxVertical = 15
+kSpawnMinDistance = 3
+kSpawnMaxDistance = 60
+kSpawnMaxVertical = 20
 
 // By default, Aliens win after a certain amount of time...
 // Specified in seconds...
