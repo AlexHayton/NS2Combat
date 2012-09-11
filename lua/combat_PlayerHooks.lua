@@ -147,19 +147,23 @@ function CombatPlayer:OnUpdatePlayer_Hook(self, deltaTime)
 	self.hasArmsLab = true
 		
 	// Spawn Protect
-	if self.combatSpawnProtect then
-		if self:GetIsAlive() then
-			if self.combatSpawnProtect == 1 then
+	if self.combatTable.activeSpawnProtect then
+	
+		if self:GetIsAlive() and (self:GetTeamNumber() == 1 or self:GetTeamNumber() == 2) then
+		
+			if not self.combatTable.deactivateSpawnProtect then
 				// set the real spawn protect time here
-				self.combatSpawnProtect = Shared.GetTime() +  kCombatSpawnProtectTime
-			elseif
-				Shared.GetTime() >= self.combatSpawnProtect then
+				self.combatTable.deactivateSpawnProtect = Shared.GetTime() +  kCombatMarineSpawnProtectTime
+			elseif Shared.GetTime() >= self.combatTable.deactivateSpawnProtect then
 				// end spawn protect
 				self:DeactivateSpawnProtect()
 			else
+				if not self.gotSpawnProtect then
 				self:PerformSpawnProtect()
+				end
 			end
 		end
+		
 	end
 	
 	if self.combatTable then

@@ -29,10 +29,14 @@ kDirectMessagesNumVisible = 9
 kCombatRespawnTimer = 10
 kAlienWaveSpawnInterval = 10
 
+// Rebalancing Intervals (mins)
+kCombatRebalanceInterval = 5
+
 // Spawn protection
-kCombatSpawnProtectTime = 4
+kCombatMarineSpawnProtectTime = 4
 // nano shield = spawn Protection
-kNanoShieldDuration = kCombatSpawnProtectTime 
+kNanoShieldDuration = kCombatMarineSpawnProtectTime 
+kCombatAlienSpawnProtectTime = 5
 kSpawnMaxRetries = 20
 kSpawnMinDistance = 3
 kSpawnMaxDistance = 60
@@ -40,7 +44,7 @@ kSpawnMaxVertical = 20
 
 // By default, Aliens win after a certain amount of time...
 // Specified in seconds...
-kCombatTimeLimit = 1800
+kCombatTimeLimit = 1500
 kCombatTimeLeftPlayed = 0
 kCombatTimeReminderInterval = 300
 
@@ -62,7 +66,7 @@ kPropEffectTimer = 2
 
 // Gestate Times
 kGestateTime = {}
-kGestateTime[kTechId.Skulk] = 2
+kGestateTime[kTechId.Skulk] = 1.5
 kGestateTime[kTechId.Gorge] = 3
 kGestateTime[kTechId.Lerk] = 4
 kGestateTime[kTechId.Fade] = 5
@@ -116,6 +120,7 @@ kRegenerationCost = generalCost
 kAuraCost = generalCost
 kSilenceCost = generalCost
 kHydraAbilityCost = generalCost
+kHydraCost = 0
 kPiercingCost = generalCost
 kAdrenalineCost = generalCost
 kFeintCost = generalCost
