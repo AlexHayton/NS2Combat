@@ -45,16 +45,18 @@ mateXpRange = 15
 if(not HotReload) then
 	XpValues = {}
 end
-XpValues["Marine"] = 100
-XpValues["Skulk"] = 100
-XpValues["Gorge"] = 100
-XpValues["Lerk"] = 100
-XpValues["Fade"] = 100
+XpValues["Marine"] = 0
+XpValues["Skulk"] = 0
+XpValues["Gorge"] = 10
+XpValues["Lerk"] = 20
+XpValues["Fade"] = 50
 XpValues["Onos"] = 100
+XpValues["Exo"] = 100
 XpValues["Hydra"] = 30
 XpValues["Clog"] = 20
-XpValues["Armory"] = 50
-XpValues["CommandStation"] = 150
+XpValues["Cyst"] = 10
+XpValues["Armory"] = 100
+XpValues["CommandStation"] = 200
 XpValues["Hive"] = 400
 
 // xp  for welding, healing
@@ -158,7 +160,7 @@ for k,v in pairs(UpsList) do UpsList[k]=nil end
 // Parameters:        				team,	 upgradeId, 							upgradeTextCode, 	upgradeDesc, 		upgradeTechId, 					upgradeFunc, 		requirements, 				levels, upgradeType,				mutuallyExclusive			
 // Start with classes                                                                                                                                                                                                                           
 table.insert(UpsList, BuildUpgrade("Marine", kCombatUpgrades.Jetpack,				"jp",				"Jetpack",			kTechId.Jetpack, 				GiveJetpack, 		kCombatUpgrades.Armor2, 	2, 		kCombatUpgradeTypes.Class,	kCombatUpgrades.Exosuit)) 	
-table.insert(UpsList, BuildUpgrade("Marine", kCombatUpgrades.Exosuit,   			"exo",			    "Exosuit",			kTechId.Exosuit, 	       		GiveExo,        	kCombatUpgrades.Armor2, 	2, 		kCombatUpgradeTypes.Class,	kCombatUpgrades.Jetpack)) 
+table.insert(UpsList, BuildUpgrade("Marine", kCombatUpgrades.Exosuit,   			"exo",			    "Exosuit",			kTechId.Exosuit, 	       		GiveExo,        	kCombatUpgrades.Armor2, 	4, 		kCombatUpgradeTypes.Class,	kCombatUpgrades.Jetpack)) 
                                                                                                                                                                                                                                                 
 // Weapons                                                                                                                                                                                                                                      
 table.insert(UpsList, BuildUpgrade("Marine", kCombatUpgrades.Mines,					"mines",			"Mines",			kTechId.LayMines, 				nil, 				nil, 						1, 		kCombatUpgradeTypes.Weapon, kCombatUpgrades.Exosuit)) 
