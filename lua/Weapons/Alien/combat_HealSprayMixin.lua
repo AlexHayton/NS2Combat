@@ -53,7 +53,12 @@ local function HealEntity(self, player, targetEntity)
 	 * Addition for Combat Mode to give XP for healing.
 	 */
 	local maxXp = GetXpValue(targetEntity)
-	local healXp = setDecimalPlaces(maxXp * amountHealed / targetEntity:GetMaxHealth(), 1)
+	local healXp = 0
+	if targetEntity:isa("Player") then
+		healXp = setDecimalPlaces(maxXp * kPlayerHealXpRate * kHealXpRate * amountHealed / targetEntity:GetMaxHealth(), 1)
+	else
+		healXp = setDecimalPlaces(maxXp * kHealXpRate * amountHealed / targetEntity:GetMaxHealth(), 1)
+	end
 		
 	// Award XP but suppress the message.
 	player:AddXp(healXp, true)

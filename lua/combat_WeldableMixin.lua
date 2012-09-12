@@ -26,7 +26,13 @@ function WeldableMixin:OnWeld(doer, elapsedTime)
             self:AddHealth(doer:GetRepairRate(self) * elapsedTime)
 			
 			local maxXp = GetXpValue(self)
-			local healXp = setDecimalPlaces(maxXp * doer:GetRepairRate(self) * elapsedTime / self:GetMaxHealth(), 1)
+			
+			local healXp = 0
+			if self:isa("Player") then
+				healXp = setDecimalPlaces(maxXp * kPlayerHealXpRate * kHealXpRate * doer:GetRepairRate(self) * elapsedTime / self:GetMaxHealth(), 1)
+			else
+				healXp = setDecimalPlaces(maxXp * kHealXpRate * doer:GetRepairRate(self) * elapsedTime / self:GetMaxHealth(), 1)
+			end
 				
 			// Award XP but suppress the message.
 			local doerPlayer = doer:GetParent()
