@@ -1,0 +1,38 @@
+//________________________________
+//
+//   	NS2 Combat Mod     
+//	Made by JimWest and MCMLXXXIV, 2012
+//
+//________________________________
+
+// combat_WeldableMixin.lua
+
+local function setDecimalPlaces(num, idp)
+    local mult = 10^(idp or 0)
+    if num >= 0 then return math.floor(num * mult) / mult
+    else return math.ceil(num * mult) / mult end
+end
+
+// Give some XP to the damaging entity.
+function WeldableMixin:OnWeld(doer, elapsedTime)
+
+    if self:GetCanBeWelded(doer) then
+    
+        if self.OnWeldOverride then
+            self:OnWeldOverride(doer, elapsedTime)
+        elseif doer:isa("MAC") then
+            self:AddHealth(MAC.kRepairHealthPerSecond * elapsedTime)
+        elseif doer:isa("Welder") then
+            self:AddHealth(doer:GetRepairRate(self) * elapsedTime)
+			
+			local maxXp = GetXpValue(self)
+			local healXp = setDecimalPlaces(maxXp * doer:GetRepairRate(self) * elapsedTime / self:GetMaxHealth(), 1)
+				
+			// Award XP but suppress the message.
+			local doerPlayer = doer:GetParent()
+			doerPlayer:AddXp(healXp, true)
+        end
+        
+    end
+    
+end
