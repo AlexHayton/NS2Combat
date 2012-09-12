@@ -13,7 +13,8 @@ local modeText =
         ["downloading level"]     = "DOWNLOADING LEVEL"
     }
 
-local spinner
+local spinnerBottom
+local spinnerTop
 local statusText
 local dotsText
 
@@ -25,10 +26,15 @@ function OnUpdateRender()
     
     local time = Shared.GetTime()
 
-    if spinner ~= nil then
-        local angle = -time * spinnerSpeed
-        spinner:SetRotation( Vector(0, 0, angle) )
+    if spinnerBottom ~= nil then
+        local angle = time * spinnerSpeed
+        spinnerBottom:SetRotation( Vector(0, 0, angle) )
     end
+	
+	/*if spinnerTop ~= nil then
+        local angle = -time * spinnerSpeed
+        spinnerTop:SetRotation( Vector(0, 0, angle) )
+    end*/
     
     if statusText ~= nil then
         
@@ -72,26 +78,33 @@ function OnLoadComplete()
     end
     
     local spinnerSize   = GUIScale(256)
-    local spinnerOffset = GUIScale(50)
+    local spinnerOffsetX = GUIScale(200)
+	local spinnerOffsetY = GUIScale(50)
 
-    spinner = GUI.CreateItem()
-    spinner:SetTexture("ui/loading/spinner.dds")
-    spinner:SetSize( Vector( spinnerSize, spinnerSize, 0 ) )
-    spinner:SetPosition( Vector( Client.GetScreenWidth() - spinnerSize - spinnerOffset, Client.GetScreenHeight() - spinnerSize - spinnerOffset, 0 ) )
-    spinner:SetBlendTechnique( GUIItem.Add )
+    spinnerBottom = GUI.CreateItem()
+    spinnerBottom:SetTexture("ui/loading/loading_bottom.dds")
+    spinnerBottom:SetSize( Vector( spinnerSize, spinnerSize, 0 ) )
+    spinnerBottom:SetPosition( Vector( Client.GetScreenWidth() - spinnerSize - spinnerOffsetX, Client.GetScreenHeight() - spinnerSize - spinnerOffsetY, 0 ) )
+    spinnerBottom:SetBlendTechnique( GUIItem.Add )
+	
+	spinnerTop = GUI.CreateItem()
+    spinnerTop:SetTexture("ui/loading/loading_top.dds")
+    spinnerTop:SetSize( Vector( spinnerSize, spinnerSize, 0 ) )
+    spinnerTop:SetPosition( Vector( Client.GetScreenWidth() - spinnerSize - spinnerOffsetX, Client.GetScreenHeight() - spinnerSize - spinnerOffsetY, 0 ) )
+    //spinnerTop:SetBlendTechnique( GUIItem.Add )
     
-    local statusOffset = GUIScale(50)
+    local statusOffset = GUIScale(20)
         
     statusText = GUI.CreateItem()
     statusText:SetOptionFlag(GUIItem.ManageRender)
-    statusText:SetPosition( Vector( Client.GetScreenWidth() - spinnerSize - spinnerOffset - statusOffset, Client.GetScreenHeight() - spinnerSize / 2 - spinnerOffset, 0 ) )
+    statusText:SetPosition( Vector( Client.GetScreenWidth() - spinnerSize - spinnerOffsetX - statusOffset, Client.GetScreenHeight() - spinnerSize / 2 - spinnerOffsetY, 0 ) )
     statusText:SetTextAlignmentX(GUIItem.Align_Max)
     statusText:SetTextAlignmentY(GUIItem.Align_Center)
     statusText:SetFontName("fonts/AgencyFB_large.fnt")
     
     dotsText = GUI.CreateItem()
     dotsText:SetOptionFlag(GUIItem.ManageRender)
-    dotsText:SetPosition( Vector( Client.GetScreenWidth() - spinnerSize - spinnerOffset - statusOffset, Client.GetScreenHeight() - spinnerSize / 2 - spinnerOffset, 0 ) )
+    dotsText:SetPosition( Vector( Client.GetScreenWidth() - spinnerSize - spinnerOffsetX - statusOffset, Client.GetScreenHeight() - spinnerSize / 2 - spinnerOffsetY, 0 ) )
     dotsText:SetTextAlignmentX(GUIItem.Align_Min)
     dotsText:SetTextAlignmentY(GUIItem.Align_Center)
     dotsText:SetFontName("fonts/AgencyFB_large.fnt")
