@@ -45,7 +45,7 @@ combat_GUIMarineBuyMenu.kSelectorSize = GUIScale( Vector(100, 100, 0) )
 // x-offset
 combat_GUIMarineBuyMenu.kSmallIconOffset_x = GUIScale(120)
 
-combat_GUIMarineBuyMenu.kIconTopOffset = 10
+combat_GUIMarineBuyMenu.kIconTopOffset = 40
 combat_GUIMarineBuyMenu.kItemIconYOffset = {}
 
 combat_GUIMarineBuyMenu.kEquippedIconTopOffset = 58
@@ -350,7 +350,12 @@ function combat_GUIMarineBuyMenu:_InitializeItemButtons()
     
     local allUps = GetAllUpgrades("Marine")
     // sort the ups, definied in this file
-    sortedList = CombatMarineBuy_GUISortUps(allUps)  
+    sortedList = CombatMarineBuy_GUISortUps(allUps) 
+
+    // get the headlines
+    local  headlines = CombatMarineBuy_GetHeadlines()
+    local nextHeadline = 1
+    
     local selectorPosX = -combat_GUIMarineBuyMenu.kSelectorSize.x + combat_GUIMarineBuyMenu.kPadding
     local fontScaleVector = Vector(0.8, 0.8, 0)
     local itemNr = 1
@@ -421,8 +426,26 @@ function combat_GUIMarineBuyMenu:_InitializeItemButtons()
                 itemNr = itemNr +1
             end
         else
-            itemNr = 1
-            xOffset = xOffset + combat_GUIMarineBuyMenu.kSmallIconOffset_x
+            // if its first next row, only set the headline
+            if i > 1 then
+                itemNr = 1
+                xOffset = xOffset + combat_GUIMarineBuyMenu.kSmallIconOffset_x
+            end
+            
+            // set the headline
+            local graphicItemHeading = GUIManager:CreateTextItem()
+            graphicItemHeading:SetFontName(combat_GUIMarineBuyMenu.kFont)
+            graphicItemHeading:SetFontIsBold(true)
+            graphicItemHeading:SetAnchor(GUIItem.Middle, GUIItem.Top)
+            graphicItemHeading:SetPosition(Vector((-combat_GUIMarineBuyMenu.kSmallIconSize.x/ 2) + xOffset, 5 + (combat_GUIMarineBuyMenu.kSmallIconSize.y) * itemNr - combat_GUIMarineBuyMenu.kSmallIconSize.y, 0))
+            graphicItemHeading:SetTextAlignmentX(GUIItem.Align_Min)
+            graphicItemHeading:SetTextAlignmentY(GUIItem.Align_Min)
+            graphicItemHeading:SetColor(combat_GUIMarineBuyMenu.kTextColor)
+            graphicItemHeading:SetText(headlines[nextHeadline] or "nothing")
+            self.menu:AddChild(graphicItemHeading)
+            
+            nextHeadline = nextHeadline + 1
+            
         end
     
     end

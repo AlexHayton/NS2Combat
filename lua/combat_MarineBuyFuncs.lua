@@ -9,14 +9,30 @@
       
 // helper Functions for the List, text etc  
 
+// headlines for the Buymenu
+function CombatMarineBuy_GetHeadlines()
+
+    headlines = {
+        "Support",
+        "Weapons",        
+        "Weapon Ups",
+        "Armor Ups",
+        "Class Ups",
+    }
+    
+    return headlines
+    
+end
+
 // costum sort function that the ups to look good
 function CombatMarineBuy_GUISortUps(upgradeList)
 
 // max 4 rows per column
     local layoutList = {
         // 0, Support
+        "nextRow",
         kTechId.MedPack,
-	kTechId.CatPack,
+	    kTechId.CatPack,
         kTechId.Scan,
         kTechId.LayMines,
         "nextRow",
@@ -32,7 +48,7 @@ function CombatMarineBuy_GUISortUps(upgradeList)
         kTechId.Weapons1,
         kTechId.Weapons2,
         kTechId.Weapons3,
-	kTechId.RifleUpgrade,
+	    kTechId.RifleUpgrade,
         "nextRow",
 
         // 3, Armor Upgrades
@@ -44,8 +60,8 @@ function CombatMarineBuy_GUISortUps(upgradeList)
 		
         // 4, Class Upgrades
         kTechId.Jetpack,     
-	kTechId.Exosuit,
-	kTechId.DualMinigunExosuit
+	    kTechId.Exosuit,
+	    kTechId.DualMinigunExosuit
     }
     
     local sortedList = {}    
