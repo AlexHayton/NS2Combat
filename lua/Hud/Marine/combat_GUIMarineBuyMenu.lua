@@ -58,39 +58,41 @@ local smallIconRows = 4
 local gSmallIconIndex = nil
 local function GetSmallIconPixelCoordinates(itemTechId)
 
-    if not kMarineTechIdToMaterialOffset then
+    if not kCombatMarineTechIdToMaterialOffset then
     
         // Init marine offsets
-        kMarineTechIdToMaterialOffset = {} 
+        kCombatMarineTechIdToMaterialOffset = {} 
         
         // class 
-        kMarineTechIdToMaterialOffset[kTechId.Jetpack] = 40
-        kMarineTechIdToMaterialOffset[kTechId.Exosuit] = 76
+        kCombatMarineTechIdToMaterialOffset[kTechId.Jetpack] = 40
+        kCombatMarineTechIdToMaterialOffset[kTechId.Exosuit] = 76
+        kCombatMarineTechIdToMaterialOffset[kTechId.DualMinigunExosuit] = 47
         
         // weapons        
-        kMarineTechIdToMaterialOffset[kTechId.LayMines] = 80
-        kMarineTechIdToMaterialOffset[kTechId.Welder] = 34
-        kMarineTechIdToMaterialOffset[kTechId.Shotgun] = 48
-        kMarineTechIdToMaterialOffset[kTechId.GrenadeLauncher] = 72
-        kMarineTechIdToMaterialOffset[kTechId.Flamethrower] = 42
-		kMarineTechIdToMaterialOffset[kTechId.Mine] = 80
-		kMarineTechIdToMaterialOffset[kTechId.DualMinigunExosuit] = 77
+        kCombatMarineTechIdToMaterialOffset[kTechId.LayMines] = 80
+        kCombatMarineTechIdToMaterialOffset[kTechId.Welder] = 34
+        kCombatMarineTechIdToMaterialOffset[kTechId.Shotgun] = 48
+        kCombatMarineTechIdToMaterialOffset[kTechId.GrenadeLauncher] = 72
+        kCombatMarineTechIdToMaterialOffset[kTechId.Flamethrower] = 42
+		kCombatMarineTechIdToMaterialOffset[kTechId.Mine] = 80
         
         // tech        
-        kMarineTechIdToMaterialOffset[kTechId.Armor1] = 49
-        kMarineTechIdToMaterialOffset[kTechId.Armor2] = 50
-        kMarineTechIdToMaterialOffset[kTechId.Armor3] = 51
-        kMarineTechIdToMaterialOffset[kTechId.Weapons1] = 55
-        kMarineTechIdToMaterialOffset[kTechId.Weapons2] = 56
-        kMarineTechIdToMaterialOffset[kTechId.Weapons3] = 57        
-        kMarineTechIdToMaterialOffset[kTechId.MedPack] = 37
-        kMarineTechIdToMaterialOffset[kTechId.Scan] = 41
-        kMarineTechIdToMaterialOffset[kTechId.MACEMP] = 62
-		kMarineTechIdToMaterialOffset[kTechId.CatPack] = 45
+        kCombatMarineTechIdToMaterialOffset[kTechId.Armor1] = 49
+        kCombatMarineTechIdToMaterialOffset[kTechId.Armor2] = 50
+        kCombatMarineTechIdToMaterialOffset[kTechId.Armor3] = 51
+        kCombatMarineTechIdToMaterialOffset[kTechId.Weapons1] = 55
+        kCombatMarineTechIdToMaterialOffset[kTechId.Weapons2] = 56
+        kCombatMarineTechIdToMaterialOffset[kTechId.Weapons3] = 57        
+        kCombatMarineTechIdToMaterialOffset[kTechId.MedPack] = 37
+        kCombatMarineTechIdToMaterialOffset[kTechId.Scan] = 41
+        kCombatMarineTechIdToMaterialOffset[kTechId.MACEMP] = 62
+		kCombatMarineTechIdToMaterialOffset[kTechId.CatPack] = 45
+		// fast reload
+		kCombatMarineTechIdToMaterialOffset[kTechId.RifleUpgrade] = 66
     
     end
     
-    local index = kMarineTechIdToMaterialOffset[itemTechId]
+    local index = kCombatMarineTechIdToMaterialOffset[itemTechId]
     if not index then
         index = 0
     end
@@ -370,7 +372,7 @@ function combat_GUIMarineBuyMenu:_InitializeItemButtons()
                 graphicItem:SetTexture(combat_GUIMarineBuyMenu.kSmallIconTexture)
                  // set the pixel coordinate for the icon
                 graphicItem:SetTexturePixelCoordinates(GetSmallIconPixelCoordinates(itemTechId))
-                
+
                 local graphicItemActive = GUIManager:CreateGraphicItem()
                 graphicItemActive:SetSize(combat_GUIMarineBuyMenu.kSelectorSize)          
                 graphicItemActive:SetPosition(Vector(selectorPosX, -combat_GUIMarineBuyMenu.kSelectorSize.y / 2, 0))
