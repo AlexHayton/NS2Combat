@@ -374,6 +374,9 @@ function Player:Reset_Lite()
 	
 	self.combatTable.hasInk = false
 	self.combatTable.lastInk = 0
+	
+	// for fastreload
+	self.combatTable.hasFastReload = false
     
     self.combatTable.giveClassAfterRespawn = nil	
 	self.combatTable.techtree = {}

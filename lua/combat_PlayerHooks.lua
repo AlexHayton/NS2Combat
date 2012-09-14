@@ -147,6 +147,7 @@ function CombatPlayer:OnUpdatePlayer_Hook(self, deltaTime)
 	self.hasArmsLab = true
 		
 	// Spawn Protect
+	self:CheckCombatData()
 	if self.combatTable.activeSpawnProtect then
 	
 		if self:GetIsAlive() and (self:GetTeamNumber() == 1 or self:GetTeamNumber() == 2) then

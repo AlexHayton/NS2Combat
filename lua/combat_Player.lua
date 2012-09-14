@@ -15,6 +15,22 @@ Script.Load("lua/combat_Player_Upgrades.lua")
 // not hooked
 //___________________
 
+
+// check for FastReload
+
+function Player:GotFastReload()
+    
+    local fastReload = false
+    
+    if self.combatTable.hasFastReload then
+        fastReload = true
+    end
+    
+    return fastReload
+
+end
+
+
 // function for spawn protect
 
 function Player:SetSpawnProtect()
