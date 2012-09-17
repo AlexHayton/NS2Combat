@@ -301,7 +301,7 @@ function combat_GUIMarineBuyMenu:_InitializeEquipped()
     
         self.equipped = { }
     
-    local equippedTechIds = MarineBuy_GetEquipped()
+    local equippedTechIds = self.player:GetUpgrades()
     local selectorPosX = -combat_GUIMarineBuyMenu.kSelectorSize.x + combat_GUIMarineBuyMenu.kPadding
     
     for k, itemTechId in ipairs(equippedTechIds) do
