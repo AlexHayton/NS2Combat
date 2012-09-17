@@ -60,8 +60,10 @@ local function HealEntity(self, player, targetEntity)
 		healXp = setDecimalPlaces(maxXp * kHealXpRate * amountHealed / targetEntity:GetMaxHealth(), 1)
 	end
 		
-	// Award XP but suppress the message.
-	player:AddXp(healXp, true)
+	// Award XP but suppress the message, but only the player is not the parent
+	if targetEntity:isa("Player") or targetEntity:GetOwner() ~= player then
+	    player:AddXp(healXp, true)
+    end
 
     if targetEntity.OnHealSpray then
         targetEntity:OnHealSpray(player)
