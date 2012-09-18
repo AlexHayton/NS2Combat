@@ -17,7 +17,7 @@ function CombatAlien:OnLoad()
    
     self:ReplaceClassFunction("Alien", "LockTierTwo", function() end)
     self:ReplaceClassFunction("Alien", "UpdateNumHives","UpdateNumHives_Hook")
-    self:ReplaceClassFunction("Alien", "OnUpdateAnimationInput","OnUpdateAnimationInput_Hook")
+    self:PostHookClassFunction("Alien", "OnUpdateAnimationInput","OnUpdateAnimationInput_Hook")
 	
 end
 
@@ -44,14 +44,12 @@ function CombatAlien:UpdateNumHives_Hook(self)
 end
 
 function CombatAlien:OnUpdateAnimationInput_Hook(self, modelMixin)
-
-    Player.OnUpdateAnimationInput(self, modelMixin)
-    
+  
     if self:GotFocus() then
-        modelMixin:SetAnimationInput("attack_speed", kCombatFocusAttackSpeed)
+        modelMixin:SetAnimationInput("attack_speed", kCombatFocusAttackSpeed)        
     else
         // standard attack speed is 1, but the variable is local so we cant use it
-        modelMixin:SetAnimationInput("attack_speed", self:GetIsEnzymed() and kEnzymeAttackSpeed or 1)
+        modelMixin:SetAnimationInput("attack_speed", self:GetIsEnzymed() and kEnzymeAttackSpeed or 1.0)
     end
     
 end

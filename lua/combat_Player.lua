@@ -36,11 +36,26 @@ function Player:GotFocus()
 
     local gotFocus = false
     
-    if self.combatTable.hasFocus then
-        activeWeapon = self:GetActiveWeapon()
+    // disabled for onos due to bugs
+    if self.combatTable.hasFocus and self:GetTechId() ~= kTechId.Onos then
         // check the weapon
-        gotFocus = true    
+        activeWeapon = self:GetActiveWeapon()
+        if activeWeapon then
+            // only give focus when primary attacking, some weapon has only primary and then its nil
+            if (activeWeapon.primaryAttacking == true or activeWeapon.firingPrimary == true or activeWeapon.attacking == true) then
+                activeMapName = activeWeapon:GetPrimaryAttackPrefix()                
+                for i, mapname in ipairs(kCombatFocusWeapons) do
+                    if mapname == activeMapName then      
+                        gotFocus = true 
+                        break            
+                    end
+                end 
+            end 
+  
+        end
+   
     end
+    
     
     return gotFocus
 end

@@ -70,6 +70,14 @@ kCombatFastRelaodTime = kClassicReloadTime * 2
 
 kCombatFocusAttackSpeed = 0.5
 kCombatFocusScalar = 2
+// all weapons that get the focus dmg etc., kMapNames
+kCombatFocusWeapons = {
+                        BiteLeap.kMapName,
+                        LerkBite.kMapName,
+                        SpitSpray.kMapName,
+                        SwipeBlink.kMapName,
+                        //Gore.kMapName
+                      }
 
 // Props
 kPropEffect = "vortex_destroy"
