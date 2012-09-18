@@ -15,23 +15,42 @@ Script.Load("lua/combat_Player_Upgrades.lua")
 // not hooked
 //___________________
 
+
+// check for FastReload
+
+function Player:GotFastReload()
+    
+    local fastReload = false
+    
+    if self.combatTable.hasFastReload then
+        fastReload = true
+    end
+    
+    return fastReload
+
+end
+
+
 // function for spawn protect
 
 function Player:SetSpawnProtect()
 
-    self.combatSpawnProtect = 1    
+    self.combatTable.activeSpawnProtect = true
+	self.combatTable.deactivateSpawnProtect = nil
     
 end
 
 function Player:DeactivateSpawnProtect()
-    self.combatSpawnProtect = nil
-    self.combatPlayerGotSpawnProtect = nil
+
+    self.combatTable.activeSpawnProtect = nil
+    self.gotSpawnProtect = nil
     
     if self.combatNanoShieldEnt then
         DestroyEntity(self.combatNanoShieldEnt)
     end
     
     self.combatNanoShieldEnt = nil
+	
 end
 
 function Player:PerformSpawnProtect()
@@ -40,7 +59,7 @@ function Player:PerformSpawnProtect()
     self:SetArmor( self:GetMaxArmor() )
         
     // only make the effects once
-    if not self.combatPlayerGotSpawnProtect then
+    if not self.gotSpawnProtect then
         
         if self:isa("Marine") then
         
@@ -48,14 +67,19 @@ function Player:PerformSpawnProtect()
             nanoShield:SetParent(self)
             self:ActivateNanoShield()
             self.combatNanoShieldEnt = nanoShield
+			
         elseif self:isa("Alien") then
-            self:TriggerCatalyst(kCombatSpawnProtectTime)
-            //self:SetHasUmbra(false,kCombatSpawnProtectTime)            
+		
+			local spawnProtectTimeLeft = self.combatTable.deactivateSpawnProtect - Shared.GetTime()
+            //self:TriggerCatalyst(spawnProtectTimeLeft)
+            self:SetHasUmbra(true, spawnProtectTimeLeft)       
 
         end
      
-        self.combatPlayerGotSpawnProtect = true
+        self.gotSpawnProtect = true
+		
     end    
+	
  end
 
 
@@ -158,18 +182,14 @@ end
 
 function Player:CheckCatalyst()
 	
-	local deltaTime = Shared.GetTime()
+	local timeNow = Shared.GetTime()
 
     if self.combatTable.hasCatalyst then
-    
-        if self.combatTable.lastCatalyst == 0 then
-            self.combatTable.lastCatalyst = deltaTime
-        end
         
-        if (deltaTime - self.combatTable.lastCatalyst >= kCatalystTimer) then            
+        if (self.combatTable.lastCatalyst == 0) or (timeNow - self.combatTable.lastCatalyst >= kCatalystTimer) then            
             local success = self:CatalystNow()            
             if success then
-                self.combatTable.lastCatalyst = deltaTime
+                self.combatTable.lastCatalyst = timeNow
             end           
         end
 

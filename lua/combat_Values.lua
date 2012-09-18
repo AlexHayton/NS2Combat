@@ -25,18 +25,30 @@ kCombatReminderNotifyInterval = 45
 kDirectMessageFadeTime = 8
 kDirectMessagesNumVisible = 9
 
+// Menu tweaks
+kCombatAlienBuyMenuTotalAngle = 0.8
+kCombatAlienBuyMenuUpgradeButtonDistance = 210
+
 // Set the respawn timer
 kCombatRespawnTimer = 10
 kAlienWaveSpawnInterval = 10
 
+// Rebalancing Intervals (mins)
+kCombatRebalanceInterval = 5
+
 // Spawn protection
-kCombatSpawnProtectTime = 4
+kCombatMarineSpawnProtectTime = 4
 // nano shield = spawn Protection
-kNanoShieldDuration = kCombatSpawnProtectTime 
+kNanoShieldDuration = kCombatMarineSpawnProtectTime 
+kCombatAlienSpawnProtectTime = 5
+kSpawnMaxRetries = 25
+kSpawnMinDistance = 3
+kSpawnMaxDistance = 70
+kSpawnMaxVertical = 25
 
 // By default, Aliens win after a certain amount of time...
 // Specified in seconds...
-kCombatTimeLimit = 1800
+kCombatTimeLimit = 1500
 kCombatTimeLeftPlayed = 0
 kCombatTimeReminderInterval = 300
 
@@ -52,13 +64,17 @@ kScanRadius = 40
 kEMPTimer = 30
 kInkTimer = 30
 
+// fast reload and later focus time
+kClassicReloadTime = 1.150000
+kCombatFastRelaodTime = kClassicReloadTime * 2
+
 // Props
 kPropEffect = "vortex_destroy"
 kPropEffectTimer = 2
 
 // Gestate Times
 kGestateTime = {}
-kGestateTime[kTechId.Skulk] = 2
+kGestateTime[kTechId.Skulk] = 1.5
 kGestateTime[kTechId.Gorge] = 3
 kGestateTime[kTechId.Lerk] = 4
 kGestateTime[kTechId.Fade] = 5
@@ -80,6 +96,10 @@ kCamouflageUncloakFactor = 2 / 3
 kHealsprayDamage = 10
 // Conversely, reduce the welder's effectiveness from its original value of 150.
 kStructureWeldRate = 120
+// The rate at which players gain XP for healing... relative to damage dealt.
+kHealXpRate = 1
+// Rate at which players gain XP for healing other players...
+kPlayerHealXpRate = 0
 
 // Alien vision should be free
 kAlienVisionCost = 0
@@ -112,6 +132,7 @@ kRegenerationCost = generalCost
 kAuraCost = generalCost
 kSilenceCost = generalCost
 kHydraAbilityCost = generalCost
+kHydraCost = 0
 kPiercingCost = generalCost
 kAdrenalineCost = generalCost
 kFeintCost = generalCost

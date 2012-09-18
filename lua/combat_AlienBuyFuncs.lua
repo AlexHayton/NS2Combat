@@ -6,7 +6,7 @@
 //________________________________
 
 // combat_AlienBuyFuncs.lua
-local function GetPurchasedTechIds(techId)
+function GetPurchasedTechIds(techId)
     
     local player = Client.GetLocalPlayer()
     
@@ -31,6 +31,12 @@ local function GetPurchasedTechIds(techId)
     
 end
 
+function AlienUI_GetUpgradesForCategory(category)
+
+    return { category }
+
+end
+
 
 // iconx, icony, name, tooltip, research, cost. Need to change that to change the costs
 function GetUnpurchasedUpgradeInfoArray(techIdTable)
@@ -43,32 +49,28 @@ function GetUnpurchasedUpgradeInfoArray(techIdTable)
     
         for index, techId in ipairs(techIdTable) do
         
-            if not player:GetIsUpgradeForbidden(techId) then
-        
-                local iconX, iconY = GetMaterialXYOffset(techId, false)
-                
-                if iconX and iconY then
+			local iconX, iconY = GetMaterialXYOffset(techId, false)
+			
+			if iconX and iconY then
 
-                    local techTree = GetTechTree(player:GetTeamNumber())
-                    local upgradeName = GetDisplayNameForTechId(techId, string.format("<name not found - %s>", EnumToString(kTechId, techId)))
-                    local upgrade = GetUpgradeFromTechId(techId)
-                    
-                    table.insert(t, iconX)
-                    table.insert(t, iconY)                    
-                    table.insert(t, upgradeName)                    
-                    table.insert(t, GetTooltipInfoText(techId))                 
-                    table.insert(t, GetTechTree():GetResearchProgressForNode(techId))
-                    // cost
-                    table.insert(t, upgrade:GetLevels()) 
-                    table.insert(t, techId)
-                    if techTree then
-                        table.insert(t, techTree:GetIsTechAvailable(techId))
-                    else
-                        table.insert(t, false)
-                    end
-                end
-            
-            end
+				local techTree = GetTechTree(player:GetTeamNumber())
+				local upgradeName = GetDisplayNameForTechId(techId, string.format("<name not found - %s>", EnumToString(kTechId, techId)))
+				local upgrade = GetUpgradeFromTechId(techId)
+				
+				table.insert(t, iconX)
+				table.insert(t, iconY)                    
+				table.insert(t, upgradeName)                    
+				table.insert(t, GetTooltipInfoText(techId))                 
+				table.insert(t, GetTechTree():GetResearchProgressForNode(techId))
+				// cost
+				table.insert(t, upgrade:GetLevels()) 
+				table.insert(t, techId)
+				if techTree then
+					table.insert(t, techTree:GetIsTechAvailable(techId))
+				else
+					table.insert(t, false)
+				end
+			end
             
         end
     
@@ -147,13 +149,13 @@ function AlienBuy_GetPurchasedUpgrades(idx)
     
 end
 
-function AlienBuy_GetGotRequirements(techId)
+function AlienBuy_GetIsUpgradeAllowed(techId, upgradeTechIdList)
 
     local player = Client.GetLocalPlayer()
     if player then    
         local upgrade = GetUpgradeFromTechId(techId)
         if upgrade then
-            return player:GotRequirements(upgrade)
+            return player:GotRequirementsFromTechIds(upgrade, upgradeTechIdList)
         end    
     end
     

@@ -29,6 +29,7 @@ Script.Load("lua/combat_CommandStructure_Hooks.lua")
 Script.Load("lua/combat_Hive.lua")
 Script.Load("lua/combat_Armory.lua")
 Script.Load("lua/combat_Weapon.lua")
+Script.Load("lua/Weapons/Marines/combat_ClipWeapon.lua")
 
 // Load the normal Ns2 Server Scripts
 Script.Load("lua/Server.lua")
@@ -47,12 +48,15 @@ Script.Load("lua/combat_CombatMarineUpgrade.lua")
 Script.Load("lua/combat_CombatAlienUpgrade.lua")
 Script.Load("lua/combat_ExperienceData.lua")
 Script.Load("lua/combat_ExperienceFuncs.lua")
+Script.Load("lua/combat_Utility.lua")
 Script.Load("lua/combat_Values.lua")
 
 Script.Load("lua/combat_Props.lua")
 
 // due to a bug, this needs to be loaded here
 Script.Load("lua/combat_PointGiverMixin.lua")
+Script.Load("lua/combat_WeldableMixin.lua")
+Script.Load("lua/Weapons/Alien/combat_HealSprayMixin.lua")
 Script.Load("lua/combat_ScoringMixin.lua")
 
 // Load the Versions Checker and kill him

@@ -82,6 +82,17 @@ function GetUpgradeFromId(upgradeId)
 
 end
 
+function GetUpgradeFromTechId(upgradeTechId)
+
+	// Find the upgrade that matches this Id.
+	for index, upgrade in pairs(UpsList) do
+		if upgrade:GetTechId() == upgradeTechId then
+			return upgrade
+		end
+	end
+
+end
+
 function GetUpgradesOfType(upgradeList, upgradeType)
 
 	local typeList = {}

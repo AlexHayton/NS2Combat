@@ -26,16 +26,18 @@ mateXpRange = 15
 if(not HotReload) then
 	XpValues = {}
 end
-XpValues["Marine"] = 100
-XpValues["Skulk"] = 100
-XpValues["Gorge"] = 100
-XpValues["Lerk"] = 100
-XpValues["Fade"] = 100
+XpValues["Marine"] = 0
+XpValues["Skulk"] = 0
+XpValues["Gorge"] = 10
+XpValues["Lerk"] = 20
+XpValues["Fade"] = 50
 XpValues["Onos"] = 100
+XpValues["Exo"] = 100
 XpValues["Hydra"] = 30
 XpValues["Clog"] = 20
-XpValues["Armory"] = 50
-XpValues["CommandStation"] = 150
+XpValues["Cyst"] = 10
+XpValues["Armory"] = 100
+XpValues["CommandStation"] = 200
 XpValues["Hive"] = 400
 
 // xp  for welding, healing
@@ -78,14 +80,17 @@ end
 
 local function Scan(player, techUpgrade)
 	player.combatTable.hasScan = true
+	player.combatTable.lastScan = 0
 end
 
 local function Resupply(player, techUpgrade)
 	player.combatTable.hasResupply = true
+	player.combatTable.lastResupply = 0
 end
 
 local function Catalyst(player, techUpgrade)
 	player.combatTable.hasCatalyst = true
+	player.combatTable.lastCatalyst = 0
 end
 
 local function FastReload(player, techUpgrade)
@@ -94,12 +99,26 @@ end
 
 local function EMP(player, techUpgrade)
 	player.combatTable.hasEMP = true
+	player.combatTable.lastEMP = 0
 	player:SendDirectMessage("You got EMP-taunt, use your taunt key to activate it")
 end
 
 local function ShadeInk(player, techUpgrade)
     player.combatTable.hasInk = true
+	player.combatTable.lastInk = 0
     player:SendDirectMessage("You got Ink-taunt, use your taunt key to activate it")
+end
+
+local function GiveWelder(player, techUpgrade)
+	techUpgrade:ExecuteTechUpgrade(player)
+	player.combatTable.justGotWelder = true
+	
+	// SwitchWeapon here doesn't work - move it further along...
+	//player:SwitchWeapon(1)
+end
+
+local function FastReload(player, techUpgrade)
+	player.combatTable.hasFastReload = true
 end
 
 // Helper function to build upgrades for us.
@@ -126,11 +145,11 @@ for k,v in pairs(UpsList) do UpsList[k]=nil end
 // Parameters:        				team,	 upgradeId, 							upgradeTextCode, 	upgradeDesc, 		upgradeTechId, 					upgradeFunc, 		requirements, 				levels, upgradeType,				mutuallyExclusive			
 // Start with classes                                                                                                                                                                                                                           
 table.insert(UpsList, BuildUpgrade("Marine", kCombatUpgrades.Jetpack,				"jp",				"Jetpack",			kTechId.Jetpack, 				GiveJetpack, 		kCombatUpgrades.Armor2, 	2, 		kCombatUpgradeTypes.Class,	kCombatUpgrades.Exosuit)) 	
-table.insert(UpsList, BuildUpgrade("Marine", kCombatUpgrades.Exosuit,   			"exo",			    "Exosuit",			kTechId.Exosuit, 	       		GiveExo,        	kCombatUpgrades.Armor2, 	2, 		kCombatUpgradeTypes.Class,	kCombatUpgrades.Jetpack)) 
+table.insert(UpsList, BuildUpgrade("Marine", kCombatUpgrades.Exosuit,   			"exo",			    "Exosuit",			kTechId.Exosuit, 	       		GiveExo,        	kCombatUpgrades.Armor2, 	4, 		kCombatUpgradeTypes.Class,	kCombatUpgrades.Jetpack)) 
                                                                                                                                                                                                                                                 
 // Weapons                                                                                                                                                                                                                                      
 table.insert(UpsList, BuildUpgrade("Marine", kCombatUpgrades.Mines,					"mines",			"Mines",			kTechId.LayMines, 				nil, 				nil, 						1, 		kCombatUpgradeTypes.Weapon, kCombatUpgrades.Exosuit)) 
-table.insert(UpsList, BuildUpgrade("Marine", kCombatUpgrades.Welder,				"welder",			"Welder",			kTechId.Welder, 				nil, 				nil, 						1, 		kCombatUpgradeTypes.Weapon, kCombatUpgrades.Exosuit)) 
+table.insert(UpsList, BuildUpgrade("Marine", kCombatUpgrades.Welder,				"welder",			"Welder",			kTechId.Welder, 				GiveWelder, 		nil, 						1, 		kCombatUpgradeTypes.Weapon, kCombatUpgrades.Exosuit)) 
 table.insert(UpsList, BuildUpgrade("Marine", kCombatUpgrades.Shotgun,				"sg",				"Shotgun",			kTechId.Shotgun, 				nil, 				kCombatUpgrades.Weapons1, 	1, 		kCombatUpgradeTypes.Weapon, kCombatUpgrades.Exosuit)) 
 table.insert(UpsList, BuildUpgrade("Marine", kCombatUpgrades.Flamethrower,			"flame",			"Flamethrower",		kTechId.Flamethrower, 			nil, 				kCombatUpgrades.Shotgun, 	1, 		kCombatUpgradeTypes.Weapon, kCombatUpgrades.Exosuit)) 	
 table.insert(UpsList, BuildUpgrade("Marine", kCombatUpgrades.GrenadeLauncher,		"gl",				"Grenade Launcher",	kTechId.GrenadeLauncher, 		nil, 				kCombatUpgrades.Shotgun, 	1, 		kCombatUpgradeTypes.Weapon, kCombatUpgrades.Exosuit)) 
@@ -146,10 +165,10 @@ table.insert(UpsList, BuildUpgrade("Marine", kCombatUpgrades.Armor3,				"arm3",	
                                                                                                                                                                                                                                                 
 // Add motion detector, scanner, resup, catpacks as available...                                                                                                                                                                                
 table.insert(UpsList, BuildUpgrade("Marine", kCombatUpgrades.Scanner,				"scan",				"Scanner",			kTechId.Scan, 			   		Scan, 	      		nil,                     	1, 		kCombatUpgradeTypes.Tech,   nil)) 					
-table.insert(UpsList, BuildUpgrade("Marine", kCombatUpgrades.Resupply,				"resup",			"Resupply",			kTechId.MedPack , 	       		Resupply,    		nil, 	                    1, 		kCombatUpgradeTypes.Tech,   nil)) 					
+table.insert(UpsList, BuildUpgrade("Marine", kCombatUpgrades.Resupply,				"resup",			"Resupply",			kTechId.MedPack , 	       		Resupply,    		nil, 	                    1, 		kCombatUpgradeTypes.Tech,   kCombatUpgrades.Exosuit)) 					
 table.insert(UpsList, BuildUpgrade("Marine", kCombatUpgrades.Catalyst,				"cat",				"Catalyst",			kTechId.CatPack , 	       		Catalyst,  			nil, 	                    1, 		kCombatUpgradeTypes.Tech,   nil)) 					
 table.insert(UpsList, BuildUpgrade("Marine", kCombatUpgrades.EMP,   				"emp",			    "EMP-Taunt",		kTechId.MACEMP , 	       		EMP,        		nil, 	                    1, 		kCombatUpgradeTypes.Tech,   nil)) 					
-//table.insert(UpsList, BuildUpgrade("Marine", kCombatUpgrades.FastReload,   		"fastreload",		"Fast Reload",		kTechId.SocketPowerNode , 		FastReload,   	    nil, 	                    1, 		kCombatUpgradeTypes.Tech,   nil)) 					
+table.insert(UpsList, BuildUpgrade("Marine", kCombatUpgrades.FastReload,   		    "fastreload",		"Fast Reload",		kTechId.RifleUpgrade , 		    FastReload,   	    nil, 	                    1, 		kCombatUpgradeTypes.Tech,   kCombatUpgrades.Exosuit)) 					
                                                                                                                                                                                                                                                 
                                                                                                                                                                                                                                                 
 // Alien Upgrades                                                                                                                                                                                                                               

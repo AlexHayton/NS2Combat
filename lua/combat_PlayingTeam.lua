@@ -21,7 +21,7 @@ function CombatPlayingTeam:OnLoad()
     self:ReplaceClassFunction("PlayingTeam", "GetHasTeamLost", "GetHasTeamLost_Hook")
 	self:ReplaceClassFunction("PlayingTeam", "UpdateTechTree", "UpdateTechTree_Hook")
 	self:ReplaceClassFunction("PlayingTeam", "Update", "Update_Hook")
-	self:PostHookClassFunction("PlayingTeam", "RespawnPlayer", "RespawnPlayer_Hook"):SetPassHandle(true)
+	self:ReplaceClassFunction("PlayingTeam", "RespawnPlayer", "RespawnPlayer_Hook")
     
 end
 
@@ -263,22 +263,61 @@ function CombatPlayingTeam:SpawnPlayer(player)
 		// Remove the third-person mode (bug introduced in 216).
 		newPlayer:SetCameraDistance(0)
 		
-		//give him spawn Protect (dont set the time here, just that spawn protect ist active)
+		//give him spawn Protect (dont set the time here, just that spawn protect is active)
 		newPlayer:SetSpawnProtect()
+		
+		// Try to fix the welder bug
+		if newPlayer.combatTable.justGotWelder then
+			newPlayer.combatTable.justGotWelder = false
+			newPlayer:SwitchWeapon(1)
+		end
     end
 
     return success
 
 end
 
-// hook RespawnPlayer to make sure the player will be respawned
-function CombatPlayingTeam:RespawnPlayer_Hook(handle, self, player, origin, angles)
+// Another copy job I'm afraid...
+// The default spawn code just isn't strong enough for us. Give it a dose of coffee.
+// Call with origin and angles, or pass nil to have them determined from team location and spawn points.
+function CombatPlayingTeam:RespawnPlayer_Hook(self, player, origin, angles)
+
+    local success = false
+    local initialTechPoint = Shared.GetEntity(self.initialTechPointId)
     
-    // try again
-    if (handle:GetReturn() == false) then        
-        Print("PlayingTeam:RespawnPlayer: Will try again to find a spawn.\n")        
-        player:GetTeam():RespawnPlayer(player, nil, nil)
+    if origin ~= nil and angles ~= nil then
+        success = Team.RespawnPlayer(self, player, origin, angles)
+    elseif initialTechPoint ~= nil then
+    
+        // Compute random spawn location
+        local capsuleHeight, capsuleRadius = player:GetTraceCapsule()
+        local spawnOrigin = GetRandomSpawnForCapsule(capsuleHeight, capsuleRadius, initialTechPoint:GetOrigin(), kSpawnMinDistance, kSpawnMaxDistance, EntityFilterAll())
+        if spawnOrigin ~= nil then
+        
+            // Orient player towards tech point
+            local lookAtPoint = initialTechPoint:GetOrigin() + Vector(0, 5, 0)
+            local toTechPoint = GetNormalizedVector(lookAtPoint - spawnOrigin)
+            success = Team.RespawnPlayer(self, player, spawnOrigin, Angles(GetPitchFromVector(toTechPoint), GetYawFromVector(toTechPoint), 0))
+            
+        else
+        
+            Print("PlayingTeam:RespawnPlayer: Couldn't compute random spawn for player.\n")
+			Print("PlayingTeam:RespawnPlayer: Name: " .. player:GetName() .. " Class: " .. player:GetClassName())
+            
+        end
+        
+    else
+        Print("PlayingTeam:RespawnPlayer(): No initial tech point.")
     end
+	
+	// try again
+    if (not success) then        
+        Print("PlayingTeam:RespawnPlayer(): Will try again to find a spawn.\n")   
+	    //player:Replace(player:GetDeathMapName())
+        self:PutPlayerInRespawnQueue(player, Shared.GetTime())
+    end
+    
+    return success
     
 end
 

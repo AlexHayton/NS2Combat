@@ -147,23 +147,28 @@ function CombatPlayer:OnUpdatePlayer_Hook(self, deltaTime)
 	self.hasArmsLab = true
 		
 	// Spawn Protect
-	if self.combatSpawnProtect then
-		if self:GetIsAlive() then
-			if self.combatSpawnProtect == 1 then
+	self:CheckCombatData()
+	if self.combatTable.activeSpawnProtect then
+	
+		if self:GetIsAlive() and (self:GetTeamNumber() == 1 or self:GetTeamNumber() == 2) then
+		
+			if not self.combatTable.deactivateSpawnProtect then
 				// set the real spawn protect time here
-				self.combatSpawnProtect = Shared.GetTime() +  kCombatSpawnProtectTime
-			elseif
-				Shared.GetTime() >= self.combatSpawnProtect then
+				self.combatTable.deactivateSpawnProtect = Shared.GetTime() +  kCombatMarineSpawnProtectTime
+			elseif Shared.GetTime() >= self.combatTable.deactivateSpawnProtect then
 				// end spawn protect
 				self:DeactivateSpawnProtect()
 			else
+				if not self.gotSpawnProtect then
 				self:PerformSpawnProtect()
+				end
 			end
 		end
+		
 	end
 	
 	if self.combatTable then
-		// only trigger Scan and Ressuply when player is alive
+		// only trigger Scan and Resupply when player is alive
 		if self:GetIsAlive() then
 
 			if self.combatTable.hasCamouflage then
@@ -183,7 +188,7 @@ function CombatPlayer:OnUpdatePlayer_Hook(self, deltaTime)
 			// Provide scan and resupply function
 			if self.combatTable.hasScan then
 				// SCAN!!
-				if (self.combatTable.lastScan + deltaTime > kScanTimer) then
+				if (self.combatTable.lastScan + deltaTime >= kScanTimer) then
 					
 					local success = self:ScanNow()
 					
@@ -197,7 +202,7 @@ function CombatPlayer:OnUpdatePlayer_Hook(self, deltaTime)
 			end 
 			
 			if self.combatTable.hasResupply then
-				if (self.combatTable.lastResupply + deltaTime > kResupplyTimer) then
+				if (self.combatTable.lastResupply + deltaTime >= kResupplyTimer) then
 					
 					// Keep the timer going, even if we don't need to resupply.
 					local success = false
@@ -225,7 +230,7 @@ function CombatPlayer:Taunt_Hook(self)
 
     if self.combatTable then
         if self.combatTable.hasEMP then
-            if  self.combatTable.lastEMP == 0 or Shared.GetTime() > ( self.combatTable.lastEMP + kEMPTimer) then
+            if  self.combatTable.lastEMP == 0 or Shared.GetTime() >= ( self.combatTable.lastEMP + kEMPTimer) then
                 self:EMPBlast()
                 self.combatTable.lastEMP = Shared.GetTime()
             else
@@ -233,7 +238,7 @@ function CombatPlayer:Taunt_Hook(self)
                 self:SendDirectMessage("EMP-taunt is not ready, wait " .. timeReady .. " sec")
             end    
         elseif self.combatTable.hasInk then
-            if  self.combatTable.lastInk == 0 or Shared.GetTime() > ( self.combatTable.lastInk + kInkTimer) then
+            if  self.combatTable.lastInk == 0 or Shared.GetTime() >= ( self.combatTable.lastInk + kInkTimer) then
                 self:TriggerInk()
                 self.combatTable.lastInk = Shared.GetTime()
             else

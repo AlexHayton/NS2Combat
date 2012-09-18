@@ -118,11 +118,11 @@ function Player:CoEnableUpgrade(upgrades)
             // special treatment for aliens cause they will hatch with all upgrades)
             self:ApplyAllUpgrades(nil, validUpgrades)
         else
-            for i, upgrade in ipairs(validUpgrades) do
-                self:ApplyAllUpgrades(nil, upgrade)
-				
+            for i, upgrade in ipairs(validUpgrades) do				
 				// Refund the mutually exclusive upgrades if we bought e.g. exo...
-				self:RefundMutuallyExclusiveUpgrades(upgrade)
+				// call it first before ApplyAllUpgrades, or the efundMutuallyExclusiveUpgrades function is not getting called right
+				self:RefundMutuallyExclusiveUpgrades(upgrade)				
+                self:ApplyAllUpgrades(nil, upgrade)
             end    
         end
     end
@@ -374,6 +374,9 @@ function Player:Reset_Lite()
 	
 	self.combatTable.hasInk = false
 	self.combatTable.lastInk = 0
+	
+	// for fastreload
+	self.combatTable.hasFastReload = false
     
     self.combatTable.giveClassAfterRespawn = nil	
 	self.combatTable.techtree = {}

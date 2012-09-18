@@ -17,7 +17,7 @@ combat_GUIMarineBuyMenu.kRepeatingBackground = "ui/menu/grid.dds"
 combat_GUIMarineBuyMenu.kContentBgTexture = "ui/menu/repeating_bg.dds"
 combat_GUIMarineBuyMenu.kContentBgBackTexture = "ui/menu/repeating_bg_black.dds"
 combat_GUIMarineBuyMenu.kResourceIconTexture = "ui/pres_icon_big.dds"
-combat_GUIMarineBuyMenu.kSmallIconTexture = "ui/marine_buildmenu.dds"
+combat_GUIMarineBuyMenu.kSmallIconTexture = "ui/marine_buildmenu_insight.dds"
 combat_GUIMarineBuyMenu.kBigIconTexture = "ui/marine_buy_bigicons.dds"
 combat_GUIMarineBuyMenu.kButtonTexture = "ui/marine_buymenu_button.dds"
 combat_GUIMarineBuyMenu.kMenuSelectionTexture = "ui/marine_buymenu_selector.dds"
@@ -45,7 +45,7 @@ combat_GUIMarineBuyMenu.kSelectorSize = GUIScale( Vector(100, 100, 0) )
 // x-offset
 combat_GUIMarineBuyMenu.kSmallIconOffset_x = GUIScale(120)
 
-combat_GUIMarineBuyMenu.kIconTopOffset = 10
+combat_GUIMarineBuyMenu.kIconTopOffset = 40
 combat_GUIMarineBuyMenu.kItemIconYOffset = {}
 
 combat_GUIMarineBuyMenu.kEquippedIconTopOffset = 58
@@ -58,39 +58,41 @@ local smallIconRows = 4
 local gSmallIconIndex = nil
 local function GetSmallIconPixelCoordinates(itemTechId)
 
-    if not kMarineTechIdToMaterialOffset then
+    if not kCombatMarineTechIdToMaterialOffset then
     
         // Init marine offsets
-        kMarineTechIdToMaterialOffset = {} 
+        kCombatMarineTechIdToMaterialOffset = {} 
         
         // class 
-        kMarineTechIdToMaterialOffset[kTechId.Jetpack] = 40
-        kMarineTechIdToMaterialOffset[kTechId.Exosuit] = 77
+        kCombatMarineTechIdToMaterialOffset[kTechId.Jetpack] = 40
+        kCombatMarineTechIdToMaterialOffset[kTechId.Exosuit] = 76
+        kCombatMarineTechIdToMaterialOffset[kTechId.DualMinigunExosuit] = 47
         
         // weapons        
-        kMarineTechIdToMaterialOffset[kTechId.LayMines] = 80
-        kMarineTechIdToMaterialOffset[kTechId.Welder] = 34
-        kMarineTechIdToMaterialOffset[kTechId.Shotgun] = 48
-        kMarineTechIdToMaterialOffset[kTechId.GrenadeLauncher] = 72
-        kMarineTechIdToMaterialOffset[kTechId.Flamethrower] = 42
-		kMarineTechIdToMaterialOffset[kTechId.Mine] = 80
-		kMarineTechIdToMaterialOffset[kTechId.DualMinigunExosuit] = 10
+        kCombatMarineTechIdToMaterialOffset[kTechId.LayMines] = 80
+        kCombatMarineTechIdToMaterialOffset[kTechId.Welder] = 34
+        kCombatMarineTechIdToMaterialOffset[kTechId.Shotgun] = 48
+        kCombatMarineTechIdToMaterialOffset[kTechId.GrenadeLauncher] = 72
+        kCombatMarineTechIdToMaterialOffset[kTechId.Flamethrower] = 42
+		kCombatMarineTechIdToMaterialOffset[kTechId.Mine] = 80
         
         // tech        
-        kMarineTechIdToMaterialOffset[kTechId.Armor1] = 49
-        kMarineTechIdToMaterialOffset[kTechId.Armor2] = 50
-        kMarineTechIdToMaterialOffset[kTechId.Armor3] = 51
-        kMarineTechIdToMaterialOffset[kTechId.Weapons1] = 55
-        kMarineTechIdToMaterialOffset[kTechId.Weapons2] = 56
-        kMarineTechIdToMaterialOffset[kTechId.Weapons3] = 57        
-        kMarineTechIdToMaterialOffset[kTechId.MedPack] = 37
-        kMarineTechIdToMaterialOffset[kTechId.Scan] = 41
-        kMarineTechIdToMaterialOffset[kTechId.MACEMP] = 62
-		kMarineTechIdToMaterialOffset[kTechId.CatPack] = 45
+        kCombatMarineTechIdToMaterialOffset[kTechId.Armor1] = 49
+        kCombatMarineTechIdToMaterialOffset[kTechId.Armor2] = 50
+        kCombatMarineTechIdToMaterialOffset[kTechId.Armor3] = 51
+        kCombatMarineTechIdToMaterialOffset[kTechId.Weapons1] = 55
+        kCombatMarineTechIdToMaterialOffset[kTechId.Weapons2] = 56
+        kCombatMarineTechIdToMaterialOffset[kTechId.Weapons3] = 57        
+        kCombatMarineTechIdToMaterialOffset[kTechId.MedPack] = 37
+        kCombatMarineTechIdToMaterialOffset[kTechId.Scan] = 41
+        kCombatMarineTechIdToMaterialOffset[kTechId.MACEMP] = 62
+		kCombatMarineTechIdToMaterialOffset[kTechId.CatPack] = 45
+		// fast reload
+		kCombatMarineTechIdToMaterialOffset[kTechId.RifleUpgrade] = 66
     
     end
     
-    local index = kMarineTechIdToMaterialOffset[itemTechId]
+    local index = kCombatMarineTechIdToMaterialOffset[itemTechId]
     if not index then
         index = 0
     end
@@ -299,7 +301,7 @@ function combat_GUIMarineBuyMenu:_InitializeEquipped()
     
         self.equipped = { }
     
-    local equippedTechIds = MarineBuy_GetEquipped()
+    local equippedTechIds = self.player:GetUpgrades()
     local selectorPosX = -combat_GUIMarineBuyMenu.kSelectorSize.x + combat_GUIMarineBuyMenu.kPadding
     
     for k, itemTechId in ipairs(equippedTechIds) do
@@ -348,7 +350,12 @@ function combat_GUIMarineBuyMenu:_InitializeItemButtons()
     
     local allUps = GetAllUpgrades("Marine")
     // sort the ups, definied in this file
-    sortedList = CombatMarineBuy_GUISortUps(allUps)  
+    sortedList = CombatMarineBuy_GUISortUps(allUps) 
+
+    // get the headlines
+    local  headlines = CombatMarineBuy_GetHeadlines()
+    local nextHeadline = 1
+    
     local selectorPosX = -combat_GUIMarineBuyMenu.kSelectorSize.x + combat_GUIMarineBuyMenu.kPadding
     local fontScaleVector = Vector(0.8, 0.8, 0)
     local itemNr = 1
@@ -370,7 +377,7 @@ function combat_GUIMarineBuyMenu:_InitializeItemButtons()
                 graphicItem:SetTexture(combat_GUIMarineBuyMenu.kSmallIconTexture)
                  // set the pixel coordinate for the icon
                 graphicItem:SetTexturePixelCoordinates(GetSmallIconPixelCoordinates(itemTechId))
-                
+
                 local graphicItemActive = GUIManager:CreateGraphicItem()
                 graphicItemActive:SetSize(combat_GUIMarineBuyMenu.kSelectorSize)          
                 graphicItemActive:SetPosition(Vector(selectorPosX, -combat_GUIMarineBuyMenu.kSelectorSize.y / 2, 0))
@@ -419,8 +426,26 @@ function combat_GUIMarineBuyMenu:_InitializeItemButtons()
                 itemNr = itemNr +1
             end
         else
-            itemNr = 1
-            xOffset = xOffset + combat_GUIMarineBuyMenu.kSmallIconOffset_x
+            // if its first next row, only set the headline
+            if i > 1 then
+                itemNr = 1
+                xOffset = xOffset + combat_GUIMarineBuyMenu.kSmallIconOffset_x
+            end
+            
+            // set the headline
+            local graphicItemHeading = GUIManager:CreateTextItem()
+            graphicItemHeading:SetFontName(combat_GUIMarineBuyMenu.kFont)
+            graphicItemHeading:SetFontIsBold(true)
+            graphicItemHeading:SetAnchor(GUIItem.Middle, GUIItem.Top)
+            graphicItemHeading:SetPosition(Vector((-combat_GUIMarineBuyMenu.kSmallIconSize.x/ 2) + xOffset, 5 + (combat_GUIMarineBuyMenu.kSmallIconSize.y) * itemNr - combat_GUIMarineBuyMenu.kSmallIconSize.y, 0))
+            graphicItemHeading:SetTextAlignmentX(GUIItem.Align_Min)
+            graphicItemHeading:SetTextAlignmentY(GUIItem.Align_Min)
+            graphicItemHeading:SetColor(combat_GUIMarineBuyMenu.kTextColor)
+            graphicItemHeading:SetText(headlines[nextHeadline] or "nothing")
+            self.menu:AddChild(graphicItemHeading)
+            
+            nextHeadline = nextHeadline + 1
+            
         end
     
     end

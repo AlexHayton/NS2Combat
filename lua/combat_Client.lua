@@ -14,6 +14,7 @@ Script.Load("lua/Hud/Marine/combat_GUIMarineHud.lua")
 Script.Load("lua/Hud/Alien/combat_GUIAlienBuyMenu.lua")
 Script.Load("lua/Hud/combat_GUIPlayerResources.lua")
 Script.Load("lua/combat_Player_ClientHook.lua")
+Script.Load("lua/combat_Armory_Client.lua")
 
 // Load the normal Ns2 Server Scripts
 Script.Load("lua/Client.lua")
@@ -31,6 +32,7 @@ Script.Load("lua/combat_Values.lua")
 Script.Load("lua/combat_ConsoleCommands_Client.lua")
 Script.Load("lua/combat_MarineBuyFuncs.lua")
 Script.Load("lua/combat_AlienBuyFuncs.lua")
+Script.Load("lua/Weapons/Marines/combat_ClipWeapon.lua")
 
 // just for testing that i see the props
 //Script.Load("lua/combat_Props.lua")

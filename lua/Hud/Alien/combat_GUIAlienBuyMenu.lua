@@ -18,27 +18,146 @@ function CombatGUIAlienBuyMenu:OnLoad()
     ClassHooker:SetClassCreatedIn("GUIAlienBuyMenu", "lua/GUIAlienBuyMenu.lua") 
     self:RawHookClassFunction("GUIAlienBuyMenu", "Initialize", "Initialize_Hook")
 	self:PostHookClassFunction("GUIAlienBuyMenu", "Update", "Update_Hook")
-	self:ReplaceClassFunction("GUIAlienBuyMenu", "_UpdateUpgrades", "_UpdateUpgrades_Hook")
+	self:ReplaceClassFunction("GUIAlienBuyMenu", "_InitializeSlots", "_InitializeSlots_Hook")
+	self:ReplaceClassFunction("GUIAlienBuyMenu", "_InitializeUpgradeButtons", "_InitializeUpgradeButtons_Hook")
 	self:ReplaceClassFunction("GUIAlienBuyMenu", "SendKeyEvent", "SendKeyEvent_Hook")
 	self:ReplaceClassFunction("GUIAlienBuyMenu", "_HandleUpgradeClicked", "_HandleUpgradeClicked_Hook")
 end
 
 function CombatGUIAlienBuyMenu:Initialize_Hook(self)
 
+	// Set overrides for GUIAlienBuyMenu globals here...
 	GUIAlienBuyMenu.kMaxNumberOfUpgradeButtons = 10
-	
-	//_InitializeUpgradeButtons
+	GUIAlienBuyMenu.kUpgradeButtonDistance = GUIScale(kCombatAlienBuyMenuUpgradeButtonDistance)
 
 end
 
+local function CreateSlot(self, category)
+
+    local graphic = GUIManager:CreateGraphicItem()
+    graphic:SetSize(Vector(GUIAlienBuyMenu.kSlotSize, GUIAlienBuyMenu.kSlotSize, 0))
+    graphic:SetTexture(GUIAlienBuyMenu.kSlotTexture)
+    graphic:SetLayer(kGUILayerPlayerHUDForeground3)
+    graphic:SetAnchor(GUIItem.Middle, GUIItem.Center)
+    self.background:AddChild(graphic)
+    
+    table.insert(self.slots, { Graphic = graphic, Category = category } )
+
+
+end
+
+function CombatGUIAlienBuyMenu:_InitializeSlots_Hook(self)
+	 
+	// For the first version of this, just make a slot for each upgrade.
+	 self.slots = {}
+    
+	for i, upgrade in ipairs(UpsList) do
+		if (upgrade:GetTeam() == "Alien" and upgrade:GetType() ~= kCombatUpgradeTypes.Class) then
+			CreateSlot(self, upgrade:GetTechId())
+		end
+	end
+    
+    local anglePerSlot = (math.pi * kCombatAlienBuyMenuTotalAngle) / (#self.slots-1)
+    
+    for i = 1, #self.slots do
+    
+        local angle = (i-1) * anglePerSlot + math.pi * 0.1
+        local distance = GUIAlienBuyMenu.kSlotDistance
+        
+        self.slots[i].Graphic:SetPosition( Vector( math.cos(angle) * distance - GUIAlienBuyMenu.kSlotSize * .5, math.sin(angle) * distance - GUIAlienBuyMenu.kSlotSize * .5, 0) )
+        self.slots[i].Angle = angle
+    
+    end
+
+end
+
+function CombatGUIAlienBuyMenu:_InitializeUpgradeButtons_Hook(self)
+
+    // There are purchased and unpurchased buttons. Both are managed in this list.
+    self.upgradeButtons = { }
+    
+    local upgrades = AlienUI_GetPersonalUpgrades()
+    
+    for i = 1, #self.slots do
+    
+        local upgrades = AlienUI_GetUpgradesForCategory(self.slots[i].Category)
+        local offsetAngle = self.slots[i].Angle
+        local anglePerUpgrade = math.pi * 0.25 / 3
+		anglePerUpgrade = anglePerUpgrade * 0.1
+        local category = self.slots[i].Category
+        
+        for upgradeIndex = 1, #upgrades do
+        
+            local angle = offsetAngle + anglePerUpgrade * (upgradeIndex-1) - anglePerUpgrade
+            local techId = upgrades[upgradeIndex]
+            
+            // Every upgrade has an icon.
+            local buttonIcon = GUIManager:CreateGraphicItem()
+            buttonIcon:SetAnchor(GUIItem.Middle, GUIItem.Center)
+            buttonIcon:SetSize(Vector(GUIAlienBuyMenu.kUpgradeButtonSize, GUIAlienBuyMenu.kUpgradeButtonSize, 0))
+            buttonIcon:SetPosition(Vector(-GUIAlienBuyMenu.kUpgradeButtonSize / 2, GUIAlienBuyMenu.kUpgradeButtonSize, 0))
+            buttonIcon:SetTexture(GUIAlienBuyMenu.kBuyHUDTexture)
+            
+            local iconX, iconY = GetMaterialXYOffset(techId, false)
+            iconX = iconX * GUIAlienBuyMenu.kUpgradeButtonTextureSize
+            iconY = iconY * GUIAlienBuyMenu.kUpgradeButtonTextureSize        
+            buttonIcon:SetTexturePixelCoordinates(iconX, iconY, iconX + GUIAlienBuyMenu.kUpgradeButtonTextureSize, iconY + GUIAlienBuyMenu.kUpgradeButtonTextureSize)
+            
+            // Render above the Alien image.
+            buttonIcon:SetLayer(kGUILayerPlayerHUDForeground3)
+            self.background:AddChild(buttonIcon)
+            
+            // The background is visible only inside the embryo.
+            local buttonBackground = GUIManager:CreateGraphicItem()
+            buttonBackground:SetSize(Vector(GUIAlienBuyMenu.kUpgradeButtonSize, GUIAlienBuyMenu.kUpgradeButtonSize, 0))
+            buttonBackground:SetTexture(GUIAlienBuyMenu.kBuyMenuTexture)
+            buttonBackground:SetTexturePixelCoordinates(unpack(GUIAlienBuyMenu.kUpgradeButtonBackgroundTextureCoordinates))
+            //buttonBackground:SetStencilFunc(GUIItem.NotEqual)
+            buttonIcon:AddChild(buttonBackground)
+
+            local unselectedPosition = Vector( math.cos(angle) * GUIAlienBuyMenu.kUpgradeButtonDistance - GUIAlienBuyMenu.kUpgradeButtonSize * .5, math.sin(angle) * GUIAlienBuyMenu.kUpgradeButtonDistance - GUIAlienBuyMenu.kUpgradeButtonSize * .5, 0 )
+            
+            buttonIcon:SetPosition(unselectedPosition)
+            
+            local purchased = AlienBuy_GetUpgradePurchased(techId)
+            if purchased then
+                table.insertunique(self.upgradeList, techId)
+            end
+
+            table.insert(self.upgradeButtons, { Background = buttonBackground, Icon = buttonIcon, TechId = techId, Category = techId,
+                                                Selected = purchased, SelectedMovePercent = 0, Cost = GetUpgradeFromTechId(techId):GetLevels(), Purchased = purchased, Index = nil, 
+                                                UnselectedPosition = unselectedPosition, SelectedPosition = self.slots[i].Graphic:GetPosition()  })
+        
+        
+        end
+    
+    end
+
+end
 
 local function GetSelectedUpgradesCost(self)
 
     local cost = 0
+	local purchasedTech = GetPurchasedTechIds()
+	
+	// Only count upgrades that we've selected and don't already own.
     for i, currentButton in ipairs(self.upgradeButtons) do
     
         if currentButton.Selected then
-            cost = cost + currentButton.Cost
+			
+			local isPurchased = false
+			
+			for j, purchasedTechId in ipairs(purchasedTech) do
+				if currentButton.TechId == purchasedTechId then
+				    isPurchased = true
+				end
+			end
+			
+			// If the upgrade isn't purchased add the cost.
+			if not isPurchased then
+				cost = cost + currentButton.Cost
+			end
+			
         end
         
     end
@@ -94,11 +213,6 @@ local function UpdateEvolveButton(self)
     // If the current alien is selected with no upgrades, cannot evolve.
     if self.selectedAlienType == AlienBuy_GetCurrentAlien() and numberOfSelectedUpgrades == 0 then
         evolveButtonTextureCoords = GUIAlienBuyMenu.kEvolveButtonNeedResourcesTextureCoordinates
-    elseif researching then
-    
-        // If researching, cannot evolve.
-        evolveButtonTextureCoords = GUIAlienBuyMenu.kEvolveButtonNeedResourcesTextureCoordinates
-        evolveText = "Researching..."
         
     elseif not GetCanAffordAlienTypeAndUpgrades(self, self.selectedAlienType) then
     
@@ -160,181 +274,37 @@ local function UpdateEvolveButton(self)
     
 end
 
+local kDefaultColor = Color(1,1,1,1)
+local kNotAvailableColor = Color(0.3, 0.3, 0.3, 1)
+local kNotAllowedColor = Color(1, 0,0,1)
+
 function CombatGUIAlienBuyMenu:Update_Hook(self, deltaTime)
 
+	// Call our version of the evolve button script.
 	UpdateEvolveButton(self)
-
-end
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-function CombatGUIAlienBuyMenu:_UpdateUpgrades_Hook(self, deltaTime)
-
-    for i, currentButton in ipairs(self.upgradeButtons) do
-        currentButton.Icon:SetIsVisible(false)
-    end
-    
-    local allUpgrades = { }
-    
-    local upgradeIndex = 0
-    
-    local numElementsPerPurchasedUpgrades = 7
-    local purchasedUpgrades = AlienBuy_GetPurchasedUpgrades(self.selectedAlienType)
-    numPurchasedUpgrades = table.count(purchasedUpgrades) / numElementsPerPurchasedUpgrades
-    for i = 0, numPurchasedUpgrades - 1 do
-        local currentIndex = i * numElementsPerPurchasedUpgrades + 1
-        local currentUpgrade = { }
-        currentUpgrade.IconXOffset = purchasedUpgrades[currentIndex] * GUIAlienBuyMenu.kUpgradeButtonTextureSize
-        currentUpgrade.IconYOffset = purchasedUpgrades[currentIndex + 1] * GUIAlienBuyMenu.kUpgradeButtonTextureSize
-        currentUpgrade.Name = purchasedUpgrades[currentIndex + 2]
-        currentUpgrade.Tooltip = purchasedUpgrades[currentIndex + 3]
-        currentUpgrade.Purchased = true
-        currentUpgrade.TechId = purchasedUpgrades[currentIndex + 4]
-        currentUpgrade.Available = purchasedUpgrades[currentIndex + 5]
-        
-        if self.initialSelect == true then
-            currentUpgrade.Selected = true
-            currentUpgrade.Initialized = true
-        end
-        
-        currentUpgrade.Index = upgradeIndex
-        upgradeIndex = upgradeIndex + 1
-        
-        table.insert(allUpgrades, currentUpgrade)
-    end
-    
-    local numElementsPerUnpurchasedUpgrades = 8
-    local unpurchasedUpgrades = AlienBuy_GetUnpurchasedUpgrades(self.selectedAlienType)
-    local numUnpurchasedUpgrades = table.count(unpurchasedUpgrades) / numElementsPerUnpurchasedUpgrades
-    for i = 0, numUnpurchasedUpgrades - 1 do
-        local currentIndex = i * numElementsPerUnpurchasedUpgrades + 1
-        local currentUpgrade = { }
-        currentUpgrade.IconXOffset = unpurchasedUpgrades[currentIndex] * GUIAlienBuyMenu.kUpgradeButtonTextureSize
-        currentUpgrade.IconYOffset = unpurchasedUpgrades[currentIndex + 1] * GUIAlienBuyMenu.kUpgradeButtonTextureSize
-        currentUpgrade.Name = unpurchasedUpgrades[currentIndex + 2]
-        currentUpgrade.Tooltip = unpurchasedUpgrades[currentIndex + 3]
-        currentUpgrade.ResearchPercent = unpurchasedUpgrades[currentIndex + 4]
-        currentUpgrade.Cost = unpurchasedUpgrades[currentIndex + 5]
-        currentUpgrade.Purchased = false
-        currentUpgrade.Index = upgradeIndex
-        currentUpgrade.TechId = unpurchasedUpgrades[currentIndex + 6]
-        // All ups are available
-        currentUpgrade.Available = AlienBuy_GetGotRequirements(currentUpgrade.TechId)
-        upgradeIndex = upgradeIndex + 1
-        table.insert(allUpgrades, currentUpgrade)
-    end
-    
-    local numberOfUpgrades = table.count(allUpgrades)
-    ASSERT(numberOfUpgrades <= GUIAlienBuyMenu.kMaxNumberOfUpgradeButtons)
-
-    local offsetAmount = math.pi / 9
-    local buttonAngles = {  math.pi / 2, 
-                            math.pi / 2 + offsetAmount, 
-                            math.pi / 2 - offsetAmount,
-                            math.pi / 2 + offsetAmount * 2, 
-                            math.pi / 2 - offsetAmount * 2,
-                            math.pi / 2 + offsetAmount * 3, 
-                            math.pi / 2 - offsetAmount * 3,
-                            math.pi / 2 + offsetAmount * 4 ,
-                            math.pi / 2 - offsetAmount * 4 ,
-                            math.pi / 2 + offsetAmount * 5 
-                        }
-                        
-    local numSelected = 0
-
-    for i, currentUpgrade in ipairs(allUpgrades) do
-    
-        local currentButton = self.upgradeButtons[i + 1]
-        currentButton.Cost = (currentUpgrade.Cost ~= nil and currentUpgrade.Cost) or 0
-        currentButton.Purchased = currentUpgrade.Purchased
-        currentButton.Index = currentUpgrade.Index
-        currentButton.Icon:SetIsVisible(true)
-        local xOffset = currentUpgrade.IconXOffset
-        local yOffset = currentUpgrade.IconYOffset
-        currentButton.Icon:SetTexturePixelCoordinates(xOffset, yOffset, xOffset + GUIAlienBuyMenu.kUpgradeButtonTextureSize, yOffset + GUIAlienBuyMenu.kUpgradeButtonTextureSize)
-
-        // The movementScaleAdjust will make the button get smaller the closer it is to the center of the movement.
-        local movementScaleAdjust = 0
-        local buttonDistance = GUIAlienBuyMenu.kUpgradeButtonDistance
-        currentButton.Available = currentUpgrade.Available
-        
-        if currentUpgrade.Initialized then
-        
-            buttonDistance = buttonDistance - GUIAlienBuyMenu.kUpgradeButtonDistanceInside
-            currentUpgrade.Initialized = false
-            local currentTweener = self:_GetUpgradeTweener(currentButton)
-            currentTweener.setCurrent(1)
-            currentTweener.setMode("forward")
-            currentButton.Selected = true
-            currentButton.SelectedMovePercent = 1
-            
-        else
-        
-            currentButton.SelectedMovePercent = self:_GetUpgradeTweener(currentButton).getCurrentProperties().percent
-            local distanceToCenter = math.abs(0.5 - currentButton.SelectedMovePercent)
-            // Percent goes from 0 - 1 - 0 when moving to center and then back out.
-            local distanceToCenterPercent = 1 - (distanceToCenter / 0.5)
-            // Get smaller the closer to the center.
-            movementScaleAdjust = -(distanceToCenterPercent * 0.5)
-            buttonDistance = buttonDistance - GUIAlienBuyMenu.kUpgradeButtonDistanceInside * currentButton.SelectedMovePercent
-            
-        end
-        
-        local positionOffset = Vector(math.cos(buttonAngles[i]) * buttonDistance, math.sin(buttonAngles[i]) * buttonDistance, 0)
-        local buttonPosition = Vector(positionOffset.x - GUIAlienBuyMenu.kUpgradeButtonSize / 2, positionOffset.y - GUIAlienBuyMenu.kUpgradeButtonSize / 2, 0)
-        currentButton.Icon:SetPosition(buttonPosition)
-        
-        // Do not show backgrounds for purchased buttons.
-        currentButton.Background:SetIsVisible(not currentUpgrade.Purchased)
-        
-        local mouseX, mouseY = Client.GetCursorPosScreen()
-        local mouseOverButton = self:_GetIsMouseOver(currentButton.Icon)
-        
-        local iconColor = ConditionalValue(currentButton.Available, Color(1,1,1,1), Color(1,0,0,1))
-        
-        // Only moused over, unpurchased upgrades should look clickable (scale up).
-        local mouseOverScale = ((mouseOverButton) and (Vector(1.1, 1.1, 0) ) ) or (Vector(1, 1, 0) )
-        currentButton.Icon:SetScale(mouseOverScale + Vector(movementScaleAdjust, movementScaleAdjust, 0))
-        currentButton.Icon:SetColor(iconColor)
-        
-        if mouseOverButton then
-        
-            local currentUpgradeInfoText = currentUpgrade.Name
-            if string.len(currentUpgrade.Tooltip) > 0 then
-                currentUpgradeInfoText = currentUpgradeInfoText .. "\n" .. currentUpgrade.Tooltip
-            end
-            self:_ShowMouseOverInfo(currentUpgradeInfoText, currentUpgrade.Cost)
-            currentButton.Background:SetScale(mouseOverScale)
-            
-        else
-            currentButton.Background:SetScale(Vector(1, 1, 0))
-        end
-        
-        if currentButton.Selected == true then
-            numSelected = numSelected + 1
-        end
-        
-        currentButton.TechId = currentUpgrade.TechId
-        
-        i = i + 1
-        
-    end
-    
-    self.initialSelect = false
-    self.numSelectedUpgrades = numSelected
+	
+	// Hide all the slots.
+	for i, slot in ipairs(self.slots) do
+		slot.Graphic:SetIsVisible(false)
+	end
+	
+	local lvlFree = PlayerUI_GetPersonalResources()
+	
+	// Override the colours per our schema.
+	// Always show, unless we can't afford the upgrade or it is not allowed.
+	for i, currentButton in ipairs(self.upgradeButtons) do
+		local useColor = kDefaultColor
+		
+		if currentButton.Cost > lvlFree then
+			useColor = kNotAvailableColor 
+		end
+		
+		if not currentButton.Selected and not AlienBuy_GetIsUpgradeAllowed(currentButton.TechId, self.upgradeList) then
+			useColor = kNotAllowedColor
+		end    
+		
+		currentButton.Icon:SetColor(useColor)
+	end
 
 end
 
@@ -445,7 +415,7 @@ end
 // only 1 upgrade should be selectable
 local function _GetHasMaximumSelected(self)
     // only 1 upgrade should be selectable, but already bought ups are OK
-    return self.numSelectedUpgrades - numPurchasedUpgrades >= 20
+    return false
 end
 
 function CombatGUIAlienBuyMenu:_HandleUpgradeClicked_Hook(self, mouseX, mouseY)

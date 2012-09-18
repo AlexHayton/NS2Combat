@@ -9,42 +9,59 @@
       
 // helper Functions for the List, text etc  
 
+// headlines for the Buymenu
+function CombatMarineBuy_GetHeadlines()
+
+    headlines = {
+        "Support",
+        "Weapons",        
+        "Weapon Ups",
+        "Armor Ups",
+        "Class Ups",
+    }
+    
+    return headlines
+    
+end
+
 // costum sort function that the ups to look good
 function CombatMarineBuy_GUISortUps(upgradeList)
 
 // max 4 rows per column
     local layoutList = {
-        // 0
+        // 0, Support
+        "nextRow",
         kTechId.MedPack,
-		kTechId.CatPack,
+	    kTechId.CatPack,
         kTechId.Scan,
         kTechId.LayMines,
         "nextRow",
 
-        // 1
+        // 1, Weapons
         kTechId.Shotgun,
         kTechId.GrenadeLauncher,
         kTechId.Flamethrower,
         kTechId.MACEMP,
         "nextRow",
         
-        // 2 
+        // 2, Weapon Upgrades 
         kTechId.Weapons1,
         kTechId.Weapons2,
         kTechId.Weapons3,
+	    kTechId.RifleUpgrade,
         "nextRow",
 
-        // 3
+        // 3, Armor Upgrades
         kTechId.Armor1,
         kTechId.Armor2,
         kTechId.Armor3,
         kTechId.Welder,
         "nextRow",
 		
-        // 4
+        // 4, Class Upgrades
         kTechId.Jetpack,     
-		kTechId.Exosuit,
-		kTechId.DualMinigunExosuit
+	    kTechId.Exosuit,
+	    kTechId.DualMinigunExosuit
     }
     
     local sortedList = {}    
@@ -72,7 +89,12 @@ function CombatMarineBuy_GetDisplayName(techId)
         // special String for Medpack ( to show "Resupply")
         if techId == kTechId.MedPack then
             return "Resupply"
-        else
+
+	// special string for RifleUpgrade (Fastreload)
+        elseif techId == kTechId.RifleUpgrade then
+		return "Fast-Reload"
+	
+	else
             return Locale.ResolveString(LookupTechData(techId, kTechDataDisplayName, ""))
         end
     else
@@ -105,6 +127,7 @@ function CombatMarineBuy_GetWeaponDescription(techId)
         combatWeaponDescription[kTechId.Weapons1] = "Weapons 1 tech Upgrade."
         combatWeaponDescription[kTechId.Weapons2] = "Weapons 2 tech Upgrade. You need Weapons 1 first"
         combatWeaponDescription[kTechId.Weapons3] = "Weapons 3 tech Upgrade. You need Weapons 2 first"
+	combatWeaponDescription[kTechId.RifleUpgrade] = "Let you fastly reload your weapons."
         
         combatWeaponDescription[kTechId.Armor1] = "Armor 1 tech Upgrade."
         combatWeaponDescription[kTechId.Armor2] = "Armor 2 tech Upgrade. You need Armor 1 first"

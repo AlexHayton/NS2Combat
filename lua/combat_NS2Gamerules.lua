@@ -41,25 +41,31 @@ function CombatNS2Gamerules:JoinTeam_Hook(self, player, newTeamNumber, force)
 	// So we need to replace instead. Sorry!
 	local success = false
         
-	// Join new team
-	if(player and player:GetTeamNumber() ~= newTeamNumber or force) then
-	
-		local team = self:GetTeam(newTeamNumber)
-		local oldTeam = self:GetTeam(player:GetTeamNumber())
+		// Join new team
+        if player and player:GetTeamNumber() ~= newTeamNumber or force then
 		
-		// Remove the player from the old queue if they happen to be in one
-		if oldTeam ~= nil then
-			oldTeam:RemovePlayerFromRespawnQueue(player)
-		end
-		
-		// Spawn immediately if going to ready room, game hasn't started, cheats on, or game started recently
-		if newTeamNumber == kTeamReadyRoom or self:GetCanSpawnImmediately() or force then
-			success, newPlayer = team:ReplaceRespawnPlayer(player, nil, nil)
+			local team = self:GetTeam(newTeamNumber)
+			local oldTeam = self:GetTeam(player:GetTeamNumber())
+			
+			// Remove the player from the old queue if they happen to be in one
+			if oldTeam ~= nil then
+				oldTeam:RemovePlayerFromRespawnQueue(player)
+			end
+			
+			// Spawn immediately if going to ready room, game hasn't started, cheats on, or game started recently
+			if newTeamNumber == kTeamReadyRoom or self:GetCanSpawnImmediately() or force then
+				
+				success, newPlayer = team:ReplaceRespawnPlayer(player, nil, nil)
+					
+				local teamTechPoint = team.GetInitialTechPoint and team:GetInitialTechPoint()
+				if teamTechPoint then
+					newPlayer:OnInitialSpawn(teamTechPoint:GetOrigin())
+				end
+                
 		else
 		
 			// Destroy the existing player and create a spectator in their place.
-			local mapName = ConditionalValue(team:isa("AlienTeam"), AlienSpectator.kMapName, Spectator.kMapName)
-			newPlayer = player:Replace(mapName, newTeamNumber)			
+            newPlayer = player:Replace(team:GetSpectatorMapName(), newTeamNumber)
 			
 			// Queue up the spectator for respawn.
 			team:PutPlayerInRespawnQueue(newPlayer, Shared.GetTime())
@@ -103,7 +109,8 @@ function CombatNS2Gamerules:JoinTeam_Hook(self, player, newTeamNumber, force)
 		
 	end
 	
-	return success, newPlayer
+	// Return old player
+	return success, player
 		
 end
 
@@ -213,36 +220,40 @@ function CombatNS2Gamerules:ChooseTechPoint_Hook(handle, self, techPoints, teamN
         CombatInitProps()
         // when no techPoint could be found, take the original techPoints
         
-    else    
+    else
+	
+		// Use some custom spawn picker code when the map gets too large.
+		if #allTechPoints >= 5 then
         
-        // no spawn pairs, so search 2 near spawns 
-        if teamNumber == kTeam1Index then        
-            // if its team1, just search any random techPoint  
-            local randomNumber = math.random(1, table.maxn(allTechPoints))
-            spawnTechPoint = allTechPoints[randomNumber]
-            
-        else
-        
-            local team1TeachPoint = GetGamerules():GetTeam1():GetInitialTechPoint()
-            local closestRange = nil
-            
-            for i, currentTechPoint in ipairs(allTechPoints) do
-                // skip if we found team1techpoint
-                if currentTechPoint ~= team1TeachPoint then
-                    range = GetPathDistance(team1TeachPoint:GetOrigin(), currentTechPoint:GetOrigin())
-                    if not closestRange then
-                        closestRange = range
-                        spawnTechPoint = currentTechPoint                    
-                    else
-                        if range < closestRange then
-                            closestRange = range
-                            spawnTechPoint = currentTechPoint
-                        end
-                    end
-                end
-            end 
-  
-        end
+			// no spawn pairs, so search 2 near spawns 
+			if teamNumber == kTeam1Index then        
+				// if its team1, just search any random techPoint  
+				local randomNumber = math.random(1, table.maxn(allTechPoints))
+				spawnTechPoint = allTechPoints[randomNumber]
+				
+			else
+			
+				local team1TeachPoint = GetGamerules():GetTeam1():GetInitialTechPoint()
+				local closestRange = nil
+				
+				for i, currentTechPoint in ipairs(allTechPoints) do
+					// skip if we found team1techpoint
+					if currentTechPoint ~= team1TeachPoint then
+						range = GetPathDistance(team1TeachPoint:GetOrigin(), currentTechPoint:GetOrigin())
+						if not closestRange then
+							closestRange = range
+							spawnTechPoint = currentTechPoint                    
+						else
+							if range < closestRange then
+								closestRange = range
+								spawnTechPoint = currentTechPoint
+							end
+						end
+					end
+				end 
+	  
+			end
+		end
         
     end
         
@@ -265,7 +276,9 @@ function CombatNS2Gamerules:ResetGame_Hook(self)
     // reset SpawnCombo to set them again
     combatSpawnCombo = nil
     combatSpawnComboIndex  = nil
-    CombatDeleteProps()
+    
+    // we deactivated the prop system so this is not needed at the moment
+    //CombatDeleteProps()
 
 end
 
