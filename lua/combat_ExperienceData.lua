@@ -211,5 +211,5 @@ table.insert(UpsList, BuildUpgrade("Alien", kCombatUpgrades.TierTwo,				"tier2",
 // new ink abilitiy                                                                                                                                                                                                                             
 table.insert(UpsList, BuildUpgrade("Alien", kCombatUpgrades.ShadeInk,				"ink",		        "Ink-Taunt",		kTechId.ShadeInk, 		   	 	ShadeInk,			nil, 						1, 		kCombatUpgradeTypes.Tech,   nil)) 					
 table.insert(UpsList, BuildUpgrade("Alien", kCombatUpgrades.TierThree,				"tier3",			"Tier 3",			kTechId.ThreeHives, 			TierThree, 			kCombatUpgrades.TierTwo,	2, 		kCombatUpgradeTypes.Tech,   nil)) 					
-table.insert(UpsList, BuildUpgrade("Alien", kCombatUpgrades.Focus,				    "focus",			"Focus",			kTechId.NutrientMist, 			Focus, 			    nil,	                    2, 		kCombatUpgradeTypes.Tech,   kCombatUpgrades.Onos)) 					
+table.insert(UpsList, BuildUpgrade("Alien", kCombatUpgrades.Focus,				    "focus",			"Focus",			kTechId.NutrientMist, 			Focus, 			    nil,	                    2, 		kCombatUpgradeTypes.Tech,   nil)) 					
 
