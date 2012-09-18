@@ -30,6 +30,21 @@ function Player:GotFastReload()
 
 end
 
+// check focus upgrade and weapon
+
+function Player:GotFocus()
+
+    local gotFocus = false
+    
+    if self.combatTable.hasFocus then
+        activeWeapon = self:GetActiveWeapon()
+        // check the weapon
+        gotFocus = true    
+    end
+    
+    return gotFocus
+end
+
 
 // function for spawn protect
 

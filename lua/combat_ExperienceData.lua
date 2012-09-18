@@ -112,10 +112,6 @@ local function Catalyst(player, techUpgrade)
 	player.combatTable.lastCatalyst = 0
 end
 
-local function FastReload(player, techUpgrade)
-	player.combatTable.hasFastReload = true
-end
-
 local function EMP(player, techUpgrade)
 	player.combatTable.hasEMP = true
 	player.combatTable.lastEMP = 0
@@ -138,6 +134,10 @@ end
 
 local function FastReload(player, techUpgrade)
 	player.combatTable.hasFastReload = true
+end
+
+local function Focus(player, techUpgrade)
+	player.combatTable.hasFocus = true
 end
 
 // Helper function to build upgrades for us.
@@ -211,4 +211,5 @@ table.insert(UpsList, BuildUpgrade("Alien", kCombatUpgrades.TierTwo,				"tier2",
 // new ink abilitiy                                                                                                                                                                                                                             
 table.insert(UpsList, BuildUpgrade("Alien", kCombatUpgrades.ShadeInk,				"ink",		        "Ink-Taunt",		kTechId.ShadeInk, 		   	 	ShadeInk,			nil, 						1, 		kCombatUpgradeTypes.Tech,   nil)) 					
 table.insert(UpsList, BuildUpgrade("Alien", kCombatUpgrades.TierThree,				"tier3",			"Tier 3",			kTechId.ThreeHives, 			TierThree, 			kCombatUpgrades.TierTwo,	2, 		kCombatUpgradeTypes.Tech,   nil)) 					
+table.insert(UpsList, BuildUpgrade("Alien", kCombatUpgrades.Focus,				    "focus",			"Focus",			kTechId.NutrientMist, 			Focus, 			    nil,	                    2, 		kCombatUpgradeTypes.Tech,   nil)) 					
 

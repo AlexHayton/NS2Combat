@@ -30,6 +30,7 @@ Script.Load("lua/combat_Hive.lua")
 Script.Load("lua/combat_Armory.lua")
 Script.Load("lua/combat_Weapon.lua")
 Script.Load("lua/Weapons/Marines/combat_ClipWeapon.lua")
+Script.Load("lua/combat_NS2Utility.lua")
 
 // Load the normal Ns2 Server Scripts
 Script.Load("lua/Server.lua")
