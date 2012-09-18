@@ -42,7 +42,7 @@ function Player:GotFocus()
         local activeWeapon = self:GetActiveWeapon()
         if activeWeapon then
             // only give focus when primary attacking, every weapon has itsn own attribute so its a bit dirty, but it works
-            if (activeWeapon.primaryAttacking == true or activeWeapon.firingPrimary == true or activeWeapon.attacking == true or activeWeapon.attackButtonPressed ~= nil) then
+            if (activeWeapon.primaryAttacking == true or activeWeapon.firingPrimary == true or activeWeapon.attacking == true) then
                 local activeMapName = activeWeapon:GetPrimaryAttackPrefix()                
                 for i, mapname in ipairs(kCombatFocusWeapons) do
                     if mapname == activeMapName then      

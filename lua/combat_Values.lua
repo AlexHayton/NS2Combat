@@ -76,7 +76,7 @@ kCombatFocusWeapons = {
                         LerkBite.kMapName,
                         SpitSpray.kMapName,
                         SwipeBlink.kMapName,
-                        //Gore.kMapName
+                        Gore.kMapName
                       }
 
 // Props
