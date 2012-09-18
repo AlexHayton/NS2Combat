@@ -35,6 +35,26 @@ function Player:GotRequirements(upgrade)
     return false
 end
 
+function Player:GotRequirementsFromTechIds(upgrade, upgradeTechIdList)
+    
+    if upgrade then
+        local requirements = upgrade:GetRequirements()
+
+        // does this up needs other ups??
+        if requirements then
+			requiredUpgrade = GetUpgradeFromId(requirements)    
+			for i, techId in pairs(upgradeTechIdList) do
+				if (techId == requiredUpgrade:GetTechId()) then
+					return true
+				end  
+			end  
+        else
+            return true
+        end
+    end
+    return false
+end
+
 function Player:GotItemAlready(upgrade)
 
     if upgrade then 

@@ -25,6 +25,10 @@ kCombatReminderNotifyInterval = 45
 kDirectMessageFadeTime = 8
 kDirectMessagesNumVisible = 9
 
+// Menu tweaks
+kCombatAlienBuyMenuTotalAngle = 0.8
+kCombatAlienBuyMenuUpgradeButtonDistance = 210
+
 // Set the respawn timer
 kCombatRespawnTimer = 10
 kAlienWaveSpawnInterval = 10
@@ -37,10 +41,10 @@ kCombatMarineSpawnProtectTime = 4
 // nano shield = spawn Protection
 kNanoShieldDuration = kCombatMarineSpawnProtectTime 
 kCombatAlienSpawnProtectTime = 5
-kSpawnMaxRetries = 20
+kSpawnMaxRetries = 25
 kSpawnMinDistance = 3
-kSpawnMaxDistance = 60
-kSpawnMaxVertical = 20
+kSpawnMaxDistance = 70
+kSpawnMaxVertical = 25
 
 // By default, Aliens win after a certain amount of time...
 // Specified in seconds...

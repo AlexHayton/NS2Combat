@@ -149,13 +149,13 @@ function AlienBuy_GetPurchasedUpgrades(idx)
     
 end
 
-function AlienBuy_GetIsUpgradeAllowed(techId, upgradeList)
+function AlienBuy_GetIsUpgradeAllowed(techId, upgradeTechIdList)
 
     local player = Client.GetLocalPlayer()
     if player then    
         local upgrade = GetUpgradeFromTechId(techId)
         if upgrade then
-            return player:GotRequirements(upgrade)
+            return player:GotRequirementsFromTechIds(upgrade, upgradeTechIdList)
         end    
     end
     

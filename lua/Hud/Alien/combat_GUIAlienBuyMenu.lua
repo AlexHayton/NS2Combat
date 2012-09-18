@@ -17,16 +17,18 @@ function CombatGUIAlienBuyMenu:OnLoad()
 
     ClassHooker:SetClassCreatedIn("GUIAlienBuyMenu", "lua/GUIAlienBuyMenu.lua") 
     self:RawHookClassFunction("GUIAlienBuyMenu", "Initialize", "Initialize_Hook")
-	self:PostHookClassFunction("GUIAlienBuyMenu", "_InitializeUpgradeButtons", "_InitializeUpgradeButtons_Hook")
 	self:PostHookClassFunction("GUIAlienBuyMenu", "Update", "Update_Hook")
 	self:ReplaceClassFunction("GUIAlienBuyMenu", "_InitializeSlots", "_InitializeSlots_Hook")
+	self:ReplaceClassFunction("GUIAlienBuyMenu", "_InitializeUpgradeButtons", "_InitializeUpgradeButtons_Hook")
 	self:ReplaceClassFunction("GUIAlienBuyMenu", "SendKeyEvent", "SendKeyEvent_Hook")
 	self:ReplaceClassFunction("GUIAlienBuyMenu", "_HandleUpgradeClicked", "_HandleUpgradeClicked_Hook")
 end
 
 function CombatGUIAlienBuyMenu:Initialize_Hook(self)
 
+	// Set overrides for GUIAlienBuyMenu globals here...
 	GUIAlienBuyMenu.kMaxNumberOfUpgradeButtons = 10
+	GUIAlienBuyMenu.kUpgradeButtonDistance = GUIScale(kCombatAlienBuyMenuUpgradeButtonDistance)
 
 end
 
@@ -55,11 +57,11 @@ function CombatGUIAlienBuyMenu:_InitializeSlots_Hook(self)
 		end
 	end
     
-    local anglePerSlot = (math.pi * 0.6) / (#self.slots-1)
+    local anglePerSlot = (math.pi * kCombatAlienBuyMenuTotalAngle) / (#self.slots-1)
     
     for i = 1, #self.slots do
     
-        local angle = (i-1) * anglePerSlot + math.pi * 0.2
+        local angle = (i-1) * anglePerSlot + math.pi * 0.1
         local distance = GUIAlienBuyMenu.kSlotDistance
         
         self.slots[i].Graphic:SetPosition( Vector( math.cos(angle) * distance - GUIAlienBuyMenu.kSlotSize * .5, math.sin(angle) * distance - GUIAlienBuyMenu.kSlotSize * .5, 0) )
@@ -70,13 +72,66 @@ function CombatGUIAlienBuyMenu:_InitializeSlots_Hook(self)
 end
 
 function CombatGUIAlienBuyMenu:_InitializeUpgradeButtons_Hook(self)
-	 
-	// For the purposes of this just use the TechId as the slot category.
-	for i, upgradeButton in ipairs(self.upgradeButtons) do
-		upgradeButton.Category = upgradeButton.TechId
-		// Find the upgrade in UpsList
-		upgradeButton.Cost = GetUpgradeFromTechId(upgradeButton.TechId):GetLevels()
-	end
+
+    // There are purchased and unpurchased buttons. Both are managed in this list.
+    self.upgradeButtons = { }
+    
+    local upgrades = AlienUI_GetPersonalUpgrades()
+    
+    for i = 1, #self.slots do
+    
+        local upgrades = AlienUI_GetUpgradesForCategory(self.slots[i].Category)
+        local offsetAngle = self.slots[i].Angle
+        local anglePerUpgrade = math.pi * 0.25 / 3
+		anglePerUpgrade = anglePerUpgrade * 0.1
+        local category = self.slots[i].Category
+        
+        for upgradeIndex = 1, #upgrades do
+        
+            local angle = offsetAngle + anglePerUpgrade * (upgradeIndex-1) - anglePerUpgrade
+            local techId = upgrades[upgradeIndex]
+            
+            // Every upgrade has an icon.
+            local buttonIcon = GUIManager:CreateGraphicItem()
+            buttonIcon:SetAnchor(GUIItem.Middle, GUIItem.Center)
+            buttonIcon:SetSize(Vector(GUIAlienBuyMenu.kUpgradeButtonSize, GUIAlienBuyMenu.kUpgradeButtonSize, 0))
+            buttonIcon:SetPosition(Vector(-GUIAlienBuyMenu.kUpgradeButtonSize / 2, GUIAlienBuyMenu.kUpgradeButtonSize, 0))
+            buttonIcon:SetTexture(GUIAlienBuyMenu.kBuyHUDTexture)
+            
+            local iconX, iconY = GetMaterialXYOffset(techId, false)
+            iconX = iconX * GUIAlienBuyMenu.kUpgradeButtonTextureSize
+            iconY = iconY * GUIAlienBuyMenu.kUpgradeButtonTextureSize        
+            buttonIcon:SetTexturePixelCoordinates(iconX, iconY, iconX + GUIAlienBuyMenu.kUpgradeButtonTextureSize, iconY + GUIAlienBuyMenu.kUpgradeButtonTextureSize)
+            
+            // Render above the Alien image.
+            buttonIcon:SetLayer(kGUILayerPlayerHUDForeground3)
+            self.background:AddChild(buttonIcon)
+            
+            // The background is visible only inside the embryo.
+            local buttonBackground = GUIManager:CreateGraphicItem()
+            buttonBackground:SetSize(Vector(GUIAlienBuyMenu.kUpgradeButtonSize, GUIAlienBuyMenu.kUpgradeButtonSize, 0))
+            buttonBackground:SetTexture(GUIAlienBuyMenu.kBuyMenuTexture)
+            buttonBackground:SetTexturePixelCoordinates(unpack(GUIAlienBuyMenu.kUpgradeButtonBackgroundTextureCoordinates))
+            //buttonBackground:SetStencilFunc(GUIItem.NotEqual)
+            buttonIcon:AddChild(buttonBackground)
+
+            local unselectedPosition = Vector( math.cos(angle) * GUIAlienBuyMenu.kUpgradeButtonDistance - GUIAlienBuyMenu.kUpgradeButtonSize * .5, math.sin(angle) * GUIAlienBuyMenu.kUpgradeButtonDistance - GUIAlienBuyMenu.kUpgradeButtonSize * .5, 0 )
+            
+            buttonIcon:SetPosition(unselectedPosition)
+            
+            local purchased = AlienBuy_GetUpgradePurchased(techId)
+            if purchased then
+                table.insertunique(self.upgradeList, techId)
+            end
+
+            table.insert(self.upgradeButtons, { Background = buttonBackground, Icon = buttonIcon, TechId = techId, Category = techId,
+                                                Selected = purchased, SelectedMovePercent = 0, Cost = GetUpgradeFromTechId(techId):GetLevels(), Purchased = purchased, Index = nil, 
+                                                UnselectedPosition = unselectedPosition, SelectedPosition = self.slots[i].Graphic:GetPosition()  })
+        
+        
+        end
+    
+    end
 
 end
 
@@ -219,6 +274,10 @@ local function UpdateEvolveButton(self)
     
 end
 
+local kDefaultColor = Color(1,1,1,1)
+local kNotAvailableColor = Color(0.3, 0.3, 0.3, 1)
+local kNotAllowedColor = Color(1, 0,0,1)
+
 function CombatGUIAlienBuyMenu:Update_Hook(self, deltaTime)
 
 	// Call our version of the evolve button script.
@@ -227,6 +286,24 @@ function CombatGUIAlienBuyMenu:Update_Hook(self, deltaTime)
 	// Hide all the slots.
 	for i, slot in ipairs(self.slots) do
 		slot.Graphic:SetIsVisible(false)
+	end
+	
+	local lvlFree = PlayerUI_GetPersonalResources()
+	
+	// Override the colours per our schema.
+	// Always show, unless we can't afford the upgrade or it is not allowed.
+	for i, currentButton in ipairs(self.upgradeButtons) do
+		local useColor = kDefaultColor
+		
+		if currentButton.Cost > lvlFree then
+			useColor = kNotAvailableColor 
+		end
+		
+		if not currentButton.Selected and not AlienBuy_GetIsUpgradeAllowed(currentButton.TechId, self.upgradeList) then
+			useColor = kNotAllowedColor
+		end    
+		
+		currentButton.Icon:SetColor(useColor)
 	end
 
 end
