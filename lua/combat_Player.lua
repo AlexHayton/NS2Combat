@@ -42,13 +42,11 @@ function Player:GotFocus()
         local activeWeapon = self:GetActiveWeapon()
         if activeWeapon then
             // only give focus when primary attacking, every weapon has itsn own attribute so its a bit dirty, but it works
-            if (activeWeapon.primaryAttacking == true or activeWeapon.firingPrimary == true or activeWeapon.attacking == true) then
-                local activeMapName = activeWeapon:GetPrimaryAttackPrefix()                
-                for i, mapname in ipairs(kCombatFocusWeapons) do
-                    if mapname == activeMapName then      
-                        gotFocus = true 
-                        break            
-                    end
+            // there is a primaryAttacking on every weapon, but only on bite its getting true
+            if (activeWeapon.primaryAttacking == true or activeWeapon.firingPrimary == true or activeWeapon.attacking == true or activeWeapon.attackButtonPressed == true) then
+                local hudSlot = activeWeapon.GetHUDSlot()                
+                if hudSlot == 1 then
+                    gotFocus = true 
                 end 
             end 
   
