@@ -30,6 +30,36 @@ function Player:GotFastReload()
 
 end
 
+// check focus upgrade and weapon
+
+function Player:GotFocus()
+
+    local gotFocus = false
+    
+    // disabled for onos due to bugs
+    if self.combatTable.hasFocus then
+        // check the weapon
+        local activeWeapon = self:GetActiveWeapon()
+        if activeWeapon then
+            // only give focus when primary attacking, every weapon has itsn own attribute so its a bit dirty, but it works
+            if (activeWeapon.primaryAttacking == true or activeWeapon.firingPrimary == true or activeWeapon.attacking == true) then
+                local activeMapName = activeWeapon:GetPrimaryAttackPrefix()                
+                for i, mapname in ipairs(kCombatFocusWeapons) do
+                    if mapname == activeMapName then      
+                        gotFocus = true 
+                        break            
+                    end
+                end 
+            end 
+  
+        end
+   
+    end
+    
+    
+    return gotFocus
+end
+
 
 // function for spawn protect
 
