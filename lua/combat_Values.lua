@@ -123,6 +123,7 @@ kNumMines = 1
 // These won't take effect on the client side until we import this file into the client side mods
 
 // at the moment, nobody should buy something, it needs to be implemented before
+kPlayerInitialIndivRes = 0
 local generalCost = 99
 
 kShotgunCost = generalCost
