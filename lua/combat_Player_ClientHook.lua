@@ -22,7 +22,7 @@ function CombatPlayerClient:OnLoad()
 	self:PostHookClassFunction("Player", "OnInitLocalClient", "OnInitLocalClient_Post")
     self:ReplaceClassFunction("Player", "CloseMenu", "CloseMenu_Hook")
     self:ReplaceClassFunction("Marine", "CloseMenu", "CloseMenu_Hook")
-	self:PostHookClassfunction("Marine", "UpdateClientEffects", "UpdateClientEffects_Hook")
+	self:PostHookClassFunction("Marine", "UpdateClientEffects", "UpdateClientEffects_Hook")
     
     self:PostHookFunction("InitTechTreeMaterialOffsets", "InitTechTreeMaterialOffsets_Hook")
 end
