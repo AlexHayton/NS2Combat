@@ -27,7 +27,7 @@ function CombatNS2Utility:AttackMeleeCapsule_Hook(weapon, player, damage, range,
     if didHit then
         // check if player has focus then do more dmg, only on some weapons, so check weapon
         if player:GotFocus() then
-            damage = damage * kCombatFocusScalar
+            damage = damage * kCombatFocusDamageScalar
         end
         
         weapon:DoDamage(damage, target, endPoint, direction, surface, altMode)
@@ -64,7 +64,7 @@ function CombatNS2Utility:ProcessHit_Hook(self, targetHit, surface, normal)
         self:TriggerEffects("spit_hit", { effecthostcoords = Coords.GetTranslation(self:GetOrigin()) } )
     
         if self:GetOwner():GotFocus() then
-            self:DoDamage(Spit.kDamage * kCombatFocusScalar, targetHit, self:GetOrigin(), nil, surface)
+            self:DoDamage(Spit.kDamage * kCombatFocusDamageScalar, targetHit, self:GetOrigin(), nil, surface)
         else
             self:DoDamage(Spit.kDamage, targetHit, self:GetOrigin(), nil, surface)
         end
