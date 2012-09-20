@@ -515,3 +515,27 @@ function Player:BuildAndSendDirectMessage(message)
 	Server.SendNetworkMessage(self, "Chat", BuildChatMessage(true, playerName, playerLocationId, playerTeamNumber, playerTeamType, message), true)
 
 end
+
+function Player:ProcessTauntAbilities()
+
+	if self.combatTable then
+        if self.combatTable.hasEMP then
+            if  self.combatTable.lastEMP == 0 or Shared.GetTime() >= ( self.combatTable.lastEMP + kEMPTimer) then
+                self:EMPBlast()
+                self.combatTable.lastEMP = Shared.GetTime()
+            else
+                local timeReady = math.ceil(self.combatTable.lastEMP + kEMPTimer - Shared.GetTime())
+                self:SendDirectMessage("EMP-taunt is not ready, wait " .. timeReady .. " sec")
+            end    
+        elseif self.combatTable.hasInk then
+            if  self.combatTable.lastInk == 0 or Shared.GetTime() >= ( self.combatTable.lastInk + kInkTimer) then
+                self:TriggerInk()
+                self.combatTable.lastInk = Shared.GetTime()
+            else
+                local timeReady = math.ceil(self.combatTable.lastInk + kInkTimer - Shared.GetTime())
+                self:SendDirectMessage("Ink-taunt is not ready, wait " .. timeReady .. " sec")
+            end   
+        end    
+    end
+	
+end

@@ -18,6 +18,7 @@ function CombatAlien:OnLoad()
     self:ReplaceClassFunction("Alien", "LockTierTwo", function() end)
     self:ReplaceClassFunction("Alien", "UpdateNumHives","UpdateNumHives_Hook")
     self:PostHookClassFunction("Alien", "OnUpdateAnimationInput","OnUpdateAnimationInput_Hook")
+	self:PostHookClassFunction("Alien", "RequestHeal", "RequestHeal_Hook")
 	
 end
 
@@ -52,6 +53,12 @@ function CombatAlien:OnUpdateAnimationInput_Hook(self, modelMixin)
         modelMixin:SetAnimationInput("attack_speed", self:GetIsEnzymed() and kEnzymeAttackSpeed or 1.0)
     end
     
+end
+
+function CombatAlien:RequestHeal_Hook(self)
+	
+	self:ProcessTauntAbilities()
+	
 end
 
 if (not HotReload) then
