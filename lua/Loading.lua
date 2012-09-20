@@ -27,7 +27,7 @@ function OnUpdateRender()
     local time = Shared.GetTime()
 
     if spinnerBottom ~= nil then
-        local angle = time * spinnerSpeed
+        local angle = -(time * spinnerSpeed)
         spinnerBottom:SetRotation( Vector(0, 0, angle) )
     end
 	
@@ -77,8 +77,8 @@ function OnLoadComplete()
         background:SetTexture( backgroundFileNames[math.floor(randomizer:random(1, numBackgrounds))] )
     end
     
-    local spinnerSize   = GUIScale(256)
-    local spinnerOffsetX = GUIScale(200)
+    local spinnerSize   = GUIScale(150)
+    local spinnerOffsetX = GUIScale(100)
 	local spinnerOffsetY = GUIScale(50)
 
     spinnerBottom = GUI.CreateItem()
@@ -87,13 +87,15 @@ function OnLoadComplete()
     spinnerBottom:SetPosition( Vector( Client.GetScreenWidth() - spinnerSize - spinnerOffsetX, Client.GetScreenHeight() - spinnerSize - spinnerOffsetY, 0 ) )
     spinnerBottom:SetBlendTechnique( GUIItem.Add )
 	
+	/* at the new icon no top file is needed
 	spinnerTop = GUI.CreateItem()
     spinnerTop:SetTexture("ui/loading/loading_top.dds")
     spinnerTop:SetSize( Vector( spinnerSize, spinnerSize, 0 ) )
     spinnerTop:SetPosition( Vector( Client.GetScreenWidth() - spinnerSize - spinnerOffsetX, Client.GetScreenHeight() - spinnerSize - spinnerOffsetY, 0 ) )
     //spinnerTop:SetBlendTechnique( GUIItem.Add )
+    */
     
-    local statusOffset = GUIScale(20)
+    local statusOffset = GUIScale(80)
         
     statusText = GUI.CreateItem()
     statusText:SetOptionFlag(GUIItem.ManageRender)

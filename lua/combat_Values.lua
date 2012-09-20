@@ -70,14 +70,6 @@ kCombatFastRelaodTime = kClassicReloadTime * 2
 
 kCombatFocusAttackSpeed = 0.5
 kCombatFocusScalar = 2
-// all weapons that get the focus dmg etc., kMapNames
-kCombatFocusWeapons = {
-                        BiteLeap.kMapName,
-                        LerkBite.kMapName,
-                        SpitSpray.kMapName,
-                        SwipeBlink.kMapName,
-                        Gore.kMapName
-                      }
 
 // Props
 kPropEffect = "vortex_destroy"
@@ -123,6 +115,7 @@ kNumMines = 1
 // These won't take effect on the client side until we import this file into the client side mods
 
 // at the moment, nobody should buy something, it needs to be implemented before
+kPlayerInitialIndivRes = 0
 local generalCost = 99
 
 kShotgunCost = generalCost

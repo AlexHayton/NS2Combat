@@ -18,7 +18,6 @@ function CombatNS2Gamerules:OnLoad()
 
     ClassHooker:SetClassCreatedIn("NS2Gamerules", "lua/NS2Gamerules.lua")
     self:ReplaceClassFunction("NS2Gamerules", "JoinTeam", "JoinTeam_Hook")
-	self:ReplaceClassFunction("NS2Gamerules", "GetUserPlayedInGame", "GetUserPlayedInGame_Hook")
 	self:PostHookClassFunction("NS2Gamerules", "OnUpdate", "OnUpdate_Hook")
 	self:PostHookClassFunction("NS2Gamerules", "ChooseTechPoint", "ChooseTechPoint_Hook"):SetPassHandle(true)
 	self:RawHookClassFunction("NS2Gamerules", "ResetGame", "ResetGame_Hook")
@@ -27,6 +26,44 @@ function CombatNS2Gamerules:OnLoad()
     self:PostHookClassFunction("Gamerules", "OnClientConnect", "OnClientConnect_Hook")
 	
 end
+
+// Returns bool for success and bool if we've played in the game already.
+local function GetUserPlayedInGame(self, player)
+
+	local success = false
+	local played = false
+	
+	local owner = Server.GetOwner(player)
+	if owner then
+	
+		local userId = tonumber(owner:GetUserId())
+		
+		// Could be invalid if we're still connecting to Steam
+		played = table.find(self.userIdsInGame, userId) ~= nil
+		success = true
+		
+	end
+	
+	return success, played
+	
+end
+
+local function SetUserPlayedInGame(self, player)
+
+	local owner = Server.GetOwner(player)
+	if owner then
+	
+		local userId = tonumber(owner:GetUserId())
+		
+		// Could be invalid if we're still connecting to Steam.
+		return table.insertunique(self.userIdsInGame, userId)
+		
+	end
+	
+	return false
+	
+end
+
 
 	// Free the lvl when changing Teams
     /**
@@ -90,6 +127,30 @@ function CombatNS2Gamerules:JoinTeam_Hook(self, player, newTeamNumber, force)
 			
 		end
 		
+		local client = Server.GetOwner(newPlayer)
+		local clientUserId = client and client:GetUserId() or 0
+		local disconnectedPlayerRes = self.disconnectedPlayerResources[clientUserId]
+		if disconnectedPlayerRes then
+		
+			newPlayer:SetResources(disconnectedPlayerRes)
+			self.disconnectedPlayerResources[clientUserId] = nil
+			
+		else
+		
+			// Give new players starting resources. Mark players as "having played" the game (so they don't get starting res if
+			// they join a team again, etc.)
+			local success, played = GetUserPlayedInGame(self, newPlayer)
+			if success and not played then
+				newPlayer:SetResources(kPlayerInitialIndivRes)
+			end
+			
+		end
+		
+		if self:GetGameStarted() then
+			SetUserPlayedInGame(self, newPlayer)
+		end
+            
+		
 		newPlayer:TriggerEffects("join_team")
 		
 	end
@@ -112,15 +173,6 @@ function CombatNS2Gamerules:JoinTeam_Hook(self, player, newTeamNumber, force)
 	// Return old player
 	return success, player
 		
-end
-
-// Stop NS2 Giving us 25 personal res at the start.
-function CombatNS2Gamerules:GetUserPlayedInGame_Hook(self, player)
-
-	local success = true
-	local played = true
-	return success, played
-
 end
 
 // If the client connects, send him the welcome Message
