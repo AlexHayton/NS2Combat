@@ -43,7 +43,7 @@ kNanoShieldDuration = kCombatMarineSpawnProtectTime
 kCombatAlienSpawnProtectTime = 5
 kSpawnMaxRetries = 30
 kSpawnMinDistance = 3
-kSpawnMaxDistance = 80
+kSpawnMaxDistance = 70
 kSpawnMaxVertical = 30
 
 // By default, Aliens win after a certain amount of time...

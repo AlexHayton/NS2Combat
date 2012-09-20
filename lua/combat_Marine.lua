@@ -20,6 +20,7 @@ function CombatMarine:OnLoad()
     self:ReplaceClassFunction("Marine", "Drop", "Drop_Hook")
 	self:ReplaceClassFunction("Marine", "GiveJetpack", "GiveJetpack_Hook")
 	self:PostHookClassFunction("Marine", "OnTakeDamage", "OnTakeDamage_Hook")
+	self:PostHookClassFunction("Marine", "RequestHeal", "RequestHeal_Hook")
     
 end
 
@@ -67,6 +68,12 @@ function CombatMarine:OnTakeDamage_Hook(self, damage, attacker, doer, point)
 	self:CheckCombatData()
 	self:CheckCatalyst()
 
+end
+
+function CombatMarine:RequestHeal_Hook(self)
+	
+	self:ProcessTauntAbilities()
+	
 end
 
 if (not HotReload) then
