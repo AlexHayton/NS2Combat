@@ -46,17 +46,17 @@ end
 // new functions, no hooks
 // to provide the client also with all Ups (for the GUI)
 function NS2CombatMenuMod:OnClientLuaFinished()
-
-  self:LoadScript("lua/combat_Player_ClientUpgrade.lua")
-  self:LoadScript("lua/combat_CombatUpgrade.lua")
-  self:LoadScript("lua/combat_CombatMarineUpgrade.lua")
-  self:LoadScript("lua/combat_CombatAlienUpgrade.lua")
-  self:LoadScript("lua/combat_ExperienceData.lua")
-  self:LoadScript("lua/combat_ExperienceFuncs.lua")
-  self:LoadScript("lua/combat_Values.lua")
-  self:LoadScript("lua/combat_ConsoleCommands_Client.lua")
-  self:LoadScript("lua/combat_MarineBuyFuncs.lua")
-  self:LoadScript("lua/combat_AlienBuyFuncs.lua")
+	Script.Load("lua/combat_Player_ClientUpgrade.lua")
+	Script.Load("lua/combat_CombatUpgrade.lua")
+	Script.Load("lua/combat_CombatMarineUpgrade.lua")
+	Script.Load("lua/combat_CombatAlienUpgrade.lua")
+	Script.Load("lua/combat_ExperienceData.lua")
+	Script.Load("lua/combat_ExperienceFuncs.lua")
+	Script.Load("lua/combat_Values.lua")
+	Script.Load("lua/combat_ConsoleCommands_Client.lua")
+	Script.Load("lua/combat_MarineBuyFuncs.lua")
+	Script.Load("lua/combat_AlienBuyFuncs.lua")
+	Script.Load("lua/Weapons/Marines/combat_ClipWeapon.lua")
 end
 
 
