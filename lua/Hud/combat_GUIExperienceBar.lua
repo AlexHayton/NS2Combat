@@ -62,12 +62,20 @@ combat_GUIExperienceBar.kTextIncreaseRate = 30
 local function GetTeamType()
 
 	local player = Client.GetLocalPlayer()
-	if player:isa("Alien") then 
-		return "Alien"
-	elseif player:isa("Marine") or player:isa("Exo") then
-		return "Marine"
+	
+	if not player:isa("ReadyRoomPlayer") then	
+		local teamnumber = player:GetTeamNumber()
+		if teamnumber == kAlienTeamType then
+			return "Aliens"
+		elseif teamnumber == kMarineTeamType then
+			return "Marines"
+		elseif teamnumber == kNeutralTeamType then 
+			return "Spectator"
+		else
+			return "Unknown"
+		end
 	else
-		return "Spectator"
+		return "Ready Room"
 	end
 	
 end
@@ -81,7 +89,7 @@ function combat_GUIExperienceBar:Initialize()
 	self.experienceAlpha = combat_GUIExperienceBar.kNormalAlpha
 	self.experienceTextAlpha = combat_GUIExperienceBar.kNormalAlpha
 	self.barMoving = false
-	self.playerTeam = "Spectator"
+	self.playerTeam = "Ready Room"
 	self.fadeOutTime = Shared.GetTime()
 	self.experienceData = {}
 	
@@ -172,10 +180,10 @@ function combat_GUIExperienceBar:CalculateExperienceData()
 
 	local player = Client.GetLocalPlayer()
 	self.experienceData.targetExperience = player:GetScore()
-	self.experienceData.experienceToNextLevel = player:XpUntilNextLevel()
+	self.experienceData.experienceToNextLevel = player:XPUntilNextLevel()
 	self.experienceData.nextLevelExperience = player:GetNextLevelXP()
-	self.experienceData.thisLevelName = Experience_GetLvlName(player:GetScore(), player:GetTeamNumber())
-	self.experienceData.experiencePercent = self:GetLevelProgression()
+	self.experienceData.thisLevelName = Experience_GetLvlName(Experience_GetLvl(player:GetScore()), player:GetTeamNumber())
+	self.experienceData.experiencePercent = player:GetLevelProgression()
 	self.experienceData.experienceLastTick = self.experienceData.targetExperience
 
 end
@@ -203,7 +211,7 @@ function combat_GUIExperienceBar:UpdateExperienceBar(deltaTime)
 		end
 	end
 	
-	if (PlayerUI_GetPlayerExperience() == maxXp) then
+	if (self.experienceData.targetExperience == maxXp) then
 		currentBarWidth = combat_GUIExperienceBar.kExperienceBarWidth
 		targetBarWidth = combat_GUIExperienceBar.kExperienceBarWidth
 		calculatedBarWidth = combat_GUIExperienceBar.kExperienceBarWidth
@@ -259,7 +267,7 @@ end
 function combat_GUIExperienceBar:UpdateText(deltaTime)
 	// Tween the experience text too!
 	self.currentExperience = Slerp(self.currentExperience, self.experienceData.targetExperience, deltaTime*combat_GUIExperienceBar.kTextIncreaseRate)
-	if (self.targetExperience >= maxXp) then
+	if (self.experienceData.targetExperience >= maxXp) then
 		self.experienceText:SetText(tostring(math.ceil(self.currentExperience)) .. " (" .. self.experienceData.thisLevelName .. ")")
 	else
 		self.experienceText:SetText(tostring(math.ceil(self.currentExperience)) .. " / " .. self.experienceData.nextLevelExperience .. " (" .. self.experienceData.thisLevelName .. ")")
