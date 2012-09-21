@@ -513,7 +513,7 @@ function combat_GUIMarineBuyMenu:_UpdateItemButtons(deltaTime)
             // set grey if player doesn'T have the needed other Up
             if not gotRequirements then
             
-                useColor = Color(0.5, 0.5, 0.5, 1) 
+				useColor = Color(1, 0, 0, 1)
                
             // set it blink when we got the upp already
             elseif  self.player:GotItemAlready(item.Upgrade) then
@@ -524,7 +524,7 @@ function combat_GUIMarineBuyMenu:_UpdateItemButtons(deltaTime)
             // set red if can't afford
             elseif PlayerUI_GetPlayerResources() < item.Upgrade:GetLevels() then
             
-                useColor = Color(1, 0, 0, 1)
+                useColor = Color(0.5, 0.5, 0.5, 1) 
                
             end
             
