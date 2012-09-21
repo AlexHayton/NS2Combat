@@ -182,6 +182,7 @@ function combat_GUIExperienceBar:CalculateExperienceData()
 	self.experienceData.targetExperience = player:GetScore()
 	self.experienceData.experienceToNextLevel = player:XPUntilNextLevel()
 	self.experienceData.nextLevelExperience = player:GetNextLevelXP()
+	self.experienceData.thisLevel = Experience_GetLvl(player:GetScore())
 	self.experienceData.thisLevelName = Experience_GetLvlName(Experience_GetLvl(player:GetScore()), player:GetTeamNumber())
 	self.experienceData.experiencePercent = player:GetLevelProgression()
 	self.experienceData.experienceLastTick = self.experienceData.targetExperience
@@ -268,9 +269,9 @@ function combat_GUIExperienceBar:UpdateText(deltaTime)
 	// Tween the experience text too!
 	self.currentExperience = Slerp(self.currentExperience, self.experienceData.targetExperience, deltaTime*combat_GUIExperienceBar.kTextIncreaseRate)
 	if (self.experienceData.targetExperience >= maxXp) then
-		self.experienceText:SetText(tostring(math.ceil(self.currentExperience)) .. " (" .. self.experienceData.thisLevelName .. ")")
+		self.experienceText:SetText("Level " .. self.experienceData.thisLevel .. " / " .. maxLvl .. ": " .. tostring(math.ceil(self.currentExperience)) .. " (" .. self.experienceData.thisLevelName .. ")")
 	else
-		self.experienceText:SetText(tostring(math.ceil(self.currentExperience)) .. " / " .. self.experienceData.nextLevelExperience .. " (" .. self.experienceData.thisLevelName .. ")")
+		self.experienceText:SetText("Level " .. self.experienceData.thisLevel .. " / " .. maxLvl .. ": " .. tostring(math.ceil(self.currentExperience)) .. " / " .. self.experienceData.nextLevelExperience .. " (" .. self.experienceData.thisLevelName .. ")")
 	end
 end
 

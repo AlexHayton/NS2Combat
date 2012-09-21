@@ -9,6 +9,15 @@
 
 // helper functions for the buy Menu
 
+function Player:GetScore()
+
+    // There are cases where the player name will be nil such as right before
+    // this Player is destroyed on the Client (due to the scoreboard removal message
+    // being received on the Client before the entity removed message). Play it safe.
+    return Scoreboard_GetPlayerData(self:GetClientIndex(), "Score") or 0
+    
+end
+
 function Player:GotRequirements(upgrade)
     
     if upgrade then
