@@ -13,6 +13,7 @@ Script.Load("lua/fsfod_scripts.lua")
 
 // load the ModSwitcher functions
 Script.Load("lua/combat_ModSwitcher.lua")
+ModSwitcher_Load(true)
 
 // dont load the hooks, if combat mode is deactivated
 if kCombatModActive then

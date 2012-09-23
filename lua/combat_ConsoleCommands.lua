@@ -137,9 +137,31 @@ function OnCommandSendUpgrades(client)
 
 end
 
+local function OnCommandModActive(client, activeBoolean)
 
-local function OnCommandModActiveAdmin(client, activeBoolean)
-    Print("kCombatModActive is now" .. ToString(activeBoolean))
+    if client == nil or client:GetIsLocalClient() then
+        OnCommandModActiveAdmin(client, activeBoolean)
+    end
+    
+end
+
+function OnCommandModActiveAdmin(client, activeBoolean)
+
+    if activeBoolean then
+        if activeBoolean == "true" or activeBoolean == "false" then
+            ModSwitcher_Save(activeBoolean, false)
+            Shared.Message("The changes only take effect after the next mapchange")
+            
+            // send it to every player            
+            local message = "CombatMod will be " .. ModSwitcher_Status(activeBoolean) .. " after this map."
+            Shared.ConsoleCommand("say " .. message)
+              
+        else
+            Shared.Message("CombatModSwitcher: Only true or false allowed")
+        end
+    else
+        ModSwitcher_Load(false)        
+    end
 end
 
 
@@ -166,4 +188,5 @@ end
 
 // only this command works when in classic mode
 // to make it available for admins and dedicated servers
-CreateServerAdminCommand("Console_sv_co_mod_active", OnCommandModActiveAdmin, "Switches between combat and classic mode") 
+Event.Hook("Console_co_mode",         OnCommandModActive) 
+CreateServerAdminCommand("Console_sv_co_mode", OnCommandModActiveAdmin, "Switches between combat and classic mode") 
