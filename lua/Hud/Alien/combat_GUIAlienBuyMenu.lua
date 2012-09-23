@@ -304,6 +304,18 @@ function CombatGUIAlienBuyMenu:Update_Hook(self, deltaTime)
 		end    
 		
 		currentButton.Icon:SetColor(useColor)
+		
+		if self:_GetIsMouseOver(currentButton.Icon) then
+       
+           local currentUpgradeInfoText = GetDisplayNameForTechId(currentButton.TechId)
+           local tooltipText = GetTooltipInfoText(currentButton.TechId)
+           
+           if string.len(tooltipText) > 0 then
+               currentUpgradeInfoText = currentUpgradeInfoText .. "\n" .. tooltipText
+           end
+           self:_ShowMouseOverInfo(currentUpgradeInfoText, currentButton.Cost)
+           
+       end
 	end
 
 end
