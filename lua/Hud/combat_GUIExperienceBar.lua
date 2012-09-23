@@ -43,7 +43,7 @@ combat_GUIExperienceBar.kAlienBarTextureX2 = 256
 combat_GUIExperienceBar.kAlienBarTextureY1 = 0
 combat_GUIExperienceBar.kAlienBarTextureY2 = 49
 
-combat_GUIExperienceBar.kMarineGUIColor = Color(0.0, 0.6, 1.0, 1)
+combat_GUIExperienceBar.kMarineGUIColor = Color(0.0, 0.0, 1.0, 1)
 combat_GUIExperienceBar.kAlienGUIColor = Color(1.0, 0.4, 0.4, 1)
 combat_GUIExperienceBar.kMarineTextColor = Color(0.0, 0.6, 0.9, 1)
 combat_GUIExperienceBar.kAlienTextColor = Color(0.8, 0.4, 0.4, 1)
