@@ -26,7 +26,12 @@ function CombatClipWeapon:OnUpdateAnimationInput_Hook(self, modelMixin)
    
     local player = self:GetParent()
     if player then
-        modelMixin:SetAnimationInput("reload_time", player:GotFastReload() and kCombatFastRelaodTime or kClassicReloadTime)
+    
+        if kCombatModActive then
+            modelMixin:SetAnimationInput("reload_time", player:GotFastReload() and kCombatFastRelaodTime or kClassicReloadTime)
+        else
+            modelMixin:SetAnimationInput("reload_time", 1)
+        end
     end
             
 end

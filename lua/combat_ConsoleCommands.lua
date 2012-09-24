@@ -44,7 +44,7 @@ function OnCommandSpendLvl(client, ...)
 end
 
 
-function OnCommandAddXp(client, amount)
+local function OnCommandAddXp(client, amount)
 
         local player = client:GetControllingPlayer()        
         if Shared.GetCheatsEnabled() then
@@ -70,19 +70,6 @@ function OnCommandShowLvl(client)
         local player = client:GetControllingPlayer()        
         Print(player:GetLvl())
 
-end
-
-function OnCommandTestMsg(client, message)
-
-    local player = client:GetControllingPlayer() 
-    local worldmessage = BuildWorldTextMessage(message, player:GetOrigin())
-
-
-
-
-    //for index, marine in ipairs(GetEntitiesForTeam("Player", player:GetTeamNumber())) do
-        Server.SendNetworkMessage(player, "WorldText", worldmessage, true) 
-    //end 
 end
 
 function OnCommandStuck(client)
@@ -141,6 +128,7 @@ function OnCommandUpgrades(client)
 
 end
 
+
 // send the Ups to the requesting player
 function OnCommandSendUpgrades(client)
 
@@ -149,21 +137,56 @@ function OnCommandSendUpgrades(client)
 
 end
 
+local function OnCommandModActive(client, activeBoolean)
+
+    if client == nil or client:GetIsLocalClient() then
+        OnCommandModActiveAdmin(client, activeBoolean)
+    end
+    
+end
+
+function OnCommandModActiveAdmin(client, activeBoolean)
+
+    if activeBoolean then
+        if activeBoolean == "true" or activeBoolean == "false" then
+            ModSwitcher_Save(activeBoolean, false)
+            Shared.Message("The changes only take effect after the next mapchange")
+            
+            // send it to every player            
+            local message = "CombatMod will be " .. ModSwitcher_Status(activeBoolean) .. " after this map."
+            Shared.ConsoleCommand("say " .. message)
+              
+        else
+            Shared.Message("CombatModSwitcher: Only true or false allowed")
+        end
+    else
+        ModSwitcher_Load(false)        
+    end
+end
+
+
 // All commands that should be accessible via the chat need to be in this list
 combatCommands = {"co_spendlvl", "co_help", "co_status", "co_upgrades", "/upgrades", "/status", "/buy", "/help"}
 
-Event.Hook("Console_co_help",                OnCommandHelp) 
-Event.Hook("Console_/help",                OnCommandHelp) 
-Event.Hook("Console_co_upgrades",                OnCommandUpgrades) 
-Event.Hook("Console_/upgrades",                OnCommandUpgrades) 
-Event.Hook("Console_co_spendlvl",                OnCommandSpendLvl)
-Event.Hook("Console_/buy",						OnCommandSpendLvl)
-Event.Hook("Console_co_addxp",                OnCommandAddXp)
-Event.Hook("Console_co_showxp",                OnCommandShowXp)
-Event.Hook("Console_co_showlvl",                OnCommandShowLvl)
-Event.Hook("Console_co_status",                OnCommandStatus) 
-Event.Hook("Console_/status",                OnCommandStatus) 
-Event.Hook("Console_testmsg",                OnCommandTestMsg)
-Event.Hook("Console_/stuck",                OnCommandStuck)
+if kCombatModActive then
 
-Event.Hook("Console_co_sendupgrades",       OnCommandSendUpgrades) 
+    Event.Hook("Console_co_help",                OnCommandHelp) 
+    Event.Hook("Console_/help",                OnCommandHelp) 
+    Event.Hook("Console_co_upgrades",                OnCommandUpgrades) 
+    Event.Hook("Console_/upgrades",                OnCommandUpgrades) 
+    Event.Hook("Console_co_spendlvl",                OnCommandSpendLvl)
+    Event.Hook("Console_/buy",						OnCommandSpendLvl)
+    Event.Hook("Console_co_addxp",                OnCommandAddXp)
+    Event.Hook("Console_co_showxp",                OnCommandShowXp)
+    Event.Hook("Console_co_showlvl",                OnCommandShowLvl)
+    Event.Hook("Console_co_status",                OnCommandStatus) 
+    Event.Hook("Console_/status",                OnCommandStatus) 
+    //Event.Hook("Console_/stuck",                OnCommandStuck)    
+    Event.Hook("Console_co_sendupgrades",       OnCommandSendUpgrades) 
+    
+end
+
+// only this command works when in classic mode
+// to make it available for admins and dedicated servers
+Event.Hook("Console_co_mode",         OnCommandModActive) 
+CreateServerAdminCommand("Console_sv_co_mode", OnCommandModActiveAdmin, "Switches between combat and classic mode") 
