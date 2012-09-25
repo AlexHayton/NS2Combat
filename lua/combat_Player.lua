@@ -437,17 +437,14 @@ function Player:spendlvlHints(hint, type)
 		
     elseif hint == "no_type" then
         self:SendDirectMessage("Usage: /buy upgradeName or co_spendlvl upgradeName - All upgrades for your team:")
-        // ToDo: make a short break before printing the ups        
         Server.ClientCommand(self, "co_upgrades")
                
     elseif hint == "wrong_type_marine" then        
         self:SendDirectMessage(  type .. " is not known. All upgrades for your team:")        
-        // ToDo: make a short break before printing the ups        
         Server.ClientCommand(self, "co_upgrades")
         
     elseif hint == "wrong_type_alien" then
         self:SendDirectMessage(  type .. " is not known. All upgrades for your team:")
-        // ToDo: make a short break before printing the ups
         Server.ClientCommand(self, "co_upgrades")
         
     elseif hint == "neededOtherUp" then
