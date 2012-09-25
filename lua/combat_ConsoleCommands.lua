@@ -16,6 +16,8 @@ function OnCommandSpendLvl(client, ...)
     
 	if player:isa("Spectator") then
 		player:spendlvlHints("spectator")
+	elseif not player:GetIsAlive() then
+		player:spendlvlHints("dead")
     else		
         for i, typeCode in ipairs(args) do
             local upgrade = GetUpgradeFromTextCode(typeCode)

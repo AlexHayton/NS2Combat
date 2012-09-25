@@ -430,7 +430,10 @@ function Player:spendlvlHints(hint, type)
     if not type then type = "" end
 
 	if hint == "spectator" then
-        self:SendDirectMessage("You can only apply updates once you've joined a team!")
+        self:SendDirectMessage("You can only apply upgrades once you've joined a team!")
+		
+	elseif hint == "dead" then
+        self:SendDirectMessage("You cannot apply upgrades if you are dead!")
 		
     elseif hint == "no_type" then
         self:SendDirectMessage("Usage: /buy upgradeName or co_spendlvl upgradeName - All upgrades for your team:")
