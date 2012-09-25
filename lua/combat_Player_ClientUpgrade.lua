@@ -14,8 +14,19 @@ function Player:GetScore()
     // There are cases where the player name will be nil such as right before
     // this Player is destroyed on the Client (due to the scoreboard removal message
     // being received on the Client before the entity removed message). Play it safe.
-    return Scoreboard_GetPlayerData(self:GetClientIndex(), "Score") or 0
-    
+    local scoreboardScore = Scoreboard_GetPlayerData(self:GetClientIndex(), "Score") or 0
+	local playerScore = self.score
+	local bestGuessScore = 0
+	
+	if (playerScore > scoreboardScore) then
+		bestGuessScore = playerScore
+	else
+		bestGuessScore = scoreboardScore
+    end
+	
+	self.score = bestGuessScore
+	return bestGuessScore
+	
 end
 
 function Player:GotRequirements(upgrade)

@@ -32,7 +32,20 @@ function OnCommandClearUpgrades()
    
 end
 
+function OnCommandPoints(pointsString, resString)
 
+	local points = tonumber(pointsString)
+    local res = tonumber(resString)
+    ScoreDisplayUI_SetNewScore(points, res)
+
+	// Add the points to the score here so that we get a more accurate score amount for the experience bar.
+	// Todo: Make score/xp a network value?
+	player = Client.GetLocalPlayer()
+	player.score = player.score + points
+
+end
+
+Event.Hook("Console_points",						OnCommandPoints)
 Event.Hook("Console_co_setupgrades",                OnCommandSetUpgrades) 
 Event.Hook("Console_co_clearupgrades",              OnCommandClearUpgrades) 
 
