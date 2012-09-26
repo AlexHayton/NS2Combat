@@ -16,25 +16,29 @@ local kCombatVersionPath = "https://raw.github.com/AlexHayton/NS2Combat/master/V
 
 local CombatCheckVersion = function(data)
 
-    Shared.Message("**********************************")
+	Shared.Message("**********************************")
     Shared.Message("**********************************")
     Shared.Message("\n")
     Shared.Message("CombatMod: Checking Version-Number")
     Shared.Message("\n")
     
-    if string.sub(data , 1, 1) ~= "<" then
-        local WebVersion = tonumber(string.sub(data, string.len("kCombatLocalVersion = "), string.len("kCombatLocalVersion = ") + 6))
-		if WebVersion == nil then
-			Shared.Message("Could not download version check information!")
-        elseif WebVersion <= kCombatLocalVersion then
-            Shared.Message("CombatMod is on the newest version")
-        else
-            Shared.Message("Warning: CombatMod is Out of Date, your version is: " .. ToString(kCombatLocalVersion) .. " , newest version is: " .. ToString(WebVersion))
-        end
-    else
-        // must be a 404 page
-        Shared.Error("Error: Couldn't check the Version, file not found")
-    end
+	if data then
+		if string.sub(data , 1, 1) ~= "<" then
+			local WebVersion = tonumber(string.sub(data, string.len("kCombatLocalVersion = "), string.len("kCombatLocalVersion = ") + 6))
+			if WebVersion == nil then
+				Shared.Message("Could not download version check information!")
+			elseif WebVersion <= kCombatLocalVersion then
+				Shared.Message("CombatMod is on the newest version")
+			else
+				Shared.Message("Warning: CombatMod is Out of Date, your version is: " .. ToString(kCombatLocalVersion) .. " , newest version is: " .. ToString(WebVersion))
+			end
+		else
+			// must be a 404 page
+			Shared.Error("Error: Couldn't check the Version, file not found.")
+		end
+	else
+		Shared.Error("Error: Couldn't check the Version, timed out.")
+	end
     
     Shared.Message("\n")
     Shared.Message("**********************************")
@@ -43,6 +47,6 @@ local CombatCheckVersion = function(data)
 end
 
 function CombatInitCheckVersion()
-	local params = {}
-	Shared.SendHTTPRequest(kCombatVersionPath, "GET", params, CombatCheckVersion)
+	//local params = {}
+	//Shared.SendHTTPRequest(kCombatVersionPath, "GET", params, CombatCheckVersion)
 end
