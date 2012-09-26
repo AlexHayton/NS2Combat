@@ -349,7 +349,7 @@ function Player:AddXp(amount, suppressmessage)
 	//self:TriggerEffects("issueOrderSounds")
 	
 	// check if amount isn't nil, could cause an error
-	if amount then
+	if amount and amount > 0 then
 		if (amount > 10) then
 			self:TriggerEffects("res_received")
 		end

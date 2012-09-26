@@ -19,7 +19,7 @@ avgXpAmount = 0.75
 mateXpAmount = 0.4
 
 // range 35 was too big
-mateXpRange = 15
+mateXpRange = 20
 
 // XP-Values
 // Scores for various creatures and structures.
@@ -38,6 +38,8 @@ XpValues["Clog"] = 20
 XpValues["Cyst"] = 10
 XpValues["Armory"] = 100
 XpValues["CommandStation"] = 200
+XpValues["PowerPoint"] = 0
+XpValues["Extractor"] = 0
 XpValues["Hive"] = 400
 
 // xp  for welding, healing
