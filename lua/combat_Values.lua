@@ -104,6 +104,11 @@ kHealXpRate = 1
 // Rate at which players gain XP for healing other players...
 kPlayerHealXpRate = 0
 
+// Power points
+kPowerPointHealth = 1500	
+kPowerPointArmor = 500	
+kPowerPointPointValue = 0
+
 // Alien vision should be free
 kAlienVisionCost = 0
 kAlienVisionEnergyRegenMod = 1
