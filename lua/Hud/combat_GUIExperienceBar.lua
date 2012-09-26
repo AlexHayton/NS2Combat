@@ -16,9 +16,8 @@ combat_GUIExperienceBar.kExperienceBackgroundWidth = 400
 combat_GUIExperienceBar.kExperienceBackgroundHeight = 20
 combat_GUIExperienceBar.kExperienceBackgroundMinimisedHeight = 10
 combat_GUIExperienceBar.kExperienceBackgroundOffset = Vector(-combat_GUIExperienceBar.kExperienceBackgroundWidth/2, -combat_GUIExperienceBar.kExperienceBackgroundHeight-10, 0)
-combat_GUIExperienceBar.kExperienceBackgroundColor = Color(0, 0, 0, 0.3)
 
-combat_GUIExperienceBar.kExperienceBorder = 3
+combat_GUIExperienceBar.kExperienceBorder = 0
 
 combat_GUIExperienceBar.kExperienceBarOffset = Vector(combat_GUIExperienceBar.kExperienceBorder, combat_GUIExperienceBar.kExperienceBorder, 0)
 combat_GUIExperienceBar.kExperienceBarWidth = combat_GUIExperienceBar.kExperienceBackgroundWidth - combat_GUIExperienceBar.kExperienceBorder*2
@@ -26,27 +25,29 @@ combat_GUIExperienceBar.kExperienceBarHeight = combat_GUIExperienceBar.kExperien
 combat_GUIExperienceBar.kExperienceBarMinimisedHeight = combat_GUIExperienceBar.kExperienceBackgroundMinimisedHeight - combat_GUIExperienceBar.kExperienceBorder*2
 
 // Texture Coords
-combat_GUIExperienceBar.kExperienceBackgroundTextureX1 = 0
-combat_GUIExperienceBar.kExperienceBackgroundTextureX2 = 256
-combat_GUIExperienceBar.kExperienceBackgroundTextureY1 = 50
-combat_GUIExperienceBar.kExperienceBackgroundTextureY2 = 99
-combat_GUIExperienceBar.kExperienceBarTextureX1 = 0
-combat_GUIExperienceBar.kExperienceBarTextureX2 = 256
-combat_GUIExperienceBar.kExperienceBarTextureY1 = 0
-combat_GUIExperienceBar.kExperienceBarTextureY2 = 49
 combat_GUIExperienceBar.kMarineBarTextureX1 = 0
 combat_GUIExperienceBar.kMarineBarTextureX2 = 256
-combat_GUIExperienceBar.kMarineBarTextureY1 = 0
-combat_GUIExperienceBar.kMarineBarTextureY2 = 49
+combat_GUIExperienceBar.kMarineBarTextureY1 = 112
+combat_GUIExperienceBar.kMarineBarTextureY2 = 159
+combat_GUIExperienceBar.kMarineBarBackgroundTextureX1 = 0
+combat_GUIExperienceBar.kMarineBarBackgroundTextureX2 = 256
+combat_GUIExperienceBar.kMarineBarBackgroundTextureY1 = 171
+combat_GUIExperienceBar.kMarineBarBackgroundTextureY2 = 217
 combat_GUIExperienceBar.kAlienBarTextureX1 = 0
 combat_GUIExperienceBar.kAlienBarTextureX2 = 256
-combat_GUIExperienceBar.kAlienBarTextureY1 = 0
-combat_GUIExperienceBar.kAlienBarTextureY2 = 49
+combat_GUIExperienceBar.kAlienBarTextureY1 = 55
+combat_GUIExperienceBar.kAlienBarTextureY2 = 96
+combat_GUIExperienceBar.kAlienBarBackgroundTextureX1 = 0
+combat_GUIExperienceBar.kAlienBarBackgroundTextureX2 = 256
+combat_GUIExperienceBar.kAlienBarBackgroundTextureY1 = 7
+combat_GUIExperienceBar.kAlienBarBackgroundTextureY2 = 44
 
-combat_GUIExperienceBar.kMarineGUIColor = Color(0.0, 0.0, 1.0, 1)
-combat_GUIExperienceBar.kAlienGUIColor = Color(1.0, 0.4, 0.4, 1)
+combat_GUIExperienceBar.kMarineBackgroundGUIColor = Color(0.8, 0.8, 0.8, 0.3)
+combat_GUIExperienceBar.kMarineGUIColor = Color(1.0, 1.0, 1.0, 0.8)
+combat_GUIExperienceBar.kAlienBackgroundGUIColor = Color(0.8, 0.8, 0.8, 0.3)
+combat_GUIExperienceBar.kAlienGUIColor = Color(1.0, 1.0, 1.0, 0.8)
 combat_GUIExperienceBar.kMarineTextColor = Color(0.0, 0.6, 0.9, 1)
-combat_GUIExperienceBar.kAlienTextColor = Color(0.8, 0.4, 0.4, 1)
+combat_GUIExperienceBar.kAlienTextColor = Color(0.7, 0.5, 0.5, 1)
 combat_GUIExperienceBar.kExperienceTextFontSize = 15
 combat_GUIExperienceBar.kExperienceTextOffset = Vector(0, -10, 0)
 combat_GUIExperienceBar.kNormalAlpha = 1.0
@@ -54,10 +55,10 @@ combat_GUIExperienceBar.kMinimisedTextAlpha = 0.6
 combat_GUIExperienceBar.kMinimisedAlpha = 0.4
 
 combat_GUIExperienceBar.kBarFadeInRate = 0.2
-combat_GUIExperienceBar.kBarFadeOutDelay = 0.4
+combat_GUIExperienceBar.kBarFadeOutDelay = 0.5
 combat_GUIExperienceBar.kBarFadeOutRate = 0.05
-combat_GUIExperienceBar.kBackgroundBarRate = 80
-combat_GUIExperienceBar.kTextIncreaseRate = 30
+combat_GUIExperienceBar.kBackgroundBarRate = 60
+combat_GUIExperienceBar.kTextIncreaseRate = 50
 
 local function GetTeamType()
 
@@ -101,9 +102,7 @@ function combat_GUIExperienceBar:CreateExperienceBar()
     self.experienceBarBackground:SetSize(Vector(combat_GUIExperienceBar.kExperienceBackgroundWidth, combat_GUIExperienceBar.kExperienceBackgroundMinimisedHeight, 0))
     self.experienceBarBackground:SetAnchor(GUIItem.Center, GUIItem.Bottom)
     self.experienceBarBackground:SetPosition(combat_GUIExperienceBar.kExperienceBackgroundOffset)
-    self.experienceBarBackground:SetColor(combat_GUIExperienceBar.kExperienceBackgroundColor)
     self.experienceBarBackground:SetTexture(combat_GUIExperienceBar.kTextureName)
-    self.experienceBarBackground:SetTexturePixelCoordinates(combat_GUIExperienceBar.kExperienceBackgroundTextureX1, combat_GUIExperienceBar.kExperienceBackgroundTextureY1, combat_GUIExperienceBar.kExperienceBackgroundTextureX2, combat_GUIExperienceBar.kExperienceBackgroundTextureY2)
 	self.experienceBarBackground:SetLayer(kGUILayerPlayerHUDBackground)
     self.experienceBarBackground:SetIsVisible(false)
     
@@ -112,7 +111,6 @@ function combat_GUIExperienceBar:CreateExperienceBar()
     self.experienceBar:SetAnchor(GUIItem.Left, GUIItem.Top)
     self.experienceBar:SetPosition(combat_GUIExperienceBar.kExperienceBarOffset)
 	self.experienceBar:SetTexture(combat_GUIExperienceBar.kTextureName)
-    self.experienceBar:SetTexturePixelCoordinates(combat_GUIExperienceBar.kExperienceBarTextureX1, combat_GUIExperienceBar.kExperienceBarTextureY1, combat_GUIExperienceBar.kExperienceBarTextureX2, combat_GUIExperienceBar.kExperienceBarTextureY2)
     self.experienceBar:SetIsVisible(false)
     self.experienceBarBackground:AddChild(self.experienceBar)
     
@@ -144,6 +142,12 @@ function combat_GUIExperienceBar:Update(deltaTime)
 			self.experienceBarBackground:SetIsVisible(true)
 			self.experienceBar:SetIsVisible(true)
 			self.experienceText:SetIsVisible(true)
+			self.experienceData.barPixelCoordsX1 = combat_GUIExperienceBar.kMarineBarTextureX1
+			self.experienceData.barPixelCoordsX2 = combat_GUIExperienceBar.kMarineBarTextureX2
+			self.experienceData.barPixelCoordsY1 = combat_GUIExperienceBar.kMarineBarTextureY1
+			self.experienceData.barPixelCoordsY2 = combat_GUIExperienceBar.kMarineBarTextureY2
+			self.experienceBarBackground:SetTexturePixelCoordinates(combat_GUIExperienceBar.kMarineBarBackgroundTextureX1, combat_GUIExperienceBar.kMarineBarBackgroundTextureY1, combat_GUIExperienceBar.kMarineBarBackgroundTextureX2, combat_GUIExperienceBar.kMarineBarBackgroundTextureY2)
+			self.experienceBarBackground:SetColor(combat_GUIExperienceBar.kMarineBackgroundGUIColor)
 		    self.experienceBar:SetTexturePixelCoordinates(combat_GUIExperienceBar.kMarineBarTextureX1, combat_GUIExperienceBar.kMarineBarTextureY1, combat_GUIExperienceBar.kMarineBarTextureX2, combat_GUIExperienceBar.kMarineBarTextureY2)
 			self.experienceBar:SetColor(combat_GUIExperienceBar.kMarineGUIColor)
 			self.experienceText:SetColor(combat_GUIExperienceBar.kMarineTextColor)
@@ -153,6 +157,12 @@ function combat_GUIExperienceBar:Update(deltaTime)
 			self.experienceBarBackground:SetIsVisible(true)
 			self.experienceBar:SetIsVisible(true)
 			self.experienceText:SetIsVisible(true)
+			self.experienceData.barPixelCoordsX1 = combat_GUIExperienceBar.kAlienBarTextureX1
+			self.experienceData.barPixelCoordsX2 = combat_GUIExperienceBar.kAlienBarTextureX2
+			self.experienceData.barPixelCoordsY1 = combat_GUIExperienceBar.kAlienBarTextureY1
+			self.experienceData.barPixelCoordsY2 = combat_GUIExperienceBar.kAlienBarTextureY2
+			self.experienceBarBackground:SetTexturePixelCoordinates(combat_GUIExperienceBar.kAlienBarBackgroundTextureX1, combat_GUIExperienceBar.kAlienBarBackgroundTextureY1, combat_GUIExperienceBar.kAlienBarBackgroundTextureX2, combat_GUIExperienceBar.kAlienBarBackgroundTextureY2)
+			self.experienceBarBackground:SetColor(combat_GUIExperienceBar.kAlienBackgroundGUIColor)
 			self.experienceBar:SetTexturePixelCoordinates(combat_GUIExperienceBar.kAlienBarTextureX1, combat_GUIExperienceBar.kAlienBarTextureY1, combat_GUIExperienceBar.kAlienBarTextureX2, combat_GUIExperienceBar.kAlienBarTextureY2)
 			self.experienceBar:SetColor(combat_GUIExperienceBar.kAlienGUIColor)	
 			self.experienceText:SetColor(combat_GUIExperienceBar.kAlienTextColor)
@@ -220,6 +230,7 @@ function combat_GUIExperienceBar:UpdateExperienceBar(deltaTime)
 	end
 	
 	self.experienceBar:SetSize(Vector(Slerp(currentBarWidth, targetBarWidth, deltaTime*combat_GUIExperienceBar.kBackgroundBarRate), self.experienceBar:GetSize().y, 0))
+	self.experienceBar:SetTexturePixelCoordinates(self.experienceData.barPixelCoordsX1, self.experienceData.barPixelCoordsY1, self.experienceData.barPixelCoordsX2*expBarPercentage, self.experienceData.barPixelCoordsY2)
 	
 	// Detect and register if the bar is moving
 	if (math.abs(currentBarWidth - calculatedBarWidth) > 0.01) then
