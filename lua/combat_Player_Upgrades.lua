@@ -60,9 +60,13 @@ function Player:CoEnableUpgrade(upgrades)
             end
 			
 			// Check for whether we have a mutually exclusive upgrade here...
-			if upgrade:GetMutuallyExclusive() and (entry:GetId() == upgrade:GetMutuallyExclusive()) then
-				mutuallyExclusive = true
-				mutuallyExclusiveDescription = entry:GetDescription()
+			if upgrade:GetMutuallyExclusive() then
+				for i, mutuallyExclusiveUpgrade in ipairs(upgrade:GetMutuallyExclusive()) do
+					if entry:GetId() == mutuallyExclusiveUpgrade then
+						mutuallyExclusive = true
+						mutuallyExclusiveDescription = entry:GetDescription()
+					end
+				end
 			end
         end
         
@@ -135,10 +139,12 @@ function Player:RefundMutuallyExclusiveUpgrades(upgrade)
 	local removals = {}
 	for index, entry in ipairs(self.combatTable.techtree) do
 		if entry:GetMutuallyExclusive() then
-			if entry:GetMutuallyExclusive() == upgrade:GetId() then
-				table.insert(removals, index)
-				self:AddLvlFree(entry:GetLevels())
-				self:SendDirectMessage("Refunded " .. entry:GetLevels() .. " upgrade point(s) for your " .. entry:GetDescription())
+			for i, mutuallyExclusiveUpgrade in ipairs(entry:GetMutuallyExclusive()) do
+				if upgrade:GetId() == mutuallyExclusiveUpgrade then
+					table.insert(removals, index)
+					self:AddLvlFree(entry:GetLevels())
+					self:SendDirectMessage("Refunded " .. entry:GetLevels() .. " upgrade point(s) for your " .. entry:GetDescription())
+				end
 			end
 		end
 	end
