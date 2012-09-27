@@ -142,9 +142,6 @@ end
 
 // Various updates and timers in here.
 function CombatPlayer:OnUpdatePlayer_Hook(self, deltaTime)
-            
-	// set ArmsLab always true so the up icons are white and not red	    
-	self.hasArmsLab = true
 		
 	// Spawn Protect
 	self:CheckCombatData()
