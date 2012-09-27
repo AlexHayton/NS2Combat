@@ -15,7 +15,7 @@ combat_GUIExperienceBar.kTextFontName = "MicrogrammaDBolExt"
 
 combat_GUIExperienceBar.kExperienceBackgroundWidth = 450
 combat_GUIExperienceBar.kExperienceBackgroundHeight = 30
-combat_GUIExperienceBar.kExperienceBackgroundMinimisedHeight = 15
+combat_GUIExperienceBar.kExperienceBackgroundMinimisedHeight = 30
 combat_GUIExperienceBar.kExperienceBackgroundOffset = Vector(-combat_GUIExperienceBar.kExperienceBackgroundWidth/2, -combat_GUIExperienceBar.kExperienceBackgroundHeight-10, 0)
 
 combat_GUIExperienceBar.kExperienceBorder = 0
@@ -28,12 +28,12 @@ combat_GUIExperienceBar.kExperienceBarMinimisedHeight = combat_GUIExperienceBar.
 // Texture Coords
 combat_GUIExperienceBar.kMarineBarTextureX1 = 0
 combat_GUIExperienceBar.kMarineBarTextureX2 = 512
-combat_GUIExperienceBar.kMarineBarTextureY1 = 0
-combat_GUIExperienceBar.kMarineBarTextureY2 = 127
+combat_GUIExperienceBar.kMarineBarTextureY1 = 1
+combat_GUIExperienceBar.kMarineBarTextureY2 = 62
 combat_GUIExperienceBar.kMarineBarBackgroundTextureX1 = 0
 combat_GUIExperienceBar.kMarineBarBackgroundTextureX2 = 512
-combat_GUIExperienceBar.kMarineBarBackgroundTextureY1 = 127
-combat_GUIExperienceBar.kMarineBarBackgroundTextureY2 = 256
+combat_GUIExperienceBar.kMarineBarBackgroundTextureY1 = 189
+combat_GUIExperienceBar.kMarineBarBackgroundTextureY2 = 254
 combat_GUIExperienceBar.kAlienBarTextureX1 = 0
 combat_GUIExperienceBar.kAlienBarTextureX2 = 512
 combat_GUIExperienceBar.kAlienBarTextureY1 = 185
@@ -43,17 +43,17 @@ combat_GUIExperienceBar.kAlienBarBackgroundTextureX2 = 512
 combat_GUIExperienceBar.kAlienBarBackgroundTextureY1 = 20
 combat_GUIExperienceBar.kAlienBarBackgroundTextureY2 = 70
 
-combat_GUIExperienceBar.kMarineBackgroundGUIColor = Color(1.0, 1.0, 1.0, 0.5)
+combat_GUIExperienceBar.kMarineBackgroundGUIColor = Color(1.0, 1.0, 1.0, 0.2)
 combat_GUIExperienceBar.kMarineGUIColor = Color(1.0, 1.0, 1.0, 0.9)
-combat_GUIExperienceBar.kAlienBackgroundGUIColor = Color(1.0, 1.0, 1.0, 0.5)
+combat_GUIExperienceBar.kAlienBackgroundGUIColor = Color(1.0, 1.0, 1.0, 0.4)
 combat_GUIExperienceBar.kAlienGUIColor = Color(1.0, 1.0, 1.0, 0.9)
 combat_GUIExperienceBar.kMarineTextColor = Color(1.0, 1.0, 1.0, 1)
-combat_GUIExperienceBar.kAlienTextColor = Color(0.7, 0.5, 0.5, 1)
+combat_GUIExperienceBar.kAlienTextColor = Color(0.9, 0.7, 0.7, 1)
 combat_GUIExperienceBar.kExperienceTextFontSize = 15
 combat_GUIExperienceBar.kExperienceTextOffset = Vector(0, -10, 0)
 combat_GUIExperienceBar.kNormalAlpha = 0.9
-combat_GUIExperienceBar.kMinimisedTextAlpha = 0.6
-combat_GUIExperienceBar.kMinimisedAlpha = 0.6
+combat_GUIExperienceBar.kMinimisedTextAlpha = 0.7
+combat_GUIExperienceBar.kMinimisedAlpha = 0.5
 
 combat_GUIExperienceBar.kBarFadeInRate = 0.2
 combat_GUIExperienceBar.kBarFadeOutDelay = 0.5
