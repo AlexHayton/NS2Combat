@@ -32,6 +32,7 @@ Script.Load("lua/combat_Values.lua")
 Script.Load("lua/combat_ConsoleCommands_Client.lua")
 Script.Load("lua/combat_MarineBuyFuncs.lua")
 Script.Load("lua/combat_AlienBuyFuncs.lua")
+Script.Load("lua/combat_TeamMixin.lua")
 Script.Load("lua/Weapons/Marines/combat_ClipWeapon.lua")
 Script.Load("lua/Hud/combat_GUIExperienceBar.lua")
 
