@@ -15,7 +15,7 @@ function TeamMixin:OnTakeDamageClient(damage, doer, point)
         local player = Client.GetLocalPlayer()
 		
 		// Damage scalar for focus.
-		if player:GotItemAlready(GetUpgradeFromId(kCombatUpgrades.Focus)) then
+		if player:GotItemAlready(GetUpgradeFromId(kCombatUpgrades.Focus)) and damage ~= nil then
 			damage = damage * kCombatFocusDamageScalar
 		end
         
