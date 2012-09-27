@@ -70,7 +70,7 @@ kCombatFastRelaodTime = kClassicReloadTime * 2
 
 // Focus
 kCombatFocusAttackSpeed = 0.5
-kCombatFocusDamageScalar = 1.5
+kCombatFocusDamageScalar = 1.4
 
 // Props
 kPropEffect = "vortex_destroy"
@@ -106,7 +106,7 @@ kHealXpRate = 1
 kPlayerHealXpRate = 0
 
 // Power points
-kPowerPointHealth = 1500	
+kPowerPointHealth = 1200	
 kPowerPointArmor = 500	
 kPowerPointPointValue = 0
 
