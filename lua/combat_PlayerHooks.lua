@@ -167,61 +167,76 @@ function CombatPlayer:OnUpdatePlayer_Hook(self, deltaTime)
 		
 	end
 	
-	if self.combatTable then
-		// only trigger Scan and Resupply when player is alive
-		if self:GetIsAlive() then
-
-			if self.combatTable.hasCamouflage then
-				if HasMixin(self, "Cloakable") then
-					self:SetIsCloaked(true, 1, false)
+	// Putting this here to try and fix the giving xp on join.
+	// Also helps us write the xp balancing function later.
+	if self:GetIsPlaying() then
+		if self.combatTable.setAvgXp then
+			local avgXp = Experience_GetAvgXp()
+			// Send the avg as a message to the player (%d doesn't work with SendDirectMessage)
+			local xpDiff = avgXp - self:GetXp()
+			if xpDiff > 0 then
+				// get AvgXp 
+				self:SendDirectMessage("Awarding " .. xpDiff .. " XP to help you catch up with your teammates...")
+				self:AddXp(xpDiff)
+			end
 			
-					// Trigger uncloak when you reach a certain speed, based on lifeform's max speed.
-					local velocity = self:GetVelocity():GetLength()
-					
-					if velocity >= (self:GetMaxSpeed(true) * kCamouflageUncloakFactor) then
-						self:SetIsCloaked(false)
-						self.cloakChargeTime = kCamouflageTime
-					end
-				end
-			end 
+			self.setAvgXp = false
+		end
+	end
+	
+	// only trigger Scan and Resupply when player is alive
+	if self:GetIsAlive() then
 
-			// Provide scan and resupply function
-			if self.combatTable.hasScan then
-				// SCAN!!
-				if (self.combatTable.lastScan + deltaTime >= kScanTimer) then
-					
-					local success = self:ScanNow()
-					
-					if success then
-						self.combatTable.lastScan = 0	            
-					end
-					
-				else
-					self.combatTable.lastScan = self.combatTable.lastScan + deltaTime
-				end
-			end 
-			
-			if self.combatTable.hasResupply then
-				if (self.combatTable.lastResupply + deltaTime >= kResupplyTimer) then
-					
-					// Keep the timer going, even if we don't need to resupply.
-					local success = false
-					if (self:NeedsResupply()) then
-						success = self:ResupplyNow()
-					else
-						success = true
-					end
-					
-					if success then
-						self.combatTable.lastResupply = 0
-					end
-				   
-				else
-					self.combatTable.lastResupply = self.combatTable.lastResupply + deltaTime
-				end
+		if self.combatTable.hasCamouflage then
+			if HasMixin(self, "Cloakable") then
+				self:SetIsCloaked(true, 1, false)
 		
-			end 
-        end
+				// Trigger uncloak when you reach a certain speed, based on lifeform's max speed.
+				local velocity = self:GetVelocity():GetLength()
+				
+				if velocity >= (self:GetMaxSpeed(true) * kCamouflageUncloakFactor) then
+					self:SetIsCloaked(false)
+					self.cloakChargeTime = kCamouflageTime
+				end
+			end
+		end 
+
+		// Provide scan and resupply function
+		if self.combatTable.hasScan then
+			// SCAN!!
+			if (self.combatTable.lastScan + deltaTime >= kScanTimer) then
+				
+				local success = self:ScanNow()
+				
+				if success then
+					self.combatTable.lastScan = 0	            
+				end
+				
+			else
+				self.combatTable.lastScan = self.combatTable.lastScan + deltaTime
+			end
+		end 
+		
+		if self.combatTable.hasResupply then
+			if (self.combatTable.lastResupply + deltaTime >= kResupplyTimer) then
+				
+				// Keep the timer going, even if we don't need to resupply.
+				local success = false
+				if (self:NeedsResupply()) then
+					success = self:ResupplyNow()
+				else
+					success = true
+				end
+				
+				if success then
+					self.combatTable.lastResupply = 0
+				end
+			   
+			else
+				self.combatTable.lastResupply = self.combatTable.lastResupply + deltaTime
+			end
+	
+		end 
     end
 end
 

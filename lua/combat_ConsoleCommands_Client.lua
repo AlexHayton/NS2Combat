@@ -41,6 +41,9 @@ function OnCommandPoints(pointsString, resString)
 	// Add the points to the score here so that we get a more accurate score amount for the experience bar.
 	// Todo: Make score/xp a network value?
 	player = Client.GetLocalPlayer()
+	if player.score == nil then
+		player.score = 0
+	end
 	player.score = player.score + points
 
 end
