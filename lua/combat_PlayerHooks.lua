@@ -177,7 +177,8 @@ function CombatPlayer:OnUpdatePlayer_Hook(self, deltaTime)
 				self:AddXp(xpDiff)
 			end
 			
-			self.setAvgXp = false
+			// Reset the average Xp flag.
+			self.combatTable.setAvgXp = false
 		end
 	end
 	
