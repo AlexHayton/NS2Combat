@@ -64,9 +64,9 @@ kScanRadius = 40
 kEMPTimer = 30
 kInkTimer = 30
 
-// fast reload and later focus time
+// fast reload
 kClassicReloadTime = 1.150000
-kCombatFastRelaodTime = kClassicReloadTime * 2
+kCombatFastReloadTime = kClassicReloadTime * 1.5
 
 // Focus
 kCombatFocusAttackSpeed = 0.6
