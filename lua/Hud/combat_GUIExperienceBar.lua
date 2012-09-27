@@ -50,14 +50,14 @@ combat_GUIExperienceBar.kMarineTextColor = Color(0.0, 0.6, 0.9, 1)
 combat_GUIExperienceBar.kAlienTextColor = Color(0.7, 0.5, 0.5, 1)
 combat_GUIExperienceBar.kExperienceTextFontSize = 15
 combat_GUIExperienceBar.kExperienceTextOffset = Vector(0, -10, 0)
-combat_GUIExperienceBar.kNormalAlpha = 1.0
+combat_GUIExperienceBar.kNormalAlpha = 0.9
 combat_GUIExperienceBar.kMinimisedTextAlpha = 0.6
-combat_GUIExperienceBar.kMinimisedAlpha = 0.4
+combat_GUIExperienceBar.kMinimisedAlpha = 0.3
 
 combat_GUIExperienceBar.kBarFadeInRate = 0.2
 combat_GUIExperienceBar.kBarFadeOutDelay = 0.5
-combat_GUIExperienceBar.kBarFadeOutRate = 0.05
-combat_GUIExperienceBar.kBackgroundBarRate = 60
+combat_GUIExperienceBar.kBarFadeOutRate = 0.1
+combat_GUIExperienceBar.kBackgroundBarRate = 80
 combat_GUIExperienceBar.kTextIncreaseRate = 50
 
 local function GetTeamType()
@@ -230,7 +230,8 @@ function combat_GUIExperienceBar:UpdateExperienceBar(deltaTime)
 	end
 	
 	self.experienceBar:SetSize(Vector(Slerp(currentBarWidth, targetBarWidth, deltaTime*combat_GUIExperienceBar.kBackgroundBarRate), self.experienceBar:GetSize().y, 0))
-	self.experienceBar:SetTexturePixelCoordinates(self.experienceData.barPixelCoordsX1, self.experienceData.barPixelCoordsY1, self.experienceData.barPixelCoordsX2*expBarPercentage, self.experienceData.barPixelCoordsY2)
+	local texCoordX2 = Slerp(currentBarWidth, targetBarWidth, deltaTime*combat_GUIExperienceBar.kBackgroundBarRate) / combat_GUIExperienceBar.kExperienceBarWidth * self.experienceData.barPixelCoordsX2
+	self.experienceBar:SetTexturePixelCoordinates(self.experienceData.barPixelCoordsX1, self.experienceData.barPixelCoordsY1, texCoordX2, self.experienceData.barPixelCoordsY2)
 	
 	// Detect and register if the bar is moving
 	if (math.abs(currentBarWidth - calculatedBarWidth) > 0.01) then
