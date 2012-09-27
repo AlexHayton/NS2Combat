@@ -18,7 +18,7 @@ function Player:GetScore()
 	local playerScore = self.score
 	local bestGuessScore = 0
 	
-	if (playerScore > scoreboardScore) then
+	if (playerScore > scoreboardScore) and scoreboardScore > 0 then
 		bestGuessScore = playerScore
 	else
 		bestGuessScore = scoreboardScore

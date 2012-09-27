@@ -42,9 +42,9 @@ combat_GUIExperienceBar.kAlienBarBackgroundTextureX2 = 256
 combat_GUIExperienceBar.kAlienBarBackgroundTextureY1 = 7
 combat_GUIExperienceBar.kAlienBarBackgroundTextureY2 = 44
 
-combat_GUIExperienceBar.kMarineBackgroundGUIColor = Color(0.8, 0.8, 0.8, 0.3)
+combat_GUIExperienceBar.kMarineBackgroundGUIColor = Color(1.0, 1.0, 1.0, 0.3)
 combat_GUIExperienceBar.kMarineGUIColor = Color(1.0, 1.0, 1.0, 0.8)
-combat_GUIExperienceBar.kAlienBackgroundGUIColor = Color(0.8, 0.8, 0.8, 0.3)
+combat_GUIExperienceBar.kAlienBackgroundGUIColor = Color(1.0, 1.0, 1.0, 0.3)
 combat_GUIExperienceBar.kAlienGUIColor = Color(1.0, 1.0, 1.0, 0.8)
 combat_GUIExperienceBar.kMarineTextColor = Color(0.0, 0.6, 0.9, 1)
 combat_GUIExperienceBar.kAlienTextColor = Color(0.7, 0.5, 0.5, 1)
@@ -208,7 +208,7 @@ function combat_GUIExperienceBar:UpdateExperienceBar(deltaTime)
 	
 	// Method to allow proper tweening visualisation when you go up a rank.
 	// Currently detecting this by examining old vs new size.
-	if (math.floor(calculatedBarWidth) < math.floor(currentBarWidth)) then
+	if (math.ceil(calculatedBarWidth) < math.floor(currentBarWidth)) then
 		self.rankIncreased = true
 	end
 	
@@ -280,6 +280,12 @@ end
 function combat_GUIExperienceBar:UpdateText(deltaTime)
 	// Tween the experience text too!
 	self.currentExperience = Slerp(self.currentExperience, self.experienceData.targetExperience, deltaTime*combat_GUIExperienceBar.kTextIncreaseRate)
+	
+	// Handle the case when the round changes and we are set back to 0 experience.
+	if self.currentExperience > self.experienceData.targetExperience then
+		self.currentExperience = 0
+	end
+	
 	if (self.experienceData.targetExperience >= maxXp) then
 		self.experienceText:SetText("Level " .. self.experienceData.thisLevel .. " / " .. maxLvl .. ": " .. tostring(math.ceil(self.currentExperience)) .. " (" .. self.experienceData.thisLevelName .. ")")
 	else
