@@ -15,7 +15,7 @@ combat_GUIExperienceBar.kTextFontName = "MicrogrammaDBolExt"
 
 combat_GUIExperienceBar.kExperienceBackgroundWidth = 450
 combat_GUIExperienceBar.kExperienceBackgroundHeight = 30
-combat_GUIExperienceBar.kExperienceBackgroundMinimisedHeight = 30
+combat_GUIExperienceBar.kExperienceBackgroundMinimisedHeight = 20
 combat_GUIExperienceBar.kExperienceBackgroundOffset = Vector(-combat_GUIExperienceBar.kExperienceBackgroundWidth/2, -combat_GUIExperienceBar.kExperienceBackgroundHeight-10, 0)
 
 combat_GUIExperienceBar.kExperienceBorder = 0
@@ -26,13 +26,13 @@ combat_GUIExperienceBar.kExperienceBarHeight = combat_GUIExperienceBar.kExperien
 combat_GUIExperienceBar.kExperienceBarMinimisedHeight = combat_GUIExperienceBar.kExperienceBackgroundMinimisedHeight - combat_GUIExperienceBar.kExperienceBorder*2
 
 // Texture Coords
-combat_GUIExperienceBar.kMarineBarTextureX1 = 0
-combat_GUIExperienceBar.kMarineBarTextureX2 = 512
-combat_GUIExperienceBar.kMarineBarTextureY1 = 1
+combat_GUIExperienceBar.kMarineBarTextureX1 = 1
+combat_GUIExperienceBar.kMarineBarTextureX2 = 510
+combat_GUIExperienceBar.kMarineBarTextureY1 = 0
 combat_GUIExperienceBar.kMarineBarTextureY2 = 32
-combat_GUIExperienceBar.kMarineBarBackgroundTextureX1 = 0
-combat_GUIExperienceBar.kMarineBarBackgroundTextureX2 = 512
-combat_GUIExperienceBar.kMarineBarBackgroundTextureY1 = 223
+combat_GUIExperienceBar.kMarineBarBackgroundTextureX1 = 1
+combat_GUIExperienceBar.kMarineBarBackgroundTextureX2 = 510
+combat_GUIExperienceBar.kMarineBarBackgroundTextureY1 = 222
 combat_GUIExperienceBar.kMarineBarBackgroundTextureY2 = 255
 combat_GUIExperienceBar.kAlienBarTextureX1 = 0
 combat_GUIExperienceBar.kAlienBarTextureX2 = 512
