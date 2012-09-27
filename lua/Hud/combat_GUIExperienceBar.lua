@@ -28,12 +28,12 @@ combat_GUIExperienceBar.kExperienceBarMinimisedHeight = combat_GUIExperienceBar.
 // Texture Coords
 combat_GUIExperienceBar.kMarineBarTextureX1 = 1
 combat_GUIExperienceBar.kMarineBarTextureX2 = 510
-combat_GUIExperienceBar.kMarineBarTextureY1 = 0
+combat_GUIExperienceBar.kMarineBarTextureY1 = 1
 combat_GUIExperienceBar.kMarineBarTextureY2 = 32
 combat_GUIExperienceBar.kMarineBarBackgroundTextureX1 = 1
 combat_GUIExperienceBar.kMarineBarBackgroundTextureX2 = 510
-combat_GUIExperienceBar.kMarineBarBackgroundTextureY1 = 222
-combat_GUIExperienceBar.kMarineBarBackgroundTextureY2 = 255
+combat_GUIExperienceBar.kMarineBarBackgroundTextureY1 = 224
+combat_GUIExperienceBar.kMarineBarBackgroundTextureY2 = 256
 combat_GUIExperienceBar.kAlienBarTextureX1 = 0
 combat_GUIExperienceBar.kAlienBarTextureX2 = 512
 combat_GUIExperienceBar.kAlienBarTextureY1 = 185
@@ -53,12 +53,12 @@ combat_GUIExperienceBar.kExperienceTextFontSize = 15
 combat_GUIExperienceBar.kExperienceTextOffset = Vector(0, -10, 0)
 combat_GUIExperienceBar.kNormalAlpha = 0.9
 combat_GUIExperienceBar.kMinimisedTextAlpha = 0.7
-combat_GUIExperienceBar.kMinimisedAlpha = 0.5
+combat_GUIExperienceBar.kMinimisedAlpha = 0.7
 
 combat_GUIExperienceBar.kBarFadeInRate = 0.2
 combat_GUIExperienceBar.kBarFadeOutDelay = 0.5
 combat_GUIExperienceBar.kBarFadeOutRate = 0.1
-combat_GUIExperienceBar.kBackgroundBarRate = 80
+combat_GUIExperienceBar.kBackgroundBarRate = 90
 combat_GUIExperienceBar.kTextIncreaseRate = 50
 
 local function GetTeamType()
