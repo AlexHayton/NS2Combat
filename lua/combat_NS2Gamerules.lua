@@ -188,7 +188,7 @@ function CombatNS2Gamerules:OnClientConnect_Hook(self, client)
 	// Give the player the average XP of all players on the server.
     if GetGamerules():GetGameStarted() then
 		player.combatTable.setAvgXp = true
-		local avgXp = Experience_GetAvgXp()
+		local avgXp = Experience_GetAvgXp(player)
 		// Send the avg as a message to the player (%d doesn't work with SendDirectMessage)
 		if avgXp > 0 then
 		    player:SendDirectMessage("You joined the game late... you will get some free Xp when you join a team!")

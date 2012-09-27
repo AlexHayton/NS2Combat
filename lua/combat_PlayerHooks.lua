@@ -168,7 +168,7 @@ function CombatPlayer:OnUpdatePlayer_Hook(self, deltaTime)
 	// Also helps us write the xp balancing function later.
 	if self:GetIsPlaying() then
 		if self.combatTable.setAvgXp then
-			local avgXp = Experience_GetAvgXp()
+			local avgXp = Experience_GetAvgXp(self)
 			// Send the avg as a message to the player (%d doesn't work with SendDirectMessage)
 			local xpDiff = avgXp - self:GetXp()
 			if xpDiff > 0 then

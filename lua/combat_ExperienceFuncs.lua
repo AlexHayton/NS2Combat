@@ -8,7 +8,7 @@
 // combat_ExperienceFuncs.lua
 
 // Returns the average XP of all active players.
-function Experience_GetAvgXp()
+function Experience_GetAvgXp(ignorePlayer)
 
     local avgXp = 0
     local allXp = 0
@@ -16,7 +16,7 @@ function Experience_GetAvgXp()
     
     for i, player in ientitylist(Shared.GetEntitiesWithClassname("Player")) do      
 		// Ignore players that are not on a team.
-		if (player:GetTeamNumber() >= 1) and (player:GetTeamNumber() <= 2) then
+		if (player ~= ignorePlayer) and (player:GetTeamNumber() >= 1) and (player:GetTeamNumber() <= 2) then
 			allXp = allXp + player:GetXp()
 			playerNumbers = playerNumbers + 1
 		end
