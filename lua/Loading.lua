@@ -20,7 +20,7 @@ local dotsText
 
 function OnUpdateRender()
 
-    local spinnerSpeed  = 2
+    local spinnerSpeed  = 7
     local dotsSpeed     = 0.5
     local maxDots       = 4
     
