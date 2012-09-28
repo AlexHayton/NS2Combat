@@ -248,7 +248,7 @@ function CombatNS2Gamerules:OnUpdate_Hook(self, timePassed)
 			// Periodic events...
 			if timeTaken ~= kCombatTimePlayed then
 				// Balance the teams once every 5 minutes or so...
-				if timeTaken % kCombatRebalanceInterval then
+				if timeTaken % kCombatRebalanceInterval == 0 then
 					local avgXp = Experience_GetAvgXp()
 					for i, player in ientitylist(Shared.GetEntitiesWithClassname("Player")) do      
 						// Ignore players that are not on a team.
