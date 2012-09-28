@@ -20,8 +20,10 @@ function CombatPlayerClient:OnLoad()
 	self:PostHookClassFunction("Alien", "Buy", "Buy_Hook")
 	self:HookClassFunction("Player", "OnInitLocalClient", "OnInitLocalClient_Hook")
 	self:PostHookClassFunction("Player", "OnInitLocalClient", "OnInitLocalClient_Post")
+	self:HookClassFunction("Player", "TriggerFirstPersonDeathEffects", "TriggerFirstPersonDeathEffects_Hook")
+	self:ReplaceClassFunction("Marine", "CloseMenu", "CloseMenu_Hook")
+	// To allow exosuits to use the menu.
     self:ReplaceClassFunction("Player", "CloseMenu", "CloseMenu_Hook")
-    self:ReplaceClassFunction("Marine", "CloseMenu", "CloseMenu_Hook")
 	self:PostHookClassFunction("Marine", "UpdateClientEffects", "UpdateClientEffects_Hook")
     
     self:PostHookFunction("InitTechTreeMaterialOffsets", "InitTechTreeMaterialOffsets_Hook")
@@ -78,6 +80,13 @@ end
 function CombatPlayerClient:OnInitLocalClient_Hook(self)
 
     Shared.ConsoleCommand("co_sendupgrades") 
+
+end
+
+// Close the menu properly when a player dies.
+function CombatPlayerClient:TriggerFirstPersonDeathEffects_Hook(self)
+
+    self:CloseMenu()
 
 end
 
