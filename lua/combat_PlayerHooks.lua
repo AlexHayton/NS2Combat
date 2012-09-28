@@ -170,12 +170,7 @@ function CombatPlayer:OnUpdatePlayer_Hook(self, deltaTime)
 		if self.combatTable.setAvgXp then
 			local avgXp = Experience_GetAvgXp(self)
 			// Send the avg as a message to the player (%d doesn't work with SendDirectMessage)
-			local xpDiff = avgXp - self:GetXp()
-			if xpDiff > 0 then
-				// get AvgXp 
-				self:SendDirectMessage("Awarding " .. xpDiff .. " XP to help you catch up with your teammates...")
-				self:AddXp(xpDiff)
-			end
+			self:BalanceXp(avgXp)
 			
 			// Reset the average Xp flag.
 			self.combatTable.setAvgXp = false

@@ -33,8 +33,8 @@ kCombatAlienBuyMenuUpgradeButtonDistance = 210
 kCombatRespawnTimer = 10
 kAlienWaveSpawnInterval = 10
 
-// Rebalancing Intervals (mins)
-kCombatRebalanceInterval = 5
+// Rebalancing Intervals (secs)
+kCombatRebalanceInterval = 300
 
 // Spawn protection
 kCombatMarineSpawnProtectTime = 4

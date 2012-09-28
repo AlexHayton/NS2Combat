@@ -409,3 +409,14 @@ function Player:SendUpgrades()
     end
       
 end
+
+function Player:BalanceXp(avgXp)
+
+	local xpDiff = avgXp - self:GetXp()
+	if xpDiff > 0 then
+		// get AvgXp 
+		self:SendDirectMessage("Awarding " .. xpDiff .. " XP to help you catch up with your teammates...")
+		self:AddXp(xpDiff)
+	end
+
+end

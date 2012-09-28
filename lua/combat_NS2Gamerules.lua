@@ -205,13 +205,15 @@ function CombatNS2Gamerules:OnUpdate_Hook(self, timePassed)
 	// Check that it's Marines vs Aliens...
 	if self:GetGameState() == kGameState.Started then
 		if team1:isa("MarineTeam") and team2:isa("AlienTeam") then
+			// send timeleft to all players, but only every few min
+			local exactTimeLeft = (kCombatTimeLimit - self.timeSinceGameStateChanged)
+			local timeTaken = math.ceil(self.timeSinceGameStateChanged)
+			local timeLeft = math.ceil(exactTimeLeft)
+				
 			if self.timeSinceGameStateChanged >= kCombatTimeLimit then
 				team2.combatTeamWon = true
 			else
 				// send timeleft to all players, but only every few min
-				local exactTimeLeft = (kCombatTimeLimit - self.timeSinceGameStateChanged)
-				local timeLeft = math.ceil(exactTimeLeft)
-				
                 if 	kCombatTimeLeftPlayed ~= timeLeft and
 					((timeLeft % kCombatTimeReminderInterval) == 0 or 
 					 (timeLeft == 60) or (timeLeft == 30) or
@@ -242,8 +244,29 @@ function CombatNS2Gamerules:OnUpdate_Hook(self, timePassed)
                     kCombatTimeLeftPlayed = timeLeft                
                 end
 			end
+			
+			// Periodic events...
+			if timeTaken ~= kCombatTimePlayed then
+				// Balance the teams once every 5 minutes or so...
+				if timeTaken % kCombatRebalanceInterval then
+					local avgXp = Experience_GetAvgXp()
+					for i, player in ientitylist(Shared.GetEntitiesWithClassname("Player")) do      
+						// Ignore players that are not on a team.
+						if player:GetIsPlaying() then
+							player:BalanceXp(avgXp)
+						end
+					end
+				end
+				
+				kCombatTimePlayed = timeTaken
+			end
 		end
 	else
+		// reset kCombatTimePlayed
+	    if kCombatTimePlayed ~= 0 then
+	        kCombatTimePlayed = 0
+	    end
+	
 	    // reset kCombatTimeLeftPlayed
 	    if kCombatTimeLeftPlayed ~= 0 then
 	        kCombatTimeLeftPlayed = 0
