@@ -388,13 +388,29 @@ function Player:XpEffect(xp, lvl)
     // Should only be called on the Server.
     if Server then
     
-        // Tell client to display cool effect.
         if xp ~= nil and xp ~= 0 then
         
-            Server.SendCommand(self, string.format("points %s %s", tostring(xp), tostring(0)))
             self.score = Clamp(self.score + xp, 0, self:GetMixinConstants().kMaxScore or 100)
-
+            local lastXpEffect = self.combatTable.lastXpEffect  
+            // dont spam the player with xpeffects            
+            if lastXpEffect == 0 or Shared.GetTime() >= ( lastXpEffect + kXPEffectTimer) then 
+ 
+                // show also old xp award, but forget it after some time
+                if self.combatTable.lastXpAmount > 0 and Shared.GetTime() < ( lastXpEffect + kXPForgetimer) then                            
+                    xp = xp + self.combatTable.lastXpAmount  
+                end      
+           
+                Server.SendCommand(self, string.format("points %s %s", tostring(xp), tostring(0)))                
+                self.combatTable.lastXpEffect = Shared.GetTime() 
+                self.combatTable.lastXpAmount = 0                        
+            else
+                // save the last XpAmount and sum it
+                self.combatTable.lastXpAmount = self.combatTable.lastXpAmount + xp
+            end
+ 
+            
         end
+
     
     end
 

@@ -360,6 +360,8 @@ function Player:Reset_Lite()
 	self:ClearLvlFree()
 	self.combatTable.lastUpgradeNotify = 0
 	self.combatTable.lastReminderNotify = 0
+	self.combatTable.lastXpEffect = 0
+	self.combatTable.lastXpAmount = 0
 	self.combatTable.hasCamouflage = false
 	
 	self.combatTable.twoHives = false

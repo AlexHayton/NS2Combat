@@ -52,6 +52,10 @@ kCombatTimeLimit = 1500
 kCombatTimeLeftPlayed = 0
 kCombatTimeReminderInterval = 300
 
+// make xpeffect less "spammy"
+kXPEffectTimer = 1
+kXPForgetimer = 5
+
 // Timers for Scan, Resupply and Catalyst packs.
 kScanTimer = 14
 kResupplyTimer = 10
