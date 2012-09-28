@@ -55,6 +55,7 @@ kCombatTimeReminderInterval = 300
 // Timers for Scan, Resupply and Catalyst packs.
 kScanTimer = 14
 kResupplyTimer = 10
+AmmoPack.kNumClips = 1
 kCatalystTimer = 14
 // scan Duration, maybe we need to tune it a bit
 kScanDuration = 7
