@@ -66,7 +66,7 @@ kInkTimer = 30
 
 // fast reload
 kClassicReloadTime = 1.150000
-kCombatFastReloadTime = kClassicReloadTime * 1.5
+kCombatFastReloadTime = kClassicReloadTime * 1.375
 
 // Focus
 kCombatFocusAttackSpeed = 0.6
