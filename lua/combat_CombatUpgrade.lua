@@ -24,7 +24,7 @@ kCombatUpgradeTypes = enum({'Class', 'Tech', 'Weapon'})
 							
 class 'CombatUpgrade'
 
-function CombatUpgrade:Initialize(team, upgradeId, upgradeTextCode, upgradeDescription, upgradeTechId, upgradeFunc, requirements, levels, upgradeType, mutuallyExclusive)
+function CombatUpgrade:Initialize(team, upgradeId, upgradeTextCode, upgradeDescription, upgradeTechId, upgradeFunc, requirements, levels, upgradeType, refundUpgrade, mutuallyExclusive)
 
 	self.team = team
     self.id = upgradeId
@@ -34,6 +34,7 @@ function CombatUpgrade:Initialize(team, upgradeId, upgradeTextCode, upgradeDescr
     self.upgradeType = upgradeType
 	self.requirements = requirements
 	self.levels = levels
+	self.refundUpgrade = refundUpgrade
 	self.mutuallyExclusive = mutuallyExclusive
 
 	if (upgradeFunc) then
@@ -83,6 +84,10 @@ end
 
 function CombatUpgrade:GetType()
 	return self.upgradeType
+end
+
+function CombatUpgrade:GetRefundUpgrade()
+	return self.refundUpgrade
 end
 
 function CombatUpgrade:GetMutuallyExclusive()
