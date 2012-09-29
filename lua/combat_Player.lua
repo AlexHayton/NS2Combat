@@ -399,7 +399,7 @@ function Player:XpEffect(xp, lvl)
             if lastXpEffect == 0 or Shared.GetTime() >= ( lastXpEffect + kXPEffectTimer) then 
  
                 // show also old xp award, but forget it after some time
-                if self.combatTable.lastXpAmount > 0 and Shared.GetTime() < ( lastXpEffect + kXPForgetimer) then                            
+                if self.combatTable.lastXpAmount > 0 and Shared.GetTime() < ( lastXpEffect + kXPForgetTimer) then                            
                     xp = xp + self.combatTable.lastXpAmount  
                 end      
            
