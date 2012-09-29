@@ -313,7 +313,7 @@ function CombatGUIAlienBuyMenu:Update_Hook(self, deltaTime)
            if string.len(tooltipText) > 0 then
                currentUpgradeInfoText = currentUpgradeInfoText .. "\n" .. tooltipText
            end
-           self:_ShowMouseOverInfo(currentUpgradeInfoText, currentButton.Cost)
+           self:_ShowMouseOverInfo(currentUpgradeInfoText, ToString(currentButton.Cost))
            
        end
 	end
