@@ -399,7 +399,7 @@ function Player:XpEffect(xp, lvl)
             if lastXpEffect == 0 or Shared.GetTime() >= ( lastXpEffect + kXPEffectTimer) then 
  
                 // show also old xp award, but forget it after some time
-                if self.combatTable.lastXpAmount > 0 and Shared.GetTime() < ( lastXpEffect + kXPForgetTimer) then                            
+                if self.combatTable.lastXpAmount > 0 and Shared.GetTime() < ( lastXpEffect + kXPForgetimer) then                            
                     xp = xp + self.combatTable.lastXpAmount  
                 end      
            
@@ -428,9 +428,8 @@ function Player:CheckLvlUp(xp, suppressmessage)
         self.resources = self.resources + numberLevels
 		self.combatTable.lvl = self:GetLvl()
 		
-		// Trigger an effect sound on level up
-		self:TriggerEffects("distress_beacon_spawn")
-		self:TriggerEffects("distress_beacon_complete")
+		// Trigger a sound on level up
+		self:TriggerEffects("taunt")
 		
 		local LvlName = Experience_GetLvlName(self:GetLvl(), self:GetTeamNumber())
 		self:SendDirectMessage( "!! Level UP !! New Lvl: " .. LvlName .. " (" .. self:GetLvl() .. ")")

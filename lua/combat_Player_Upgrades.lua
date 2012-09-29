@@ -306,14 +306,17 @@ function Player:EvolveTo(newTechId)
 end
 
 // To refund Class upgrades.
-function Player:RefundUpgrades()
+function Player:RefundUpgrades(upgradeTypes)
+	if not upgradeTypes then 
+		upgradeTypes = { kCombatUpgradeTypes.Class }
+	end
 	
-	// Give player back his resources but take the upgrades away
-	local upgrades = self.combatTable.techtree
+	// Give player back his exp but take the upgrades away
+	for index, upgradeType in ipairs(upgradeTypes) do
+		local upgrades = GetUpgradesOfType(self.combatTable.techtree, upgradeType)
 		
-	// For each class, find the upgrade and remove it, and take away the correct amount of lvlfree.
-	for index, upgrade in ipairs(upgrades) do
-		if (upgrade:GetRefundUpgrade()) then
+		// For each class, find the upgrade and remove it, and take away the correct amount of lvlfree.
+		for index, upgrade in ipairs(upgrades) do
 			self:AddLvlFree(upgrade:GetLevels())
 			
 			for index, combatUpgrade in ipairs(self.combatTable.techtree) do
@@ -323,7 +326,6 @@ function Player:RefundUpgrades()
 			end
 		end
 	end
-
 end
 
 // return if the player got any ups or not
@@ -345,8 +347,6 @@ function Player:GiveUpsBack()
             self:DropToFloor()
 			self:EvolveTo(self:GetTechId())
         end
-	elseif self:isa("Marine") then
-		self:RefundUpgrades({ kCombatUpgradeTypes.Class })
     end
     
     self:ApplyAllUpgrades({ kCombatUpgradeTypes.Weapon, kCombatUpgradeTypes.Tech })         
