@@ -70,6 +70,9 @@ end
 
 function Player:DeactivateSpawnProtect()
 
+    self:SetHealth( self:GetMaxHealth() )
+    self:SetArmor( self:GetMaxArmor() )
+
     self.combatTable.activeSpawnProtect = nil
     self.gotSpawnProtect = nil
     
@@ -83,8 +86,8 @@ end
 
 function Player:PerformSpawnProtect()
 
-    self:SetHealth( self:GetMaxHealth() )
-    self:SetArmor( self:GetMaxArmor() )
+    self:SetHealth(10000)
+    self:SetArmor(10000)
         
     // only make the effects once
     if not self.gotSpawnProtect then
