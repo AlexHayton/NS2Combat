@@ -430,6 +430,7 @@ function Player:CheckLvlUp(xp, suppressmessage)
 		
 		// Trigger an effect sound on level up
 		self:TriggerEffects("distress_beacon_spawn")
+		self:TriggerEffects("distress_beacon_complete")
 		
 		local LvlName = Experience_GetLvlName(self:GetLvl(), self:GetTeamNumber())
 		self:SendDirectMessage( "!! Level UP !! New Lvl: " .. LvlName .. " (" .. self:GetLvl() .. ")")
