@@ -19,8 +19,6 @@ function CombatTeam:OnLoad()
 	self:ReplaceClassFunction("Team", "GetNumPlayersInQueue", "GetNumPlayersInQueue_Hook")
 	self:ReplaceClassFunction("Team", "RemovePlayer", "RemovePlayer_Hook")
 	
-	function Team:RemovePlayer(player)
-	
 end
 
 // AH: Old spawn code here has been moved to PlayingTeam now that we have a spawn queue implemented.
@@ -41,6 +39,7 @@ function CombatTeam:RemovePlayer_Hook(self, player)
     end
     
     self:RemovePlayerFromRespawnQueue(player)   
+	
 end
 
 if (not HotReload) then
