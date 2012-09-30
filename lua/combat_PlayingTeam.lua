@@ -322,7 +322,7 @@ function CombatPlayingTeam:RespawnPlayer_Hook(self, player, origin, angles)
 			local spectator = player:Replace(player:GetDeathMapName())
 			spectator:GetTeam():PutPlayerInRespawnQueue(spectator)
 			// Insert the player into a list of players.
-			table.insertunique(self.playerIds, spectator:GetId())
+			//table.insertunique(self.playerIds, spectator:GetId())
 			
 		end
     end
