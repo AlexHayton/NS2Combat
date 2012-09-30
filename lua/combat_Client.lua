@@ -22,6 +22,7 @@ Script.Load("lua/Client.lua")
 // new functions, no hooks
 // to provide the client also with all Ups (for the GUI)
 Script.Load("lua/combat_Player_ClientUpgrade.lua")
+Script.Load("lua/combat_CustomEffects.lua")
 Script.Load("lua/combat_CombatUpgrade.lua")
 Script.Load("lua/combat_CombatMarineUpgrade.lua")
 Script.Load("lua/combat_CombatAlienUpgrade.lua")
