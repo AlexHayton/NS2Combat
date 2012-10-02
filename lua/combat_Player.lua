@@ -215,7 +215,7 @@ function Player:CheckCatalyst()
 	
 	local timeNow = Shared.GetTime()
 
-    if self.combatTable.hasCatalyst then
+    if self.combatTable.hasCatalyst and self:isa("Marine") then
         
         if (self.combatTable.lastCatalyst == 0) or (timeNow - self.combatTable.lastCatalyst >= kCatalystTimer) then            
             local success = self:CatalystNow()            
