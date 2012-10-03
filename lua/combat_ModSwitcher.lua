@@ -93,3 +93,10 @@ end
 function ModSwitcher_Status(Boolean)        
         return ConditionalValue(ToString(Boolean) == "true", "activated", "deactivated")
 end
+
+function ModSwitcher_OnClientConnect(client)
+    SendCombatModeActive(client, kCombatModActive)
+end
+
+// to tell every client if the combat mode is active or not
+Event.Hook("ClientConnect", ModSwitcher_OnClientConnect)

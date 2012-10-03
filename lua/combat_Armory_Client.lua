@@ -16,8 +16,8 @@ end
 function CombatArmoryClient:OnLoad()
     
     ClassHooker:SetClassCreatedIn("Armory", "lua/Armory.lua") 
-    self:ReplaceClassFunction("Armory", "OnUse", function() end) 
-	self:ReplaceClassFunction("Armory", "GetCanBeUsedConstructed", "GetCanBeUsedConstructed_Hook")
+    _addHookToTable(self:ReplaceClassFunction("Armory", "OnUse", function() end)) 
+	_addHookToTable(self:ReplaceClassFunction("Armory", "GetCanBeUsedConstructed", "GetCanBeUsedConstructed_Hook"))
     
 end
 

@@ -18,8 +18,8 @@ function CombatGUIPlayerResources:OnLoad()
 
 	
 	ClassHooker:SetClassCreatedIn("GUIPlayerResource", "lua/Hud/GUIPlayerResource.lua") 
-    self:PostHookClassFunction("GUIPlayerResource", "Update", "UpdateResource_Hook")
-    self:PostHookClassFunction("GUIPlayerResource", "Initialize", "Initialize_Hook")
+    _addHookToTable(self:PostHookClassFunction("GUIPlayerResource", "Update", "UpdateResource_Hook"))
+    _addHookToTable(self:PostHookClassFunction("GUIPlayerResource", "Initialize", "Initialize_Hook"))
 
 end
 

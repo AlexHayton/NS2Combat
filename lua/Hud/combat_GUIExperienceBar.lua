@@ -185,7 +185,6 @@ function combat_GUIExperienceBar:Update(deltaTime)
 		self:UpdateExperienceBar(deltaTime)
 		self:UpdateFading(deltaTime)
 		self:UpdateText(deltaTime)
-		self:UpdateVisible(deltaTime)
 	end
 	
 end
@@ -193,7 +192,6 @@ end
 function combat_GUIExperienceBar:CalculateExperienceData()
 
 	local player = Client.GetLocalPlayer()
-	self.experienceData.isVisible = player:GetIsAlive()
 	self.experienceData.targetExperience = player:GetScore()
 	self.experienceData.experienceToNextLevel = player:XPUntilNextLevel()
 	self.experienceData.nextLevelExperience = player:GetNextLevelXP()
@@ -296,13 +294,6 @@ function combat_GUIExperienceBar:UpdateText(deltaTime)
 	else
 		self.experienceText:SetText("Level " .. self.experienceData.thisLevel .. " / " .. maxLvl .. ": " .. tostring(math.ceil(self.currentExperience)) .. " / " .. self.experienceData.nextLevelExperience .. " (" .. self.experienceData.thisLevelName .. ")")
 	end
-end
-
-function combat_GUIExperienceBar:UpdateVisible(deltaTime)
-
-	// Hide the experience bar if the player is dead.
-	self.experienceBarBackground:SetIsVisible(self.experienceData.isVisible)
-	
 end
 
 function combat_GUIExperienceBar:Uninitialize()

@@ -16,12 +16,12 @@ end
 function CombatGUIAlienBuyMenu:OnLoad()
 
     ClassHooker:SetClassCreatedIn("GUIAlienBuyMenu", "lua/GUIAlienBuyMenu.lua") 
-    self:RawHookClassFunction("GUIAlienBuyMenu", "Initialize", "Initialize_Hook")
-	self:PostHookClassFunction("GUIAlienBuyMenu", "Update", "Update_Hook")
-	self:ReplaceClassFunction("GUIAlienBuyMenu", "_InitializeSlots", "_InitializeSlots_Hook")
-	self:ReplaceClassFunction("GUIAlienBuyMenu", "_InitializeUpgradeButtons", "_InitializeUpgradeButtons_Hook")
-	self:ReplaceClassFunction("GUIAlienBuyMenu", "SendKeyEvent", "SendKeyEvent_Hook")
-	self:ReplaceClassFunction("GUIAlienBuyMenu", "_HandleUpgradeClicked", "_HandleUpgradeClicked_Hook")
+    _addHookToTable(self:RawHookClassFunction("GUIAlienBuyMenu", "Initialize", "Initialize_Hook"))
+	_addHookToTable(self:PostHookClassFunction("GUIAlienBuyMenu", "Update", "Update_Hook"))
+	_addHookToTable(self:ReplaceClassFunction("GUIAlienBuyMenu", "_InitializeSlots", "_InitializeSlots_Hook"))
+	_addHookToTable(self:ReplaceClassFunction("GUIAlienBuyMenu", "_InitializeUpgradeButtons", "_InitializeUpgradeButtons_Hook"))
+	_addHookToTable(self:ReplaceClassFunction("GUIAlienBuyMenu", "SendKeyEvent", "SendKeyEvent_Hook"))
+	_addHookToTable(self:ReplaceClassFunction("GUIAlienBuyMenu", "_HandleUpgradeClicked", "_HandleUpgradeClicked_Hook"))
 end
 
 function CombatGUIAlienBuyMenu:Initialize_Hook(self)
@@ -29,6 +29,7 @@ function CombatGUIAlienBuyMenu:Initialize_Hook(self)
 	// Set overrides for GUIAlienBuyMenu globals here...
 	GUIAlienBuyMenu.kMaxNumberOfUpgradeButtons = 10
 	GUIAlienBuyMenu.kUpgradeButtonDistance = GUIScale(kCombatAlienBuyMenuUpgradeButtonDistance)
+	GUIAlienBuyMenu.kBuyMenuTexture = "ui/combat_alien_buildmenu.dds"
 
 end
 

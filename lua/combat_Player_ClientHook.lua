@@ -16,17 +16,16 @@ end
 function CombatPlayerClient:OnLoad()
 
     ClassHooker:SetClassCreatedIn("Player", "lua/Player.lua") 
-	self:ReplaceClassFunction("Player", "Buy", "Buy_Hook_Marine")
-	self:PostHookClassFunction("Alien", "Buy", "Buy_Hook")
-	self:HookClassFunction("Player", "OnInitLocalClient", "OnInitLocalClient_Hook")
-	self:PostHookClassFunction("Player", "OnInitLocalClient", "OnInitLocalClient_Post")
-	self:HookClassFunction("Player", "TriggerFirstPersonDeathEffects", "TriggerFirstPersonDeathEffects_Hook")
-	self:ReplaceClassFunction("Marine", "CloseMenu", "CloseMenu_Hook")
+	_addHookToTable(self:ReplaceClassFunction("Player", "Buy", "Buy_Hook_Marine"))
+	_addHookToTable(self:PostHookClassFunction("Alien", "Buy", "Buy_Hook"))
+	_addHookToTable(self:HookClassFunction("Player", "OnInitLocalClient", "OnInitLocalClient_Hook"))
+	_addHookToTable(self:HookClassFunction("Player", "TriggerFirstPersonDeathEffects", "TriggerFirstPersonDeathEffects_Hook"))
+	_addHookToTable(self:ReplaceClassFunction("Marine", "CloseMenu", "CloseMenu_Hook"))
 	// To allow exosuits to use the menu.
-    self:ReplaceClassFunction("Player", "CloseMenu", "CloseMenu_Hook")
-	self:PostHookClassFunction("Marine", "UpdateClientEffects", "UpdateClientEffects_Hook")
+    _addHookToTable(self:ReplaceClassFunction("Player", "CloseMenu", "CloseMenu_Hook"))
+	_addHookToTable(self:PostHookClassFunction("Marine", "UpdateClientEffects", "UpdateClientEffects_Hook"))
     
-    self:PostHookFunction("InitTechTreeMaterialOffsets", "InitTechTreeMaterialOffsets_Hook")
+    _addHookToTable(self:PostHookFunction("InitTechTreeMaterialOffsets", "InitTechTreeMaterialOffsets_Hook"))
 end
 
 // starting the custom buy menu for aliens
@@ -90,12 +89,6 @@ function CombatPlayerClient:TriggerFirstPersonDeathEffects_Hook(self)
 
 end
 
-// Load the Experience Bar GUI.
-function CombatPlayerClient:OnInitLocalClient_Post(self)
-	
-	GetGUIManager():CreateGUIScriptSingle("Hud/combat_GUIExperienceBar")
-
-end
 
 // costum CloseMenu that our buy menu will not be closed all the time (cause no structure is nearby)
 function CombatPlayerClient:CloseMenu_Hook(self)

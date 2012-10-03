@@ -16,7 +16,7 @@ end
 function CombatGUIMarineHud:OnLoad()
 
     ClassHooker:SetClassCreatedIn("GUIMarineHUD", "lua/Hud/Marine/GUIMarineHud.lua") 
-    self:PostHookClassFunction("GUIMarineHUD", "Update", "Update_Hook")
+    _addHookToTable(self:PostHookClassFunction("GUIMarineHUD", "Update", "Update_Hook"))
 
 
 end

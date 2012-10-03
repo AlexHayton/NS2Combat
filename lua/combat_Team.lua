@@ -17,7 +17,6 @@ function CombatTeam:OnLoad()
 
     ClassHooker:SetClassCreatedIn("Team", "lua/Team.lua") 
 	self:ReplaceClassFunction("Team", "GetNumPlayersInQueue", "GetNumPlayersInQueue_Hook")
-	self:ReplaceClassFunction("Team", "RemovePlayer", "RemovePlayer_Hook")
 	
 end
 
@@ -27,19 +26,6 @@ end
 // This is a nasty way of doing it but it works for now!
 function CombatTeam:GetNumPlayersInQueue_Hook(self)
     return 0
-end
-
-function CombatTeam:RemovePlayer_Hook(self, player)
-
-    assert(player)
-    
-    if not table.removevalue(self.playerIds, player:GetId()) then
-        //Print("Player %s with Id %d not in playerId list.", player:GetClassName(), player:GetName(), player:GetId())
-        //table.insertunique(self.playerIds, player:GetId())
-    end
-    
-    self:RemovePlayerFromRespawnQueue(player)   
-	
 end
 
 if (not HotReload) then

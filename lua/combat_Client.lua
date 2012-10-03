@@ -9,6 +9,19 @@
 Script.Load("lua/PathUtil.lua")
 Script.Load("lua/fsfod_scripts.lua")
 
+Script.Load("lua/combat_NetworkMessages.lua")
+
+/*
+test = {
+chatMessage = "Test",
+teamOnly = false
+}
+
+Client.SendNetworkMessage("ChatClient", test, true)
+*/
+
+//Client.SendNetworkMessage("CombatModeActive_Client", {})
+
 // Loading the Hook classes
 Script.Load("lua/Hud/Marine/combat_GUIMarineHud.lua")
 Script.Load("lua/Hud/Alien/combat_GUIAlienBuyMenu.lua")
@@ -21,22 +34,26 @@ Script.Load("lua/Client.lua")
 
 // new functions, no hooks
 // to provide the client also with all Ups (for the GUI)
-Script.Load("lua/combat_Player_ClientUpgrade.lua")
-Script.Load("lua/combat_CustomEffects.lua")
-Script.Load("lua/combat_CombatUpgrade.lua")
-Script.Load("lua/combat_CombatMarineUpgrade.lua")
-Script.Load("lua/combat_CombatAlienUpgrade.lua")
-Script.Load("lua/combat_ExperienceLevels.lua")
-Script.Load("lua/combat_ExperienceData.lua")
-Script.Load("lua/combat_ExperienceFuncs.lua")
-Script.Load("lua/combat_Values.lua")
-Script.Load("lua/combat_ConsoleCommands_Client.lua")
-Script.Load("lua/combat_MarineBuyFuncs.lua")
-Script.Load("lua/combat_AlienBuyFuncs.lua")
-Script.Load("lua/combat_TeamMixin.lua")
-Script.Load("lua/combat_Marine_Client.lua")
-Script.Load("lua/Weapons/Marines/combat_ClipWeapon.lua")
-Script.Load("lua/Hud/combat_GUIExperienceBar.lua")
+
+function combatLoadClientFunctions()
+
+    Script.Load("lua/combat_Player_ClientUpgrade.lua")
+    Script.Load("lua/combat_CustomEffects.lua")
+    Script.Load("lua/combat_CombatUpgrade.lua")
+    Script.Load("lua/combat_CombatMarineUpgrade.lua")
+    Script.Load("lua/combat_CombatAlienUpgrade.lua")
+    Script.Load("lua/combat_ExperienceLevels.lua")
+    Script.Load("lua/combat_ExperienceData.lua")
+    Script.Load("lua/combat_ExperienceFuncs.lua")
+    Script.Load("lua/combat_Values.lua")
+    Script.Load("lua/combat_ConsoleCommands_Client.lua")
+    Script.Load("lua/combat_MarineBuyFuncs.lua")
+    Script.Load("lua/combat_AlienBuyFuncs.lua")
+    Script.Load("lua/combat_TeamMixin.lua")
+    Script.Load("lua/combat_Marine_Client.lua")
+    Script.Load("lua/Hud/combat_GUIExperienceBar.lua")
+
+end
 
 // just for testing that i see the props
 //Script.Load("lua/combat_Props.lua")
