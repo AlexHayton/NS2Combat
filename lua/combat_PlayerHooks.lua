@@ -71,8 +71,6 @@ function CombatPlayer:OnCreate_Hook(self)
 	// Set up the timers for repetitive check events.
 	// This should improve performance somewhat as well.
 	self:AddTimedCallback(CombatHandleQueuedMessages, 1)
-	self:AddTimedCallback(CombatHandleUpgradeNotifications, kCombatUpgradeNotifyInterval)
-	self:AddTimedCallback(CombatHandleNewPlayerReminder, kCombatReminderNotifyInterval)
 	self.lastReminderNotify = Shared.GetTime()
 
 end
@@ -98,41 +96,6 @@ function CombatHandleQueuedMessages(self)
 				self.timeOfLastDirectMessage = Shared.GetTime()
 			end
 			
-		end
-	end
-	
-	return true
-	
-end
-
-function CombatHandleUpgradeNotifications(self)
-
-	// don't remind players in the ReadyRoom
-	if (self:GetTeamNumber() ~= kTeamReadyRoom) and (self:GetTeamNumber() ~= kSpectatorIndex) then
-	    
-        // Remind players once every so often when they have upgrades to spend.        
-        local lvlFree = self:GetLvlFree()
-        if lvlFree > 0 then
-            self:spendlvlHints("freeLvl")
-        end
-
-	end
-	
-	return true
-	
-end
-
-function CombatHandleNewPlayerReminder(self)
-
-	// If the player hasn't spent their upgrades at all, remind them again
-	// that this is combat mode after a longer interval.
-	self:CheckCombatData()
-	if (self:GetLvl() - 1) + kCombatStartUpgradePoints == self:GetLvlFree() then
-		if (Shared.GetTime() - self.lastReminderNotify > kCombatReminderNotifyInterval) then
-			self.combatTable.lastReminderNotify = Shared.GetTime()
-			for i, message in ipairs(combatWelcomeMessage) do
-				self:SendDirectMessage(message)  
-			end	
 		end
 	end
 	

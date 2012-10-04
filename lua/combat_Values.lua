@@ -159,7 +159,7 @@ kHyperMutationCost = generalCost
 // Health values
 // Make the marine structures slightly less squishy...
 kArmoryHealth = 2500
-kCommandStationHealth = 3500
+kCommandStationHealth = 4000
 
 // dont Track the CombatMod anylonger (later we could maybe make our own tracking site?
 kStatisticsURL = ""

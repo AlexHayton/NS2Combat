@@ -96,10 +96,8 @@ function OnCommandHelp(client)
 
 	// Display a banner showing the available commands
 	local player = client:GetControllingPlayer()
-	player:SendDirectMessage("Available commands:")
-	player:SendDirectMessage("/buy - use this to buy upgrades")
-	player:SendDirectMessage("/upgrades - show available upgrades")
-	player:SendDirectMessage("/status - use this to show your level, xp and available upgrades")
+	player:SendDirectMessage("Use the 'buy' menu to buy upgrades.")
+	player:SendDirectMessage("You gain XP for killing other players, damaging structures and healing your structures.")
 
 end
 

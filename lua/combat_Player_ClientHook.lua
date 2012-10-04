@@ -19,6 +19,7 @@ function CombatPlayerClient:OnLoad()
 	_addHookToTable(self:ReplaceClassFunction("Player", "Buy", "Buy_Hook_Marine"))
 	_addHookToTable(self:PostHookClassFunction("Alien", "Buy", "Buy_Hook"))
 	_addHookToTable(self:HookClassFunction("Player", "OnInitLocalClient", "OnInitLocalClient_Hook"))
+	_addHookToTable(self:PostHookClassFunction("Player", "OnInitLocalClient", "OnInitLocalClient_Post"))
 	_addHookToTable(self:HookClassFunction("Player", "TriggerFirstPersonDeathEffects", "TriggerFirstPersonDeathEffects_Hook"))
 	_addHookToTable(self:ReplaceClassFunction("Marine", "CloseMenu", "CloseMenu_Hook"))
 	// To allow exosuits to use the menu.
@@ -89,6 +90,12 @@ function CombatPlayerClient:TriggerFirstPersonDeathEffects_Hook(self)
 
 end
 
+// Load the Experience Bar GUI.
+function CombatPlayerClient:OnInitLocalClient_Post(self)
+	
+	GetGUIManager():CreateGUIScriptSingle("Hud/combat_GUIExperienceBar")
+
+end
 
 // costum CloseMenu that our buy menu will not be closed all the time (cause no structure is nearby)
 function CombatPlayerClient:CloseMenu_Hook(self)
