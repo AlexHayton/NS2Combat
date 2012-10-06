@@ -303,7 +303,9 @@ function CombatPlayingTeam:RespawnPlayer_Hook(self, player, origin, angles)
         
 			player:SendDirectMessage("Could not find a valid spawn point for you. We'll try and put you in the next spawn wave.")
             Print("PlayingTeam:RespawnPlayer: Couldn't compute random spawn for player.\n")
-			Print("PlayingTeam:RespawnPlayer: Name: " .. player:GetName() .. " Class: " .. player:GetClassName())
+			// Escape the player's name here... names like Sandwich% cause a crash to appear here!
+			local escapedPlayerName = string.gsub(player:GetName(), "%", "")
+			Print("PlayingTeam:RespawnPlayer: Name: " .. escapedPlayerName .. " Class: " .. player:GetClassName())
             
         end
         
