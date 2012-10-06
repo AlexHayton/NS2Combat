@@ -22,6 +22,10 @@ Client.SendNetworkMessage("ChatClient", test, true)
 
 //Client.SendNetworkMessage("CombatModeActive_Client", {})
 
+// Register the files we don't want to ever load.
+// Seems to work well but not compatible with the ModSwitcher class yet.
+//Script.Load("lua/combat_FileOverrides.lua")
+
 // Loading the Hook classes
 Script.Load("lua/Hud/Marine/combat_GUIMarineHud.lua")
 Script.Load("lua/Hud/Alien/combat_GUIAlienBuyMenu.lua")
@@ -37,6 +41,7 @@ Script.Load("lua/Client.lua")
 
 function combatLoadClientFunctions()
 
+	// Load everything we need for Combat
     Script.Load("lua/combat_Player_ClientUpgrade.lua")
     Script.Load("lua/combat_CustomEffects.lua")
     Script.Load("lua/combat_CombatUpgrade.lua")

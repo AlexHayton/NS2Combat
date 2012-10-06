@@ -22,7 +22,8 @@ ModSwitcher_Load(true)
 if kCombatModActive then
 
 	// Register the files we don't want to ever load.
-	Script.Load("lua/combat_FileOverrides.lua")
+	// Disabled for now - it would work if we didn't have the mod switcher!
+	//Script.Load("lua/combat_FileOverrides.lua")
 
     // Loading the Hook classes
     // TODO: Maybe we don't need the OnLoad?
