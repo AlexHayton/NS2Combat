@@ -116,6 +116,7 @@ function CombatPlayer:OnUpdatePlayer_Hook(self, deltaTime)
 			if not self.combatTable.deactivateSpawnProtect then
 				// set the real spawn protect time here
 				self.combatTable.deactivateSpawnProtect = Shared.GetTime() +  kCombatMarineSpawnProtectTime
+			end
 			
 			if Shared.GetTime() >= self.combatTable.deactivateSpawnProtect then
 				// end spawn protect
@@ -216,7 +217,8 @@ end
 
 function CombatPlayer:GetCanTakeDamageOverride_Hook(handle, self)
 
-	return handle:GetReturn() or self.gotSpawnProtect
+	local canTakeDamage = handle:GetReturn() or self.gotSpawnProtect
+	handle:SetReturn(canTakeDamage)
 
 end
 

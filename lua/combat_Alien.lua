@@ -64,7 +64,8 @@ end
 
 function CombatAlien:GetCanTakeDamageOverride_Hook(handle, self)
 
-	return handle:GetReturn() or self.gotSpawnProtect
+	local canTakeDamage = handle:GetReturn() or self.gotSpawnProtect
+	handle:SetReturn(canTakeDamage)
 
 end
 
