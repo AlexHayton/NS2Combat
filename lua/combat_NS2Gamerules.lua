@@ -21,6 +21,7 @@ function CombatNS2Gamerules:OnLoad()
 	self:PostHookClassFunction("NS2Gamerules", "OnUpdate", "OnUpdate_Hook")
 	self:PostHookClassFunction("NS2Gamerules", "ChooseTechPoint", "ChooseTechPoint_Hook"):SetPassHandle(true)
 	self:RawHookClassFunction("NS2Gamerules", "ResetGame", "ResetGame_Hook")
+	self:RawHookClassFunction("NS2Gamerules", "UpdateMapCycle", "UpdateMapCycle_Hook")
     
     ClassHooker:SetClassCreatedIn("Gamerules", "lua/Gamerules.lua")
     self:PostHookClassFunction("Gamerules", "OnClientConnect", "OnClientConnect_Hook")
@@ -354,6 +355,17 @@ function CombatNS2Gamerules:ResetGame_Hook(self)
     
     // we deactivated the prop system so this is not needed at the moment
     //CombatDeleteProps()
+
+end
+
+function CombatNS2Gamerules:UpdateMapCycle_Hook(self)
+
+	if self.timeToCycleMap ~= nil and Shared.GetTime() >= self.timeToCycleMap then
+
+		local playerCount = Shared.GetEntitiesWithClassname("Player"):GetSize()
+		ModSwitcher_Save(nil, nil, playerCount, false)
+	
+	end
 
 end
 

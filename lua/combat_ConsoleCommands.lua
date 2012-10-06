@@ -149,19 +149,54 @@ function OnCommandModActiveAdmin(client, activeBoolean)
 
     if activeBoolean then
         if activeBoolean == "true" or activeBoolean == "false" then
-            ModSwitcher_Save(activeBoolean, false)
+            ModSwitcher_Save(activeBoolean, nil, nil, false)
             Shared.Message("The changes only take effect after the next mapchange")
             
             // send it to every player            
-            local message = "CombatMod will be " .. ModSwitcher_Status(activeBoolean) .. " after this map."
+            local message = "CombatMod will be generally " .. ModSwitcher_Status(activeBoolean) .. " after this map."
             Shared.ConsoleCommand("say " .. message)
               
         else
             Shared.Message("CombatModSwitcher: Only true or false allowed")
         end
-    else
-        ModSwitcher_Load(false)        
+	end
+end
+
+local function OnCommandModThreshold(client, numPlayers)
+
+    if client == nil or client:GetIsLocalClient() then
+        OnCommandModThresholdAdmin(client, numPlayers)
     end
+    
+end
+
+function OnCommandModThresholdAdmin(client, numPlayers)
+
+    if numPlayers then
+        if tonumber(numPlayers) then
+            ModSwitcher_Save(nil, tonumber(numPlayers), nil, false)
+            Shared.Message("The changes only take effect after the next mapchange!")
+            
+            // send it to every player            
+            local message = "CombatMod will only be activate after this map if player count is less than " .. numPlayers 
+            Shared.ConsoleCommand("say " .. message)
+              
+        else
+            Shared.Message("CombatModSwitcher: Only numbers allowed")
+        end
+    end
+end
+
+function OnCommandChangeMap(client, mapName)
+    
+    if client == nil or client:GetIsLocalClient() then
+		local playerCount = Shared.GetEntitiesWithClassname("Player"):GetSize()
+		ModSwitcher_Save(nil, nil, playerCount, false)
+	
+        local mods = { }
+        Server.StartWorld(mods, mapName)
+    end
+    
 end
 
 
@@ -189,4 +224,8 @@ end
 // only this command works when in classic mode
 // to make it available for admins and dedicated servers
 Event.Hook("Console_co_mode",         OnCommandModActive) 
+Event.Hook("Console_co_mod_active",         OnCommandModActive) 
+Event.Hook("Console_co_mod_player_threshold",         OnCommandModThreshold) 
+Event.Hook("Console_changemap", OnCommandChangeMap)
 CreateServerAdminCommand("Console_sv_co_mode", OnCommandModActiveAdmin, "Switches between combat and classic mode") 
+CreateServerAdminCommand("Console_sv_co_mode_player_threshold", OnCommandModThresholdAdmin, "Sets the game to classic mode after a certain player threshold") 
