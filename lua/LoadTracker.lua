@@ -29,7 +29,7 @@ if(not LoadTracker) then
   	
   	local ret
   	
-  	if(NewPath) then
+  	if(NewPath and NewPath ~= "") then
   		ret = Script_Load(NewPath)
   	end
   	
@@ -54,6 +54,7 @@ function LoadTracker:ScriptLoadStart(normalizedsPath, unnormalizedsPath)
 		local FileOverride = self.OverridedFiles[normalizedsPath]
 		
 		if(FileOverride) then
+			Shared.Message(normalizedsPath .. " is overridden to " .. FileOverride)
 			if(type(FileOverride) ~= "table") then
 			  return FileOverride
 			else

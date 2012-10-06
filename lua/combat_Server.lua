@@ -11,14 +11,18 @@
 Script.Load("lua/PathUtil.lua")
 Script.Load("lua/fsfod_scripts.lua")
 
+// Register Network Messages.
 Script.Load("lua/combat_NetworkMessages.lua")
 
 // load the ModSwitcher functions
 Script.Load("lua/combat_ModSwitcher.lua")
 ModSwitcher_Load(true)
 
-// dont load the hooks, if combat mode is deactivated
+// dont load the rest of the hooks if combat mode is deactivated
 if kCombatModActive then
+
+	// Register the files we don't want to ever load.
+	Script.Load("lua/combat_FileOverrides.lua")
 
     // Loading the Hook classes
     // TODO: Maybe we don't need the OnLoad?
@@ -41,7 +45,7 @@ if kCombatModActive then
     
 end
 
-// but load the weapon hook, even in vanilla ns2 that marine reloading is working
+// but load the weapon hook always, even in vanilla ns2, so that marine reloading is working
 Script.Load("lua/Weapons/Marines/combat_ClipWeapon.lua")
 
 // Load the normal Ns2 Server Scripts
