@@ -23,6 +23,7 @@ function CombatPlayer:OnLoad()
 	self:PostHookClassFunction("Player", "Taunt", "Taunt_Hook")
 	self:PostHookClassFunction("Player", "OnCreate", "OnCreate_Hook")
 	self:PostHookClassFunction("Player", "UpdateArmorAmount", "UpdateArmorAmount_Hook")
+	self:PostHookClassFunction("Player", "GetCanTakeDamageOverride", "GetCanTakeDamageOverride_Hook"):SetPassHandle(true)
 
     self:ReplaceFunction("GetIsTechAvailable", "GetIsTechAvailable_Hook")
     
@@ -115,12 +116,13 @@ function CombatPlayer:OnUpdatePlayer_Hook(self, deltaTime)
 			if not self.combatTable.deactivateSpawnProtect then
 				// set the real spawn protect time here
 				self.combatTable.deactivateSpawnProtect = Shared.GetTime() +  kCombatMarineSpawnProtectTime
-			elseif Shared.GetTime() >= self.combatTable.deactivateSpawnProtect then
+			
+			if Shared.GetTime() >= self.combatTable.deactivateSpawnProtect then
 				// end spawn protect
 				self:DeactivateSpawnProtect()
 			else
 				if not self.gotSpawnProtect then
-				self:PerformSpawnProtect()
+					self:PerformSpawnProtect()
 				end
 			end
 		end
@@ -209,6 +211,12 @@ function CombatPlayer:UpdateArmorAmount_Hook(self)
 		self.twoHives = false
 		self.threeHives = false
 	end
+
+end
+
+function CombatPlayer:GetCanTakeDamageOverride_Hook(handle, self)
+
+	return handle:GetReturn() or self.gotSpawnProtect
 
 end
 

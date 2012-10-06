@@ -85,9 +85,6 @@ function Player:DeactivateSpawnProtect()
 end
 
 function Player:PerformSpawnProtect()
-
-    self:SetHealth(10000)
-    self:SetArmor(10000)
         
     // only make the effects once
     if not self.gotSpawnProtect then

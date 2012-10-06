@@ -19,6 +19,7 @@ function CombatAlien:OnLoad()
     self:ReplaceClassFunction("Alien", "UpdateNumHives","UpdateNumHives_Hook")
     self:PostHookClassFunction("Alien", "OnUpdateAnimationInput","OnUpdateAnimationInput_Hook")
 	self:PostHookClassFunction("Alien", "RequestHeal", "RequestHeal_Hook")
+	self:PostHookClassFunction("Alien", "GetCanTakeDamageOverride", "GetCanTakeDamageOverride_Hook"):SetPassHandle(true)
 	
 end
 
@@ -59,6 +60,12 @@ function CombatAlien:RequestHeal_Hook(self)
 	
 	self:ProcessTauntAbilities()
 	
+end
+
+function CombatAlien:GetCanTakeDamageOverride_Hook(handle, self)
+
+	return handle:GetReturn() or self.gotSpawnProtect
+
 end
 
 if (not HotReload) then
