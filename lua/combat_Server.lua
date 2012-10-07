@@ -11,12 +11,19 @@
 Script.Load("lua/PathUtil.lua")
 Script.Load("lua/fsfod_scripts.lua")
 
+// Register Network Messages.
+Script.Load("lua/combat_NetworkMessages.lua")
+
 // load the ModSwitcher functions
 Script.Load("lua/combat_ModSwitcher.lua")
 ModSwitcher_Load(true)
 
-// dont load the hooks, if combat mode is deactivated
+// dont load the rest of the hooks if combat mode is deactivated
 if kCombatModActive then
+
+	// Register the files we don't want to ever load.
+	// Disabled for now - it would work if we didn't have the mod switcher!
+	//Script.Load("lua/combat_FileOverrides.lua")
 
     // Loading the Hook classes
     // TODO: Maybe we don't need the OnLoad?
@@ -52,6 +59,7 @@ if kCombatModActive then
     Script.Load("lua/combat_TechTree.lua")
     Script.Load("lua/combat_TechNode.lua")
     Script.Load("lua/combat_Chat.lua")
+	Script.Load("lua/combat_CustomEffects.lua")
     Script.Load("lua/combat_Player.lua")
 	Script.Load("lua/combat_PowerConsumerMixin.lua")
     Script.Load("lua/combat_CommandStructure.lua")
