@@ -16,6 +16,7 @@ end
 function CombatMarineTeam:OnLoad()
 
     ClassHooker:SetClassCreatedIn("MarineTeam", "lua/MarineTeam.lua") 
+    self:PostHookClassFunction("MarineTeam", "Initialize", "Initialize_Hook")
 	self:ReplaceClassFunction("MarineTeam", "SpawnInitialStructures", "SpawnInitialStructures_Hook")
 	self:ReplaceClassFunction("MarineTeam", "Update", "Update_Hook")
 	
@@ -27,6 +28,15 @@ end
 
 local kArmorySpawnMinDistance = 6
 local kArmorySpawnMaxDistance = 30
+
+
+function CombatMarineTeam:Initialize_Hook(self, teamName, teamNumber)
+
+    self.respawnEntity = CombatMarine.kMapName
+
+end
+
+
 
 function CombatMarineTeam:SpawnInitialStructures_Hook(self, techPoint)
 

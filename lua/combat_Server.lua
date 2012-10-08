@@ -80,6 +80,9 @@ if kCombatModActive then
     Script.Load("lua/combat_WeldableMixin.lua")
     Script.Load("lua/Weapons/Alien/combat_HealSprayMixin.lua")
     Script.Load("lua/combat_ScoringMixin.lua")
+
+    Script.Load("lua/combat_Marine.lua")
+    Script.Load("lua/combat_Alien.lua")
     
 end
 

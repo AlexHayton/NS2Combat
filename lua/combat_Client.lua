@@ -57,6 +57,8 @@ function combatLoadClientFunctions()
     Script.Load("lua/combat_TeamMixin.lua")
     Script.Load("lua/combat_Marine_Client.lua")
     Script.Load("lua/Hud/combat_GUIExperienceBar.lua")
+    Script.Load("lua/combat_Marine.lua")
+    Script.Load("lua/combat_Alien.lua")
 
 end
 
