@@ -37,8 +37,8 @@ if kCombatModActive then
     Script.Load("lua/combat_TeamMessenger.lua")
     Script.Load("lua/combat_PowerPoint.lua")
     Script.Load("lua/combat_PlayerHooks.lua")
-    Script.Load("lua/combat_Marine.lua")
-    Script.Load("lua/combat_Alien.lua")
+    Script.Load("lua/combat_Marine_Hooks.lua")
+    Script.Load("lua/combat_Alien_Hooks.lua")
     Script.Load("lua/combat_CommandStructure_Hooks.lua")
     Script.Load("lua/combat_Hive.lua")
     Script.Load("lua/combat_Armory.lua")
@@ -80,6 +80,9 @@ if kCombatModActive then
     Script.Load("lua/combat_WeldableMixin.lua")
     Script.Load("lua/Weapons/Alien/combat_HealSprayMixin.lua")
     Script.Load("lua/combat_ScoringMixin.lua")
+
+    Script.Load("lua/combat_Marine.lua")
+    Script.Load("lua/combat_Alien.lua")
     
 end
 

@@ -5,70 +5,32 @@
 //
 //________________________________
 
-// combat_Alien.lua
+// combat_Marine.lua
 
-local HotReload = CombatAlien
-if(not HotReload) then
-    CombatAlien = {}
-	ClassHooker:Mixin("CombatAlien")
-end
+
+
+class 'CombatAlien' (Alien)
+
+CombatAlien.kMapName = "combatalien"
+
+
+local networkVars =
+{
+}
+
+
+function CombatAlien:OnCreate()
+
+    Marine.OnCreate(self)
     
-function CombatAlien:OnLoad()
-   
-    self:ReplaceClassFunction("Alien", "LockTierTwo", function() end)
-    self:ReplaceClassFunction("Alien", "UpdateNumHives","UpdateNumHives_Hook")
-    self:PostHookClassFunction("Alien", "OnUpdateAnimationInput","OnUpdateAnimationInput_Hook")
-	self:PostHookClassFunction("Alien", "RequestHeal", "RequestHeal_Hook")
-	self:PostHookClassFunction("Alien", "GetCanTakeDamageOverride", "GetCanTakeDamageOverride_Hook"):SetPassHandle(true)
-	
-end
-
-function CombatAlien:UpdateNumHives_Hook(self)
-
-    local time = Shared.GetTime()
-	if self.timeOfLastNumHivesUpdate == nil or (time > self.timeOfLastNumHivesUpdate + 0.5) then
-
-		if self.combatTable then
-			if self.combatTable.twoHives and self.combatTable.twoHives ~= self.twoHives then
-				self.twoHives = true
-				self:UnlockTierTwo()
-			end
-			
-			if self.combatTable.threeHives and self.combatTable.threeHives ~= self.threeHives then
-				self.threeHives = true
-				self:UnlockTierThree()
-			end
-		end
-		
-		self.timeOfLastNumHivesUpdate = time
-		
-	end
-end
-
-function CombatAlien:OnUpdateAnimationInput_Hook(self, modelMixin)
-  
-    if self:GotFocus() then
-        modelMixin:SetAnimationInput("attack_speed", kCombatFocusAttackSpeed)        
-    else
-        // standard attack speed is 1, but the variable is local so we cant use it
-        modelMixin:SetAnimationInput("attack_speed", self:GetIsEnzymed() and kEnzymeAttackSpeed or 1.0)
-    end
     
 end
 
-function CombatAlien:RequestHeal_Hook(self)
-	
-	self:ProcessTauntAbilities()
-	
+function CombatAlien:OnInitialized()
+    
+    Marine.OnInitialized(self)
+    
 end
 
-function CombatAlien:GetCanTakeDamageOverride_Hook(handle, self)
 
-	local canTakeDamage = handle:GetReturn() or self.gotSpawnProtect
-	handle:SetReturn(canTakeDamage)
-
-end
-
-if (not HotReload) then
-	CombatAlien:OnLoad()
-end
+Shared.LinkClassToMap("CombatAlien", CombatAlien.kMapName, networkVars)
