@@ -29,7 +29,7 @@ function CombatGUIAlienBuyMenu:Initialize_Hook(self)
 	// Set overrides for GUIAlienBuyMenu globals here...
 	GUIAlienBuyMenu.kMaxNumberOfUpgradeButtons = 10
 	GUIAlienBuyMenu.kUpgradeButtonDistance = GUIScale(kCombatAlienBuyMenuUpgradeButtonDistance)
-	GUIAlienBuyMenu.kBuyHudTexture = "ui/combat_alien_buildmenu.dds"
+	GUIAlienBuyMenu.kBuyHUDTexture = "ui/combat_alien_buildmenu.dds"
 
 end
 
