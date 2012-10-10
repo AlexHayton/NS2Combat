@@ -14,19 +14,11 @@ By JimWest and MCMLXXXIV (with support from Jibrail, fsfod and a small army of m
 **How to play**
 ---------------
 1. Connect to a server running NS2 Combat Mode.
-2. When you join you’ll get a message telling you about how to buy upgrades, which you’re awarded every time you get a certain amount of experience.
-3. Use the "/buy" chat or console command to buy upgrades for yourself. You keep your level even if you switch teams.
-4. Killing enemies, damaging structures or being near your teammates who are killing enemies will give you experience points, which will eventually get you more levels and upgrade points.
-5. If you join a game in progress, you’ll get the average experience points and upgrade points of all active players, so you should be able to get right into the action.
-* (Optional) Download and unzip the zip file above to your "Steam/SteamApps/common/Natural Selection 2" folder to use some of our client-side menus, then run the mod either using the Spark Launch Pad or "NS2.exe -game NS2Combat". Activate them using the 'B' key like with the alien upgrade menu in vanilla NS2.
-* (Even more Optional) Users of fsfod's Menu Mod can also add this to their mods list by extracting the NS2Combat zip file to "steam/steamapps/common/Natural Selection 2/menumod/mods" and then also extracting this zip file to the newly extracted "menumod/mods/NS2Combat" folder... In future this will hopefully be less complicated!
+2. Use the buy menu to upgrade when you reach the next level.
 
 **Hosting your own server**
 ---------------------------
-1. Get the dedicated server working with regular NS2
-2. Unzip the NS2Combat zip file to your server's folder. E.g. if the server.exe file is in c:\ns2server then extract to c:\ns2server and preserve folder names.
-3. Launch your dedicated server with the command "server.exe -game NS2Combat"
-4. To enable support with GameOvermind, get GameOvermind working with vanilla NS2 (so you have a GameOvermind folder in your server's directory) then unzip the special GameOvermind version. Combat will look for your existing GameOvermind installation and make use of it.
+1Guide to follow soon...
 
 **Contributing**
 ----------------
