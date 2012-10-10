@@ -87,3 +87,14 @@ function GetRandomSpawnForCapsule(capsuleHeight, capsuleRadius, origin, minRange
     return nil
     
 end
+
+// Used to send messages to all players.
+function SendGlobalChatMessage(message)
+	local allPlayers = Shared.GetEntitiesWithClassname("Player")
+	for index, player in ientitylist(allPlayers) do
+		player:SendDirectMessage(message)
+	end
+	
+	// Also output to the console for admins.
+	Shared.Message(message)
+end

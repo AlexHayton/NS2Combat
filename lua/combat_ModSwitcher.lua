@@ -11,6 +11,7 @@
 
 Script.Load("lua/dkjson.lua")
 Script.Load("lua/Utility.lua")
+Script.Load("lua/combat_Utility.lua")
 
 kCombatModActive = true
 kCombatPlayerThreshold = 0
@@ -36,6 +37,8 @@ function ModSwitcher_Load(changeLocal)
                 kCombatModActive = false 
             else
                 Shared.Message("For the value ModActive in " .. kCombatModSwitcherPath .. " only true and false are allowed")
+				Shared.Message("Resetting the value to true")
+				kCombatModActive = true
             end
 			local originalCombatModActive = kCombatModActive
 			
@@ -43,15 +46,19 @@ function ModSwitcher_Load(changeLocal)
 				kCombatPlayerThreshold = settings.ModPlayerThreshold
 			else
 				Shared.Message("For the value ModPlayerThreshold in " .. kCombatModSwitcherPath .. " only numbers from 0 and above are allowed")
+				Shared.Message("Resetting the value to 0")
+				kCombatPlayerThreshold = 0
 			end
 			
 			if tonumber(settings.ModLastPlayerCount) and tonumber(settings.ModLastPlayerCount) > -1 then
 				kCombatLastPlayerCount = settings.ModLastPlayerCount
 			else
 				Shared.Message("For the value ModLastPlayerCount in " .. kCombatModSwitcherPath .. " only numbers from 0 and above are allowed")
+				Shared.Message("Resetting the value to 0")
+				kCombatLastPlayerCount = 0
 			end
 			
-			// Enable/Disable the mod based on the player threshold if that value is set.
+			// Enable/Disable the mod based on the player threshold if that value is set greater than 0.
 			if kCombatModActive and kCombatPlayerThreshold > 0 then
 				if kCombatLastPlayerCount < kCombatPlayerThreshold then
 					kCombatModActive = true
@@ -59,17 +66,8 @@ function ModSwitcher_Load(changeLocal)
 					kCombatModActive = false
 				end
 			end
-            
-            Shared.Message("**********************************")
-            Shared.Message("**********************************")
-            Shared.Message("\n")
-			Shared.Message("CombatMod Mod Active Setting is: " .. ModSwitcher_Status(originalCombatModActive)) 
-			Shared.Message("CombatMod Player Threshold is " .. kCombatPlayerThreshold .. " players.")
-			Shared.Message("CombatMod Last Map ended with " .. kCombatLastPlayerCount .. " players.")
-            Shared.Message("CombatMod is now: " .. ModSwitcher_Status(kCombatModActive)) 
-            Shared.Message("\n")
-            Shared.Message("**********************************")
-            Shared.Message("**********************************")
+			
+			ModSwitcher_Output_Status(settings)
             
         else
             io.close(settingsFile)
@@ -108,7 +106,7 @@ function ModSwitcher_Save(ModActiveBool, ThresholdNumber, LastPlayers, newlyCrea
 	elseif ModActiveBool == nil then
 		ModActiveBool = currentSettings.ModActive
 	else
-		Shared.Message("CombatMod is now: " .. ModSwitcher_Status(ModActiveBool))
+		Shared.Message("CombatMod is now: " .. ModSwitcher_Active_Status(ModActiveBool))
 	end
 	
 	if currentSettings.ModPlayerThreshold == nil then    
@@ -143,7 +141,40 @@ function ModSwitcher_Save(ModActiveBool, ThresholdNumber, LastPlayers, newlyCrea
 
 end
 
-function ModSwitcher_Status(Boolean)        
+function ModSwitcher_Output_Status_Console()
+	// load the values, maybe it was changed shortly before and the local value is wrong, but dont change the local value
+	currentSettings = ModSwitcher_Load(false)
+	
+	ModSwitcher_Output_Status(currentSettings)
+end
+
+function ModSwitcher_Output_Status(currentSettings)
+	Shared.Message("**********************************")
+	Shared.Message("**********************************")
+	Shared.Message("\n")
+	Shared.Message("CombatMod Mod Active Setting is: " .. ModSwitcher_Active_Status(currentSettings.ModActive)) 
+	Shared.Message("CombatMod Player Threshold is " .. currentSettings.ModPlayerThreshold .. " players.")
+	Shared.Message("CombatMod Last Map ended with " .. currentSettings.ModLastPlayerCount .. " players.")
+	Shared.Message("CombatMod is now: " .. ModSwitcher_Active_Status(kCombatModActive)) 
+	Shared.Message("\n")
+	Shared.Message("**********************************")
+	Shared.Message("**********************************")
+end
+
+function ModSwitcher_Output_Status_All()
+	local playerCount = Shared.GetEntitiesWithClassname("Player"):GetSize()
+	local currentSettings = ModSwitcher_Load(false)
+	
+	if (currentSettings.ModActive == "true" or currentSettings.ModActive == true) and currentSettings.ModPlayerThreshold > 0 then
+		SendGlobalChatMessage("There are " .. playerCount .. " players on the server...")
+		SendGlobalChatMessage("If there are more than " .. currentSettings.ModPlayerThreshold .. " players(s) on the server at next map change,")
+		SendGlobalChatMessage("this server will switch to Standard NS2. If there are fewer then next round is Combat Mode!")
+	else	
+		SendGlobalChatMessage("On the next map change, Combat Mode will be **" .. ModSwitcher_Active_Status(currentSettings.ModActive) .. "**")
+	end
+end
+
+function ModSwitcher_Active_Status(Boolean)        
     return ConditionalValue(ToString(Boolean) == "true", "activated", "deactivated")
 end
 

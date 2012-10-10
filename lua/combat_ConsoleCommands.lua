@@ -153,12 +153,13 @@ function OnCommandModActiveAdmin(client, activeBoolean)
             Shared.Message("The changes only take effect after the next mapchange")
             
             // send it to every player            
-            local message = "CombatMod will be generally " .. ModSwitcher_Status(activeBoolean) .. " after this map."
-            Shared.ConsoleCommand("say " .. message)
+            ModSwitcher_Output_Status_All()
               
         else
             Shared.Message("CombatModSwitcher: Only true or false allowed")
         end
+	else
+		ModSwitcher_Output_Status_Console()
 	end
 end
 
@@ -171,19 +172,20 @@ local function OnCommandModThreshold(client, numPlayers)
 end
 
 function OnCommandModThresholdAdmin(client, numPlayers)
-
+	
     if numPlayers then
         if tonumber(numPlayers) then
             ModSwitcher_Save(nil, tonumber(numPlayers), nil, false)
             Shared.Message("The changes only take effect after the next mapchange!")
             
             // send it to every player            
-            local message = "CombatMod will only be activate after this map if player count is less than " .. numPlayers 
-            Shared.ConsoleCommand("say " .. message)
+            ModSwitcher_Output_Status_All()
               
         else
             Shared.Message("CombatModSwitcher: Only numbers allowed")
         end
+	else
+		ModSwitcher_Output_Status_Console()
     end
 end
 
@@ -198,7 +200,6 @@ function OnCommandChangeMap(client, mapName)
     end
     
 end
-
 
 // All commands that should be accessible via the chat need to be in this list
 combatCommands = {"co_spendlvl", "co_help", "co_status", "co_upgrades", "/upgrades", "/status", "/buy", "/help"}
@@ -223,9 +224,9 @@ end
 
 // only this command works when in classic mode
 // to make it available for admins and dedicated servers
-Event.Hook("Console_co_mode",         OnCommandModActive) 
 Event.Hook("Console_co_mod_active",         OnCommandModActive) 
-Event.Hook("Console_co_mod_player_threshold",         OnCommandModThreshold) 
+Event.Hook("Console_co_mod_threshold",         OnCommandModThreshold) 
 Event.Hook("Console_changemap", OnCommandChangeMap)
-CreateServerAdminCommand("Console_sv_co_mode", OnCommandModActiveAdmin, "Switches between combat and classic mode") 
-CreateServerAdminCommand("Console_sv_co_mode_player_threshold", OnCommandModThresholdAdmin, "Sets the game to classic mode after a certain player threshold") 
+CreateServerAdminCommand("Console_sv_co_mod_active", OnCommandModActiveAdmin, "<true/false> Switches between combat and classic mode") 
+CreateServerAdminCommand("Console_sv_co_mod_threshold", OnCommandModThresholdAdmin, "<number of players> Sets the game to classic mode after a certain player threshold") 
+CreateServerAdminCommand("Console_sv_changemap", OnCommandChangeMap, "<map name>, Switches to the map specified") 
