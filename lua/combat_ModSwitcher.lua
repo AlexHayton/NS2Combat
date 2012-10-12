@@ -13,9 +13,13 @@ Script.Load("lua/dkjson.lua")
 Script.Load("lua/Utility.lua")
 Script.Load("lua/combat_Utility.lua")
 
-kCombatModActive = true
-kCombatPlayerThreshold = 0
-kCombatLastPlayerCount = 0
+kCombatModActiveDefault = true
+kCombatPlayerThresholdDefault = 0
+kCombatLastPlayerCountDefault = 0
+
+kCombatModActive = kCombatModActiveDefault
+kCombatPlayerThreshold = kCombatPlayerThresholdDefault
+kCombatLastPlayerCount = kCombatLastPlayerCountDefault
 kCombatModSwitcherPath = "config://CombatMod.cfg"
 
 // load the ModActive value from config://CombatModConfig.json
@@ -37,8 +41,9 @@ function ModSwitcher_Load(changeLocal)
                 kCombatModActive = false 
             else
                 Shared.Message("For the value ModActive in " .. kCombatModSwitcherPath .. " only true and false are allowed")
-				Shared.Message("Resetting the value to true")
-				kCombatModActive = true
+				Shared.Message("Resetting the value to default (true)")
+				kCombatModActive = kCombatModActiveDefault
+				settings.ModActive = kCombatModActiveDefault
             end
 			local originalCombatModActive = kCombatModActive
 			
@@ -46,16 +51,18 @@ function ModSwitcher_Load(changeLocal)
 				kCombatPlayerThreshold = settings.ModPlayerThreshold
 			else
 				Shared.Message("For the value ModPlayerThreshold in " .. kCombatModSwitcherPath .. " only numbers from 0 and above are allowed")
-				Shared.Message("Resetting the value to 0")
-				kCombatPlayerThreshold = 0
+				Shared.Message("Resetting the value to default ("..kCombatPlayerThresholdDefault..")")
+				kCombatPlayerThreshold = kCombatPlayerThresholdDefault
+				settings.ModPlayerThreshold = kCombatPlayerThresholdDefault
 			end
 			
 			if tonumber(settings.ModLastPlayerCount) and tonumber(settings.ModLastPlayerCount) > -1 then
 				kCombatLastPlayerCount = settings.ModLastPlayerCount
 			else
 				Shared.Message("For the value ModLastPlayerCount in " .. kCombatModSwitcherPath .. " only numbers from 0 and above are allowed")
-				Shared.Message("Resetting the value to 0")
-				kCombatLastPlayerCount = 0
+				Shared.Message("Resetting the value to default ("..kCombatLastPlayerCountDefault..")")
+				kCombatLastPlayerCount = kCombatLastPlayerCountDefault
+				settings.ModLastPlayerCount = kCombatLastPlayerCountDefault
 			end
 			
 			// Enable/Disable the mod based on the player threshold if that value is set greater than 0.
@@ -71,6 +78,20 @@ function ModSwitcher_Load(changeLocal)
             
         else
             io.close(settingsFile)
+			
+			// Handle cases where there are missing attributes.
+			if settings.ModActive == nil then
+				settings.ModActive = kCombatModActiveDefault
+			end
+			
+			if settings.ModPlayerThreshold == nil then
+				settings.ModPlayerThreshold = kCombatPlayerThresholdDefault
+			end
+			
+			if settings.ModLastPlayerCount == nil then
+				settings.ModLastPlayerCount = kCombatLastPlayerCountDefault
+			end
+			
             return settings
         end
         
