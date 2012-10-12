@@ -16,6 +16,7 @@ end
 function CombatNS2Utility:OnLoad()
     self:ReplaceFunction("AttackMeleeCapsule", "AttackMeleeCapsule_Hook")    
     self:ReplaceClassFunction("Spit", "ProcessHit", "ProcessHit_Hook") 
+    self:ReplaceFunction("GetAreEnemies", "GetAreEnemies_Hook") 
 end
 
 // for focus to make more dmg
@@ -82,6 +83,15 @@ function CombatNS2Utility:ProcessHit_Hook(self, targetHit, surface, normal)
     end    
     
 end
+
+
+function CombatNS2Utility:GetAreEnemies_Hook(entityOne, entityTwo)
+    return entityOne and entityTwo and HasMixin(entityOne, "Team") and HasMixin(entityTwo, "Team") and (
+            (entityOne:GetTeamNumber() == kMarineTeamType and entityTwo:GetTeamNumber() == kAlienTeamType) or
+            (entityOne:GetTeamNumber() == kAlienTeamType and entityTwo:GetTeamNumber() == kMarineTeamType)
+            or entityOne:GetTeamNumber() == kNeutralTeamType or entityTwo:GetTeamNumber() == kNeutralTeamType)
+end
+
 
 if (not HotReload) then
 	CombatNS2Utility:OnLoad()

@@ -83,6 +83,9 @@ if kCombatModActive then
     
 end
 
+// load the aitest class (even when combat mod is off so there are no client-server errors)
+Script.Load("lua/AiTest.lua")
+
 // also load the console commands when combat is deactivated
 Script.Load("lua/combat_ConsoleCommands.lua")
 
