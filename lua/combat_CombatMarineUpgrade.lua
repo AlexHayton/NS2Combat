@@ -21,7 +21,7 @@ function CombatMarineUpgrade:TeamSpecificLogic(player)
 	local kMapName = LookupTechData(techId, kTechDataMapName)
 	
 	// Apply weapons upgrades to a marine.
-	if (self:GetType() == kCombatUpgradeTypes.Weapon) then
+	if (player:GetIsAlive() and self:GetType() == kCombatUpgradeTypes.Weapon) then
 		Player.InitWeapons(player)
 		
 		// if this is a primary weapon, destroy the old one.

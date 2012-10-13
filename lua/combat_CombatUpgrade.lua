@@ -120,7 +120,9 @@ end
 function CombatUpgrade:GiveItem(player)
 
 	local kMapName = LookupTechData(self:GetTechId(), kTechDataMapName)
-	player:GiveItem(kMapName)
+	if (player:GetIsAlive()) then
+		player:GiveItem(kMapName)
+	end
 
 end
 

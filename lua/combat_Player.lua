@@ -76,11 +76,8 @@ function Player:DeactivateSpawnProtect()
     self.combatTable.activeSpawnProtect = nil
     self.gotSpawnProtect = nil
     
-    if self.combatNanoShieldEnt then
-        DestroyEntity(self.combatNanoShieldEnt)
-    end
-    
-    self.combatNanoShieldEnt = nil
+	// Deactivate the nano shield by manipulating the time variable.
+	self.timeNanoShieldInit = 0
 	
 end
 
@@ -91,15 +88,11 @@ function Player:PerformSpawnProtect()
         
         if self:isa("Marine") then
         
-            local nanoShield = CreateEntity(NanoShield.kMapName, self:GetOrigin(), self:GetTeamNumber())
-            nanoShield:SetParent(self)
             self:ActivateNanoShield()
-            self.combatNanoShieldEnt = nanoShield
 			
         elseif self:isa("Alien") then
 		
 			local spawnProtectTimeLeft = self.combatTable.deactivateSpawnProtect - Shared.GetTime()
-            //self:TriggerCatalyst(spawnProtectTimeLeft)
             self:SetHasUmbra(true, spawnProtectTimeLeft)       
 
         end
