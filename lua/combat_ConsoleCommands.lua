@@ -201,6 +201,22 @@ function OnCommandChangeMap(client, mapName)
     
 end
 
+
+function OnCommandAddAi(client)
+
+    if client ~= nil then
+        if Shared.GetCheatsEnabled() then
+        	local player = client:GetControllingPlayer()
+        	local position = player:GetOrigin()
+        
+        	newAi = CreateEntity(AITEST.kMapName, position + Vector(1, 0, 0), 2)
+	end
+    
+    end
+    
+end
+Event.Hook("Console_addai", OnCommandAddAi)
+
 // All commands that should be accessible via the chat need to be in this list
 combatCommands = {"co_spendlvl", "co_help", "co_status", "co_upgrades", "/upgrades", "/status", "/buy", "/help"}
 

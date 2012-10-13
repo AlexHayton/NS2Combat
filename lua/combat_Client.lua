@@ -60,8 +60,8 @@ function combatLoadClientFunctions()
 
 end
 
-// just for testing that i see the props
-//Script.Load("lua/combat_Props.lua")
+// load the aitest class (even when combat mod is off so there are no client-server errors)
+Script.Load("lua/AiTest.lua")
 
 // Tell the class hooker that we've fully loaded.
 ClassHooker:OnLuaFullyLoaded()
