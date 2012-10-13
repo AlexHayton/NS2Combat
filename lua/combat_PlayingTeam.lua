@@ -180,7 +180,7 @@ function CombatPlayingTeam:Update_Hook(self, timePassed)
 			
 			// If there are any players left, send them a message about why they didn't spawn.
 			if (#self.respawnQueue > 0) then
-				for i, player in ipairs(respawnQueue) do
+				for i, player in ipairs(self.respawnQueue) do
 					player:SendDirectMessage("Could not find a valid spawn location for you... You will spawn in the next wave instead!")
 				end
 			end

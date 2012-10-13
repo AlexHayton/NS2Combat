@@ -217,7 +217,7 @@ end
 
 function CombatPlayer:GetCanTakeDamageOverride_Hook(handle, self)
 
-	local canTakeDamage = handle:GetReturn() or self.gotSpawnProtect
+	local canTakeDamage = handle:GetReturn() and not self.gotSpawnProtect
 	handle:SetReturn(canTakeDamage)
 
 end
