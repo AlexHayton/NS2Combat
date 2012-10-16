@@ -445,7 +445,17 @@ function AITEST:AttackVisibleTarget()
         local nearestTarget = nil
         local nearestTargetDistance = nil
         
-        local targets = GetEntitiesWithMixinForTeamWithinRange("Live", GetEnemyTeamNumber(player:GetTeamNumber()), player:GetOrigin(), 20)
+        // find enemys from both teams
+        local targets = {}
+        local targets1 = GetEntitiesWithMixinForTeamWithinRange("Live", kTeam1Index, player:GetOrigin(), 20)
+        local targets2 = GetEntitiesWithMixinForTeamWithinRange("Live", kTeam2Index, player:GetOrigin(), 20)
+        
+        for i, entry in ipairs (targets1) do table.insert(targets, entry) end
+        for i, entry in ipairs (targets2) do table.insert(targets, entry) end   
+
+        targets1 = nil
+        targets2 = nil
+        
         for index, target in pairs(targets) do
         
             if target:GetIsAlive() and target:GetIsVisible() and target:GetCanTakeDamage() and target ~= player then
