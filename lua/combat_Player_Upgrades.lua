@@ -386,6 +386,11 @@ function Player:Reset_Lite()
 	// for fastreload and focus
 	self.combatTable.hasFastReload = false
 	self.combatTable.hasFocus = false
+	
+	// delete everything from the spawnProtect system
+	self.gotSpawnProtect = nil
+    self.combatTable.activeSpawnProtect = false
+	self.combatTable.deactivateSpawnProtect = nil
     
     self.combatTable.giveClassAfterRespawn = nil	
 	self.combatTable.techtree = {}
