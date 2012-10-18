@@ -5,18 +5,25 @@
 //
 //________________________________
 
-// combat_WeldableMixin.lua
 
 // Players heal by base amount + percentage of max health
 local kHealPlayerPercent = 3
 
+// Structures heal by base x this multiplier (same as NS1)
+local kHealStructuresMultiplier = 5
+
 local kRange = 6
 local kHealCylinderWidth = 3
 
-local function setDecimalPlaces(num, idp)
-    local mult = 10^(idp or 0)
-    if num >= 0 then return math.floor(num * mult) / mult
-    else return math.ceil(num * mult) / mult end
+local function GetHealOrigin(self, player)
+
+    // Don't project origin the full radius out in front of Gorge or we have edge-case problems with the Gorge 
+    // not being able to hear himself
+    local startPos = player:GetEyePos()
+    local endPos = startPos + (player:GetViewAngles():GetCoords().zAxis * kHealsprayRadius * .9)
+    local trace = Shared.TraceRay(startPos, endPos, CollisionRep.Damage, PhysicsMask.Bullets, EntityFilterOne(player))
+    return trace.endPoint
+    
 end
 
 local function DamageEntity(self, player, targetEntity)
@@ -48,16 +55,18 @@ local function HealEntity(self, player, targetEntity)
     end
     
     local amountHealed = targetEntity:AddHealth(health)
-	
-	/*
+    
+    /*
 	 * Addition for Combat Mode to give XP for healing.
 	 */
 	local maxXp = GetXpValue(targetEntity)
 	local healXp = 0
 	if targetEntity:isa("Player") then
-		healXp = setDecimalPlaces(maxXp * kPlayerHealXpRate * kHealXpRate * amountHealed / targetEntity:GetMaxHealth(), 1)
+		val = (maxXp * kPlayerHealXpRate * kHealXpRate * amountHealed / targetEntity:GetMaxHealth())
+		healXp = math.floor( (val * 10) + 0.5) / (10)
 	else
-		healXp = setDecimalPlaces(maxXp * kHealXpRate * amountHealed / targetEntity:GetMaxHealth(), 1)
+		val = (maxXp * kHealXpRate * amountHealed / targetEntity:GetMaxHealth())
+		healXp = math.floor( (val * 10) + 0.5) / (10)
 	end
 		
 	// Award XP but suppress the message, but only the player is not the parent
@@ -77,10 +86,74 @@ local function HealEntity(self, player, targetEntity)
     if Server and amountHealed > 0 then
         targetEntity:TriggerEffects("sprayed")
     end
-    
-    player:OnRepair(targetEntity, amountHealed > 0)
         
 end
+
+local kConeWidth = 0.6
+local function GetEntitiesWithCapsule(self, player)
+
+    local fireDirection = player:GetViewCoords().zAxis
+    // move a bit back for more tolerance, healspray does not need to be 100% exact
+    local startPoint = player:GetEyePos() + player:GetViewCoords().yAxis * 0.2
+
+    local extents = Vector(kConeWidth, kConeWidth, kConeWidth)
+    local remainingRange = kRange
+ 
+    local ents = {}
+    
+    // always heal self as well
+    HealEntity(self, player, player)
+    
+    for i = 1, 4 do
+    
+        if remainingRange <= 0 then
+            break
+        end
+        
+        local trace = TraceMeleeBox(self, startPoint, fireDirection, extents, remainingRange, PhysicsMask.Melee, EntityFilterOne(player))
+        
+        if trace.fraction ~= 1 then
+        
+            if trace.entity then
+            
+                if HasMixin(trace.entity, "Live") then
+                    table.insertunique(ents, trace.entity)
+                end
+        
+            else
+            
+                // Make another trace to see if the shot should get deflected.
+                local lineTrace = Shared.TraceRay(startPoint, startPoint + remainingRange * fireDirection, CollisionRep.LOS, PhysicsMask.Melee, EntityFilterOne(player))
+                
+                if lineTrace.fraction < 0.8 then
+                
+                    local dotProduct = trace.normal:DotProduct(fireDirection) * -1
+
+                    if dotProduct > 0.6 then
+                        self:TriggerEffects("healspray_collide",  {effecthostcoords = Coords.GetTranslation(lineTrace.endPoint)})
+                        break
+                    else                    
+                        fireDirection = fireDirection + trace.normal * dotProduct
+                        fireDirection:Normalize()
+                    end    
+                        
+                end
+                
+            end
+            
+            remainingRange = remainingRange - (trace.endPoint - startPoint):GetLength() - kConeWidth
+            startPoint = trace.endPoint + fireDirection * kConeWidth + trace.normal * 0.05
+        
+        else
+            break
+        end
+
+    end
+    
+    return ents
+
+end
+
 
 local function GetEntitiesInCylinder(self, player, viewCoords, range, width)
 
@@ -120,36 +193,24 @@ local function GetEntitiesInCone(self, player)
     
     local startPoint = viewCoords.origin + viewCoords.yAxis * kHealCylinderWidth * 0.2
     local lineTrace1 = Shared.TraceRay(startPoint, startPoint + kRange * fireDirection, CollisionRep.LOS, PhysicsMask.Melee, EntityFilterAll())
-    if Server then
-        Server.dbgTracer:TraceBullet(player, startPoint, lineTrace1)
-    end    
     if (lineTrace1.endPoint - startPoint):GetLength() > range then
         range = (lineTrace1.endPoint - startPoint):GetLength()
     end
 
     startPoint = viewCoords.origin - viewCoords.yAxis * kHealCylinderWidth * 0.2
     local lineTrace2 = Shared.TraceRay(startPoint, startPoint + kRange * fireDirection, CollisionRep.LOS, PhysicsMask.Melee, EntityFilterAll())    
-    if Server then
-        Server.dbgTracer:TraceBullet(player, startPoint, lineTrace2)
-    end
     if (lineTrace2.endPoint - startPoint):GetLength() > range then
         range = (lineTrace2.endPoint - startPoint):GetLength()
     end
     
     startPoint = viewCoords.origin - viewCoords.xAxis * kHealCylinderWidth * 0.2
     local lineTrace3 = Shared.TraceRay(startPoint, startPoint + kRange * fireDirection, CollisionRep.LOS, PhysicsMask.Melee, EntityFilterAll())    
-    if Server then
-        Server.dbgTracer:TraceBullet(player, startPoint, lineTrace3)
-    end
     if (lineTrace3.endPoint - startPoint):GetLength() > range then
         range = (lineTrace3.endPoint - startPoint):GetLength()
     end
     
     startPoint = viewCoords.origin + viewCoords.xAxis * kHealCylinderWidth * 0.2
     local lineTrace4 = Shared.TraceRay(startPoint, startPoint + kRange * fireDirection, CollisionRep.LOS, PhysicsMask.Melee, EntityFilterAll())
-    if Server then
-        Server.dbgTracer:TraceBullet(player, startPoint, lineTrace4)
-    end
     if (lineTrace4.endPoint - startPoint):GetLength() > range then
         range = (lineTrace4.endPoint - startPoint):GetLength()
     end
@@ -176,7 +237,6 @@ local function PerformHealSpray(self, player)
 
 end
 
-// Give some XP to the damaging entity.
 function HealSprayMixin:OnTag(tagName)
 
     PROFILE("HealSprayMixin:OnTag")
