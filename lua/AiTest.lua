@@ -12,7 +12,7 @@
 //* Scripts 
 //******************************************
 
-Script.Load("lua/Exo.lua")
+Script.Load("lua/Onos.lua")
 
 // needed for the MoveToTarget Command
 Script.Load("lua/PathingMixin.lua")
@@ -23,7 +23,7 @@ Script.Load("lua/MapBlipMixin.lua")
 Script.Load("lua/DamageMixin.lua")
 
 
-class 'AITEST' (Exo)
+class 'AITEST' (Onos)
 
 //******************************************
 //* Class variables
@@ -31,12 +31,14 @@ class 'AITEST' (Exo)
 
 AITEST.kMapName = "aitest"
 
-AITEST.kModelName = PrecacheAsset("models/marine/exosuit/exosuit_cm.model")
-AITEST.kAnimationGraph = PrecacheAsset("models/marine/exosuit/exosuit_cm.animation_graph")
+AITEST.kModelName = PrecacheAsset("models/alien/onos/onos.model")
+AITEST.kViewModelName = PrecacheAsset("models/alien/onos/onos_view.model")
 
 AITEST.kFireRange              = kARCRange
 AITEST.kArmor = 1500
 AITEST.kMoveSpeed = 5
+AITEST.kFireEffect         = PrecacheAsset("cinematics/environment/fire_small.cinematic")
+
 local kMoveParam = "move_speed"
 
 
@@ -87,8 +89,8 @@ function AITEST:OnInitialized()
     self:SetModel(AITEST.kModelName, AITEST.kAnimationGraph) 
     
     // exo.OnInitialized will give the weapons
-    self.layout = "ClawMinigun"   
-    Exo.OnInitialized(self)
+    //self.layout = "ClawMinigun"   
+    Onos.OnInitialized(self)
     
     self.armor = AITEST.kArmor
     self.maxArmor = self.armor
@@ -99,14 +101,38 @@ function AITEST:OnInitialized()
     if Server then
     
         self:SetUpdates(true)               
-        self:SetPhysicsType(PhysicsType.Kinematic)
+        //self:SetPhysicsType(PhysicsType.Kinematic)            
+        self:GiveItem(Gore.kMapName)
+        self:SetActiveWeapon(Gore.kMapName)
         
         // This Mixin must be inited inside this OnInitialized() function.
         if not HasMixin(self, "MapBlip") then
             InitMixin(self, MapBlipMixin)
         end
+        
+    else
+        // create the fire cinematic
+        self.fireEffect = Client.CreateCinematic(RenderScene.Zone_Default)
+        local cinematicName = AITEST.kFireEffect
+        
+        self.fireEffect:SetCinematic(cinematicName)
+        self.fireEffect:SetRepeatStyle(Cinematic.Repeat_Endless)
+        self.fireEffect:SetIsVisible(true)
+
+        self:SetFirePosition()
+    
     end
     
+end
+
+
+function AITEST:OnDestroy()
+	if Client then	
+	
+		 Client.DestroyCinematic(self.fireEffect)
+         self.fireEffect = nil
+	
+	end
 end
 
 // Buttons for commander
@@ -129,11 +155,14 @@ function AITEST:OnUpdate(deltaTime)
 
     PROFILE("AITEST:OnUpdate")
     
-    Exo.OnUpdate(self, deltaTime)
+    Onos.OnUpdate(self, deltaTime)
     self:UpdateMoveYaw(self, deltaTime)
     
     if Server then
         self:UpdateOrders(deltaTime)
+    else
+        // update fire position
+        self:SetFirePosition()
     end
    
 end
@@ -196,8 +225,8 @@ function AITEST:OnUpdateAnimationInput(modelMixin)
     PROFILE("AITEST:OnUpdateAnimationInput")
     
     local move = "idle"
-    local activity_left = "none"
-    local activity_right = "none"
+    local activity = "none"
+    local ability = "none"
     
     local currentOrder = self:GetCurrentOrder()
     if self.moving then        
@@ -205,12 +234,13 @@ function AITEST:OnUpdateAnimationInput(modelMixin)
     end
     
     if self.attacking  then    
-        activity_left = "primary"
+        activity = "primary"
+        ability = "gore"
     end
     
     modelMixin:SetAnimationInput("move",  move)
-    modelMixin:SetAnimationInput("activity_left",  activity_left)
-    modelMixin:SetAnimationInput("activity_right",  activity_right)
+    modelMixin:SetAnimationInput("ability",  move)
+    modelMixin:SetAnimationInput("activity",  activity)
 
     
 end
@@ -223,8 +253,7 @@ function AITEST:OnTag(tagName)
     
     if tagName == "deploy_end" then
         self.deployed = true
-    end
-    
+    end   
     
 end
 
@@ -519,7 +548,7 @@ function AITEST:UpdateAttackOrder(deltaTime)
             local targetPosition = Vector(target:GetOrigin())
             
             // Different targets can be attacked from different ranges, depending on size
-            local attackDistance = kExoEngagementDistance - 0.1     
+            local attackDistance = 2.7     
             local distanceToTarget = (targetPosition - self:GetOrigin()):GetLength()
             
             if distanceToTarget <= attackDistance  then
@@ -527,6 +556,7 @@ function AITEST:UpdateAttackOrder(deltaTime)
                 self.moving = false
                 self.attacking = true
                 self:SetAttackPitch(targetPosition)
+                self:AttackVictim(target)
             else
                 self:MoveToTarget(PhysicsMask.AIMovement, targetLocation, self.GetSpeed(), deltaTime)
                 self.moving = true
@@ -544,9 +574,35 @@ function AITEST:UpdateAttackOrder(deltaTime)
 
 end
 
+function AITEST:AttackVictim(player)
+
+    local weapon = self:GetActiveWeapon()
+    
+    if weapon then
+    
+        local meleeAttackInterval = self:GetMeleeAttackInterval()
+        
+        if Shared.GetTime() > (self.timeOfLastAttackOrder + meleeAttackInterval) then 
+            weapon:Attack(self)
+            Print(self.attackPitch)
+            self.timeOfLastAttackOrder = Shared.GetTime()            
+        end
+
+    end
+
+
+end
+
+function AITEST:GetIsFeinting()
+    return false
+end
+
+function AITEST:GetEnergy()
+    return self:GetMaxEnergy()
+end
 
 function AITEST:GetMeleeAttackOrigin()
-    return self:GetAttachPointOrigin("bone_Claw_Hand")
+    return self:GetAttachPointOrigin("Onos_tounge02")
 end
 
 function AITEST:GetMeleeAttackDamage()
@@ -554,12 +610,19 @@ function AITEST:GetMeleeAttackDamage()
 end
 
 function AITEST:GetMeleeAttackInterval()
-    return kMACAttackFireDelay 
+    return 0.9
 end
 
 //******************************************
 //* Client things
 //******************************************
 
+if Client then
+    function AITEST:SetFirePosition()      
+        local coords = Coords.GetIdentity()
+        coords.origin = self:GetAttachPointOrigin("Onos_Head")     
+        self.fireEffect:SetCoords(coords)
+    end
+end
 
 Shared.LinkClassToMap("AITEST", AITEST.kMapName, networkVars)
