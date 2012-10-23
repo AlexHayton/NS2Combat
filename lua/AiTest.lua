@@ -102,8 +102,8 @@ function AITEST:OnInitialized()
     
         self:SetUpdates(true)               
         //self:SetPhysicsType(PhysicsType.Kinematic)            
-        self:GiveItem(Gore.kMapName)
-        self:SetActiveWeapon(Gore.kMapName)
+        //self:GiveItem(Gore.kMapName)
+        //self:SetActiveWeapon(Gore.kMapName)
         
         // This Mixin must be inited inside this OnInitialized() function.
         if not HasMixin(self, "MapBlip") then
@@ -135,6 +135,10 @@ function AITEST:OnDestroy()
 	end
 end
 
+function AITEST:OnKill(attacker, doer, point, direction)
+    combatHalloween_SendKilledMessage(attacker:GetName())
+end
+
 // Buttons for commander
 function AITEST:GetTechButtons(techId)
 
@@ -148,7 +152,6 @@ function AITEST:GetTechButtons(techId)
     end
     
 end
-
 
 // called all the time from the engine
 function AITEST:OnUpdate(deltaTime)
@@ -289,9 +292,9 @@ function AITEST:UpdateMoveYaw()
     
     local pitch = -Math.Wrap(Math.Degrees(viewAngles.pitch), -180, 180)
     
-    if self.attackPitch then
-        pitch = self.attackPitch    
-    end
+    //if self.attackPitch then
+      //  pitch = self.attackPitch    
+    //end
     
     local landIntensity = self.landIntensity or 0
     
@@ -532,7 +535,6 @@ function AITEST:AttackVisibleTarget()
     
 end
 
-
 function AITEST:UpdateAttackOrder(deltaTime)
 
     local currentOrder = self:GetCurrentOrder()
@@ -555,40 +557,64 @@ function AITEST:UpdateAttackOrder(deltaTime)
                 //OrderMeleeAttack(self, target)
                 self.moving = false
                 self.attacking = true
-                self:SetAttackPitch(targetPosition)
+                //self:SetAttackPitch(targetPosition)
                 self:AttackVictim(target)
             else
                 self:MoveToTarget(PhysicsMask.AIMovement, targetLocation, self.GetSpeed(), deltaTime)
                 self.moving = true
                 self.attacking = false
-                self:SetAttackPitch(nil)
+                //self:SetAttackPitch(nil)
             end
         else
             self:CompletedCurrentOrder()
             self.moving = false
             self.attacking = false
-            self:SetAttackPitch(nil)
+            //self:SetAttackPitch(nil)
         end
         
     end
 
 end
 
-function AITEST:AttackVictim(player)
+function AITEST:AttackVictim(target)
 
     local weapon = self:GetActiveWeapon()
+    local meleeAttackInterval = self:GetMeleeAttackInterval()
     
-    if weapon then
-    
-        local meleeAttackInterval = self:GetMeleeAttackInterval()
-        
-        if Shared.GetTime() > (self.timeOfLastAttackOrder + meleeAttackInterval) then 
+    if Shared.GetTime() > (self.timeOfLastAttackOrder + meleeAttackInterval) then         
+        if weapon then
             weapon:Attack(self)
-            Print(self.attackPitch)
-            self.timeOfLastAttackOrder = Shared.GetTime()            
+        else
+            self:MeleeAttack(self, target)
         end
-
+        
+        self.timeOfLastAttackOrder = Shared.GetTime()            
     end
+
+end
+
+function AITEST:MeleeAttack(self, target)
+    
+    
+    self:TriggerEffects(string.format("%s_melee_attack", "onos"))
+
+    // Traceline from us to them
+    local trace = Shared.TraceRay(self:GetMeleeAttackOrigin(), target:GetOrigin(), CollisionRep.Damage, PhysicsMask.AllButPCs, EntityFilterTwo(self, target))
+
+    local direction = target:GetOrigin() - self:GetOrigin()
+    direction:Normalize()
+    
+    // Use player or owner (in the case of MACs, Drifters, etc.)
+    local attacker = self:GetOwner()
+    if self:isa("Player") then
+        attacker = self
+    end
+    
+    if HasMixin(self, "Cloakable") then
+        self:TriggerUncloak()
+    end
+    
+    self:DoDamage(kGoreDamage, target, trace.endPoint, direction, trace.surface)
 
 
 end

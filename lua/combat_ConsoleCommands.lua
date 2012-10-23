@@ -9,10 +9,10 @@
 
 // our SteamIds so we can use some commands even when cheats are off
 local kSuperAdmins = {
-                       6303568, // Jimwest 
-                     }
+               6303568, // Jimwest 
+                }
                      
-local function IsSuperAdmin(steamId)
+function IsSuperAdmin(steamId)
 
     if steamId then
         for i, entry in ipairs(kSuperAdmins) do
@@ -220,54 +220,6 @@ function OnCommandChangeMap(client, mapName)
     
 end
 
-
-function OnCommandAddAi(client)
-
-    if client ~= nil then
-        local steamId = client:GetUserId()
-        if Shared.GetCheatsEnabled() or IsSuperAdmin(steamId) then
-        	local player = client:GetControllingPlayer()
-        	local position = player:GetOrigin()
-        
-        	newAi = CreateEntity(AITEST.kMapName, position + Vector(1, 0, 0), kNeutralTeamType)
-        	if not kCombatAllAi then
-        	    kCombatAllAi = {}
-        	end
-        	
-        	table.insert(kCombatAllAi, newAi:GetId())
-        	
-	    end
-    
-    end
-    
-end
-
-// delete added Ais
-function OnCommandRemoveAi(client)
-
-    if client ~= nil then
-        local steamId = client:GetUserId()
-        if Shared.GetCheatsEnabled() or IsSuperAdmin(steamId) then
-        	if table.maxn(kCombatAllAi) > 0 then
-        	
-                for i, entry in ipairs(kCombatAllAi) do
-                    local aiEntity = Shared.GetEntity(entry)
-                    if aiEntity then
-                        DestroyEntity(aiEntity)
-                    end    
-                end
-                
-                kCombatAllAi = {}
-                
-            end
-	    end
-    
-    end
-    
-end
-
-Event.Hook("Console_addai", OnCommandAddAi)
-Event.Hook("Console_removeai", OnCommandRemoveAi)
 
 // All commands that should be accessible via the chat need to be in this list
 combatCommands = {"co_spendlvl", "co_help", "co_status", "co_upgrades", "/upgrades", "/status", "/buy", "/help"}
