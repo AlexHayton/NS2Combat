@@ -36,8 +36,11 @@ AITEST.kViewModelName = PrecacheAsset("models/alien/onos/onos_view.model")
 
 AITEST.kFireRange              = kARCRange
 AITEST.kArmor = 1500
-AITEST.kMoveSpeed = 5
+AITEST.kMoveSpeed = 6.5
 AITEST.kFireEffect         = PrecacheAsset("cinematics/environment/fire_small.cinematic")
+AITEST.MaxDistance = 25
+// gore is 95
+AITEST.Damage = 85
 
 local kMoveParam = "move_speed"
 
@@ -371,6 +374,11 @@ function AITEST:UpdateOrders(deltaTime)
     
     if order == nil then   
         self:CheckForTargets()
+        // if order still nill, do something else  
+        if order == nil then
+            // Move to random tech point or nozzle on map
+            self:ChooseRandomDestination()                    
+        end
     else   
     
         // If we have no order or are attacking, acquire possible new target    
@@ -379,17 +387,8 @@ function AITEST:UpdateOrders(deltaTime)
         elseif order:GetType() == kTechId.Move then
             self:UpdateMoveOrder(deltaTime)        
         end
-
-        // If we aren't attacking, try something else    
-        if order == nil then
-        
-            // Move to random tech point or nozzle on map
-            self:ChooseRandomDestination()
-                
-        end
     end
 
-    
 end
 
 
@@ -432,6 +431,8 @@ function AITEST:UpdateMoveOrder(deltaTime)
         
     else
         self.moving = true
+        // even if were walking, check for targets
+        self:CheckForTargets()
     end
         
 end
@@ -440,14 +441,17 @@ end
 function AITEST:ChooseRandomDestination()
     // if it got no orders, walk a bit
     // Go to nearest unbuilt tech point or nozzle
-    local className = ConditionalValue(math.random() < .5, "TechPoint", "ResourcePoint")
-    local ents = Shared.GetEntitiesWithClassname(className)
+    local randomInt = math.random(1,2)
+    teamStart = {
+                GetGamerules():GetTeam1():GetInitialTechPoint(),
+                GetGamerules():GetTeam2():GetInitialTechPoint()
+                }
     
-    if ents:GetSize() > 0 then         
-        local index = math.floor(math.random() * ents:GetSize())            
-        local destination = ents:GetEntityAtIndex(index)            
+    if table.maxn(teamStart) > 0 then  
+        local destination = teamStart[randomInt]            
         self:GiveOrder(kTechId.Move, 0, destination:GetEngagementPoint(), nil, true, true)            
     end 
+    
 end
 
 
@@ -505,17 +509,16 @@ function AITEST:AttackVisibleTarget()
                 end
                 
                 if newTarget then
-                
+                    // can we reach it?
                     nearestTarget = target
                     nearestTargetDistance = dist
-                    
                 end
                 
             end
             
         end
         
-        if nearestTarget then
+        if nearestTarget and nearestTargetDistance <= AITEST.MaxDistance then
         
             local name = SafeClassName(nearestTarget)
             if nearestTarget:isa("Player") then
@@ -551,6 +554,8 @@ function AITEST:UpdateAttackOrder(deltaTime)
             
             // Different targets can be attacked from different ranges, depending on size
             local attackDistance = 2.7     
+            // if the enemy is to far away, search a new one
+            local maxDistance =  AITEST.MaxDistance
             local distanceToTarget = (targetPosition - self:GetOrigin()):GetLength()
             
             if distanceToTarget <= attackDistance  then
@@ -559,18 +564,22 @@ function AITEST:UpdateAttackOrder(deltaTime)
                 self.attacking = true
                 //self:SetAttackPitch(targetPosition)
                 self:AttackVictim(target)
-            else
-                self:MoveToTarget(PhysicsMask.AIMovement, targetLocation, self.GetSpeed(), deltaTime)
-                self.moving = true
-                self.attacking = false
-                //self:SetAttackPitch(nil)
+                return
+            elseif distanceToTarget <= maxDistance then
+                success = self:MoveToTarget(PhysicsMask.Movement, targetLocation, self.GetSpeed(), deltaTime)
+                if not success then
+                    self.moving = true
+                    self.attacking = false
+                    //self:SetAttackPitch(nil)
+                    return
+                end
             end
-        else
-            self:CompletedCurrentOrder()
-            self.moving = false
-            self.attacking = false
-            //self:SetAttackPitch(nil)
         end
+        
+        self:CompletedCurrentOrder()
+        self.moving = false
+        self.attacking = false
+        //self:SetAttackPitch(nil)
         
     end
 
@@ -594,9 +603,6 @@ function AITEST:AttackVictim(target)
 end
 
 function AITEST:MeleeAttack(self, target)
-    
-    
-    self:TriggerEffects(string.format("%s_melee_attack", "onos"))
 
     // Traceline from us to them
     local trace = Shared.TraceRay(self:GetMeleeAttackOrigin(), target:GetOrigin(), CollisionRep.Damage, PhysicsMask.AllButPCs, EntityFilterTwo(self, target))
@@ -614,8 +620,7 @@ function AITEST:MeleeAttack(self, target)
         self:TriggerUncloak()
     end
     
-    self:DoDamage(kGoreDamage, target, trace.endPoint, direction, trace.surface)
-
+    self:DoDamage(AITEST.Damage, target, trace.endPoint, direction, trace.surface)
 
 end
 

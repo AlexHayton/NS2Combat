@@ -8,13 +8,14 @@
 // combat_Halloween.lua
 // functions for the halloween special
 
-kCombatHalloweenMode = 0
+kCombatHalloweenMode = true
 
 kHalloWeenMessage = {"!!! The burned Onos has appeared !!!",
                     "kill it before it kills you to earn some extra XP!",
                      }
                      
 kHalloWeenKilledMessage = " has killed the burned Onos"
+kHalloWeenSpawnTime = math.random(1,5) * 60
 
 halloweensound = PrecacheAsset("sound/combat.fev/halloween/airlock_door_close")  
 
@@ -28,7 +29,12 @@ function combatHalloween_AddAi(player)
         // if the command is not called by a player, spawn it randomly beside one player
         local playerCount = Shared.GetEntitiesWithClassname("Player"):GetSize()
         local players = EntityListToTable(Shared.GetEntitiesWithClassname("Player"))
+        
         local randomPlayer = players[math.random(playerCount)]
+        while not randomPlayer:GetIsOnGround() do
+            randomPlayer = players[math.random(playerCount)]
+        end
+                
         if randomPlayer then
             position = randomPlayer:GetOrigin() + Vector(1, 0, 0)
         end
