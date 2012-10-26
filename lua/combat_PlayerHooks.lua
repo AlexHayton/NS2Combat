@@ -20,10 +20,10 @@ function CombatPlayer:OnLoad()
     self:PostHookClassFunction("Player", "CopyPlayerDataFrom", "CopyPlayerDataFrom_Hook") 
 	self:ReplaceClassFunction("Player", "GetTechTree", "GetTechTree_Hook") 
 	self:PostHookClassFunction("Player", "OnUpdatePlayer", "OnUpdatePlayer_Hook")
-	self:PostHookClassFunction("Player", "Taunt", "Taunt_Hook")
 	self:PostHookClassFunction("Player", "OnCreate", "OnCreate_Hook")
 	self:PostHookClassFunction("Player", "UpdateArmorAmount", "UpdateArmorAmount_Hook")
 	self:PostHookClassFunction("Player", "GetCanTakeDamageOverride", "GetCanTakeDamageOverride_Hook"):SetPassHandle(true)
+	self:PostHookClassFunction("Player", "AdjustMove", "AdjustMove_Hook")
 
     self:ReplaceFunction("GetIsTechAvailable", "GetIsTechAvailable_Hook")
     
@@ -199,12 +199,6 @@ function CombatPlayer:OnUpdatePlayer_Hook(self, deltaTime)
     end
 end
 
-function CombatPlayer:Taunt_Hook(self)
-
-   self:ProcessTauntAbilities()
-    
-end
-
 function CombatPlayer:UpdateArmorAmount_Hook(self)
 
 	// Always set the hives back to false, so that later on we can enable tier 2/3 even after embryo.
@@ -222,6 +216,19 @@ function CombatPlayer:GetCanTakeDamageOverride_Hook(handle, self)
 
 end
 
+function CombatPlayer:AdjustMove_Hook(self)
+
+	if self.combatTable.lastTauntTime == nil then
+		self.combatTable.lastTauntTime = 0
+	end
+
+	// Allow child classes to affect how much input is allowed at any time
+	if self.mode == kPlayerMode.Taunt and Shared.GetTime() - self.combatTable.lastTauntTime > kCombatTauntCheckInterval then
+		ProcessTauntAbilities()
+		self.combatTable.lastTauntTime = Shared.GetTime()
+	end
+
+end
 
 //___________________
 // Hooks Alien_Upgrade

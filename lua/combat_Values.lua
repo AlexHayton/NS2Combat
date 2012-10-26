@@ -68,6 +68,7 @@ kScanRadius = 40
 // Make these less "spammy"
 kEMPTimer = 30
 kInkTimer = 30
+kCombatTauntCheckInterval = 4
 
 // fast reload
 kClassicReloadTime = 1.150000

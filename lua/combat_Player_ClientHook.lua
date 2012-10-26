@@ -120,8 +120,9 @@ end
 function CombatPlayerClient:InitTechTreeMaterialOffsets_Hook()
 
     // Icons for tier2 and 3
-    kAlienTechIdToMaterialOffset[kTechId.TwoHives] = 95
-    kAlienTechIdToMaterialOffset[kTechId.ThreeHives] = 77
+    kTechIdToMaterialOffset[kTechId.TwoHives] = 95
+    kTechIdToMaterialOffset[kTechId.ThreeHives] = 77
+	
 end
 
 if (not HotReload) then
