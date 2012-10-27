@@ -18,6 +18,7 @@ Script.Load("lua/Onos.lua")
 Script.Load("lua/PathingMixin.lua")
 // needed for the Attack Command
 Script.Load("lua/AttackOrderMixin.lua")
+Script.Load("lua/OrdersMixin.lua")
 
 Script.Load("lua/MapBlipMixin.lua")
 Script.Load("lua/DamageMixin.lua")
@@ -35,8 +36,8 @@ AITEST.kModelName = PrecacheAsset("models/alien/onos/onos.model")
 AITEST.kViewModelName = PrecacheAsset("models/alien/onos/onos_view.model")
 
 AITEST.kFireRange              = kARCRange
-AITEST.kArmor = 1500
-AITEST.kMoveSpeed = 6.5
+AITEST.kArmor = 2045
+AITEST.kMoveSpeed = 7.5
 AITEST.kFireEffect         = PrecacheAsset("cinematics/environment/fire_small.cinematic")
 AITEST.MaxDistance = 25
 // gore is 95
@@ -62,6 +63,7 @@ local networkVars =
 }
 
 AddMixinNetworkVars(AttackOrderMixin, networkVars)
+AddMixinNetworkVars(OrdersMixin, networkVars)
 
 
 //******************************************
@@ -75,6 +77,7 @@ function AITEST:OnCreate()
     Exo.OnCreate(self)
     InitMixin(self, PathingMixin)
     InitMixin(self, DamageMixin)
+    InitMixin(self, OrdersMixin, { kMoveOrderCompleteDistance = kAIMoveOrderCompleteDistance })
     InitMixin(self, AttackOrderMixin)
   
     if Server then  

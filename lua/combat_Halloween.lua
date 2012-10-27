@@ -8,7 +8,7 @@
 // combat_Halloween.lua
 // functions for the halloween special
 
-kCombatHalloweenMode = true
+kCombatHalloweenMode = false
 
 kHalloWeenMessage = {"!!! The burned Onos has appeared !!!",
                     "kill it before it kills you to earn some extra XP!",
@@ -16,8 +16,6 @@ kHalloWeenMessage = {"!!! The burned Onos has appeared !!!",
                      
 kHalloWeenKilledMessage = " has killed the burned Onos"
 kHalloWeenSpawnTime = math.random(1,5) * 60
-
-halloweensound = PrecacheAsset("sound/combat.fev/halloween/airlock_door_close")  
 
 function combatHalloween_AddAi(player)
 
@@ -48,8 +46,7 @@ function combatHalloween_AddAi(player)
 
         combatHalloween_SendAppearMessage()
         table.insert(kCombatAllAi, newAi:GetId()) 
-     
-        Shared.PlayWorldSound(nil, halloweensound, nil, newAi:GetOrigin())
+
     end
     
 end
