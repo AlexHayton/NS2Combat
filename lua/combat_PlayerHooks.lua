@@ -7,11 +7,9 @@
 
 // combat_PlayerHooks.lua
 
-local HotReload = CombatPlayer
-if(not HotReload) then
-  CombatPlayer = {}
+  CombatPlayer = CombatPlayer or {}
   ClassHooker:Mixin("CombatPlayer")
-end
+
     
 function CombatPlayer:OnLoad()
    

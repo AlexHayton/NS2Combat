@@ -25,7 +25,7 @@ if Server then
      
     end
     
-else
+elseif Client then
 
     function GetCombatModeActive(messageTable)
 

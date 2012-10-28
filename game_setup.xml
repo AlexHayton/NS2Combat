@@ -3,5 +3,6 @@
 	<description>Natural Selection 2 (Combat)</description>
 	<client>lua/combat_Client.lua</client>
 	<server>lua/combat_Server.lua</server>
+	<predict>lua/combat_Predict.lua</predict>
     <soundinfo>sound/NS2.soundinfo</soundinfo>
 </game>

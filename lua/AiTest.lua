@@ -116,7 +116,7 @@ function AITEST:OnInitialized()
             InitMixin(self, MapBlipMixin)
         end
         
-    else
+    elseif Client then
         // create the fire cinematic
         self.fireEffect = Client.CreateCinematic(RenderScene.Zone_Default)
         local cinematicName = AITEST.kFireEffect
@@ -169,7 +169,7 @@ function AITEST:OnUpdate(deltaTime)
     
     if Server then
         self:UpdateOrders(deltaTime)
-    else
+    elseif Client then
         // update fire position
         self:SetFirePosition()
     end
@@ -269,7 +269,7 @@ end
 
 function AITEST:OnUpdatePoseParameters()
     
-    if not Shared.GetIsRunningPrediction() then
+    if self.movementModiferState then
         
         local viewModel = self:GetViewModelEntity()
         if viewModel ~= nil then
@@ -651,12 +651,13 @@ end
 //* Client things
 //******************************************
 
-if Client then
-    function AITEST:SetFirePosition()      
+
+function AITEST:SetFirePosition()    
+    if Client then  
         local coords = Coords.GetIdentity()
         coords.origin = self:GetAttachPointOrigin("Onos_Head")     
         self.fireEffect:SetCoords(coords)
     end
 end
 
-Shared.LinkClassToMap("AITEST", AITEST.kMapName, networkVars)
+Shared.LinkClassToMap("AITEST", AITEST.kMapName, networkVars, true)
