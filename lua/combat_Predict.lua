@@ -5,23 +5,14 @@
 //
 //________________________________
 
-//________________________________
-//
-//   	NS2 Combat Mod     
-//	Made by JimWest and MCMLXXXIV, 2012
-//
-//________________________________
+// combat_Predict.lua
 
-// combat_Server.lua
+// Set the name of the VM for debugging
+decoda_name = "Predict"
 
 // Load the script from fsfod that we can hook some functions
 Script.Load("lua/PathUtil.lua")
 Script.Load("lua/fsfod_scripts.lua")
 
+Script.Load("lua/combat_Shared.lua")
 Script.Load("lua/Predict.lua")
-
-Script.Load("lua/AiTest.lua")
-
-
-
-

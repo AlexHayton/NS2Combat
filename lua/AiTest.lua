@@ -34,6 +34,7 @@ AITEST.kMapName = "aitest"
 
 AITEST.kModelName = PrecacheAsset("models/alien/onos/onos.model")
 AITEST.kViewModelName = PrecacheAsset("models/alien/onos/onos_view.model")
+AITEST.AnimationGraph = PrecacheAsset("models/alien/onos/onos.animation_graph")
 
 AITEST.kFireRange              = kARCRange
 AITEST.kArmor = 2045
@@ -91,23 +92,17 @@ end
 
 function AITEST:OnInitialized()
     
-    // setModel need to be called before the Initialize
-    self:SetModel(AITEST.kModelName, AITEST.kAnimationGraph) 
-    
-    // exo.OnInitialized will give the weapons
-    //self.layout = "ClawMinigun"   
     Onos.OnInitialized(self)
-    
+    // setModel need to be called before the Initialize
+    //self:SetModel(AITEST.kModelName, AITEST.AnimationGraph) 
+
     self.armor = AITEST.kArmor
     self.maxArmor = self.armor
     self.moving = false
     self.attacking  = false
     self.attackPitch = 0
        
-    if Server then
-    
-        self:SetUpdates(true)               
-        //self:SetPhysicsType(PhysicsType.Kinematic)            
+    if Server then          
         //self:GiveItem(Gore.kMapName)
         //self:SetActiveWeapon(Gore.kMapName)
         
@@ -118,6 +113,7 @@ function AITEST:OnInitialized()
         
     elseif Client then
         // create the fire cinematic
+        self:SetUpdates(true)  
         self.fireEffect = Client.CreateCinematic(RenderScene.Zone_Default)
         local cinematicName = AITEST.kFireEffect
         

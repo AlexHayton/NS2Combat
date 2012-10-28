@@ -216,12 +216,7 @@ function CombatNS2Gamerules:OnUpdate_Hook(self, timePassed)
 			else
 			    // spawn Halloweenai after some minutes
 			    if kCombatHalloweenMode then
-			        // but only if there is no ai
-			        if not kCombatAllAi or table.maxn(kCombatAllAi) == 0 then
-			            if timeTaken >= kHalloWeenSpawnTime then
-			                combatHalloween_AddAi()
-                        end
-                    end 
+                    combatHalloween_CheckTime(timeTaken)
 			    end
 				// send timeleft to all players, but only every few min
                 if 	kCombatTimeLeftPlayed ~= timeLeft and

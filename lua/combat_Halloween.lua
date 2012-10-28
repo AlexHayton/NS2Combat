@@ -8,7 +8,7 @@
 // combat_Halloween.lua
 // functions for the halloween special
 
-kCombatHalloweenMode = false
+kCombatHalloweenMode = true
 
 kHalloWeenMessage = {"!!! The burned Onos has appeared !!!",
                     "kill it before it kills you to earn some extra XP!",
@@ -16,6 +16,24 @@ kHalloWeenMessage = {"!!! The burned Onos has appeared !!!",
                      
 kHalloWeenKilledMessage = " has killed the burned Onos"
 kHalloWeenSpawnTime = math.random(1,5) * 60
+kHalloWeenNextSpawn = 0
+
+
+function combatHalloween_CheckTime(timeTaken)
+    // spawn Halloweenai after some minutes, but only if there is no ai
+    if not kCombatAllAi or table.maxn(kCombatAllAi) == 0 then
+        if kHalloWeenNextSpawn <= 0 then
+            combatHalloween_RemoveAi()
+            kHalloWeenNextSpawn = timeTaken + kHalloWeenSpawnTime
+        else
+            if timeTaken >= kHalloWeenNextSpawn then
+                combatHalloween_AddAi()
+                kHalloWeenNextSpawn = timeTaken + kHalloWeenSpawnTime
+            end
+        end
+    end 
+end
+
 
 function combatHalloween_AddAi(player)
 

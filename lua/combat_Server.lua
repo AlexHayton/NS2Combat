@@ -10,6 +10,7 @@
 // Load the script from fsfod that we can hook some functions
 Script.Load("lua/PathUtil.lua")
 Script.Load("lua/fsfod_scripts.lua")
+Script.Load("lua/combat_Shared.lua")
 
 // Register Network Messages.
 Script.Load("lua/combat_NetworkMessages.lua")
@@ -86,7 +87,6 @@ if kCombatModActive then
 end
 
 // load the aitest class (even when combat mod is off so there are no client-server errors)
-Script.Load("lua/AiTest.lua")
 Script.Load("lua/combat_ReadyRoomTeam.lua")
 
 // also load the console commands when combat is deactivated

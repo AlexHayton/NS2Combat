@@ -8,6 +8,7 @@
 // Load the script from fsfod that we can hook some functions
 Script.Load("lua/PathUtil.lua")
 Script.Load("lua/fsfod_scripts.lua")
+Script.Load("lua/combat_Shared.lua")
 
 Script.Load("lua/combat_NetworkMessages.lua")
 
@@ -59,9 +60,6 @@ function combatLoadClientFunctions()
     Script.Load("lua/Hud/combat_GUIExperienceBar.lua")
 
 end
-
-// load the aitest class (even when combat mod is off so there are no client-server errors)
-Script.Load("lua/AiTest.lua")
 
 // Tell the class hooker that we've fully loaded.
 ClassHooker:OnLuaFullyLoaded()
