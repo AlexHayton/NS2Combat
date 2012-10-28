@@ -37,7 +37,7 @@ AITEST.kViewModelName = PrecacheAsset("models/alien/onos/onos_view.model")
 AITEST.AnimationGraph = PrecacheAsset("models/alien/onos/onos.animation_graph")
 
 AITEST.kFireRange              = kARCRange
-AITEST.kArmor = 2
+AITEST.kArmor = 2045
 AITEST.kMoveSpeed = 7.5
 AITEST.kFireEffect         = PrecacheAsset("cinematics/environment/fire_small.cinematic")
 AITEST.MaxDistance = 25
