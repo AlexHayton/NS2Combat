@@ -21,17 +21,24 @@ kHalloWeenNextSpawn = 0
 
 function combatHalloween_CheckTime(timeTaken)
     // spawn Halloweenai after some minutes, but only if there is no ai
-    if not kCombatAllAi or table.maxn(kCombatAllAi) == 0 then
-        if kHalloWeenNextSpawn <= 0 then
-            combatHalloween_RemoveAi()
-            kHalloWeenNextSpawn = timeTaken + kHalloWeenSpawnTime
-        else
-            if timeTaken >= kHalloWeenNextSpawn then
-                combatHalloween_AddAi()
+    if kCombatAllAi then
+        if table.maxn(kCombatAllAi) == 0 then
+            if kHalloWeenNextSpawn <= 0 then
+                combatHalloween_RemoveAi()
                 kHalloWeenNextSpawn = timeTaken + kHalloWeenSpawnTime
+            else
+                if timeTaken >= kHalloWeenNextSpawn then
+                    combatHalloween_AddAi()
+                    kHalloWeenNextSpawn = timeTaken + kHalloWeenSpawnTime
+                end
             end
-        end
-    end 
+        else
+            kHalloWeenNextSpawn = timeTaken + kHalloWeenSpawnTime
+        end        
+    else
+        kCombatAllAi = {}
+    end
+    
 end
 
 
@@ -72,17 +79,21 @@ end
 
 function combatHalloween_RemoveAi()
 
-    if table.maxn(kCombatAllAi) > 0 then
-    
-        for i, entry in ipairs(kCombatAllAi) do
-            local aiEntity = Shared.GetEntity(entry)
-            if aiEntity then
-                DestroyEntity(aiEntity)
-            end    
+    if kCombatAllAi then
+        if table.maxn(kCombatAllAi) > 0 then
+
+            for i, entry in ipairs(kCombatAllAi) do
+                local aiEntity = Shared.GetEntity(entry)
+                if aiEntity then
+                    DestroyEntity(aiEntity)
+                end    
+            end
+            
+            kCombatAllAi = {}
+            
         end
-        
+    else
         kCombatAllAi = {}
-        
     end
 
 end

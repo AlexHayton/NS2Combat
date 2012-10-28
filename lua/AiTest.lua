@@ -37,7 +37,7 @@ AITEST.kViewModelName = PrecacheAsset("models/alien/onos/onos_view.model")
 AITEST.AnimationGraph = PrecacheAsset("models/alien/onos/onos.animation_graph")
 
 AITEST.kFireRange              = kARCRange
-AITEST.kArmor = 2045
+AITEST.kArmor = 2
 AITEST.kMoveSpeed = 7.5
 AITEST.kFireEffect         = PrecacheAsset("cinematics/environment/fire_small.cinematic")
 AITEST.MaxDistance = 25
@@ -129,16 +129,15 @@ end
 
 
 function AITEST:OnDestroy()
-	if Client then	
-	
+	if Client then		
 		 Client.DestroyCinematic(self.fireEffect)
-         self.fireEffect = nil
-	
+         self.fireEffect = nil	
 	end
 end
 
 function AITEST:OnKill(attacker, doer, point, direction)
     combatHalloween_SendKilledMessage(attacker:GetName())
+    combatHalloween_RemoveAi()
 end
 
 // Buttons for commander
