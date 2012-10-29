@@ -11,6 +11,9 @@
 local kSuperAdmins = {
                6303568, // Jimwest 
                 }
+                
+//testSound = PrecacheAsset("sound/ns2c.fev/ns2c/alien/skulk/bite")
+testSound = PrecacheAsset("sound/combat.fev/combat/general/combat_rules_1")
                      
 function IsSuperAdmin(steamId)
 
@@ -219,6 +222,16 @@ function OnCommandChangeMap(client, mapName)
     end
     
 end
+
+function OnCommandSoundTest(client)
+
+    local player = client:GetControllingPlayer()
+    Print("Soundtest")    
+    Server.PlayPrivateSound(player, testSound, player, 1.0, Vector(0, 0, 0))
+
+end
+
+Event.Hook("Console_soundtest",       OnCommandSoundTest) 
 
 
 // All commands that should be accessible via the chat need to be in this list
