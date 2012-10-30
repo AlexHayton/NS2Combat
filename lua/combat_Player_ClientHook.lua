@@ -26,6 +26,9 @@ function CombatPlayerClient:OnLoad()
 	_addHookToTable(self:PostHookClassFunction("Marine", "UpdateClientEffects", "UpdateClientEffects_Hook"))
     
     _addHookToTable(self:PostHookFunction("InitTechTreeMaterialOffsets", "InitTechTreeMaterialOffsets_Hook"))
+    
+    _addHookToTable(self:ReplaceFunction("PlayerUI_GetArmorLevel", "PlayerUI_GetArmorLevel_Hook"))
+    _addHookToTable(self:ReplaceFunction("PlayerUI_GetWeaponLevel", "PlayerUI_GetWeaponLevel_Hook"))
 end
 
 // starting the custom buy menu for aliens
@@ -124,6 +127,64 @@ function CombatPlayerClient:InitTechTreeMaterialOffsets_Hook()
     kTechIdToMaterialOffset[kTechId.ThreeHives] = 77
 	
 end
+
+// to show the correct Armor and Weapon Lvl
+function CombatPlayerClient:PlayerUI_GetArmorLevel_Hook(self)
+    local armorLevel = 0
+    local self = Client.GetLocalPlayer()
+    if self.gameStarted then
+    
+        local techTree = self:GetUpgrades()    
+        if techTree then
+            if table.maxn(techTree) > 0 then
+                for i, upgradeTechId in ipairs(techTree) do
+               
+                    if upgradeTechId == kTechId.Armor3 then
+                        armorLevel = 3
+                    elseif upgradeTechId == kTechId.Armor2 then
+                        armorLevel = 2
+                    elseif upgradeTechId == kTechId.Armor1 then
+                        armorLevel = 1
+                    end
+                    
+                end   
+            end
+        end
+    
+    end
+
+    return armorLevel
+end
+
+function CombatPlayerClient:PlayerUI_GetWeaponLevel_Hook()
+    local weaponLevel = 0    
+    local self = Client.GetLocalPlayer()
+    if self.gameStarted then
+    
+        local techTree = self:GetUpgrades()    
+        if techTree then
+            if table.maxn(techTree) > 0 then
+                for i, upgradeTechId in ipairs(techTree) do
+               
+                    if upgradeTechId == kTechId.Weapons3 then
+                        weaponLevel = 3
+                    elseif upgradeTechId == kTechId.Weapons2 then
+                        weaponLevel = 2
+                    elseif upgradeTechId == kTechId.Weapons1 then
+                        weaponLevel = 1
+                    end
+                    
+                end   
+            end
+        end
+    
+    end
+    
+    return weaponLevel
+end
+
+
+
 
 if (not HotReload) then
 	CombatPlayerClient:OnLoad()

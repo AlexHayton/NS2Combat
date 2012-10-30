@@ -186,7 +186,10 @@ function Player:ApplyAllUpgrades(upgradeTypes, singleUpgrade)
                     end
                 end
                 
-            end
+            end            
+                
+            // send the Ups to the GUI
+            self:SendAllUpgrades()  
             
         else
             if type(singleUpgrade) == "table" then			
@@ -196,14 +199,14 @@ function Player:ApplyAllUpgrades(upgradeTypes, singleUpgrade)
                 end
 				
 				singleUpgrade[1]:DoUpgrade(self)
+				// send the Ups to the GUI
+				self:SendUpgrades(singleUpgrade)
             else
                 singleUpgrade:DoUpgrade(self)
+				self:SendUpgrades(singleUpgrade)
             end
         end    
-    end
-    
-    // send the Ups to the GUI
-    self:SendUpgrades()    
+    end  
 	
 end
 
@@ -394,18 +397,19 @@ function Player:Reset_Lite()
     
     self.combatTable.giveClassAfterRespawn = nil	
 	self.combatTable.techtree = {}
-	self:SendUpgrades()
+	self:ClearCoUpgrades()
 	Server.SendNetworkMessage(self, "ClearTechTree", {}, true)
 
 end
 
-function Player:SendUpgrades()
+// sends all upgrades to the player
+function Player:SendAllUpgrades()
   
 	self:CheckCombatData()    
     local combatTechTree = self:GetCombatTechTree()
 
     // clear all upgrades and send new ones
-    Server.SendCommand(self, "co_clearupgrades")    
+    self:ClearCoUpgrades()
     
     if combatTechTree then    
         for _, upgrade in pairs(combatTechTree) do
@@ -415,6 +419,32 @@ function Player:SendUpgrades()
         end
     end
       
+end
+
+// sends only the new upgrades
+function Player:SendUpgrades(upgrades)
+  
+	self:CheckCombatData()    
+    local combatTechTree = self:GetCombatTechTree()
+    
+    if combatTechTree then  
+
+        if (type(upgrades) == "table") then  
+            for _, upgrade in pairs(upgrades) do
+                if upgrade then
+                    Server.SendCommand(self, "co_setupgrades " .. tostring(upgrade:GetId()))
+                end
+            end
+        else
+            Server.SendCommand(self, "co_setupgrades " .. tostring(upgrades:GetId()))
+        end
+    end
+      
+end
+
+// clear all Combat Upgrades
+function Player:ClearCoUpgrades()
+    Server.SendCommand(self, "co_clearupgrades")
 end
 
 function Player:BalanceXp(avgXp)

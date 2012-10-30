@@ -99,20 +99,22 @@ function Player:GetUpgrades()
     
     if (self.combatUpgrades and table.maxn(self.combatUpgrades) > 0) then    
         for i, id in ipairs(self.combatUpgrades) do
-            local upgrade = GetUpgradeFromId(tonumber(id))
-            local techId = upgrade:GetTechId()
-            table.insert(upgrades,  techId)  
+            // dunno why but the first entry is now nil
+            if not(id == "nil") then
+                local upgrade = GetUpgradeFromId(tonumber(id))
+                local techId = upgrade:GetTechId()
+                table.insert(upgrades,  techId)  
 
-            if techId == kTechId.Weapons2 then
-                table.insert(deleteIDs, kTechId.Weapons1)
-            elseif techId == kTechId.Weapons3 then
-                table.insert(deleteIDs, kTechId.Weapons2)
-            elseif techId == kTechId.Armor2 then
-                table.insert(deleteIDs, kTechId.Armor1)                
-            elseif techId == kTechId.Armor3 then                
-                table.insert(deleteIDs, kTechId.Armor2)
-            end   
-            
+                if techId == kTechId.Weapons2 then
+                    table.insert(deleteIDs, kTechId.Weapons1)
+                elseif techId == kTechId.Weapons3 then
+                    table.insert(deleteIDs, kTechId.Weapons2)
+                elseif techId == kTechId.Armor2 then
+                    table.insert(deleteIDs, kTechId.Armor1)                
+                elseif techId == kTechId.Armor3 then                
+                    table.insert(deleteIDs, kTechId.Armor2)
+                end   
+            end            
         end   
  
         if (table.maxn(deleteIDs) > 0) and (table.maxn(upgrades) > 0) then

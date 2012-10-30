@@ -19,6 +19,9 @@ function CombatTechTree:OnLoad()
 	self:ReplaceFunction("GetHasTech", "GetHasTech_Hook")
     self:PostHookFunction("GetIsTechAvailable", function() return true end)
 	self:ReplaceClassFunction("TechTree", "GetIsTechAvailable", function() return true end)
+	// dont send andy NetworkMessages for that
+	self:ReplaceClassFunction("TechTree", "SendTechTreeBase", function() return true end)
+	self:ReplaceClassFunction("TechTree", "SendTechTreeUpdates", function() return true end)
 	
 end
 

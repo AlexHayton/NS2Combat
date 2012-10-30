@@ -155,7 +155,7 @@ end
 function OnCommandSendUpgrades(client)
 
     local player = client:GetControllingPlayer()
-    player:SendUpgrades()
+    player:SendAllUpgrades()
 
 end
 
