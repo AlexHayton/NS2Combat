@@ -217,8 +217,7 @@ function OnCommandChangeMap(client, mapName)
 		local playerCount = Shared.GetEntitiesWithClassname("Player"):GetSize()
 		ModSwitcher_Save(nil, nil, playerCount, false)
 	
-        local mods = { }
-        Server.StartWorld(mods, mapName)
+        MapCycle_ChangeMap(mapName)
     end
     
 end
