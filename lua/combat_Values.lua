@@ -84,11 +84,11 @@ kPropEffectTimer = 2
 
 // Gestate Times
 kGestateTime = {}
-kGestateTime[kTechId.Skulk] = 1.5
-kGestateTime[kTechId.Gorge] = 3
-kGestateTime[kTechId.Lerk] = 4
-kGestateTime[kTechId.Fade] = 5
-kGestateTime[kTechId.Onos] = 8
+kGestateTime[kTechId.Skulk] = 1
+kGestateTime[kTechId.Gorge] = 2
+kGestateTime[kTechId.Lerk] = 2
+kGestateTime[kTechId.Fade] = 3
+kGestateTime[kTechId.Onos] = 6
 kSkulkGestateTime = kGestateTime[kTechId.Skulk]
 
 // No eggs
