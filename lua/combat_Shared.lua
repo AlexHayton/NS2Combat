@@ -10,4 +10,5 @@
 
 // add every new class (entity based) here
 LoadTracker:LoadScriptAfter("lua/Shared.lua", "lua/AITEST.lua", nil)
+LoadTracker:LoadScriptAfter("lua/Shared.lua", "lua/TeleportTrigger.lua", nil)
 

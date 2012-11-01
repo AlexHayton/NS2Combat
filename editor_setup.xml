@@ -81,7 +81,7 @@
         
         <parameter name="casts_shadows" type="boolean" label="Casts Shadows" default="false"/>
 		<parameter name="shadow_fade_rate" type="real" label="Shadow Fade Rate" default="0.25"/>
-		<parameter name="specular" type="boolean" label="Specular" default="true"/>
+		<parameter name="specular" type="boolean" label="Specular" default="false"/>
 		
     </class>
     
@@ -256,7 +256,7 @@
 	<class name="veil"> <parent>base_alien_structure</parent><model><file>models/alien/veil/veil.model</file></model></class>
 	<class name="shell"> <parent>base_alien_structure</parent><model><file>models/alien/shell/shell.model</file></model></class>
 	<class name="spur"> <parent>base_alien_structure</parent><model><file>models/alien/spur/spur.model</file></model></class>
-	
+
 	<class name="armory"> <parent>base_structure</parent>
 	
 		<model><file>models/marine/armory/armory.model</file></model>
@@ -278,6 +278,51 @@
 			<choice label="Shift Hive" value="3"/>
         </parameter>
 	</class>
+	
+	<class name="base_player">
+		<parameter name="onlyexplore" type="boolean" default="true" />
+		<parameter name="name" type="string" default="" />
+	</class>
+	
+	<class name="base_alien">	
+		<parent>base_player</parent>
+        <!-- Team number -->
+        <parameter name="teamNumber" type="choice" label="Team Number" default="2">
+            <choice label="World" value="0"/>
+            <choice label="Marine" value="1"/>
+            <choice label="Alien" value="2"/>
+        </parameter>
+	</class>
+	
+	<class name="base_marine">
+	
+		<parent>base_player</parent>
+        <!-- Team number -->
+        <parameter name="teamNumber" type="choice" label="Team Number" default="1">
+            <choice label="World" value="0"/>
+            <choice label="Marine" value="1"/>
+            <choice label="Alien" value="2"/>
+        </parameter>
+	</class>
+	
+	<class name="marine"> <parent>base_marine</parent><model><file>models/marine/male/male.model</file></model></class>
+	
+	<!--
+	<class name="exo">
+		<parent>base_marine</parent>
+		<model><file>models/marine/exosuit/exosuit_cm.model</file></model>
+        <parameter name="layout" type="choice" label="Layout" default="1">
+            <choice label="Claw Minigun" value="1"/>
+            <choice label="Dual Minigun" value="2"/>
+        </parameter>
+	</class>
+	-->
+	
+	<class name="skulk"> <parent>base_alien</parent><model><file>models/alien/skulk/skulk.model</file></model></class>
+	<class name="gorge"> <parent>base_alien</parent><model><file>models/alien/gorge/gorge.model</file></model></class>
+	<class name="lerk"> <parent>base_alien</parent><model><file>models/alien/lerk/lerk.model</file></model></class>
+	<class name="fade"> <parent>base_alien</parent><model><file>models/alien/fade/fade.model</file></model></class>
+	<class name="onos"> <parent>base_alien</parent><model><file>models/alien/onos/onos.model</file></model></class>
     
     <!-- NS2 strategy gameplay rules -->
     <class name="ns2_gamerules" label="Use core NS2 strategy gameplay">
@@ -550,34 +595,32 @@
   <class name="cinematic">
     
     <parent>cinematic_base</parent>
+    <parent>signal_listener</parent>
+    
     <help>Adds a cinematic entity to the game world.</help>
 
     <model>
       <file>models/system/editor/cinematic.model</file>
     </model>
+    
+    <parameter name="startsOnMessage" type="string" label="Play on message" help="The cinematic effect will play when this message is received" default=""/>
 
   </class>
-
-  <!-- Particle effect - child of generic cinematic -->
-  <class name="particles">
+  
+  <class name="sound_effect">
     
-    <parent>cinematic_base</parent>
-    <help>Creates environmental particle system effect.</help>
-
-    <model>
-      <file>models/system/editor/particles.model</file>
-    </model>
-
-    <sphere>
-      <radius>radius</radius>
-    </sphere>
-    <parameter name="radius" type="distance" label="Trigger radius" default="20.0" help="Players entering this sphere will trigger the effect."/>
-    
-    <parameter name="offOnExit" type="boolean" label="Turns off when player leaves radius" default="false"/>
-    
-    <parameter name="startsOn" type="boolean" label="Starts on" default="false"/>    
-
-  </class>
+        <parent>signal_listener</parent>
+        
+        <help>This sound effect can be used to play sounds based on messages received from other entities in the map.</help>
+        
+        <model>
+            <file>models/system/editor/ambient_sound.model</file>
+        </model>    
+        
+        <parameter name="eventName" type="file" filter="sound" label="FMOD eFvent name" default="" help="Sound to play."/>
+        <parameter name="startsOnMessage" type="string" label="Play on message" help="The sound effect will play when this message is received" default="play"/>
+        
+    </class>
 
     <!-- Animated prop -->
     <class name="prop_dynamic"  placeable="true">
@@ -731,7 +774,24 @@
       <parameter name="option_tile_size" type="real" label="Tile Size" default="48.0"/>
 
       <help>Allows tuning of pathing settings to help optimize pathing</help>
-  </class>
+   </class>
+
+    <!-- Teleport trigger -->
+    <class name="teleport_trigger" placeable="true">
+        <parent>trigger</parent>
+        
+        <cone_radius>
+		<radius>distance</radius>
+		<angle>angle</angle>
+	</cone_radius>
+
+        <parameter name="destination" type="string" label="Destination Name" help="Name of the destination of the TeleportTrigger (need to be a TeleportTrigger, too." default=""/>    
+        <parameter name="exitonly" type="boolean" label="Exit only" help="This teleporter is only a Exit (Destination Name will be ignored)." default="false"/>
+        <parameter name="enabled" type="boolean" label="Trigger enabled" help="Will not teleport when disabled." default="true"/>
+        <parameter name="distance" type="distance" label = "Distance" default="3.0" help="Angle from the teleporter-output"/>
+        <parameter name="angle" type="angle" label = "Angles" default="30.0" help="Angle from the teleporter-output"/>
+
+    </class>
 
 </classes>
 
