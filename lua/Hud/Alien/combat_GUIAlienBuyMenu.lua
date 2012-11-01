@@ -314,6 +314,16 @@ local kDefaultColor = Color(1,1,1,1)
 local kNotAvailableColor = Color(0.3, 0.3, 0.3, 1)
 local kNotAllowedColor = Color(1, 0,0,1)
 
+local function UpdateRefundButton(self)
+
+	if self:_GetIsMouseOver(self.refundButtonBackground) then
+		local infoText = Locale.ResolveString("COMBAT_REFUND_TITLE_ALIEN")
+		local infoTip = Locale.ResolveString("COMBAT_REFUND_DESCRIPTION_ALIEN")
+		self:_ShowMouseOverInfo(infoText, infoTip, 0, 0, 0)
+	end
+
+end
+
 function CombatGUIAlienBuyMenu:Update_Hook(self, deltaTime)
 
 	// Call our version of the evolve button script.
@@ -353,6 +363,8 @@ function CombatGUIAlienBuyMenu:Update_Hook(self, deltaTime)
            
        end
 	end
+	
+	UpdateRefundButton(self)
 
 end
 
@@ -466,6 +478,12 @@ local function _GetHasMaximumSelected(self)
     return false
 end
 
+local function ClickRefundButton(self)
+	
+	Shared.Message("Refund button clicked")
+
+end
+
 local function UninitializeRefundButton(self)
 
     GUI.DestroyItem(self.refundButtonText)
@@ -500,7 +518,7 @@ function CombatGUIAlienBuyMenu:_HandleUpgradeClicked_Hook(self, mouseX, mouseY)
     end
 	
 	if self:_GetIsMouseOver(self.refundButtonBackground) then
-		Shared.Message("Refund button clicked!")
+		ClickRefundButton(self)
 		inputHandled = true
 	end
     

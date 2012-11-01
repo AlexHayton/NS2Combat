@@ -190,6 +190,7 @@ function combat_GUIMarineBuyMenu:Initialize()
     self:_InitializeResourceDisplay()
     self:_InitializeCloseButton()
     self:_InitializeEquipped()    
+	self:_InitializeRefundButton()
 
     // note: items buttons get initialized through SetHostStructure()
     MarineBuy_OnOpen()
@@ -207,6 +208,7 @@ function combat_GUIMarineBuyMenu:Update(deltaTime)
     self:_UpdateContent(deltaTime)
     self:_UpdateResourceDisplay(deltaTime)
     self:_UpdateCloseButton(deltaTime)
+	self:_UpdateRefundButton(deltaTime)
     
 end
 
@@ -219,6 +221,7 @@ function combat_GUIMarineBuyMenu:Uninitialize()
     self:_UninitializeContent()
     self:_UninitializeResourceDisplay()
     self:_UninitializeCloseButton()
+	self:_UninitializeRefundButton()
 
 end
 
@@ -716,6 +719,51 @@ function combat_GUIMarineBuyMenu:_UninitializeCloseButton()
 
 end
 
+function combat_GUIMarineBuyMenu:_InitializeRefundButton()
+    self.refundButton = GUIManager:CreateGraphicItem()
+    self.refundButton:SetAnchor(GUIItem.Right, GUIItem.Bottom)
+    self.refundButton:SetSize(Vector(combat_GUIMarineBuyMenu.kButtonWidth, combat_GUIMarineBuyMenu.kButtonHeight, 0))
+    self.refundButton:SetPosition(Vector(-combat_GUIMarineBuyMenu.kButtonWidth*2 - combat_GUIMarineBuyMenu.kPadding, combat_GUIMarineBuyMenu.kPadding, 0))
+    self.refundButton:SetTexture(combat_GUIMarineBuyMenu.kButtonTexture)
+    self.refundButton:SetLayer(kGUILayerPlayerHUDForeground4)
+    self.content:AddChild(self.refundButton)
+    
+    self.refundButtonText = GUIManager:CreateTextItem()
+    self.refundButtonText:SetAnchor(GUIItem.Middle, GUIItem.Center)
+    self.refundButtonText:SetFontName(combat_GUIMarineBuyMenu.kFont)
+    self.refundButtonText:SetTextAlignmentX(GUIItem.Align_Center)
+    self.refundButtonText:SetTextAlignmentY(GUIItem.Align_Center)
+	self.refundButtonText:SetText(Locale.ResolveString("COMBAT_REFUND_MARINE"))
+    self.refundButtonText:SetFontIsBold(true)
+    self.refundButtonText:SetColor(combat_GUIMarineBuyMenu.kCloseButtonColor)
+    self.refundButton:AddChild(self.refundButtonText)
+end
+
+function combat_GUIMarineBuyMenu:_UpdateRefundButton(deltaTime)
+
+    if self:_GetIsMouseOver(self.refundButton) then
+        self.refundButton:SetColor(Color(1, 1, 1, 1))
+        // the discription text under the buttons
+		self.itemName:SetText(Locale.ResolveString("COMBAT_REFUND_TITLE_MARINE"))
+        self.itemDescription:SetText(Locale.ResolveString("COMBAT_REFUND_DESCRIPTION_MARINE"))
+        self.itemDescription:SetTextClipped(true, combat_GUIMarineBuyMenu.kItemDescriptionSize.x - 2* combat_GUIMarineBuyMenu.kPadding, combat_GUIMarineBuyMenu.kItemDescriptionSize.y - combat_GUIMarineBuyMenu.kPadding)
+		self.itemName:SetIsVisible(true)
+		self.itemDescription:SetIsVisible(true)
+    else
+        self.refundButton:SetColor(Color(0.5, 0.5, 0.5, 1))
+    end
+
+end
+
+function combat_GUIMarineBuyMenu:_ClickRefundButton()
+    Shared.Message("Refund button clicked")
+end
+
+function combat_GUIMarineBuyMenu:_UninitializeRefundButton()
+    GUI.DestroyItem(self.refundButton)
+    self.refundButton = nil
+end
+
 /**
  * Checks if the mouse is over the passed in GUIItem and plays a sound if it has just moved over.
  */
@@ -751,6 +799,12 @@ function combat_GUIMarineBuyMenu:SendKeyEvent(key, down)
                     closeMenu = true
                     inputHandled = true
                     self:OnClose()
+                end
+				
+				// Check if the close button was pressed.
+                if self:_GetIsMouseOver(self.refundButton) then
+					self:_ClickRefundButton()
+                    inputHandled = true
                 end
             end
         end
