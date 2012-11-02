@@ -110,14 +110,14 @@ end
 function TeleportTrigger:OnInitialized()
 
     Trigger.OnInitialized(self)    
-    self:SetTriggerCollisionEnabled(true)    
+    self:SetTriggerCollisionEnabled(true) 
+    self.CheckDestinationTime = Shared.GetTime()
     
     if Server then
         if self.exitonly then
             self:SetUpdates(false)
             self.enabled = false
         elseif self.destination then    
-            FindDestinationEntity(self)
             self:RegisterSignalListener(function() TeleportAllInTrigger(self) end, "teleport")
         else
             Print("Error: TeleportTrigger " .. self.name .. " has no destination")
@@ -139,11 +139,14 @@ end
 function TeleportTrigger:OnUpdate(deltaTime)
 
     // only check after some time so we can be sure everything was loaded
-    if not self.destinationId then
-        FindDestinationEntity(self)
-    else
-        self:SetUpdates(false) 
+    if Shared.GetTime() >= self.CheckDestinationTime + 6 then
+        if not self.destinationId then
+            FindDestinationEntity(self)
+        else
+            self:SetUpdates(false) 
+        end
     end
+    
 end
 
 Shared.LinkClassToMap("TeleportTrigger", TeleportTrigger.kMapName, networkVars)

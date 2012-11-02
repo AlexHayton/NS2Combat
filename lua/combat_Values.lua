@@ -76,7 +76,7 @@ kCombatFastReloadTime = kClassicReloadTime * 1.375
 
 // Focus
 kCombatFocusAttackSpeed = 0.6
-kCombatFocusDamageScalar = 1.23
+kCombatFocusDamageScalar = 1.4
 
 // Props
 kPropEffect = "vortex_destroy"
