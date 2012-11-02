@@ -15,6 +15,7 @@ Script.Load("lua/Weapons/Marines/combat_ClipWeapon.lua")
 LoadTracker:LoadScriptAfter("lua/Shared.lua", "lua/AITEST.lua", nil)
 LoadTracker:LoadScriptAfter("lua/Shared.lua", "lua/TeleportTrigger.lua", nil)
 LoadTracker:LoadScriptAfter("lua/Shared.lua", "lua/combat_Player.lua", nil)
+LoadTracker:LoadScriptAfter("lua/Shared.lua", "lua/combat_SpawnProtectClass.lua", nil)
 
 
 
