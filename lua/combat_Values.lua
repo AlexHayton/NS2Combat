@@ -164,3 +164,5 @@ kCommandStationHealth = 4000
 
 // dont Track the CombatMod anylonger (later we could maybe make our own tracking site?
 kStatisticsURL = ""
+
+SetCachedTechData(kTechId.Hydra, kTechDataCostKey, kHydraCost)
