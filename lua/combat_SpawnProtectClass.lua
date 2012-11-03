@@ -22,8 +22,8 @@ class 'CombatSpawnProtect' (ScriptActor)
 //******************************************
 
 CombatSpawnProtect.kMapName = "combatspawnprotect"
-CombatSpawnProtect.materialFile = ("cinematics/vfx_materials/spawnProtect.material")
-CombatSpawnProtect.viewMaterialFile = ("cinematics/vfx_materials/spawnProtect_view.material")  
+CombatSpawnProtect.materialFile = "cinematics/vfx_materials/spawnProtect.material"
+CombatSpawnProtect.viewMaterialFile = "cinematics/vfx_materials/spawnProtect_view.material"  
 
 
 
