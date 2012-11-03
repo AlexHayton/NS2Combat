@@ -285,12 +285,6 @@ function CombatPlayingTeam:RespawnPlayer_Hook(self, player, origin, angles)
     local success = false
     local initialTechPoint = Shared.GetEntity(self.initialTechPointId)
     
-    // delete the player from the Queue
-    local team = player:GetTeam(newTeamNumber)
-    if team ~= nil then
-        team:RemovePlayerFromRespawnQueue(player)
-    end
-    
     if origin ~= nil and angles ~= nil then
         success = Team.RespawnPlayer(self, player, origin, angles)
     elseif initialTechPoint ~= nil then
@@ -312,6 +306,8 @@ function CombatPlayingTeam:RespawnPlayer_Hook(self, player, origin, angles)
 			// Escape the player's name here... names like Sandwich% cause a crash to appear here!
 			local escapedPlayerName = string.gsub(player:GetName(), "%%", "")
 			Print("PlayingTeam:RespawnPlayer: Name: " .. escapedPlayerName .. " Class: " .. player:GetClassName())
+            Print(Script.CallStack())
+
             
         end
         
@@ -334,44 +330,6 @@ function CombatPlayingTeam:RespawnPlayer_Hook(self, player, origin, angles)
 			//table.insertunique(self.playerIds, spectator:GetId())
 			
 		end
-    end
-    
-    return success
-    
-end
-
-// Call with origin and angles, or pass nil to have them determined from team location and spawn points.
-function PlayingTeam:RespawnPlayer(player, origin, angles)
-
-    local success = false
-    local initialTechPoint = Shared.GetEntity(self.initialTechPointId)
-    
-    if origin ~= nil and angles ~= nil then
-        success = Team.RespawnPlayer(self, player, origin, angles)
-    elseif initialTechPoint ~= nil then
-    
-        // Compute random spawn location
-        local capsuleHeight, capsuleRadius = player:GetTraceCapsule()
-		local spawnOrigin = GetRandomSpawnForCapsule(capsuleHeight, capsuleRadius, initialTechPoint:GetOrigin(), kSpawnMinDistance, kSpawnMaxDistance, EntityFilterAll())
-        if spawnOrigin ~= nil then
-        
-            // Orient player towards tech point
-            local lookAtPoint = initialTechPoint:GetOrigin() + Vector(0, 5, 0)
-            local toTechPoint = GetNormalizedVector(lookAtPoint - spawnOrigin)
-            success = Team.RespawnPlayer(self, player, spawnOrigin, Angles(GetPitchFromVector(toTechPoint), GetYawFromVector(toTechPoint), 0))
-            
-        else
-        
-			player:SendDirectMessage("Could not find a valid spawn point for you. We'll try to spawn you soon!")
-            Print("PlayingTeam:RespawnPlayer: Couldn't compute random spawn for player.\n")
-			// Escape the player's name here... names like Sandwich% cause a crash to appear here!
-			local escapedPlayerName = string.gsub(player:GetName(), "%%", "")
-			Print("PlayingTeam:RespawnPlayer: Name: " .. escapedPlayerName .. " Class: " .. player:GetClassName())
-            
-        end
-        
-    else
-        Print("PlayingTeam:RespawnPlayer(): No initial tech point.")
     end
     
     return success
