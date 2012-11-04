@@ -21,7 +21,7 @@ function CombatPlayingTeam:OnLoad()
     self:ReplaceClassFunction("PlayingTeam", "GetHasTeamLost", "GetHasTeamLost_Hook")
 	self:ReplaceClassFunction("PlayingTeam", "UpdateTechTree", "UpdateTechTree_Hook")
 	self:ReplaceClassFunction("PlayingTeam", "Update", "Update_Hook")
-	self:ReplaceClassFunction("PlayingTeam", "RespawnPlayer", "RespawnPlayer_Hook")
+	//self:ReplaceClassFunction("PlayingTeam", "RespawnPlayer", "RespawnPlayer_Hook")
     
 end
 
@@ -301,6 +301,12 @@ function CombatPlayingTeam:RespawnPlayer_Hook(self, player, origin, angles)
 
     local success = false
     local initialTechPoint = Shared.GetEntity(self.initialTechPointId)
+    
+    // delete the player from the Queue
+    local team = player:GetTeam(newTeamNumber)
+    if team ~= nil then
+        team:RemovePlayerFromRespawnQueue(player)
+    end
     
     if origin ~= nil and angles ~= nil then
         success = Team.RespawnPlayer(self, player, origin, angles)
