@@ -190,11 +190,11 @@ table.insert(UpsList, BuildUpgrade("Alien", kCombatUpgrades.Silence,				"silence
 table.insert(UpsList, BuildUpgrade("Alien", kCombatUpgrades.Camouflage,				"camo",				"Camouflage",		kTechId.Camouflage, 			Camouflage,			nil, 						1, 		kCombatUpgradeTypes.Tech,   false,			nil)) 					
 table.insert(UpsList, BuildUpgrade("Alien", kCombatUpgrades.Celerity,				"cele",				"Celerity",			kTechId.Celerity, 				nil, 				nil, 						1, 		kCombatUpgradeTypes.Tech,   false,			nil)) 					
 table.insert(UpsList, BuildUpgrade("Alien", kCombatUpgrades.Adrenaline,				"adrenaline",		"Adrenaline",		kTechId.Adrenaline, 			nil, 				nil, 						1, 		kCombatUpgradeTypes.Tech,   false,			nil)) 					
-// a bit sorting for better sorting in the alien GUI                                                                                                                                                                                            
-table.insert(UpsList, BuildUpgrade("Alien", kCombatUpgrades.TierTwo,				"tier2",			"Tier 2",			kTechId.TwoHives, 				TierTwo, 			nil, 						2, 		kCombatUpgradeTypes.Tech,   false,			nil)) 					
                                                                                                                                                                                                                                                 
 // new ink abilitiy                                                                                                                                                                                                                             
 table.insert(UpsList, BuildUpgrade("Alien", kCombatUpgrades.ShadeInk,				"ink",		        "Ink-Taunt",		kTechId.ShadeInk, 		   	 	ShadeInk,			nil, 						1, 		kCombatUpgradeTypes.Tech,   false,			nil)) 					
+
+table.insert(UpsList, BuildUpgrade("Alien", kCombatUpgrades.TierTwo,				"tier2",			"Tier 2",			kTechId.TwoHives, 				TierTwo, 			nil, 						2, 		kCombatUpgradeTypes.Tech,   false,			nil)) 					
 table.insert(UpsList, BuildUpgrade("Alien", kCombatUpgrades.TierThree,				"tier3",			"Tier 3",			kTechId.ThreeHives, 			TierThree, 			kCombatUpgrades.TierTwo,	2, 		kCombatUpgradeTypes.Tech,   false,			nil)) 					
-//table.insert(UpsList, BuildUpgrade("Alien", kCombatUpgrades.Focus,				    "focus",			"Focus",			kTechId.NutrientMist, 			Focus, 			    nil,	                    2, 		kCombatUpgradeTypes.Tech,   false,			nil)) 					
+table.insert(UpsList, BuildUpgrade("Alien", kCombatUpgrades.Focus,				    "focus",			"Focus",			kTechId.NutrientMist, 			Focus, 			    nil,	                    2, 		kCombatUpgradeTypes.Tech,   false,			nil)) 					
 

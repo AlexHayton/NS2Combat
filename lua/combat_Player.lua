@@ -49,23 +49,37 @@ function Player:GotFocus()
 
     local gotFocus = false
     
-    // disabled for onos due to bugs
-    if self.combatTable.hasFocus then
-        // check the weapon
-        local activeWeapon = self:GetActiveWeapon()
-        if activeWeapon then
-            // only give focus when primary attacking, every weapon has itsn own attribute so its a bit dirty, but it works
-            // there is a primaryAttacking on every weapon, but only on bite its getting true
-            if (activeWeapon.primaryAttacking == true or activeWeapon.firingPrimary == true or activeWeapon.attacking == true or activeWeapon.attackButtonPressed == true) then
-                local hudSlot = activeWeapon.GetHUDSlot()                
-                if hudSlot == 1 then
-                    gotFocus = true 
+    if Server then
+        if self.combatTable.hasFocus then
+            // check the weapon
+            local activeWeapon = self:GetActiveWeapon()
+            if activeWeapon then
+                // only give focus when primary attacking, every weapon has itsn own attribute so its a bit dirty, but it works
+                // there is a primaryAttacking on every weapon, but only on bite its getting true
+                if (activeWeapon.primaryAttacking == true or activeWeapon.firingPrimary == true or activeWeapon.attacking == true or activeWeapon.attackButtonPressed == true) then
+                    local hudSlot = activeWeapon.GetHUDSlot()                
+                    if hudSlot == 1 then
+                        gotFocus = true 
+                    end 
                 end 
-            end 
-  
+      
+            end
+       
+        end  
+        
+    elseif Client then
+        local techTree = self:GetUpgrades()
+        
+        if #techTree > 0 then
+            for i, upgradeTechId in ipairs(techTree) do
+                if upgradeTechId == kTechId.NutrientMist then
+                    gotFocus = true
+                    break
+                end
+            end
         end
-   
-    end    
+        
+    end
     
     return gotFocus
 end
