@@ -8,12 +8,9 @@
 // TeleportTrigger.lua
 // Entity for mappers to create teleporters
 
-Script.Load("lua/Mixins/SignalListenerMixin.lua")
-
 class 'TeleportTrigger' (Trigger)
 
 TeleportTrigger.kMapName = "teleport_trigger"
-TeleportTrigger.waitDelay = 2
 
 local networkVars =
 {
@@ -52,7 +49,7 @@ local function TeleportEntity(self, entity)
         if self.enabled then
             if self.destinationId then      
                 local time = Shared.GetTime()
-                if (not entity.timeOfLastPhase) or (time >= (entity.timeOfLastPhase + TeleportTrigger.waitDelay)) then
+                if (not entity.timeOfLastPhase) or (time >= (entity.timeOfLastPhase + self.waitDelay)) then
                     local destinationEntity = Shared.GetEntity(self.destinationId)  
                     local destOrigin = destinationEntity:GetOrigin()
                     local destAnlges = destinationEntity:GetAngles()
@@ -63,7 +60,9 @@ local function TeleportEntity(self, entity)
                     
                     TransformPlayerCoordsForPhaseGate(entity, self:GetCoords(), destinationEntity:GetCoords())
                     entity:SetOrigin(destOrigin)
-                else
+                end
+            else
+                if not self.exitonly then
                     Print("Error: TeleportTrigger " .. self.name .. " destination not found")
                 end
             end
@@ -99,7 +98,6 @@ end
 function TeleportTrigger:OnCreate()
  
     Trigger.OnCreate(self)  
-    InitMixin(self, SignalListenerMixin)
     
     if Server then
         self:SetUpdates(true)  
@@ -117,9 +115,7 @@ function TeleportTrigger:OnInitialized()
         if self.exitonly then
             self:SetUpdates(false)
             self.enabled = false
-        elseif self.destination then    
-            self:RegisterSignalListener(function() TeleportAllInTrigger(self) end, "teleport")
-        else
+        elseif not self.destination then
             Print("Error: TeleportTrigger " .. self.name .. " has no destination")
             DestroyEntity(self)
         end
@@ -141,11 +137,12 @@ function TeleportTrigger:OnUpdate(deltaTime)
     // only check after some time so we can be sure everything was loaded
     if Shared.GetTime() >= self.CheckDestinationTime + 6 then
         if not self.destinationId then
-            FindDestinationEntity(self)
-        else
-            self:SetUpdates(false) 
+            self.CheckDestinationTime = Shared.GetTime()
+            FindDestinationEntity(self)            
         end
     end
+    
+    TeleportAllInTrigger(self)
     
 end
 

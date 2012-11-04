@@ -787,6 +787,7 @@
 
         <parameter name="destination" type="string" label="Destination Name" help="Name of the destination of the TeleportTrigger (need to be a TeleportTrigger, too." default=""/>    
         <parameter name="exitonly" type="boolean" label="Exit only" help="This teleporter is only a Exit (Destination Name will be ignored)." default="false"/>
+        <parameter name="waitDelay" type="real" label="Wait Delay" help="Delay how long a Player has to wait before he can use the Teleporter exit (in sec.)." default="2"/>
         <parameter name="enabled" type="boolean" label="Trigger enabled" help="Will not teleport when disabled." default="true"/>
         <parameter name="distance" type="distance" label = "Distance" default="3.0" help="Angle from the teleporter-output"/>
         <parameter name="angle" type="angle" label = "Angles" default="30.0" help="Angle from the teleporter-output"/>
