@@ -16,10 +16,14 @@ Script.Load("lua/combat_Utility.lua")
 kCombatModActiveDefault = true
 kCombatPlayerThresholdDefault = 0
 kCombatLastPlayerCountDefault = 0
+kCombatTimeLimitDefault = 1500
+kCombatGlobalMicDefault = false
 
 kCombatModActive = kCombatModActiveDefault
 kCombatPlayerThreshold = kCombatPlayerThresholdDefault
 kCombatLastPlayerCount = kCombatLastPlayerCountDefault
+kCombatTimeLimit = kCombatTimeLimitDefault 
+kCombatGlobalMic = kCombatGlobalMicDefault
 kCombatModSwitcherPath = "config://CombatMod.cfg"
 
 // load the ModActive value from config://CombatModConfig.json
@@ -65,6 +69,28 @@ function ModSwitcher_Load(changeLocal)
 				settings.ModLastPlayerCount = kCombatLastPlayerCountDefault
 			end
 			
+			if tonumber(settings.ModTimeLimit) and tonumber(settings.ModTimeLimit) > -1 then
+				kCombatTimeLimit = settings.ModTimeLimit
+			else
+				Shared.Message("For the value ModTimeLimit in " .. kCombatModSwitcherPath .. " only numbers from 0 and above are allowed")
+				Shared.Message("Resetting the value to default ("..kCombatTimeLimitDefault..")")
+				kCombatTimeLimit = kCombatTimeLimitDefault
+				settings.ModTimeLimit = kCombatTimeLimitDefault
+			end
+			
+            // there is no string to bool function so we need to do it like this
+            if settings.ModGlobalMic == "true" or settings.ModGlobalMic == true then 
+                kCombatGlobalMic = true 
+            elseif settings.ModGlobalMic == "false" or  settings.ModGlobalMic == false then
+                kCombatGlobalMic = false 
+            else
+                Shared.Message("For the value ModGlobalMic in " .. kCombatModSwitcherPath .. " only true and false are allowed")
+				Shared.Message("Resetting the value to default (false)")
+				kCombatGlobalMic = kCombatGlobalMicDefault
+				settings.ModGlobalMic = kCombatGlobalMicDefault
+            end
+			local originalCombatModActive = kCombatModActive
+			
 			// Enable/Disable the mod based on the player threshold if that value is set greater than 0.
 			if kCombatModActive and kCombatPlayerThreshold > 0 then
 				if kCombatLastPlayerCount < kCombatPlayerThreshold then
@@ -92,26 +118,36 @@ function ModSwitcher_Load(changeLocal)
 				settings.ModLastPlayerCount = kCombatLastPlayerCountDefault
 			end
 			
+			if settings.ModTimeLimit == nil then
+				settings.ModTimeLimit = kCombatTimeLimitDefault
+			end
+			
+			if settings.ModGlobalMic == nil then
+				settings.ModGlobalMic = kCombatGlobalMicDefault
+			end
+			
             return settings
         end
         
     else
         // file not found, create it
         Shared.Message(kCombatModSwitcherPath .. " not found, will create it now.")
-        ModSwitcher_Save(kCombatModActive, kCombatPlayerThreshold, kCombatLastPlayerCount, true)       
+        ModSwitcher_Save(kCombatModActive, kCombatPlayerThreshold, kCombatLastPlayerCount, kCombatTimeLimit, kCombatGlobalMic, true)       
     end 
     
 end
 
 
 // save it, but change the local variable when the map is changing (will be done via load the value
-function ModSwitcher_Save(ModActiveBool, ThresholdNumber, LastPlayers, newlyCreate)
+function ModSwitcher_Save(ModActiveBool, ThresholdNumber, LastPlayers, TimeLimit, GlobalMic, newlyCreate)
   
 	// Default values in case the file does not exist.
 	local currentSettings = { 
-		ModActive = true,
-		ModThreshold = 0,
-		ModLastPlayerCount = 0
+		ModActive = kCombatModActiveDefault,
+		ModThreshold = kCombatPlayerThresholdDefault,
+		ModLastPlayerCount = kCombatLastPlayerCountDefault,
+		ModTimeLimit = kCombatTimeLimitDefault,
+		ModGlobalMic = kCombatGlobalMicDefault,
 	}
 	// If we're not newly creating the file, fill in any missing values here.
     if not newlyCreate then
@@ -123,7 +159,7 @@ function ModSwitcher_Save(ModActiveBool, ThresholdNumber, LastPlayers, newlyCrea
  
 	// Override the incoming values with the current ones if they are not specified.
     if currentSettings.ModActive == nil then    
-		ModActiveBool = true
+		ModActiveBool = kCombatModActiveDefault
 	elseif ModActiveBool == nil then
 		ModActiveBool = currentSettings.ModActive
 	else
@@ -131,7 +167,7 @@ function ModSwitcher_Save(ModActiveBool, ThresholdNumber, LastPlayers, newlyCrea
 	end
 	
 	if currentSettings.ModPlayerThreshold == nil then    
-		ThresholdNumber = 0
+		ThresholdNumber = kCombatPlayerThresholdDefault
 	elseif ThresholdNumber == nil then
 		ThresholdNumber = currentSettings.ModPlayerThreshold
 	else
@@ -139,11 +175,27 @@ function ModSwitcher_Save(ModActiveBool, ThresholdNumber, LastPlayers, newlyCrea
 	end
 	
 	if currentSettings.ModLastPlayerCount == nil then    
-		LastPlayers = 0
+		LastPlayers = kCombatLastPlayerCountDefault
 	elseif LastPlayers == nil then
 		LastPlayers = currentSettings.ModLastPlayerCount	
 	else
 		Shared.Message("CombatModLastPlayerCount is now: " .. LastPlayers)
+	end
+	
+	if currentSettings.ModTimeLimit == nil then    
+		TimeLimit = kCombatTimeLimitDefault
+	elseif TimeLimit == nil then
+		TimeLimit = currentSettings.ModTimeLimit	
+	else
+		Shared.Message("CombatModTimeLimit is now: " .. TimeLimit)
+	end
+	
+    if currentSettings.ModGlobalMic == nil then    
+		GlobalMic = kCombatGlobalMicDefault
+	elseif GlobalMic == nil then
+		GlobalMic = currentSettings.ModGlobalMic
+	else
+		Shared.Message("CombatModGlobalMic is now: " .. ModSwitcher_Active_Status(GlobalMic))
 	end
 
 	// Save to disk.
@@ -152,7 +204,9 @@ function ModSwitcher_Save(ModActiveBool, ThresholdNumber, LastPlayers, newlyCrea
 	kCombatModSwitcherConfig = { 
 						ModActive = ModActiveBool,
 						ModPlayerThreshold = ThresholdNumber,
-						ModLastPlayerCount = LastPlayers
+						ModLastPlayerCount = LastPlayers,
+						ModTimeLimit = TimeLimit,
+						ModGlobalMic = GlobalMic,
 						}
 	
 	// if its not exist it will be created automatically                  
@@ -177,6 +231,8 @@ function ModSwitcher_Output_Status(currentSettings)
 	Shared.Message("CombatMod Player Threshold is " .. currentSettings.ModPlayerThreshold .. " players.")
 	Shared.Message("CombatMod Last Map ended with " .. currentSettings.ModLastPlayerCount .. " players.")
 	Shared.Message("CombatMod is now: " .. ModSwitcher_Active_Status(kCombatModActive)) 
+	Shared.Message("CombatMod Time Limit is now: " .. currentSettings.ModTimeLimit .. " players.")
+	Shared.Message("CombatMod Global Mic is now: " .. ModSwitcher_Active_Status(currentSettings.ModGlobalMic))
 	Shared.Message("\n")
 	Shared.Message("**********************************")
 	Shared.Message("**********************************")

@@ -279,7 +279,6 @@ function CombatNS2Gamerules:OnUpdate_Hook(self, timePassed)
 	end
 end
 
-
 // let ns2 find a techPoint for team1 and search the nearest techPoint for team2
 function CombatNS2Gamerules:ChooseTechPoint_Hook(handle, self, techPoints, teamNumber)
 
@@ -367,7 +366,7 @@ function CombatNS2Gamerules:UpdateMapCycle_Hook(self)
 	if self.timeToCycleMap ~= nil and Shared.GetTime() >= self.timeToCycleMap then
 
 		local playerCount = Shared.GetEntitiesWithClassname("Player"):GetSize()
-		ModSwitcher_Save(nil, nil, playerCount, false)
+		ModSwitcher_Save(nil, nil, playerCount, nil, nil, false)
 	
 	end
 
