@@ -331,6 +331,24 @@ function CombatPlayingTeam:RespawnPlayer_Hook(self, player, origin, angles)
     else
         Print("PlayingTeam:RespawnPlayer(): No initial tech point.")
     end
+		
+	// try again
+    if (not success) then        
+        Print("PlayingTeam:RespawnPlayer(): Will try again to find a spawn.\n")   
+		// Destroy the existing player and create a spectator in their place (but only if it has an owner, ie not a body left behind by Phantom use)
+		local owner  = Server.GetOwner(player)
+		if owner then
+		
+			// Queue up the spectator for respawn.
+			local spectator = player:Replace(player:GetDeathMapName())
+			spectator:GetTeam():PutPlayerInRespawnQueue(spectator)
+			DestroyEntity(player)
+			// Insert the player into a list of players.
+			//table.insertunique(self.playerIds, spectator:GetId())
+			
+		end
+    end
+    
     
     return success
     
