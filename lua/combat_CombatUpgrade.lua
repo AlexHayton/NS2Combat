@@ -24,7 +24,7 @@ kCombatUpgradeTypes = enum({'Class', 'Tech', 'Weapon'})
 							
 class 'CombatUpgrade'
 
-function CombatUpgrade:Initialize(team, upgradeId, upgradeTextCode, upgradeDescription, upgradeTechId, upgradeFunc, requirements, levels, upgradeType, refundUpgrade, mutuallyExclusive)
+function CombatUpgrade:Initialize(team, upgradeId, upgradeTextCode, upgradeDescription, upgradeTechId, upgradeFunc, requirements, levels, upgradeType, refundUpgrade, hardCap, mutuallyExclusive)
 
 	self.team = team
     self.id = upgradeId
@@ -36,6 +36,7 @@ function CombatUpgrade:Initialize(team, upgradeId, upgradeTextCode, upgradeDescr
 	self.levels = levels
 	self.refundUpgrade = refundUpgrade
 	self.mutuallyExclusive = mutuallyExclusive
+	self.hardCapScale = hardCap
 
 	if (upgradeFunc) then
 		self.upgradeFunc = upgradeFunc
@@ -88,6 +89,45 @@ end
 
 function CombatUpgrade:GetRefundUpgrade()
 	return self.refundUpgrade
+end
+
+function CombatUpgrade:GetHardCapScale()
+	return self.hardCapScale
+end
+
+function CombatUpgrade:GetIsHardCapped(player)
+
+	// Hard cap scale is expressed e.g. 1/5
+	// So if we have more than 1 player with this upgrade per 5 players we are hardcapped.
+	if (self.hardCapScale > 0) then
+	
+		local teamPlayers = GetEntitiesForTeam("Player", player:GetTeamNumber())
+		local numInTeam = #teamPlayers
+		local numPlayersWithUpgrade = 0
+		
+		for index, teamPlayer in ipairs(teamPlayers) do
+		
+			// Don't count the passed in player for the purposes of the hard cap.
+			if (teamPlayer ~= player) then
+			
+				if player:GetHasTech(self.techId) then
+					numPlayersWithUpgrade = numPlayersWithUpgrade + 1
+				end
+				
+			end
+			
+		end		
+		
+		if (numPlayersWithUpgrade / numInTeam) > hardCapScale then
+			return true
+		else
+			return false
+		end
+		
+	else
+		return false
+	end
+	
 end
 
 function CombatUpgrade:GetMutuallyExclusive()

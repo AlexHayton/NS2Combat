@@ -99,6 +99,8 @@ function Player:CoEnableUpgrade(upgrades)
             self:spendlvlHints("neededLvl", neededLvl)
 		elseif mutuallyExclusive then
 			self:spendlvlHints("mutuallyExclusive", mutuallyExclusiveDescription)
+		elseif upgrade:GetIsHardCapped(self) then
+			self:spendlvlHints("hardCapped")
         else
             table.insert(validUpgrades, upgrade)
             // insert the up to the personal techtree

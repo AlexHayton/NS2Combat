@@ -515,6 +515,9 @@ if Server then
             
         elseif hint == "mutuallyExclusive" then
             self:SendDirectMessage( "Cannot buy this upgrade when you have the " .. type .. " upgrade!")
+			
+		elseif hint == "hardCap" then
+			self:SendDirectMessage( "Cannot buy this upgrade. Only 1 player may take this upgrade every 5 players in your team." )
             
         elseif hint == "freeLvl" then
             local lvlFree = self:GetLvlFree()
