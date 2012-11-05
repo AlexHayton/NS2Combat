@@ -48,7 +48,8 @@ kSpawnMaxVertical = 30
 
 // By default, Aliens win after a certain amount of time...
 // Specified in seconds...
-kCombatTimeLimit = 1500
+// Time Limit is now specified in ModSwitcher.
+//kCombatTimeLimit = 1500
 kCombatTimeLeftPlayed = 0
 kCombatTimeReminderInterval = 300
 

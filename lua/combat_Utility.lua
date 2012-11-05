@@ -98,3 +98,21 @@ function SendGlobalChatMessage(message)
 	// Also output to the console for admins.
 	Shared.Message(message)
 end
+
+function GetTimeText(timeInSeconds)
+
+	ASSERT(timeInSeconds >= 0)
+	local timeLeftText = ""
+	timeNumericSeconds = tonumber(timeInSeconds)
+	if (timeNumericSeconds > 60) then
+		timeLeftText = math.ceil(timeNumericSeconds/60) .." minutes"
+	elseif (timeNumericSeconds == 60) then
+		timeLeftText = "1 minute"
+	elseif (timeNumericSeconds == 1) then
+		timeLeftText = "1 second"
+	else
+		timeLeftText = timeNumericSeconds .." seconds"
+	end
+	return timeLeftText
+
+end

@@ -187,7 +187,7 @@ function ModSwitcher_Save(ModActiveBool, ThresholdNumber, LastPlayers, TimeLimit
 	elseif TimeLimit == nil then
 		TimeLimit = currentSettings.ModTimeLimit	
 	else
-		Shared.Message("CombatModTimeLimit is now: " .. TimeLimit)
+		SendGlobalChatMessage("Time Limit is now: " .. GetTimeText(TimeLimit))
 	end
 	
     if currentSettings.ModGlobalMic == nil then    
@@ -195,7 +195,7 @@ function ModSwitcher_Save(ModActiveBool, ThresholdNumber, LastPlayers, TimeLimit
 	elseif GlobalMic == nil then
 		GlobalMic = currentSettings.ModGlobalMic
 	else
-		Shared.Message("CombatModGlobalMic is now: " .. ModSwitcher_Active_Status(GlobalMic))
+		SendGlobalChatMessage("GlobalMic is now: " .. ModSwitcher_Active_Status(GlobalMic))
 	end
 
 	// Save to disk.
@@ -231,7 +231,7 @@ function ModSwitcher_Output_Status(currentSettings)
 	Shared.Message("CombatMod Player Threshold is " .. currentSettings.ModPlayerThreshold .. " players.")
 	Shared.Message("CombatMod Last Map ended with " .. currentSettings.ModLastPlayerCount .. " players.")
 	Shared.Message("CombatMod is now: " .. ModSwitcher_Active_Status(kCombatModActive)) 
-	Shared.Message("CombatMod Time Limit is now: " .. currentSettings.ModTimeLimit .. " players.")
+	Shared.Message("CombatMod Time Limit is now: " .. GetTimeText(currentSettings.ModTimeLimit) .. ".")
 	Shared.Message("CombatMod Global Mic is now: " .. ModSwitcher_Active_Status(currentSettings.ModGlobalMic))
 	Shared.Message("\n")
 	Shared.Message("**********************************")

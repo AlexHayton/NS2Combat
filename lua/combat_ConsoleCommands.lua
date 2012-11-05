@@ -119,7 +119,9 @@ function OnCommandHelp(client)
 	// Display a banner showing the available commands
 	local player = client:GetControllingPlayer()
 	player:SendDirectMessage("Use the 'buy' menu to buy upgrades.")
-	player:SendDirectMessage("You gain XP for killing other players, damaging structures and healing your structures.")
+	player:SendDirectMessage("You gain XP for killing other players, ")
+	player:SendDirectMessage("damaging structures and healing your structures.")
+	player:SendDirectMessage("Type /timeleft in chat to get the time remaining.")
 
 end
 
@@ -216,22 +218,12 @@ local function OnCommandTimeLeft(client)
 
 	// Display the remaining time left
 	local player = client:GetControllingPlayer()
-	local gameRules = GetGameRules()
+	local gameRules = GetGamerules()
 	local exactTimeLeft = (kCombatTimeLimit - gameRules.timeSinceGameStateChanged)
 	local timeLeft = math.ceil(exactTimeLeft)
+	local timeLeftText = GetTimeText(timeLeft)
 	
-	local timeLeftText = ""
-	if (timeLeft > 60) then
-		timeLeftText = math.ceil(timeLeft/60) .." minutes"
-	elseif (timeLeft == 60) then
-		timeLeftText = "1 minute"
-	elseif (timeLeft == 1) then
-		timeLeftText = "1 second"
-	else
-		timeLeftText = timeLeft .." seconds"
-	end
-	
-	if (player:GetTeamNumber() == kMarineTeamType)
+	if (player:GetTeamNumber() == kMarineTeamType) then
 		timeLeftText = timeLeftText .. " left until Marines have lost!"
 	else
 		timeLeftText = timeLeftText .. " left until Aliens have won!"
@@ -244,7 +236,7 @@ end
 local function OnCommandTimeLimit(client, timeLimit)
 
     if client == nil or client:GetIsLocalClient() then
-        OnCommandSetTimeLimitAdmin(client, timeLimit)
+        OnCommandTimeLimitAdmin(client, timeLimit)
     end
     
 end
@@ -254,7 +246,7 @@ function OnCommandTimeLimitAdmin(client, timeLimit)
     if timeLimit then
         if tonumber(timeLimit) then
             ModSwitcher_Save(nil, nil, nil, timeLimit, nil, false)
-            Shared.Message("The changes only take effect after the next mapchange!")
+			kCombatTimeLimit = timeLimit
             
             // send it to every player            
             ModSwitcher_Output_Status_All()
@@ -290,7 +282,7 @@ Event.Hook("Console_soundtest",       OnCommandSoundTest)
 
 
 // All commands that should be accessible via the chat need to be in this list
-combatCommands = {"co_spendlvl", "co_help", "co_status", "co_upgrades", "/upgrades", "/status", "/buy", "/help"}
+combatCommands = {"co_spendlvl", "co_help", "co_status", "co_upgrades", "/upgrades", "/status", "/buy", "/help", "/timeleft"}
 
 if kCombatModActive then
 
@@ -305,6 +297,8 @@ if kCombatModActive then
     Event.Hook("Console_co_showlvl",                OnCommandShowLvl)
     Event.Hook("Console_co_status",                OnCommandStatus) 
 	Event.Hook("Console_co_timeleft",              OnCommandTimeLeft)
+	Event.Hook("Console_timeleft",              OnCommandTimeLeft)
+	Event.Hook("Console_/timeleft",              OnCommandTimeLeft)
     Event.Hook("Console_/status",                OnCommandStatus) 
     //Event.Hook("Console_/stuck",                OnCommandStuck)    
     Event.Hook("Console_co_sendupgrades",       OnCommandSendUpgrades) 
