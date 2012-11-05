@@ -102,11 +102,13 @@ if Server then
         self.combatTable.activeSpawnProtect = nil
         self.gotSpawnProtect = nil
         
+		/*
         local entity = Shared.GetEntity(self.spawnProtectEntity)
         if entity then
             DestroyEntity(entity)
         end
-        
+        */
+		
         // Deactivate the nano shield by manipulating the time variable.
         self.timeNanoShieldInit = 0
         
@@ -116,7 +118,7 @@ if Server then
             
         // only make the effects once
         if not self.gotSpawnProtect then
-            /*
+            
             if self:isa("Marine") then
             
                 self:ActivateNanoShield()
@@ -127,13 +129,16 @@ if Server then
                 self:SetHasUmbra(true, spawnProtectTimeLeft)       
 
             end
-            */
             
+            /*
             local position = self:GetOrigin()
             local spawnProtectEffect = CreateEntity(CombatSpawnProtect.kMapName, position, self:GetTeamNumber())
-          
+			self.spawnProtectEntity = spawnProtectEffect:GetId()
+			*/
+			
             self.gotSpawnProtect = true
-            self.spawnProtectEntity = spawnProtectEffect:GetId()
+
+			
             
         end    
         
