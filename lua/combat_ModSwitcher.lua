@@ -52,7 +52,7 @@ function ModSwitcher_Load(changeLocal)
 			local originalCombatModActive = kCombatModActive
 			
 			if tonumber(settings.ModPlayerThreshold) and tonumber(settings.ModPlayerThreshold) > -1 then
-				kCombatPlayerThreshold = settings.ModPlayerThreshold
+				kCombatPlayerThreshold = tonumber(settings.ModPlayerThreshold)
 			else
 				Shared.Message("For the value ModPlayerThreshold in " .. kCombatModSwitcherPath .. " only numbers from 0 and above are allowed")
 				Shared.Message("Resetting the value to default ("..kCombatPlayerThresholdDefault..")")
@@ -61,7 +61,7 @@ function ModSwitcher_Load(changeLocal)
 			end
 			
 			if tonumber(settings.ModLastPlayerCount) and tonumber(settings.ModLastPlayerCount) > -1 then
-				kCombatLastPlayerCount = settings.ModLastPlayerCount
+				kCombatLastPlayerCount = tonumber(settings.ModLastPlayerCount)
 			else
 				Shared.Message("For the value ModLastPlayerCount in " .. kCombatModSwitcherPath .. " only numbers from 0 and above are allowed")
 				Shared.Message("Resetting the value to default ("..kCombatLastPlayerCountDefault..")")
@@ -70,7 +70,7 @@ function ModSwitcher_Load(changeLocal)
 			end
 			
 			if tonumber(settings.ModTimeLimit) and tonumber(settings.ModTimeLimit) > -1 then
-				kCombatTimeLimit = settings.ModTimeLimit
+				kCombatTimeLimit = tonumber(settings.ModTimeLimit)
 			else
 				Shared.Message("For the value ModTimeLimit in " .. kCombatModSwitcherPath .. " only numbers from 0 and above are allowed")
 				Shared.Message("Resetting the value to default ("..kCombatTimeLimitDefault..")")
