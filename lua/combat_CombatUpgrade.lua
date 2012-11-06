@@ -7,20 +7,7 @@
 
 // combat_CombatUpgrade.lua
 
-kCombatUpgrades = enum({// Marine upgrades
-						'Mines', 'Welder', 'Shotgun', 'Flamethrower', 'GrenadeLauncher', 
-						'Weapons1', 'Weapons2', 'Weapons3', 'Armor1', 'Armor2', 'Armor3', 
-						'MotionDetector', 'Scanner', 'Catalyst', 'Resupply', 'EMP',
-						'Jetpack', 'Exosuit', 'DualMinigunExosuit', 'FastReload',
-						
-						// Alien upgrades
-						'Gorge', 'Lerk', 'Fade', 'Onos', 
-						'TierTwo', 'TierThree',
-						'Carapace', 'Regeneration', 'Silence', 'Camouflage', 'Celerity',
-                        'Adrenaline', 'Feint', 'ShadeInk', 'Focus'})
-						
-// The order of these is important...
-kCombatUpgradeTypes = enum({'Class', 'Tech', 'Weapon'})
+Script.Load("lua/combat_ExperienceEnums.lua")
 							
 class 'CombatUpgrade'
 
@@ -99,6 +86,7 @@ function CombatUpgrade:GetIsHardCapped(player)
 
 	// Hard cap scale is expressed e.g. 1/5
 	// So if we have more than 1 player with this upgrade per 5 players we are hardcapped.
+	// Recalculate at the point someone tries to buy for accuracy.
 	if (self.hardCapScale > 0) then
 	
 		local teamPlayers = GetEntitiesForTeam("Player", player:GetTeamNumber())
@@ -107,10 +95,10 @@ function CombatUpgrade:GetIsHardCapped(player)
 		
 		for index, teamPlayer in ipairs(teamPlayers) do
 		
-			// Don't count the passed in player for the purposes of the hard cap.
-			if (teamPlayer ~= player) then
-			
-				if player:GetHasTech(self.techId) then
+			// Skip dead players
+			if (teamPlayer:GetIsAlive()) then
+				
+				if (player:GetHasUpgrade(self:GetId())) then
 					numPlayersWithUpgrade = numPlayersWithUpgrade + 1
 				end
 				
@@ -153,8 +141,17 @@ function CombatUpgrade:ExecuteTechUpgrade(player)
 	// Update the tech tree and send updates to the client. Don't know why, but it's only working when we send it here.
     techTree:SendTechTreeBase(player)
 
-    // GiveUpgrade caused only problems, its working without	
+    // Update the hard cap count, if necessary
+	if (self:GetHardCapScale() > 0) then
+		self:UpdateHardCapCount(player:GetTeamNumber())
+	end
+end
 
+// Update the count for the upgrades at the time of buying, to improve the user experience.
+function CombatUpgrade:UpdateHardCapCount(teamIndex)
+
+	UpdateUpgradeCountsForTeam(GetGamerules(), teamIndex)
+	
 end
 
 function CombatUpgrade:GiveItem(player)

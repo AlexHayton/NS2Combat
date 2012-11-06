@@ -330,12 +330,6 @@ if Server then
 
     end
 
-    function Player:GetCombatTechTree()
-
-        return self.combatTable.techtree
-        
-    end
-
     function Player:ClearCombatData()
 
         // Blow away the old combatTable amd combatTechTree then re-run the check

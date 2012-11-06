@@ -320,6 +320,14 @@ function combat_GUIMarineBuyMenu:_InitializeEquipped()
     
 end
 
+local function GetHardCapText(upgrade)
+
+	local player = Client.GetLocalPlayer()
+    local teamInfo = GetTeamInfoEntity(player:GetTeamNumber())
+	return kCombatUpgradeCounts .. "/" upgrade:GetHardCapScale() * teamnfo
+
+end
+
 function combat_GUIMarineBuyMenu:_InitializeItemButtons()
     
     self.menu = GetGUIManager():CreateGraphicItem()
@@ -349,7 +357,7 @@ function combat_GUIMarineBuyMenu:_InitializeItemButtons()
     self.itemButtons = { }
     
     local allUps = GetAllUpgrades("Marine")
-    // sort the ups, definied in this file
+    // sort the ups, defined in this file
     sortedList = CombatMarineBuy_GUISortUps(allUps) 
 
     // get the headlines
@@ -415,6 +423,19 @@ function combat_GUIMarineBuyMenu:_InitializeItemButtons()
                 itemCost:SetScale(fontScaleVector)
                 itemCost:SetColor(combat_GUIMarineBuyMenu.kTextColor)
                 itemCost:SetText(ToString(upgrade:GetLevels()))
+				
+				if upgrade:GetHardCapScale() > 0 then
+					local hardCapCount = GUIManager:CreateTextItem()
+					hardCapCount:SetFontName(combat_GUIMarineBuyMenu.kFont)
+					hardCapCount:SetFontIsBold(true)
+					hardCapCount:SetAnchor(GUIItem.Right, GUIItem.Center)
+					hardCapCount:SetPosition(Vector(0, 0, 0))
+					hardCapCount:SetTextAlignmentX(GUIItem.Align_Min)
+					hardCapCount:SetTextAlignmentY(GUIItem.Align_Center)
+					hardCapCount:SetScale(fontScaleVector)
+					hardCapCount:SetColor(combat_GUIMarineBuyMenu.kTextColor)
+					hardCapCount:SetText(ToString(upgrade:GetHard()))
+				end
                 
                 costIcon:AddChild(itemCost)  
                 

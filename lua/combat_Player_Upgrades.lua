@@ -26,6 +26,27 @@ function GetIsPrimaryWeapon(kMapName)
     return isPrimary
 end
 
+function Player:GetCombatTechTree()
+
+	return self.combatTable.techtree
+	
+end
+
+// Check if a player has a given upgrade.
+function Player:GetHasUpgrade(upgradeId)
+
+	local hasUpgrade = false
+	for index, upgrade in ipairs(self.combatTable.techtree) do
+		if (upgrade:GetId() == upgradeId) then
+			hasUpgrade = true
+			break
+		end
+	end
+	
+	return hasUpgrade
+
+end
+
 function Player:CoEnableUpgrade(upgrades)
 
 	self:CheckCombatData()
