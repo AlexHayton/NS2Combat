@@ -775,7 +775,11 @@
 
       <help>Allows tuning of pathing settings to help optimize pathing</help>
    </class>
-
+   
+	<!-- **************************************** -->
+	<!-- ExtraEntites like teleporter, train etc. -->
+	<!-- **************************************** -->
+	
     <!-- Teleport trigger -->
     <class name="teleport_trigger" placeable="true">
         <parent>trigger</parent>
@@ -791,6 +795,54 @@
         <parameter name="enabled" type="boolean" label="Trigger enabled" help="Will not teleport when disabled." default="true"/>
         <parameter name="distance" type="distance" label = "Distance" default="3.0" help="Angle from the teleporter-output"/>
         <parameter name="angle" type="angle" label = "Angles" default="30.0" help="Angle from the teleporter-output"/>
+
+    </class>
+
+    <!-- Func Train -->
+    <class name="func_train" placeable="true">
+        
+        <cone_radius>
+			<radius>distance</radius>
+			<angle>angle</angle>
+		</cone_radius>
+
+		<model>
+			<file>model</file>
+			<scale>scale</scale>
+		</model>
+		<parameter name="model" type="file" label="model" default="models/props/refinery/refinery_tram_car.model" filter="*.model"/>
+		
+        <size>
+            <scale>scale</scale>
+        </size>
+        <parameter name="scale" type="vector" label="scale" default="1.0, 1.0, 1.0"/>
+
+        <parameter name="teamNumber" type="choice" label="Team Number" default="1">
+            <choice label="World" value="0"/>
+            <choice label="Marine" value="1"/>
+            <choice label="Alien" value="2"/>
+        </parameter>
+		
+		<parameter name="moveSpeed" type="real" label="Move Speed" help="How fast can the train drive." default="3.0"/>
+		<parameter name="drivable" type="boolean" label="drivable" help="Train will not drivable (automatic train)" default="true"/>
+		<parameter name="enabled" type="boolean" label="enabled" help="Train will not drive if its disabled" default="true"/>
+		<parameter name="autoStart" type="boolean" label="Auto-Start" help="Train will start driving by its own" default="false"/>
+		<parameter name="distance" type="distance" label = "Distance" default="3.0" help="Angle from the teleporter-output"/>
+        <parameter name="angle" type="angle" label = "Angles" default="30.0" help="Angle from the teleporter-output"/>
+
+
+    </class>
+	
+	    <!-- Func Train Waypoints -->
+    <class name="func_train_waypoint" placeable="true">
+        
+		<model>
+			<file>models/system/editor/waypoint.model</file>
+		</model>
+
+		<parameter name="name" type="string" label="name" help="For testing." default=""/>
+
+
 
     </class>
 
