@@ -101,9 +101,9 @@ end
 
 function GetTimeText(timeInSeconds)
 
-	ASSERT(timeInSeconds >= 0)
 	local timeLeftText = ""
 	timeNumericSeconds = tonumber(timeInSeconds)
+	ASSERT(timeNumericSeconds >= 0)
 	if (timeNumericSeconds > 60) then
 		timeLeftText = math.ceil(timeNumericSeconds/60) .." minutes"
 	elseif (timeNumericSeconds == 60) then

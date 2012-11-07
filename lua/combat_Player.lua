@@ -330,12 +330,6 @@ if Server then
 
     end
 
-    function Player:GetCombatTechTree()
-
-        return self.combatTable.techtree
-        
-    end
-
     function Player:ClearCombatData()
 
         // Blow away the old combatTable amd combatTechTree then re-run the check
@@ -520,6 +514,9 @@ if Server then
             
         elseif hint == "mutuallyExclusive" then
             self:SendDirectMessage( "Cannot buy this upgrade when you have the " .. type .. " upgrade!")
+			
+		elseif hint == "hardCap" then
+			self:SendDirectMessage( "Cannot buy this upgrade. Only 1 player may take this upgrade every 5 players in your team." )
             
         elseif hint == "freeLvl" then
             local lvlFree = self:GetLvlFree()
