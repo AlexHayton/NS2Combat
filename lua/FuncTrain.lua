@@ -81,8 +81,8 @@ function FuncTrain:OnUpdate(deltaTime)
         if self.driving then
             self:UpdatePosition(deltaTime)
             self:SetOldAngles(self:GetAngles())
-            self:MoveTrigger()
-            self:MovePlayersInTrigger()            
+            self:MovePlayersInTrigger()        
+            self:MoveTrigger()    
         end
     end
 end
@@ -154,11 +154,11 @@ end
 
 function FuncTrain:SetOldAngles(newAngles)
 
-    if self.deltaAngles then
+    if self.oldAngles then
         self:SetOldAnglesDiff(newAngles)
-        self.oldAngles.yaw = math.abs(newAngles.yaw - self.deltaAngles.yaw)
-        self.oldAngles.pitch = math.abs(newAngles.pitch - self.deltaAngles.pitch)
-        self.oldAngles.roll = math.abs(newAngles.roll - self.deltaAngles.roll)
+        self.oldAngles.yaw = math.abs(newAngles.yaw - self.oldAngles.yaw)
+        self.oldAngles.pitch = math.abs(newAngles.pitch - self.oldAngles.pitch)
+        self.oldAngles.roll = math.abs(newAngles.roll - self.oldAngles.roll)
 
     else
         self.oldAngles = newAngles
@@ -319,8 +319,8 @@ if Server then
                 //direction.x = trainOrigin.x + (o.z - trainOrigin.z) * math.sin(degrees) + (o.x - trainOrigin.x) * math.cos(degrees);
                 
 
-                newOrigin.z = trainOrigin.z + (math.cos(degrees) * (newOrigin.z - trainOrigin.z) -  math.sin(degrees) * (newOrigin.x - trainOrigin.x))                
-                newOrigin.x = trainOrigin.x + (math.sin(degrees) * (newOrigin.z - trainOrigin.z) +  math.cos(degrees) * (newOrigin.x - trainOrigin.x))
+                //newOrigin.z = trainOrigin.z + (math.cos(degrees) * (newOrigin.z - trainOrigin.z) -  math.sin(degrees) * (newOrigin.x - trainOrigin.x))                
+                //newOrigin.x = trainOrigin.x + (math.sin(degrees) * (newOrigin.z - trainOrigin.z) +  math.cos(degrees) * (newOrigin.x - trainOrigin.x))
 
                                 
                 // change the viewAngles
