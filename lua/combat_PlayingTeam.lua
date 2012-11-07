@@ -154,8 +154,11 @@ function CombatPlayingTeam:Update_Hook(self, timePassed)
 	// Increment the spawn timer
 	self.timeSinceLastSpawn = self.timeSinceLastSpawn + timePassed
 	
+    // check if there are really no Spectators (should fix the spawnbug)
+	local players = GetEntitiesForTeam("Spectator", self:GetTeamNumber())
+	
 	// Spawn all players in the queue once every 10 seconds or so.
-	if (#self.respawnQueue > 0) then
+	if (#self.respawnQueue > 0) or (#players > 0)  then
 		
 		// Are we ready to spawn? This is based on the time since the last spawn wave...
 		local timeToSpawn = (self.timeSinceLastSpawn >= kCombatRespawnTimer)
@@ -169,21 +172,35 @@ function CombatPlayingTeam:Update_Hook(self, timePassed)
 			local lastPlayer = nil
 			local thisPlayer = self:GetOldestQueuedPlayer()
 			
-			while (lastPlayer == thisPlayer) or (thisPlayer ~= nil) do
-				local success = CombatPlayingTeam:SpawnPlayer(thisPlayer)
-				// Don't crash the server when no more players can spawn...
-				if not success then break end
-				
-				lastPlayer = thisPlayer
-				thisPlayer = self:GetOldestQueuedPlayer()
-			end
+			if thisPlayer then
+                while (lastPlayer == thisPlayer) or (thisPlayer ~= nil) do
+                    local success = CombatPlayingTeam:SpawnPlayer(thisPlayer)
+                    // Don't crash the server when no more players can spawn...
+                    if not success then break end
+                    
+                    lastPlayer = thisPlayer
+                    thisPlayer = self:GetOldestQueuedPlayer()
+                end
+            else
+                // somethings wrong, spawn all Spectators
+                for i, player in ipairs(players) do
+                    local success = CombatPlayingTeam:SpawnPlayer(player)
+                    // Don't crash the server when no more players can spawn...
+                    if not success then break end
+                end
+            end
 			
 			// If there are any players left, send them a message about why they didn't spawn.
 			if (#self.respawnQueue > 0) then
 				for i, player in ipairs(self.respawnQueue) do
 					player:SendDirectMessage("Could not find a valid spawn location for you... You will spawn in the next wave instead!")
 				end
-			end
+			elseif (#players > 0) then
+                for i, player in ipairs(players) do
+					player:SendDirectMessage("Could not find a valid spawn location for you... You will spawn in the next wave instead!")
+				end
+            end
+            
 		else
 			// Send any 'waiting to respawn' messages (normally these only go to AlienSpectators)
 			for index, player in pairs(self:GetPlayers()) do				
@@ -201,7 +218,7 @@ function CombatPlayingTeam:Update_Hook(self, timePassed)
 				end
 			end
 		end
-		
+	
 	end
 	
 	if not self.timeSincePropEffect then
@@ -312,13 +329,15 @@ function CombatPlayingTeam:RespawnPlayer_Hook(self, player, origin, angles)
 			// Escape the player's name here... names like Sandwich% cause a crash to appear here!
 			local escapedPlayerName = string.gsub(player:GetName(), "%%", "")
 			Print("PlayingTeam:RespawnPlayer: Name: " .. escapedPlayerName .. " Class: " .. player:GetClassName())
+            Print(Script.CallStack())
+
             
         end
         
     else
         Print("PlayingTeam:RespawnPlayer(): No initial tech point.")
     end
-	
+		
 	// try again
     if (not success) then        
         Print("PlayingTeam:RespawnPlayer(): Will try again to find a spawn.\n")   
@@ -335,6 +354,7 @@ function CombatPlayingTeam:RespawnPlayer_Hook(self, player, origin, angles)
 			
 		end
     end
+    
     
     return success
     

@@ -131,6 +131,9 @@ combat_GUIMarineBuyMenu.kResourceDisplayHeight = GUIScale(64)
 combat_GUIMarineBuyMenu.kResourceIconWidth = GUIScale(32)
 combat_GUIMarineBuyMenu.kResourceIconHeight = GUIScale(32)
 
+combat_GUIMarineBuyMenu.kHardCapOffsetX = GUIScale(5)
+combat_GUIMarineBuyMenu.kHardCapOffsetY = GUIScale(13)
+
 combat_GUIMarineBuyMenu.kMouseOverInfoTextSize = GUIScale(20)
 combat_GUIMarineBuyMenu.kMouseOverInfoOffset = Vector(GUIScale(-30), GUIScale(-20), 0)
 combat_GUIMarineBuyMenu.kMouseOverInfoResIconOffset = Vector(GUIScale(-40), GUIScale(-60), 0)
@@ -323,6 +326,18 @@ function combat_GUIMarineBuyMenu:_InitializeEquipped()
     
 end
 
+local function GetHardCapText(upgrade)
+
+	local player = Client.GetLocalPlayer()
+    local teamInfo = GetTeamInfoEntity(player:GetTeamNumber())
+	local playerCount = teamInfo:GetPlayerCount()
+	if (kCombatUpgradeCounts[upgrade:GetId()] == nil) then
+		kCombatUpgradeCounts[upgrade:GetId()] = 0
+	end
+	return kCombatUpgradeCounts[upgrade:GetId()] .. "/" .. math.ceil(upgrade:GetHardCapScale() * playerCount)
+
+end
+
 function combat_GUIMarineBuyMenu:_InitializeItemButtons()
     
     self.menu = GetGUIManager():CreateGraphicItem()
@@ -352,7 +367,7 @@ function combat_GUIMarineBuyMenu:_InitializeItemButtons()
     self.itemButtons = { }
     
     local allUps = GetAllUpgrades("Marine")
-    // sort the ups, definied in this file
+    // sort the ups, defined in this file
     sortedList = CombatMarineBuy_GUISortUps(allUps) 
 
     // get the headlines
@@ -392,8 +407,8 @@ function combat_GUIMarineBuyMenu:_InitializeItemButtons()
                 
                 local costIcon = GUIManager:CreateGraphicItem()
                 costIcon:SetSize(Vector(combat_GUIMarineBuyMenu.kResourceIconWidth * 0.8, combat_GUIMarineBuyMenu.kResourceIconHeight * 0.8, 0))
-                costIcon:SetAnchor(GUIItem.Right, GUIItem.Bottom)
-                costIcon:SetPosition(Vector(-32, -combat_GUIMarineBuyMenu.kResourceIconHeight * 0.5, 0))
+                costIcon:SetAnchor(GUIItem.Left, GUIItem.Bottom)
+                costIcon:SetPosition(Vector(5, -combat_GUIMarineBuyMenu.kResourceIconHeight, 0))
                 costIcon:SetTexture(combat_GUIMarineBuyMenu.kResourceIconTexture)
                 costIcon:SetColor(combat_GUIMarineBuyMenu.kTextColor)
                 
@@ -418,13 +433,27 @@ function combat_GUIMarineBuyMenu:_InitializeItemButtons()
                 itemCost:SetScale(fontScaleVector)
                 itemCost:SetColor(combat_GUIMarineBuyMenu.kTextColor)
                 itemCost:SetText(ToString(upgrade:GetLevels()))
+				
+				if upgrade:GetHardCapScale() > 0 then
+					local hardCapCount = GUIManager:CreateTextItem()
+					hardCapCount:SetFontName(combat_GUIMarineBuyMenu.kFont)
+					hardCapCount:SetFontIsBold(true)
+					hardCapCount:SetAnchor(GUIItem.Left, GUIItem.Top)
+					hardCapCount:SetPosition(Vector(combat_GUIMarineBuyMenu.kSmallIconSize.x - combat_GUIMarineBuyMenu.kHardCapOffsetX, combat_GUIMarineBuyMenu.kHardCapOffsetY, 0))
+					hardCapCount:SetTextAlignmentX(GUIItem.Align_Max)
+					hardCapCount:SetTextAlignmentY(GUIItem.Align_Center)
+					hardCapCount:SetScale(fontScaleVector)
+					hardCapCount:SetColor(combat_GUIMarineBuyMenu.kTextColor)
+					hardCapCount:SetText(GetHardCapText(upgrade))
+					graphicItem:AddChild(hardCapCount) 
+				end
                 
                 costIcon:AddChild(itemCost)  
                 
-                graphicItem:AddChild(costIcon)  
+                graphicItem:AddChild(costIcon)   
                 
                 self.menu:AddChild(graphicItem)
-                table.insert(self.itemButtons, { Button = graphicItem, Highlight = graphicItemActive, TechId = itemTechId, Cost = itemCost, ResourceIcon = costIcon, Arrow = selectedArrow , Upgrade = upgrade} )
+                table.insert(self.itemButtons, { Button = graphicItem, Highlight = graphicItemActive, TechId = itemTechId, Cost = itemCost, ResourceIcon = costIcon, Arrow = selectedArrow, HardCapCount = hardCapCount, Upgrade = upgrade} )
                   
                 itemNr = itemNr +1
             end
@@ -536,6 +565,9 @@ function combat_GUIMarineBuyMenu:_UpdateItemButtons(deltaTime)
             item.Cost:SetColor(useColor)
             item.ResourceIcon:SetColor(useColor)
             item.Arrow:SetIsVisible(self.selectedItem == item.TechId)
+			if (item.HardCapCount) then
+				item.HardCapCount:SetText(GetHardCapText(item.Upgrade))
+			end
             
         end
     end

@@ -61,7 +61,6 @@ if kCombatModActive then
     Script.Load("lua/combat_TechNode.lua")
     Script.Load("lua/combat_Chat.lua")
 	Script.Load("lua/combat_CustomEffects.lua")
-    Script.Load("lua/combat_Player.lua")
 	Script.Load("lua/combat_PowerConsumerMixin.lua")
     Script.Load("lua/combat_CommandStructure.lua")
     Script.Load("lua/combat_StaticTargetMixin.lua")

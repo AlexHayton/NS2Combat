@@ -48,7 +48,8 @@ kSpawnMaxVertical = 30
 
 // By default, Aliens win after a certain amount of time...
 // Specified in seconds...
-kCombatTimeLimit = 1500
+// Time Limit is now specified in ModSwitcher.
+//kCombatTimeLimit = 1500
 kCombatTimeLeftPlayed = 0
 kCombatTimeReminderInterval = 300
 
@@ -76,7 +77,7 @@ kCombatFastReloadTime = kClassicReloadTime * 1.375
 
 // Focus
 kCombatFocusAttackSpeed = 0.6
-kCombatFocusDamageScalar = 1.23
+kCombatFocusDamageScalar = 1.4
 
 // Props
 kPropEffect = "vortex_destroy"
@@ -164,3 +165,5 @@ kCommandStationHealth = 4000
 
 // dont Track the CombatMod anylonger (later we could maybe make our own tracking site?
 kStatisticsURL = ""
+
+SetCachedTechData(kTechId.Hydra, kTechDataCostKey, kHydraCost)

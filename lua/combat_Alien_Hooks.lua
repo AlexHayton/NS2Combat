@@ -15,34 +15,48 @@ end
     
 function CombatAlien:OnLoad()
    
-    self:ReplaceClassFunction("Alien", "LockTierTwo", function() end)
-    self:ReplaceClassFunction("Alien", "UpdateNumHives","UpdateNumHives_Hook")
-    self:PostHookClassFunction("Alien", "OnUpdateAnimationInput","OnUpdateAnimationInput_Hook")
-	self:PostHookClassFunction("Alien", "GetCanTakeDamageOverride", "GetCanTakeDamageOverride_Hook"):SetPassHandle(true)
+    if Server then
+        self:ReplaceClassFunction("Alien", "LockTierTwo", function() end)
+        self:ReplaceClassFunction("Alien", "UpdateNumHives","UpdateNumHives_Hook")
+        self:PostHookClassFunction("Alien", "GetCanTakeDamageOverride", "GetCanTakeDamageOverride_Hook"):SetPassHandle(true)
+    else
+        self:PostHookClassFunction("Alien", "OnUpdateAnimationInput","OnUpdateAnimationInput_Hook")
+    end
 	
 end
 
-function CombatAlien:UpdateNumHives_Hook(self)
+if Server then
+    function CombatAlien:UpdateNumHives_Hook(self)
 
-    local time = Shared.GetTime()
-	if self.timeOfLastNumHivesUpdate == nil or (time > self.timeOfLastNumHivesUpdate + 0.5) then
+        local time = Shared.GetTime()
+        if self.timeOfLastNumHivesUpdate == nil or (time > self.timeOfLastNumHivesUpdate + 0.5) then
 
-		if self.combatTable then
-			if self.combatTable.twoHives and self.combatTable.twoHives ~= self.twoHives then
-				self.twoHives = true
-				self:UnlockTierTwo()
-			end
-			
-			if self.combatTable.threeHives and self.combatTable.threeHives ~= self.threeHives then
-				self.threeHives = true
-				self:UnlockTierThree()
-			end
-		end
-		
-		self.timeOfLastNumHivesUpdate = time
-		
-	end
+            if self.combatTable then
+                if self.combatTable.twoHives and self.combatTable.twoHives ~= self.twoHives then
+                    self.twoHives = true
+                    self:UnlockTierTwo()
+                end
+                
+                if self.combatTable.threeHives and self.combatTable.threeHives ~= self.threeHives then
+                    self.threeHives = true
+                    self:UnlockTierThree()
+                end
+            end
+            
+            self.timeOfLastNumHivesUpdate = time
+            
+        end
+    end
+
+    function CombatAlien:GetCanTakeDamageOverride_Hook(handle, self)
+
+        local canTakeDamage = handle:GetReturn() and not self.gotSpawnProtect
+        handle:SetReturn(canTakeDamage)
+
+    end
+
 end
+
 
 function CombatAlien:OnUpdateAnimationInput_Hook(self, modelMixin)
   
@@ -53,13 +67,6 @@ function CombatAlien:OnUpdateAnimationInput_Hook(self, modelMixin)
         modelMixin:SetAnimationInput("attack_speed", self:GetIsEnzymed() and kEnzymeAttackSpeed or 1.0)
     end
     
-end
-
-function CombatAlien:GetCanTakeDamageOverride_Hook(handle, self)
-
-	local canTakeDamage = handle:GetReturn() and not self.gotSpawnProtect
-	handle:SetReturn(canTakeDamage)
-
 end
 
 if (not HotReload) then

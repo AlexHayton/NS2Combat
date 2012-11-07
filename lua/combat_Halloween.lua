@@ -8,7 +8,7 @@
 // combat_Halloween.lua
 // functions for the halloween special
 
-kCombatHalloweenMode = true
+kCombatHalloweenMode = false
 
 kHalloWeenMessage = {"!!! The burned Onos has appeared !!!",
                     "kill it before it kills you to earn some extra XP!",
