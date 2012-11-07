@@ -54,7 +54,7 @@ function GetAllUpgrades(team)
 	local upgradeList = {}
 	local className = ""
 	
-	if team == "Marine" then
+	if team == "Marine" or team == kTeam1Index then
 		className = "CombatMarineUpgrade"
 	else
 		className = "CombatAlienUpgrade"

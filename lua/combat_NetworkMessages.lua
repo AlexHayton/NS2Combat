@@ -40,7 +40,7 @@ if Server then
 	end
 	
 	function SendCombatUpgradeCountUpdate(player, upgradeId, upgradeCount)
-
+		
         if player then
 			local message = BuildCombatUpgradeCountUpdate(upgradeId, upgradeCount)
             Server.SendNetworkMessage(player, "CombatUpgradeCountUpdate", message, true)

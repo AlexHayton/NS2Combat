@@ -113,6 +113,9 @@ local function UpdateUpgradeCounts(gameRules)
 
 	UpdateUpgradeCountsForTeam(gameRules, kTeam1Index)
 	UpdateUpgradeCountsForTeam(gameRules, kTeam2Index)
+	
+	// Return true to keep the loop going.
+	return true
 
 end
 
@@ -242,9 +245,11 @@ function CombatNS2Gamerules:JoinTeam_Hook(self, player, newTeamNumber, force)
 		newPlayer:SetSpawnProtect()
 		
 		// Send upgrade updates for each player.
-		for upgradeId, upgradeCount in pairs(self.UpgradeCounts[newTeamNumber]) do
-			// Send all upgrade counts to this player
-			SendCombatUpgradeCountUpdate(newPlayer, upgradeId, upgradeCount)
+		if newTeamNumber == kTeam1Index or newTeamNumber == kTeam2Index then
+			for upgradeId, upgradeCount in pairs(self.UpgradeCounts[newTeamNumber]) do
+				// Send all upgrade counts to this player
+				SendCombatUpgradeCountUpdate(newPlayer, upgradeId, upgradeCount)
+			end
 		end
 		
 	end

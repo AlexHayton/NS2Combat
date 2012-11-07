@@ -106,7 +106,7 @@ function CombatUpgrade:GetIsHardCapped(player)
 			
 		end		
 		
-		if (numPlayersWithUpgrade / numInTeam) > hardCapScale then
+		if (numPlayersWithUpgrade / numInTeam) > self.hardCapScale then
 			return true
 		else
 			return false
