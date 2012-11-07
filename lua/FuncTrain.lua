@@ -80,9 +80,9 @@ function FuncTrain:OnUpdate(deltaTime)
     if Server then
         if self.driving then
             self:UpdatePosition(deltaTime)
-            self:SetDeltaAngles(self:GetAngles())
-            self:MovePlayersInTrigger()
+            self:SetOldAngles(self:GetAngles())
             self:MoveTrigger()
+            self:MovePlayersInTrigger()            
         end
     end
 end
@@ -152,28 +152,40 @@ function FuncTrain:GetMovementVector()
     return self.movementVector or Vector(0,0,0)     
 end
 
-function FuncTrain:SetDeltaAngles(newAngles)
+function FuncTrain:SetOldAngles(newAngles)
 
     if self.deltaAngles then
-        local deltaAngles = Angles()
-        self.deltaAngles.yaw = GetAnglesDifference(newAngles.yaw, self.deltaAngles.yaw)
-        self.deltaAngles.pitch = GetAnglesDifference(newAngles.pitch, self.deltaAngles.pitch)
-        self.deltaAngles.roll = GetAnglesDifference(newAngles.roll, self.deltaAngles.roll)
-        self.deltaAngles = deltaAngles 
+        self:SetOldAnglesDiff(newAngles)
+        self.oldAngles.yaw = math.abs(newAngles.yaw - self.deltaAngles.yaw)
+        self.oldAngles.pitch = math.abs(newAngles.pitch - self.deltaAngles.pitch)
+        self.oldAngles.roll = math.abs(newAngles.roll - self.deltaAngles.roll)
+
     else
-        self.deltaAngles = newAngles
+        self.oldAngles = newAngles
     end
 end
 
+function FuncTrain:SetOldAnglesDiff(newAngles)
+
+    if self.oldAnglesDiff then
+        self.oldAnglesDiff.yaw = math.abs(newAngles.yaw - self.oldAngles.yaw)
+        self.oldAnglesDiff.pitch = math.abs(newAngles.pitch - self.oldAngles.pitch)
+        self.oldAnglesDiff.roll = math.abs(newAngles.roll - self.oldAngles.roll)
+    else
+        self.oldAnglesDiff = Angles(0,0,0)
+    end
+end
+
+
 function FuncTrain:GetDeltaAngles()
-    if not self.deltaAngles then
+    if not self.oldAnglesDiff then
         local angles = Angles()
         angles.pitch = 0
         angles.yaw = 0
         angles.roll = 0
-        self.deltaAngles = angles   
+        self.oldAnglesDiff = angles   
     end
-    return self.deltaAngles    
+    return self.oldAnglesDiff   
 end
 
 function FuncTrain:GetSpeed()
