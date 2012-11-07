@@ -427,6 +427,16 @@ function Player:Reset_Lite()
 
 end
 
+function Player:RefundAllUpgrades()
+
+	self:Reset_Lite()
+	// Kill the player when they do this. Prevents abuse!
+	if (self:GetIsAlive()) then
+		self:Kill(nil, nil, self:GetOrigin())
+	end
+
+end
+
 // sends all upgrades to the player
 function Player:SendAllUpgrades()
   

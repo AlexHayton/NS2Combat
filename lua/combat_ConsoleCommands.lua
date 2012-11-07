@@ -161,6 +161,14 @@ function OnCommandSendUpgrades(client)
 
 end
 
+// Refund all the upgrades for this player
+function OnCommandRefundAllUpgrades(client)
+
+    local player = client:GetControllingPlayer()
+    player:RefundAllUpgrades()
+
+end
+
 local function OnCommandModActive(client, activeBoolean)
 
     if client == nil or client:GetIsLocalClient() then
@@ -302,6 +310,7 @@ if kCombatModActive then
     Event.Hook("Console_/status",                OnCommandStatus) 
     //Event.Hook("Console_/stuck",                OnCommandStuck)    
     Event.Hook("Console_co_sendupgrades",       OnCommandSendUpgrades) 
+	Event.Hook("Console_co_refundall", 	        OnCommandRefundAllUpgrades)
     
 end
 
