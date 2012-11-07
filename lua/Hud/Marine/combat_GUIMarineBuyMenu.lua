@@ -788,7 +788,9 @@ function combat_GUIMarineBuyMenu:_UpdateRefundButton(deltaTime)
 end
 
 function combat_GUIMarineBuyMenu:_ClickRefundButton()
-    Shared.Message("Refund button clicked")
+
+    Shared.ConsoleCommand("co_refundall")
+	
 end
 
 function combat_GUIMarineBuyMenu:_UninitializeRefundButton()
@@ -834,10 +836,14 @@ function combat_GUIMarineBuyMenu:SendKeyEvent(key, down)
                 end
 				
 				// Check if the close button was pressed.
-                if self:_GetIsMouseOver(self.refundButton) then
+				if not closeMenu then
+					if self:_GetIsMouseOver(self.refundButton) then
 					self:_ClickRefundButton()
+					closeMenu = true
                     inputHandled = true
-                end
+                    self:OnClose()
+					end
+				end
             end
         end
         

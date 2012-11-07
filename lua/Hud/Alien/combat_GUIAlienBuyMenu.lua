@@ -444,15 +444,24 @@ function CombatGUIAlienBuyMenu:SendKeyEvent_Hook(self, key, down)
                     end
                     
                 end
+				
+				if self:_GetIsMouseOver(self.refundButtonBackground) then
+					ClickRefundButton(self)
+					closeMenu = true
+					inputHandled = true
+					AlienBuy_OnClose()
+				end
                 
                 // Check if the close button was pressed.
-                if self:_GetIsMouseOver(self.closeButton) then
-                
-                    closeMenu = true
-                    inputHandled = true
-                    AlienBuy_OnClose()
-                    
-                end
+				if not closeMenu then
+					if self:_GetIsMouseOver(self.closeButton) then
+					
+						closeMenu = true
+						inputHandled = true
+						AlienBuy_OnClose()
+						
+					end
+				end
                 
             end
             
@@ -480,7 +489,7 @@ end
 
 local function ClickRefundButton(self)
 	
-	Shared.Message("Refund button clicked")
+	Shared.ConsoleCommand("co_refundall")
 
 end
 
@@ -516,11 +525,6 @@ function CombatGUIAlienBuyMenu:_HandleUpgradeClicked_Hook(self, mouseX, mouseY)
             currentTweener.setMode((currentButton.Selected and "forward") or "backward")
         end
     end
-	
-	if self:_GetIsMouseOver(self.refundButtonBackground) then
-		ClickRefundButton(self)
-		inputHandled = true
-	end
     
     return inputHandled
 

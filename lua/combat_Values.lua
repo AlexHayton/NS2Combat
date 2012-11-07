@@ -44,7 +44,7 @@ kCombatAlienSpawnProtectTime = 5
 kSpawnMaxRetries = 50
 kSpawnMinDistance = 5
 kSpawnMaxDistance = 70
-kSpawnMaxVertical = 40
+kSpawnMaxVertical = 30
 
 // By default, Aliens win after a certain amount of time...
 // Specified in seconds...

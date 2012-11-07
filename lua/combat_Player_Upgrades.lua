@@ -427,9 +427,13 @@ function Player:Reset_Lite()
 
 end
 
+// Refunds all the upgrades and resets them back as if they had just joined the team.
 function Player:RefundAllUpgrades()
 
 	self:Reset_Lite()
+	self:AddLvlFree(self:GetLvl() - 1 + kCombatStartUpgradePoints)
+	self:SendDirectMessage("All points refunded. You can choose your upgrades again!")
+	
 	// Kill the player when they do this. Prevents abuse!
 	if (self:GetIsAlive()) then
 		self:Kill(nil, nil, self:GetOrigin())
