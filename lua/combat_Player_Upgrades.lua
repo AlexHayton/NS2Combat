@@ -36,10 +36,12 @@ end
 function Player:GetHasUpgrade(upgradeId)
 
 	local hasUpgrade = false
-	for index, upgrade in ipairs(self.combatTable.techtree) do
-		if (upgrade:GetId() == upgradeId) then
-			hasUpgrade = true
-			break
+	if self.combatTable then
+		for index, upgrade in ipairs(self.combatTable.techtree) do
+			if (upgrade:GetId() == upgradeId) then
+				hasUpgrade = true
+				break
+			end
 		end
 	end
 	
