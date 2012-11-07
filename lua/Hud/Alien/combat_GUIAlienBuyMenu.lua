@@ -12,6 +12,9 @@ if(not HotReload) then
   CombatGUIAlienBuyMenu = {}
   ClassHooker:Mixin("CombatGUIAlienBuyMenu")
 end
+
+local kLargeFont = "fonts/AgencyFB_large.fnt"
+local kFont = "fonts/AgencyFB_small.fnt"
     
 function CombatGUIAlienBuyMenu:OnLoad()
 
@@ -22,6 +25,7 @@ function CombatGUIAlienBuyMenu:OnLoad()
 	_addHookToTable(self:ReplaceClassFunction("GUIAlienBuyMenu", "_InitializeUpgradeButtons", "_InitializeUpgradeButtons_Hook"))
 	_addHookToTable(self:ReplaceClassFunction("GUIAlienBuyMenu", "SendKeyEvent", "SendKeyEvent_Hook"))
 	_addHookToTable(self:ReplaceClassFunction("GUIAlienBuyMenu", "_HandleUpgradeClicked", "_HandleUpgradeClicked_Hook"))
+	_addHookToTable(self:PostHookClassFunction("GUIAlienBuyMenu", "_UninitializeUpgradeButtons", "_UninitializeUpgradeButtons_Hook"))
 end
 
 function CombatGUIAlienBuyMenu:Initialize_Hook(self)
@@ -30,6 +34,11 @@ function CombatGUIAlienBuyMenu:Initialize_Hook(self)
 	GUIAlienBuyMenu.kMaxNumberOfUpgradeButtons = 10
 	GUIAlienBuyMenu.kUpgradeButtonDistance = GUIScale(kCombatAlienBuyMenuUpgradeButtonDistance)
 	GUIAlienBuyMenu.kBuyHUDTexture = "ui/combat_alien_buildmenu.dds"
+	GUIAlienBuyMenu.kRefundButtonWidth = GUIScale(80)
+	GUIAlienBuyMenu.kRefundButtonHeight = GUIScale(80)
+	GUIAlienBuyMenu.kRefundButtonYOffset = GUIScale(20)
+	GUIAlienBuyMenu.kRefundButtonTextSize = GUIScale(22)
+	GUIAlienBuyMenu.kRefundButtonTextureCoordinates = { 396, 428, 706, 511 }
 
 end
 
@@ -69,6 +78,29 @@ function CombatGUIAlienBuyMenu:_InitializeSlots_Hook(self)
         self.slots[i].Angle = angle
     
     end
+
+end
+
+// Create a 'refund' button
+local function InitializeRefundButton(self)
+
+    self.refundButtonBackground = GUIManager:CreateGraphicItem()
+    self.refundButtonBackground:SetAnchor(GUIItem.Right, GUIItem.Bottom)
+    self.refundButtonBackground:SetSize(Vector(GUIAlienBuyMenu.kRefundButtonWidth, GUIAlienBuyMenu.kRefundButtonHeight, 0))
+    self.refundButtonBackground:SetPosition(Vector(-GUIAlienBuyMenu.kRefundButtonWidth / 2, GUIAlienBuyMenu.kRefundButtonHeight / 2 + GUIAlienBuyMenu.kRefundButtonYOffset, 0))
+    self.refundButtonBackground:SetTexture(GUIAlienBuyMenu.kBuyMenuTexture)
+    self.refundButtonBackground:SetTexturePixelCoordinates(unpack(GUIAlienBuyMenu.kRefundButtonTextureCoordinates))
+    self.background:AddChild(self.refundButtonBackground)
+    
+    self.refundButtonText = GUIManager:CreateTextItem()
+    self.refundButtonText:SetAnchor(GUIItem.Middle, GUIItem.Center)
+    self.refundButtonText:SetFontName(kFont)
+    self.refundButtonText:SetTextAlignmentX(GUIItem.Align_Center)
+    self.refundButtonText:SetTextAlignmentY(GUIItem.Align_Center)
+    self.refundButtonText:SetText(Locale.ResolveString("COMBAT_REFUND_ALIEN"))
+    self.refundButtonText:SetColor(Color(242, 214, 42, 1))
+    self.refundButtonText:SetPosition(Vector(0, 0, 0))
+    self.refundButtonBackground:AddChild(self.refundButtonText)
 
 end
 
@@ -133,6 +165,9 @@ function CombatGUIAlienBuyMenu:_InitializeUpgradeButtons_Hook(self)
         end
     
     end
+	
+	// Create the refund button too.
+	InitializeRefundButton(self)
 
 end
 
@@ -279,6 +314,16 @@ local kDefaultColor = Color(1,1,1,1)
 local kNotAvailableColor = Color(0.3, 0.3, 0.3, 1)
 local kNotAllowedColor = Color(1, 0,0,1)
 
+local function UpdateRefundButton(self)
+
+	if self:_GetIsMouseOver(self.refundButtonBackground) then
+		local infoText = Locale.ResolveString("COMBAT_REFUND_TITLE_ALIEN")
+		local infoTip = Locale.ResolveString("COMBAT_REFUND_DESCRIPTION_ALIEN")
+		self:_ShowMouseOverInfo(infoText, infoTip, 0, 0, 0)
+	end
+
+end
+
 function CombatGUIAlienBuyMenu:Update_Hook(self, deltaTime)
 
 	// Call our version of the evolve button script.
@@ -318,6 +363,8 @@ function CombatGUIAlienBuyMenu:Update_Hook(self, deltaTime)
            
        end
 	end
+	
+	UpdateRefundButton(self)
 
 end
 
@@ -397,15 +444,24 @@ function CombatGUIAlienBuyMenu:SendKeyEvent_Hook(self, key, down)
                     end
                     
                 end
+				
+				if self:_GetIsMouseOver(self.refundButtonBackground) then
+					ClickRefundButton(self)
+					closeMenu = true
+					inputHandled = true
+					AlienBuy_OnClose()
+				end
                 
                 // Check if the close button was pressed.
-                if self:_GetIsMouseOver(self.closeButton) then
-                
-                    closeMenu = true
-                    inputHandled = true
-                    AlienBuy_OnClose()
-                    
-                end
+				if not closeMenu then
+					if self:_GetIsMouseOver(self.closeButton) then
+					
+						closeMenu = true
+						inputHandled = true
+						AlienBuy_OnClose()
+						
+					end
+				end
                 
             end
             
@@ -429,6 +485,28 @@ end
 local function _GetHasMaximumSelected(self)
     // only 1 upgrade should be selectable, but already bought ups are OK
     return false
+end
+
+local function ClickRefundButton(self)
+	
+	Shared.ConsoleCommand("co_refundall")
+
+end
+
+local function UninitializeRefundButton(self)
+
+    GUI.DestroyItem(self.refundButtonText)
+    self.refundButtonText = nil
+	
+    GUI.DestroyItem(self.refundButtonBackground)
+    self.refundButtonBackground = nil
+
+end
+
+function CombatGUIAlienBuyMenu:_UninitializeUpgradeButtons_Hook(self)
+
+	UninitializeRefundButton(self)
+
 end
 
 function CombatGUIAlienBuyMenu:_HandleUpgradeClicked_Hook(self, mouseX, mouseY)

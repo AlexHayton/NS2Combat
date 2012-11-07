@@ -17,6 +17,7 @@ end
 function CombatNS2Gamerules:OnLoad()
 
     ClassHooker:SetClassCreatedIn("NS2Gamerules", "lua/NS2Gamerules.lua")
+	self:PostHookClassFunction("NS2Gamerules", "OnCreate", "OnCreate_Hook")
     self:ReplaceClassFunction("NS2Gamerules", "JoinTeam", "JoinTeam_Hook")
 	self:PostHookClassFunction("NS2Gamerules", "OnUpdate", "OnUpdate_Hook")
 	self:PostHookClassFunction("NS2Gamerules", "ChooseTechPoint", "ChooseTechPoint_Hook"):SetPassHandle(true)
@@ -63,6 +64,80 @@ local function SetUserPlayedInGame(self, player)
 	
 	return false
 	
+end
+
+function UpdateUpgradeCountsForTeam(gameRules, teamIndex)
+
+	// Get the number of players on the team who have the upgrade
+	local oldCounts = gameRules.UpgradeCounts[teamIndex]
+	local teamPlayers = GetEntitiesForTeam("Player", teamIndex)
+	local numInTeam = #teamPlayers
+	
+	// Reset the upgrade counts
+	gameRules.UpgradeCounts[teamIndex] = {}
+	for upgradeIndex, upgrade in ipairs(GetAllUpgrades(teamIndex)) do
+		gameRules.UpgradeCounts[teamIndex][upgrade:GetId()] = 0
+	end
+	
+	// Recalculate the upgrade counts.
+	for index, teamPlayer in ipairs(teamPlayers) do
+	
+		// Skip dead players
+		if (teamPlayer:GetIsAlive()) then
+			
+			local playerTechTree = teamPlayer:GetCombatTechTree()
+			for upgradeIndex, upgrade in ipairs(playerTechTree) do
+				// Update the count for this upgrade.
+				gameRules.UpgradeCounts[teamIndex][upgrade:GetId()] = gameRules.UpgradeCounts[teamIndex][upgrade:GetId()] + 1
+			end
+			
+		end
+		
+	end		
+	
+	// Updates for each player.
+	for upgradeId, upgradeCount in pairs(gameRules.UpgradeCounts[teamIndex]) do
+		// Send any updates to all players
+		if upgradeCount ~= oldCounts[upgradeId] then
+			local teamPlayers = GetEntitiesForTeam("Player", teamIndex)
+			for index, teamPlayer in ipairs(teamPlayers) do
+				SendCombatUpgradeCountUpdate(teamPlayer, upgradeId, upgradeCount)
+			end
+		end
+	end
+
+end
+
+// Don't do this too often - it is expensive!
+local function UpdateUpgradeCounts(gameRules)
+
+	UpdateUpgradeCountsForTeam(gameRules, kTeam1Index)
+	UpdateUpgradeCountsForTeam(gameRules, kTeam2Index)
+	
+	// Return true to keep the loop going.
+	return true
+
+end
+
+function CombatNS2Gamerules:OnCreate_Hook(self)
+
+	// Add the timed callback mixin.
+    InitMixin(self, TimedCallbackMixin)
+
+	self.UpgradeCounts = {}
+	self.UpgradeCounts[kTeam1Index] = {}
+	for index, upgrade in ipairs(GetAllUpgrades(kTeam1Index)) do
+		self.UpgradeCounts[kTeam1Index][upgrade:GetId()] = 0
+	end
+	
+	self.UpgradeCounts[kTeam2Index] = {}
+	for index, upgrade in ipairs(GetAllUpgrades(kTeam2Index)) do
+		self.UpgradeCounts[kTeam2Index][upgrade:GetId()] = 0
+	end
+	
+	// Recalculate these every half a second.
+	self:AddTimedCallback(UpdateUpgradeCounts, kCombatUpgradeUpdateInterval)
+
 end
 
 
@@ -168,6 +243,14 @@ function CombatNS2Gamerules:JoinTeam_Hook(self, player, newTeamNumber, force)
 		
 		//set spawn protect
 		newPlayer:SetSpawnProtect()
+		
+		// Send upgrade updates for each player.
+		if newTeamNumber == kTeam1Index or newTeamNumber == kTeam2Index then
+			for upgradeId, upgradeCount in pairs(self.UpgradeCounts[newTeamNumber]) do
+				// Send all upgrade counts to this player
+				SendCombatUpgradeCountUpdate(newPlayer, upgradeId, upgradeCount)
+			end
+		end
 		
 	end
 	
@@ -279,7 +362,6 @@ function CombatNS2Gamerules:OnUpdate_Hook(self, timePassed)
 	end
 end
 
-
 // let ns2 find a techPoint for team1 and search the nearest techPoint for team2
 function CombatNS2Gamerules:ChooseTechPoint_Hook(handle, self, techPoints, teamNumber)
 
@@ -367,7 +449,7 @@ function CombatNS2Gamerules:UpdateMapCycle_Hook(self)
 	if self.timeToCycleMap ~= nil and Shared.GetTime() >= self.timeToCycleMap then
 
 		local playerCount = Shared.GetEntitiesWithClassname("Player"):GetSize()
-		ModSwitcher_Save(nil, nil, playerCount, false)
+		ModSwitcher_Save(nil, nil, playerCount, nil, nil, false)
 	
 	end
 

@@ -119,7 +119,9 @@ function OnCommandHelp(client)
 	// Display a banner showing the available commands
 	local player = client:GetControllingPlayer()
 	player:SendDirectMessage("Use the 'buy' menu to buy upgrades.")
-	player:SendDirectMessage("You gain XP for killing other players, damaging structures and healing your structures.")
+	player:SendDirectMessage("You gain XP for killing other players, ")
+	player:SendDirectMessage("damaging structures and healing your structures.")
+	player:SendDirectMessage("Type /timeleft in chat to get the time remaining.")
 
 end
 
@@ -159,6 +161,14 @@ function OnCommandSendUpgrades(client)
 
 end
 
+// Refund all the upgrades for this player
+function OnCommandRefundAllUpgrades(client)
+
+    local player = client:GetControllingPlayer()
+    player:RefundAllUpgrades()
+
+end
+
 local function OnCommandModActive(client, activeBoolean)
 
     if client == nil or client:GetIsLocalClient() then
@@ -171,7 +181,7 @@ function OnCommandModActiveAdmin(client, activeBoolean)
 
     if activeBoolean then
         if activeBoolean == "true" or activeBoolean == "false" then
-            ModSwitcher_Save(activeBoolean, nil, nil, false)
+            ModSwitcher_Save(activeBoolean, nil, nil, nil, nil, false)
             Shared.Message("The changes only take effect after the next mapchange")
             
             // send it to every player            
@@ -197,8 +207,54 @@ function OnCommandModThresholdAdmin(client, numPlayers)
 	
     if numPlayers then
         if tonumber(numPlayers) then
-            ModSwitcher_Save(nil, tonumber(numPlayers), nil, false)
+            ModSwitcher_Save(nil, tonumber(numPlayers), nil, nil, nil, false)
             Shared.Message("The changes only take effect after the next mapchange!")
+            
+            // send it to every player            
+            ModSwitcher_Output_Status_All()
+              
+        else
+            Shared.Message("CombatModSwitcher: Only numbers allowed")
+        end
+	else
+		ModSwitcher_Output_Status_Console()
+    end
+end
+
+// Get the time remaining in this match.
+local function OnCommandTimeLeft(client)
+
+	// Display the remaining time left
+	local player = client:GetControllingPlayer()
+	local gameRules = GetGamerules()
+	local exactTimeLeft = (kCombatTimeLimit - gameRules.timeSinceGameStateChanged)
+	local timeLeft = math.ceil(exactTimeLeft)
+	local timeLeftText = GetTimeText(timeLeft)
+	
+	if (player:GetTeamNumber() == kMarineTeamType) then
+		timeLeftText = timeLeftText .. " left until Marines have lost!"
+	else
+		timeLeftText = timeLeftText .. " left until Aliens have won!"
+	end
+	
+	player:SendDirectMessage( timeLeftText )
+
+end
+
+local function OnCommandTimeLimit(client, timeLimit)
+
+    if client == nil or client:GetIsLocalClient() then
+        OnCommandTimeLimitAdmin(client, timeLimit)
+    end
+    
+end
+
+function OnCommandTimeLimitAdmin(client, timeLimit)
+	
+    if timeLimit then
+        if tonumber(timeLimit) then
+            ModSwitcher_Save(nil, nil, nil, timeLimit, nil, false)
+			kCombatTimeLimit = timeLimit
             
             // send it to every player            
             ModSwitcher_Output_Status_All()
@@ -215,7 +271,7 @@ function OnCommandChangeMap(client, mapName)
     
     if client == nil or client:GetIsLocalClient() then
 		local playerCount = Shared.GetEntitiesWithClassname("Player"):GetSize()
-		ModSwitcher_Save(nil, nil, playerCount, false)
+		ModSwitcher_Save(nil, nil, playerCount, nil, nil, false)
 	
         MapCycle_ChangeMap(mapName)
     end
@@ -234,7 +290,7 @@ Event.Hook("Console_soundtest",       OnCommandSoundTest)
 
 
 // All commands that should be accessible via the chat need to be in this list
-combatCommands = {"co_spendlvl", "co_help", "co_status", "co_upgrades", "/upgrades", "/status", "/buy", "/help"}
+combatCommands = {"co_spendlvl", "co_help", "co_status", "co_upgrades", "/upgrades", "/status", "/buy", "/help", "/timeleft"}
 
 if kCombatModActive then
 
@@ -248,9 +304,13 @@ if kCombatModActive then
     Event.Hook("Console_co_showxp",                OnCommandShowXp)
     Event.Hook("Console_co_showlvl",                OnCommandShowLvl)
     Event.Hook("Console_co_status",                OnCommandStatus) 
+	Event.Hook("Console_co_timeleft",              OnCommandTimeLeft)
+	Event.Hook("Console_timeleft",              OnCommandTimeLeft)
+	Event.Hook("Console_/timeleft",              OnCommandTimeLeft)
     Event.Hook("Console_/status",                OnCommandStatus) 
     //Event.Hook("Console_/stuck",                OnCommandStuck)    
     Event.Hook("Console_co_sendupgrades",       OnCommandSendUpgrades) 
+	Event.Hook("Console_co_refundall", 	        OnCommandRefundAllUpgrades)
     
 end
 
@@ -258,7 +318,9 @@ end
 // to make it available for admins and dedicated servers
 Event.Hook("Console_co_mod_active",         OnCommandModActive) 
 Event.Hook("Console_co_mod_threshold",         OnCommandModThreshold) 
+Event.Hook("Console_co_mod_timelimit",         OnCommandTimeLimit) 
 Event.Hook("Console_changemap", OnCommandChangeMap)
 CreateServerAdminCommand("Console_sv_co_mod_active", OnCommandModActiveAdmin, "<true/false> Switches between combat and classic mode") 
 CreateServerAdminCommand("Console_sv_co_mod_threshold", OnCommandModThresholdAdmin, "<number of players> Sets the game to classic mode after a certain player threshold") 
+CreateServerAdminCommand("Console_sv_co_mod_timelimit", OnCommandTimeLimitAdmin, "<number of players> Sets the time limit of the game (in seconds)") 
 CreateServerAdminCommand("Console_sv_changemap", OnCommandChangeMap, "<map name>, Switches to the map specified") 
