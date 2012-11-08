@@ -368,6 +368,12 @@ function CombatGUIAlienBuyMenu:Update_Hook(self, deltaTime)
 
 end
 
+local function ClickRefundButton(self)
+	
+	Shared.ConsoleCommand("co_refundall")
+
+end
+
 function CombatGUIAlienBuyMenu:SendKeyEvent_Hook(self, key, down)
 
     local closeMenu = false
@@ -485,12 +491,6 @@ end
 local function _GetHasMaximumSelected(self)
     // only 1 upgrade should be selectable, but already bought ups are OK
     return false
-end
-
-local function ClickRefundButton(self)
-	
-	Shared.ConsoleCommand("co_refundall")
-
 end
 
 local function UninitializeRefundButton(self)
