@@ -22,6 +22,14 @@ local kCombatUpgradeCountUpdateMessage =
 }
 Shared.RegisterNetworkMessage("CombatUpgradeCountUpdate", kCombatUpgradeCountUpdateMessage)
 
+local kCombatGameTimeMessage =
+{
+	showTimer = "boolean",
+    timeSinceGameStart = "float",
+	gameTimeLimit = "integer"
+}
+Shared.RegisterNetworkMessage("CombatGameTimeUpdate", kCombatGameTimeMessage)
+
 if Server then
 
     function SendCombatModeActive(client, activeBool)   
@@ -32,7 +40,7 @@ if Server then
      
     end
 	
-	function BuildCombatUpgradeCountUpdate(messageUpgradeId, messageUpgradeCount)
+	function BuildCombatUpgradeCountMessage(messageUpgradeId, messageUpgradeCount)
 	
 		return { upgradeId = messageUpgradeId,
 				 upgradeCount = messageUpgradeCount }
@@ -42,8 +50,25 @@ if Server then
 	function SendCombatUpgradeCountUpdate(player, upgradeId, upgradeCount)
 		
         if player then
-			local message = BuildCombatUpgradeCountUpdate(upgradeId, upgradeCount)
+			local message = BuildCombatUpgradeCountMessage(upgradeId, upgradeCount)
             Server.SendNetworkMessage(player, "CombatUpgradeCountUpdate", message, true)
+        end
+     
+    end
+	
+	function BuildCombatGameTimeMessage(showTimerBool)
+	
+		return { showTimer = showTimerBool,
+				 timeSinceGameStart = GameRules():GetGameTimeChanged(),
+				 totalGameTime = kCombatTimeLimit }
+	
+	end
+	
+	function SendCombatGameTimeUpdate(player, showTimerBool)
+		
+        if player then
+			local message = BuildCombatGameTimeMessage(showTimerBool)
+            Server.SendNetworkMessage(player, "CombatGameTimeUpdate", message, true)
         end
      
     end
@@ -68,6 +93,7 @@ elseif Client then
             // load EXP bar and other functions, variables etc.
             combatLoadClientFunctions()
             GetGUIManager():CreateGUIScriptSingle("Hud/combat_GUIExperienceBar")
+			GetGUIManager():CreateGUIScriptSingle("Hud/combat_GUIGameTimeCountDown")
         end
         
     end
@@ -85,6 +111,18 @@ elseif Client then
     end
     
     Client.HookNetworkMessage("CombatUpgradeCountUpdate", GetUpgradeCountUpdate)
+	
+	// Upgrade the counts for this upgrade Id.
+	function GetCombatGameTimeUpdate(messageTable)
+
+		local player = Client.GetLocalPlayer()
+		player.combatShowTimer = messageTable.showTimer
+		player.combatTimeSinceGameStart = messageTable.timeSinceGameStart
+		player.combatGameTimeLimit =  messageTable.gameTimeLimit
+        
+    end
+    
+    Client.HookNetworkMessage("CombatGameTimeUpdate", GetCombatGameTimeUpdate)
     
 end
 

@@ -35,3 +35,37 @@ function GetTimeText(timeInSeconds)
 	return timeLeftText
 
 end
+
+function GetTimeDigital(timeInSeconds)
+
+	local timeLeftText = ""
+	timeNumericSeconds = tonumber(timeInSeconds)
+	ASSERT(timeNumericSeconds >= 0)
+	local timeLeftMinutes = math.floor(timeNumericSeconds/60)
+	if (timeLeftMinutes < 10) then
+		timeLeftText = "0" .. timeLeftMinutes
+	else
+		timeLeftText = timeLeftMinutes
+	end
+	
+	timeLeftText = timeLeftText .. ":"
+	
+	timeLeftSeconds = math.floor(timeInSeconds)
+	if (timeLeftSeconds < 10) then
+		timeLeftText = timeLeftText .. "0" .. timeLeftSeconds
+	else
+		timeLeftText = timeLeftText .. timeLeftSeconds
+	end
+	
+	timeLeftText = timeLeftText .. ":"
+	
+	local timeLeftMilliseconds = math.ceil((timeLeftSeconds % 1) * 100)
+	if (timeLeftMilliseconds < 10) then
+		timeLeftText = timeLeftText .. "0" .. timeLeftMilliseconds
+	else
+		timeLeftText = timeLeftText .. timeLeftMilliseconds
+	end
+	
+	return timeLeftText
+
+end

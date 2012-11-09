@@ -21,8 +21,7 @@ function NS2CombatMenuMod:OnLoad()
   LoadTracker:SetFileOverride("lua/Hud/Marine/combat_GUIMarineBuyMenu.lua", "mods/NS2Combat/lua/Hud/Marine/combat_GUIMarineBuyMenu.lua")
   LoadTracker:SetFileOverride("lua/Hud/Alien/combat_GUIAlienBuyMenu.lua", "mods/NS2Combat/lua/Hud/Alien/combat_GUIAlienBuyMenu.lua")
   LoadTracker:SetFileOverride("lua/Hud/combat_GUIExperienceBar.lua", "mods/NS2Combat/lua/Hud/combat_GUIExperienceBar.lua")
-  
-  
+  LoadTracker:SetFileOverride("lua/Hud/combat_GUIGameTimeCountDown.lua", "mods/NS2Combat/lua/Hud/combat_GUIGameTimeCountDown.lua")
   
   self:PostHookClassFunction("Player", "Buy", "MouseStateFix")
   self:PostHookClassFunction("Alien", "Buy", "MouseStateFix")
