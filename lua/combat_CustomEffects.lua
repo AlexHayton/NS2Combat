@@ -7,6 +7,11 @@
 
 // combat_CustomEffects.lua
 
+// Sounds for both client and server
+CombatEffects = {}
+CombatEffects.kMarineLvlUpSound = PrecacheAsset("sound/combat.fev/combat/upgrades/marine_lvl_up")
+CombatEffects.kAlienLvlUpSound = PrecacheAsset("sound/combat.fev/combat/upgrades/alien_lvl_up")
+
 kCombatEffects =
 {
  

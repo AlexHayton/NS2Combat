@@ -457,13 +457,11 @@ if Server then
             self:TriggerEffects("combat_level_up")
 			
 			// Trigger sound on level up
-			local lvlUpSoundEffect = ""
 			if (self:isa("Alien")) then
-				lvlUpSoundEffect = Player.kAlienLvlUpSound
+				StartSoundEffectAtOrigin(CombatEffects.kAlienLvlUpSound, self:GetOrigin())
 			else
-				lvlUpSoundEffect = Player.kMarineLvlUpSound
+				StartSoundEffectAtOrigin(CombatEffects.kMarineLvlUpSound, self:GetOrigin())
 			end
-			StartSoundEffectAtOrigin(lvlUpSoundEffect, self:GetOrigin())
             
             local LvlName = Experience_GetLvlName(self:GetLvl(), self:GetTeamNumber())
             self:SendDirectMessage( "!! Level UP !! New Lvl: " .. LvlName .. " (" .. self:GetLvl() .. ")")
