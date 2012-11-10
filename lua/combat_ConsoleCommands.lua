@@ -258,6 +258,11 @@ function OnCommandTimeLimitAdmin(client, timeLimit)
             
             // send it to every player            
             ModSwitcher_Output_Status_All()
+			
+			// Also send out a network message to update players' GUI.
+			for i, player in ientitylist(Shared.GetEntitiesWithClassname("Player")) do
+				SendCombatGameTimeUpdate(player)
+			end
               
         else
             Shared.Message("CombatModSwitcher: Only numbers allowed")
