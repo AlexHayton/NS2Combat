@@ -84,8 +84,9 @@ function CombatPlayerClient:OnInitLocalClient_Hook(self)
     Shared.ConsoleCommand("co_sendupgrades")
 	
 	// Also initialise counters
-	self.combatTimeSinceGameStart = 0
-	self.combatGameTimeLimit = 0
+	if (kCombatTimeSinceGameStart == nil) then
+		kCombatTimeSinceGameStart = 0
+	end
 
 end
 
@@ -115,9 +116,6 @@ function CombatPlayerClient:CloseMenu_Hook(self)
 end
 
 function CombatPlayerClient:UpdateClientEffects_Hook(self, deltaTime, isLocal)
-
-	// Update the client-side clock.
-	self.combatTimeSinceGameStart = self.combatTimeSinceGameStart + deltaTime
 
 	// Stop the regular buy menu from staying open.
 	if self.buyMenu then

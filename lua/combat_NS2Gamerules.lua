@@ -313,17 +313,7 @@ function CombatNS2Gamerules:OnUpdate_Hook(self, timePassed)
                     local playersTeam1 = GetEntitiesForTeam("Player", kTeam1Index)
                     local playersTeam2 = GetEntitiesForTeam("Player", kTeam2Index)
 					
-					local timeLeftText
-					if (timeLeft > 60) then
-						timeLeftText = math.ceil(timeLeft/60) .." minutes"
-					elseif (timeLeft == 60) then
-						timeLeftText = "1 minute"
-					elseif (timeLeft == 1) then
-						timeLeftText = "1 second"
-					else
-						timeLeftText = timeLeft .." seconds"
-					end
-                    
+					local timeLeftText = GetTimeText(timeLeft)
                     for index, player in ipairs(playersTeam1) do
                         player:SendDirectMessage( timeLeftText .." left until Marines have lost!")
                     end

@@ -9,5 +9,6 @@ kCombatLocaleMessages["COMBAT_REFUND_DESCRIPTION_MARINE"] = "Resets your upgrade
 kCombatLocaleMessages["NUTRIENT_MIST"] = "Focus"
 kCombatLocaleMessages["NUTRIENT_MIST_TOOLTIP"] = "Attack more slowly but do much more damage with each bite!"
 kCombatLocaleMessages["SHADE_INK_TOOLTIP"] = "Creates a cloud of Ink around you."
+kCombatLocaleMessages["TIME_REMAINING"] = "Time Remaining:"
 kCombatLocaleMessages["THREE_HIVES"] = "Tier Three Abilities"
 kCombatLocaleMessages["TWO_HIVES"] = "Tier Two Abilities"

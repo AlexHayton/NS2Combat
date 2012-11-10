@@ -55,19 +55,18 @@ if Server then
      
     end
 	
-	function BuildCombatGameTimeMessage(timeSinceGameStartFloat, totalGameTimeInt)
+	function BuildCombatGameTimeMessage(timeSinceGameStartFloat, gameTimeLimitInt)
 	
 		return { timeSinceGameStart = timeSinceGameStartFloat,
-				 totalGameTime = totalGameTimeInt }
+				 gameTimeLimit = gameTimeLimitInt }
 	
 	end
 	
 	function SendCombatGameTimeUpdate(player)
 		
-		Shared.Message("Sent Game Time Update to " .. player:GetName())
         if player then
 			local timeSinceGameStart = GetGamerules():GetGameTimeChanged()
-			local message = BuildCombatGameTimeMessage(timeSinceGameStart, kCombatTimeLimit)
+			local message = BuildCombatGameTimeMessage(timeSinceGameStart, tonumber(kCombatTimeLimit))
             Server.SendNetworkMessage(player, "CombatGameTimeUpdate", message, true)
         end
      
@@ -115,10 +114,8 @@ elseif Client then
 	// Upgrade the counts for this upgrade Id.
 	function GetCombatGameTimeUpdate(messageTable)
 
-		Shared.Message("Received Game Time Update from server")
-		local player = Client.GetLocalPlayer()
-		player.combatTimeSinceGameStart = messageTable.timeSinceGameStart
-		player.combatGameTimeLimit =  messageTable.gameTimeLimit
+		kCombatTimeSinceGameStart = messageTable.timeSinceGameStart
+		kCombatTimeLimit =  messageTable.gameTimeLimit
         
     end
     

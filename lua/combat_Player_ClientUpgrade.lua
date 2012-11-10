@@ -202,8 +202,12 @@ end
 
 function PlayerUI_GetTimeRemaining()
 
-	local player = Client.GetLocalPlayer()
-	local exactTimeLeft = (player.combatGameTimeLimit - player.combatTimeSinceGameStart)
-	return GetTimeDigital(exactTimeLeft)
+	timeDigital = "00:00:00"
+	if (kCombatTimeLimit ~= nil) then
+		local exactTimeLeft = (kCombatTimeLimit - kCombatTimeSinceGameStart)
+		timeDigital = GetTimeDigital(exactTimeLeft)
+	end
+	
+	return timeDigital
 
 end
