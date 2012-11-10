@@ -379,7 +379,7 @@ if Server then
         // check if amount isn't nil, could cause an error
         if amount and amount > 0 then
             if (amount > 10) then
-                self:TriggerEffects("res_received")
+                self:TriggerEffects("combat_xp")
             end
         
             // Make sure we don't go over the max XP.
@@ -452,9 +452,6 @@ if Server then
             local numberLevels = self:GetLvl() - self.combatTable.lvl
             self.resources = self.resources + numberLevels
             self.combatTable.lvl = self:GetLvl()
-            
-            // Trigger an effect
-            self:TriggerEffects("combat_level_up")
 			
 			// Trigger sound on level up
 			if (self:isa("Alien")) then
@@ -465,6 +462,9 @@ if Server then
             
             local LvlName = Experience_GetLvlName(self:GetLvl(), self:GetTeamNumber())
             self:SendDirectMessage( "!! Level UP !! New Lvl: " .. LvlName .. " (" .. self:GetLvl() .. ")")
+			
+			// Trigger an effect
+            self:TriggerEffects("combat_level_up")
         end     
         
         if self:GetLvl() < maxLvl and not suppressmessage then
