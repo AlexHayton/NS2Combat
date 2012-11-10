@@ -22,5 +22,8 @@ LoadTracker:LoadScriptAfter("lua/Shared.lua", "lua/FuncTrainWaypoint.lua", nil)
 LoadTracker:LoadScriptAfter("lua/Shared.lua", "lua/combat_Player.lua", nil)
 LoadTracker:LoadScriptAfter("lua/Shared.lua", "lua/combat_SpawnProtectClass.lua", nil)
 
+// Register Network Messages here.
+Script.Load("lua/combat_NetworkMessages.lua")
+
 
 

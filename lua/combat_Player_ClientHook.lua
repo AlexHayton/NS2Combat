@@ -78,10 +78,14 @@ function CombatPlayerClient:Buy_Hook_Marine(self)
 
 end
 
-// get the ups from the server (only worked that way)
 function CombatPlayerClient:OnInitLocalClient_Hook(self)
 
-    Shared.ConsoleCommand("co_sendupgrades") 
+	// get the ups from the server (only worked that way)
+    Shared.ConsoleCommand("co_sendupgrades")
+	
+	// Also initialise counters
+	self.combatTimeSinceGameStart = 0
+	self.combatGameTimeLimit = 0
 
 end
 
@@ -110,9 +114,12 @@ function CombatPlayerClient:CloseMenu_Hook(self)
     return false
 end
 
-// Stop the regular buy menu from staying open.
-function CombatPlayerClient:UpdateClientEffects_Hook(self)
+function CombatPlayerClient:UpdateClientEffects_Hook(self, deltaTime, isLocal)
 
+	// Update the client-side clock.
+	self.combatTimeSinceGameStart = self.combatTimeSinceGameStart + deltaTime
+
+	// Stop the regular buy menu from staying open.
 	if self.buyMenu then
         self:CloseMenu()
     end    

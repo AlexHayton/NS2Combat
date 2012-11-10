@@ -197,3 +197,11 @@ function PlayerUI_TriggerInvalidSound()
 	player:TriggerInvalidSound()
 
 end
+
+function PlayerUI_GetTimeRemaining()
+
+	local player = Client.GetLocalPlayer()
+	local exactTimeLeft = (player.combatGameTimeLimit - player.combatTimeSinceGameStart)
+	return GetTimeDigital(exactTimeLeft)
+
+end

@@ -24,7 +24,6 @@ Shared.RegisterNetworkMessage("CombatUpgradeCountUpdate", kCombatUpgradeCountUpd
 
 local kCombatGameTimeMessage =
 {
-	showTimer = "boolean",
     timeSinceGameStart = "float",
 	gameTimeLimit = "integer"
 }
@@ -116,7 +115,7 @@ elseif Client then
 	// Upgrade the counts for this upgrade Id.
 	function GetCombatGameTimeUpdate(messageTable)
 
-		Shared.Message("Received Game Time Update" .. messageTable)
+		Shared.Message("Received Game Time Update from server")
 		local player = Client.GetLocalPlayer()
 		player.combatTimeSinceGameStart = messageTable.timeSinceGameStart
 		player.combatGameTimeLimit =  messageTable.gameTimeLimit

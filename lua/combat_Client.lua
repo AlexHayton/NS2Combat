@@ -10,8 +10,6 @@ Script.Load("lua/PathUtil.lua")
 Script.Load("lua/fsfod_scripts.lua")
 Script.Load("lua/combat_Shared.lua")
 
-Script.Load("lua/combat_NetworkMessages.lua")
-
 /*
 test = {
 chatMessage = "Test",

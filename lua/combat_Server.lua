@@ -12,9 +12,6 @@ Script.Load("lua/PathUtil.lua")
 Script.Load("lua/fsfod_scripts.lua")
 Script.Load("lua/combat_Shared.lua")
 
-// Register Network Messages.
-Script.Load("lua/combat_NetworkMessages.lua")
-
 // load the ModSwitcher functions
 Script.Load("lua/combat_ModSwitcher.lua")
 ModSwitcher_Load(true)
