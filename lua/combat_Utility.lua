@@ -24,13 +24,22 @@ function GetTimeText(timeInSeconds)
 	timeNumericSeconds = tonumber(timeInSeconds)
 	ASSERT(timeNumericSeconds >= 0)
 	if (timeNumericSeconds > 60) then
-		timeLeftText = math.ceil(timeNumericSeconds/60) .." minutes"
+		timeLeftText = math.floor(timeNumericSeconds/60) .." minutes"
 	elseif (timeNumericSeconds == 60) then
 		timeLeftText = "1 minute"
-	elseif (timeNumericSeconds == 1) then
-		timeLeftText = "1 second"
-	else
-		timeLeftText = timeNumericSeconds .." seconds"
+	end
+	
+	
+	if (timeNumericSeconds > 60 and timeNumericSeconds % 60 ~= 0) then
+		timeLeftText = timeLeftText .. ", "
+	end
+	
+	if (timeNumericSeconds % 60 ~= 0) then
+		if (timeNumericSeconds % 60 == 1) then
+			timeLeftText = timeLeftText .. "1 second"
+		else
+			timeLeftText = timeLeftText .. (timeNumericSeconds % 60) .." seconds"
+		end
 	end
 	return timeLeftText
 

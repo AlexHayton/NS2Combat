@@ -16,9 +16,9 @@ kCombatEffects =
         levelUpEffects = 
         {
 			{cinematic = "cinematics/alien/catalyst_small.cinematic", classname = "Alien"},
-            {sound = "sound/NS2.fev/alien/voiceovers/research_complete", classname = "Alien", done = true},
+            {sound = "sound/combat.fev/combat/upgrades/alien_lvl_up", classname = "Alien", done = true},
 			{cinematic = "cinematics/marine/infantryportal/player_spawn.cinematic"},
-            {sound = "sound/NS2.fev/marine/voiceovers/commander/research_complete"}
+            {sound = "sound/combat.fev/combat/upgrades/marine_lvl_up"}
         }
     }
     

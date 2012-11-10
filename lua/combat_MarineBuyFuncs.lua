@@ -95,7 +95,7 @@ function CombatMarineBuy_GetDisplayName(techId)
 		return "Fast-Reload"
 	
 	else
-            return Locale.ResolveString(LookupTechData(techId, kTechDataDisplayName, ""))
+            return Combat_ResolveString(LookupTechData(techId, kTechDataDisplayName, ""))
         end
     else
         return ""

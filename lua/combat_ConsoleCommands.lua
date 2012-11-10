@@ -254,7 +254,7 @@ function OnCommandTimeLimitAdmin(client, timeLimit)
     if timeLimit then
         if tonumber(timeLimit) then
             ModSwitcher_Save(nil, nil, nil, timeLimit, nil, false)
-			kCombatTimeLimit = timeLimit
+			kCombatTimeLimit = tonumber(timeLimit)
             
             // send it to every player            
             ModSwitcher_Output_Status_All()

@@ -22,6 +22,10 @@ if kCombatModActive then
 	// Register the files we don't want to ever load.
 	// Disabled for now - it would work if we didn't have the mod switcher!
 	//Script.Load("lua/combat_FileOverrides.lua")
+	
+	// Language Support
+	Script.Load("lua/combat_Locale.lua")
+	Script.Load("gamestrings/combat_enUS.lua")
 
     // Loading the Hook classes
     // TODO: Maybe we don't need the OnLoad?

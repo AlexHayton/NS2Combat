@@ -166,4 +166,8 @@ kCommandStationHealth = 4000
 // dont Track the CombatMod anylonger (later we could maybe make our own tracking site?
 kStatisticsURL = ""
 
+// Sounds for both client and server
+Player.kMarineLvlUpSound = PrecacheAsset("sound/combat.fev/combat/upgrades/marine_lvl_up")
+Player.kAlienLvlUpSound = PrecacheAsset("sound/combat.fev/combat/upgrades/alien_lvl_up")
+
 SetCachedTechData(kTechId.Hydra, kTechDataCostKey, kHydraCost)

@@ -98,7 +98,7 @@ local function InitializeRefundButton(self)
     self.refundButtonText:SetFontName(kFont)
     self.refundButtonText:SetTextAlignmentX(GUIItem.Align_Center)
     self.refundButtonText:SetTextAlignmentY(GUIItem.Align_Center)
-    self.refundButtonText:SetText(Locale.ResolveString("COMBAT_REFUND_ALIEN"))
+    self.refundButtonText:SetText(Combat_ResolveString("COMBAT_REFUND_ALIEN"))
     self.refundButtonText:SetColor(Color(242, 214, 42, 1))
     self.refundButtonText:SetPosition(Vector(0, 0, 0))
     self.refundButtonBackground:AddChild(self.refundButtonText)
@@ -245,7 +245,7 @@ local function UpdateEvolveButton(self)
     local numberOfSelectedUpgrades = GetNumberOfSelectedUpgrades(self)
     local evolveButtonTextureCoords = GUIAlienBuyMenu.kEvolveButtonTextureCoordinates
     
-    evolveText = Locale.ResolveString("ABM_SELECT_UPGRADES")
+    evolveText = Combat_ResolveString("ABM_SELECT_UPGRADES")
     
     // If the current alien is selected with no upgrades, cannot evolve.
     if self.selectedAlienType == AlienBuy_GetCurrentAlien() and numberOfSelectedUpgrades == 0 then
@@ -255,7 +255,7 @@ local function UpdateEvolveButton(self)
     
         // If cannot afford selected alien type and/or upgrades, cannot evolve.
         evolveButtonTextureCoords = GUIAlienBuyMenu.kEvolveButtonNeedResourcesTextureCoordinates
-        evolveText = Locale.ResolveString("ABM_NEED")
+        evolveText = Combat_ResolveString("ABM_NEED")
         evolveCost = AlienBuy_GetAlienCost(self.selectedAlienType) + selectedUpgradesCost - AlienBuy_GetHyperMutationCostReduction(self.selectedAlienType)
         
     else
@@ -268,7 +268,7 @@ local function UpdateEvolveButton(self)
             totalCost = totalCost + AlienBuy_GetAlienCost(self.selectedAlienType)
         end
         
-        evolveText = Locale.ResolveString("ABM_EVOLVE_FOR")
+        evolveText = Combat_ResolveString("ABM_EVOLVE_FOR")
         evolveCost = totalCost - AlienBuy_GetHyperMutationCostReduction(self.selectedAlienType) // shows also negative values
         
     end
@@ -318,8 +318,8 @@ local kNotAllowedColor = Color(1, 0,0,1)
 local function UpdateRefundButton(self)
 
 	if self:_GetIsMouseOver(self.refundButtonBackground) then
-		local infoText = Locale.ResolveString("COMBAT_REFUND_TITLE_ALIEN")
-		local infoTip = Locale.ResolveString("COMBAT_REFUND_DESCRIPTION_ALIEN")
+		local infoText = Combat_ResolveString("COMBAT_REFUND_TITLE_ALIEN")
+		local infoTip = Combat_ResolveString("COMBAT_REFUND_DESCRIPTION_ALIEN")
 		self:_ShowMouseOverInfo(infoText, infoTip, 0, 0, 0)
 	end
 

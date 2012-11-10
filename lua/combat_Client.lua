@@ -40,6 +40,12 @@ Script.Load("lua/Client.lua")
 
 function combatLoadClientFunctions()
 
+	// Language support
+	Script.Load("lua/combat_Locale.lua")
+	local locale = Client.GetOptionString( "locale", "enUS" )
+	// Test for locale here when we have more languages added.
+	Script.Load("gamestrings/combat_enUS.lua")
+	
 	// Load everything we need for Combat
     Script.Load("lua/combat_Player_ClientUpgrade.lua")
     Script.Load("lua/combat_CustomEffects.lua")
