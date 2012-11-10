@@ -150,7 +150,6 @@ function combat_GUIGameTimeCountDown:Update(deltaTime)
 		if not (self.timeRemaining) then 
 			self.timeRemaining = Shared.GetTime()
 		end
-		local gameRules = GetGamerules()
 		local exactTimeLeft = (kCombatTimeLimit - gameRules.timeSinceGameStateChanged)
 		local timeLeftText = GetTimeDigital(exactTimeLeft)
 		self.timeRemainingText = timeLeftText

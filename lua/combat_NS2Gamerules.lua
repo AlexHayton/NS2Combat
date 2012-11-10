@@ -252,6 +252,9 @@ function CombatNS2Gamerules:JoinTeam_Hook(self, player, newTeamNumber, force)
 			end
 		end
 		
+		// Send timer updates
+		SendCombatGameTimeUpdate(newPlayer)
+		
 	end
 	
 	// Return old player

@@ -288,6 +288,9 @@ function CombatPlayingTeam:SpawnPlayer(player)
 			newPlayer.combatTable.justGotWelder = false
 			newPlayer:SwitchWeapon(1)
 		end
+		
+		// Send timer updates
+		SendCombatGameTimeUpdate(newPlayer)
     end
 
     return success
