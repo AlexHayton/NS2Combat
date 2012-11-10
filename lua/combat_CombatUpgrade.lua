@@ -92,15 +92,13 @@ function CombatUpgrade:GetIsHardCapped(player)
 		local teamPlayers = GetEntitiesForTeam("Player", player:GetTeamNumber())
 		local numInTeam = #teamPlayers
 		local numPlayersWithUpgrade = 0
-		Shared.Message ("Hard Cap: Scale: " .. self.hardCapScale)
-		Shared.Message ("Hard Cap: Num in Team: " .. numInTeam)
 		
 		for index, teamPlayer in ipairs(teamPlayers) do
 		
 			// Skip dead players
 			if (teamPlayer:GetIsAlive()) then
 				
-				if (player:GetHasCombatUpgrade(self:GetId())) then
+				if (teamPlayer:GetHasCombatUpgrade(self:GetId())) then
 					numPlayersWithUpgrade = numPlayersWithUpgrade + 1
 				end
 				
@@ -108,10 +106,7 @@ function CombatUpgrade:GetIsHardCapped(player)
 			
 		end		
 		
-		Shared.Message ("Hard Cap: Players with Upgrade: " .. numPlayersWithUpgrade)
-		Shared.Message ("Hard Cap: Current team scale: " .. numPlayersWithUpgrade / numInTeam)
-		
-		if (numPlayersWithUpgrade / numInTeam) > self.hardCapScale then
+		if (numPlayersWithUpgrade / numInTeam) >= self.hardCapScale then
 			return true
 		else
 			return false
