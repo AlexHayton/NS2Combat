@@ -219,13 +219,11 @@ function OnCommandModThresholdAdmin(client, numPlayers)
 	else
 		ModSwitcher_Output_Status_Console()
     end
+
 end
 
-// Get the time remaining in this match.
-local function OnCommandTimeLeft(client)
+local function SendTimeLeftChatToPlayer(player)
 
-	// Display the remaining time left
-	local player = client:GetControllingPlayer()
 	local gameRules = GetGamerules()
 	local exactTimeLeft = (kCombatTimeLimit - gameRules.timeSinceGameStateChanged)
 	local timeLeft = math.ceil(exactTimeLeft)
@@ -238,6 +236,15 @@ local function OnCommandTimeLeft(client)
 	end
 	
 	player:SendDirectMessage( timeLeftText )
+
+end
+
+// Get the time remaining in this match.
+local function OnCommandTimeLeft(client)
+
+	// Display the remaining time left
+	local player = client:GetControllingPlayer()
+	SendTimeLeftChatToPlayer(player)
 
 end
 
@@ -260,8 +267,10 @@ function OnCommandTimeLimitAdmin(client, timeLimit)
             ModSwitcher_Output_Status_All()
 			
 			// Also send out a network message to update players' GUI.
+			// and remind them how long is remaining
 			for i, player in ientitylist(Shared.GetEntitiesWithClassname("Player")) do
 				SendCombatGameTimeUpdate(player)
+				SendTimeLeftChatToPlayer(player)
 			end
               
         else
