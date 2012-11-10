@@ -498,7 +498,8 @@ if Server then
             self:SendDirectMessage("You got only " .. self:GetLvlFree().. " but you need at least ".. type .. " free Lvl")
             
         elseif hint == "already_owned" then
-            self:SendDirectMessage("You already own the upgrade " .. type)
+			// Suppress this now as most people buy via the menus.
+            //self:SendDirectMessage("You already own the upgrade " .. type)
             
         elseif hint == "no_room" then
             self:SendDirectMessage( type .." upgrade failed, maybe not enough room")   

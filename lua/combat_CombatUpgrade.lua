@@ -98,7 +98,7 @@ function CombatUpgrade:GetIsHardCapped(player)
 			// Skip dead players
 			if (teamPlayer:GetIsAlive()) then
 				
-				if (player:GetHasUpgrade(self:GetId())) then
+				if (player:GetHasCombatUpgrade(self:GetId())) then
 					numPlayersWithUpgrade = numPlayersWithUpgrade + 1
 				end
 				

@@ -190,3 +190,10 @@ function Player:GetLevelProgression()
 	return (xp - thisLevel) / (nextLevel - thisLevel)
 
 end
+
+function PlayerUI_TriggerInvalidSound()
+
+	local player = Client.GetLocalPlayer()
+	player:TriggerInvalidSound()
+
+end
