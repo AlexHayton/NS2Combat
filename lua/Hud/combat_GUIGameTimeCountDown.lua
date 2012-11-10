@@ -15,8 +15,8 @@ combat_GUIGameTimeCountDown.kBackgroundTexture = "ui/alien_commander_background.
 
 combat_GUIGameTimeCountDown.kBackgroundWidth = GUIScale(210)
 combat_GUIGameTimeCountDown.kBackgroundHeight = GUIScale(115)
-combat_GUIGameTimeCountDown.kBackgroundOffsetX = GUIScale(-15)
-combat_GUIGameTimeCountDown.kBackgroundOffsetY = GUIScale(50)
+combat_GUIGameTimeCountDown.kBackgroundOffsetX = GUIScale(0)
+combat_GUIGameTimeCountDown.kBackgroundOffsetY = GUIScale(10)
 
 combat_GUIGameTimeCountDown.kTitleOffset = Vector(0, GUIScale(30), 0)
 combat_GUIGameTimeCountDown.kTitleFontName = "fonts/AgencyFB_small.fnt"
@@ -49,8 +49,8 @@ function combat_GUIGameTimeCountDown:Initialize()
     // Timer display background
     self.timerBackground = self:CreateAnimatedGraphicItem()
     self.timerBackground:SetSize( Vector(combat_GUIGameTimeCountDown.kBackgroundWidth, combat_GUIGameTimeCountDown.kBackgroundHeight, 0) )
-    self.timerBackground:SetPosition(Vector(combat_GUIGameTimeCountDown.kBackgroundOffsetX - combat_GUIGameTimeCountDown.kBackgroundWidth, combat_GUIGameTimeCountDown.kBackgroundOffsetY, 0))
-    self.timerBackground:SetAnchor(GUIItem.Right, GUIItem.Top) 
+    self.timerBackground:SetPosition(Vector(combat_GUIGameTimeCountDown.kBackgroundOffsetX - (combat_GUIGameTimeCountDown.kBackgroundWidth / 2), combat_GUIGameTimeCountDown.kBackgroundOffsetY, 0))
+    self.timerBackground:SetAnchor(GUIItem.Middle, GUIItem.Top) 
     self.timerBackground:SetLayer(kGUILayerPlayerHUD)
     self.timerBackground:SetTexture(combat_GUIGameTimeCountDown.kBackgroundTexture)
     self.timerBackground:SetTexturePixelCoordinates(unpack(combat_GUIGameTimeCountDown.kBgCoords))
@@ -126,33 +126,11 @@ function combat_GUIGameTimeCountDown:Update(deltaTime)
 	if (newTeam) then
 		if (self.playerTeam == "Marines") then
 			self.timerBackground:SetColor(Color(1,1,1,0))
-			/*
-			self.experienceData.barPixelCoordsX1 = combat_GUIExperienceBar.kMarineBarTextureX1
-			self.experienceData.barPixelCoordsX2 = combat_GUIExperienceBar.kMarineBarTextureX2
-			self.experienceData.barPixelCoordsY1 = combat_GUIExperienceBar.kMarineBarTextureY1
-			self.experienceData.barPixelCoordsY2 = combat_GUIExperienceBar.kMarineBarTextureY2
-			self.experienceBarBackground:SetTexture(combat_GUIExperienceBar.kMarineTextureName)
-			self.experienceBarBackground:SetTexturePixelCoordinates(combat_GUIExperienceBar.kMarineBarBackgroundTextureX1, combat_GUIExperienceBar.kMarineBarBackgroundTextureY1, combat_GUIExperienceBar.kMarineBarBackgroundTextureX2, combat_GUIExperienceBar.kMarineBarBackgroundTextureY2)
-			self.experienceBarBackground:SetColor(combat_GUIExperienceBar.kMarineBackgroundGUIColor)
-			self.experienceBar:SetTexture(combat_GUIExperienceBar.kMarineTextureName)
-		    self.experienceBar:SetTexturePixelCoordinates(combat_GUIExperienceBar.kMarineBarTextureX1, combat_GUIExperienceBar.kMarineBarTextureY1, combat_GUIExperienceBar.kMarineBarTextureX2, combat_GUIExperienceBar.kMarineBarTextureY2)
-			*/
 			self.timeRemainingTitle:SetColor(combat_GUIGameTimeCountDown.kMarineTextColor)
 			self.timeRemainingText:SetColor(combat_GUIGameTimeCountDown.kMarineTextColor)
 			self.showTimer = true
 		elseif (self.playerTeam == "Aliens") then
 			self.timerBackground:SetColor(Color(1,1,1,1))
-			/*
-			self.experienceData.barPixelCoordsX1 = combat_GUIExperienceBar.kAlienBarTextureX1
-			self.experienceData.barPixelCoordsX2 = combat_GUIExperienceBar.kAlienBarTextureX2
-			self.experienceData.barPixelCoordsY1 = combat_GUIExperienceBar.kAlienBarTextureY1
-			self.experienceData.barPixelCoordsY2 = combat_GUIExperienceBar.kAlienBarTextureY2
-			self.experienceBarBackground:SetTexture(combat_GUIExperienceBar.kAlienTextureName)
-			self.experienceBarBackground:SetTexturePixelCoordinates(combat_GUIExperienceBar.kAlienBarBackgroundTextureX1, combat_GUIExperienceBar.kAlienBarBackgroundTextureY1, combat_GUIExperienceBar.kAlienBarBackgroundTextureX2, combat_GUIExperienceBar.kAlienBarBackgroundTextureY2)
-			self.experienceBarBackground:SetColor(combat_GUIExperienceBar.kAlienBackgroundGUIColor)
-			self.experienceBar:SetTexture(combat_GUIExperienceBar.kAlienTextureName)
-			self.experienceBar:SetTexturePixelCoordinates(combat_GUIExperienceBar.kAlienBarTextureX1, combat_GUIExperienceBar.kAlienBarTextureY1, combat_GUIExperienceBar.kAlienBarTextureX2, combat_GUIExperienceBar.kAlienBarTextureY2)
-			*/
 			self.timeRemainingTitle:SetColor(combat_GUIGameTimeCountDown.kAlienTextColor)
 			self.timeRemainingText:SetColor(combat_GUIGameTimeCountDown.kAlienTextColor)
 			self.showTimer = true
