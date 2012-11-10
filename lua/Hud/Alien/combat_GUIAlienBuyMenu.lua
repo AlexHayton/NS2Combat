@@ -15,6 +15,7 @@ end
 
 local kLargeFont = "fonts/AgencyFB_large.fnt"
 local kFont = "fonts/AgencyFB_small.fnt"
+local cannotSelectSound = "sound/NS2.fev/alien/common/vision_off"
     
 function CombatGUIAlienBuyMenu:OnLoad()
 
@@ -347,7 +348,7 @@ function CombatGUIAlienBuyMenu:Update_Hook(self, deltaTime)
 		
 		if not currentButton.Selected and not AlienBuy_GetIsUpgradeAllowed(currentButton.TechId, self.upgradeList) then
 			useColor = kNotAllowedColor
-		end    
+		end
 		
 		currentButton.Icon:SetColor(useColor)
 		
@@ -514,16 +515,21 @@ function CombatGUIAlienBuyMenu:_HandleUpgradeClicked_Hook(self, mouseX, mouseY)
     local inputHandled = false
     
     for i, currentButton in ipairs(self.upgradeButtons) do
-        // Can't select if it has been purchased already.
-        if (not _GetHasMaximumSelected(self) or currentButton.Selected == true) and self:_GetIsMouseOver(currentButton.Icon) then
-            currentButton.Selected = not currentButton.Selected
-            inputHandled = true
-            if currentButton.Selected then AlienBuy_OnUpgradeSelected() else AlienBuy_OnUpgradeDeselected() end
-            // Setup a tweener based on the state of the button so it moves to the correct spot.
-            local currentTweener = self:_GetUpgradeTweener(currentButton)
-            currentTweener.setCurrent((currentButton.Selected and 1) or 2)
-            currentTweener.setMode((currentButton.Selected and "forward") or "backward")
-        end
+        // Can't select if it has been purchased already or is unselectable.
+		if (not _GetHasMaximumSelected(self) or currentButton.Selected == true) and self:_GetIsMouseOver(currentButton.Icon) then
+			if (not AlienBuy_GetIsUpgradeAllowed(currentButton.TechId, self.upgradeList) or currentButton.Purchased) then
+				// Play a sound or something to indicate this button isn't clickable.
+				PlayerUI_TriggerInvalidSound()
+			else
+				currentButton.Selected = not currentButton.Selected
+				inputHandled = true
+				if currentButton.Selected then AlienBuy_OnUpgradeSelected() else AlienBuy_OnUpgradeDeselected() end
+				// Setup a tweener based on the state of the button so it moves to the correct spot.
+				local currentTweener = self:_GetUpgradeTweener(currentButton)
+				currentTweener.setCurrent((currentButton.Selected and 1) or 2)
+				currentTweener.setMode((currentButton.Selected and "forward") or "backward")
+			end
+		end
     end
     
     return inputHandled

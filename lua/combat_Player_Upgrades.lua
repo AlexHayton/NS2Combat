@@ -33,7 +33,7 @@ function Player:GetCombatTechTree()
 end
 
 // Check if a player has a given upgrade.
-function Player:GetHasUpgrade(upgradeId)
+function Player:GetHasCombatUpgrade(upgradeId)
 
 	local hasUpgrade = false
 	if self.combatTable then
