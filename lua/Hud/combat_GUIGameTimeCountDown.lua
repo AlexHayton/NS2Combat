@@ -11,27 +11,23 @@ Script.Load("lua/combat_Utility.lua")
 
 class 'combat_GUIGameTimeCountDown' (GUIAnimatedScript)
 
-combat_GUIGameTimeCountDown.kBackgroundTexture = "ui/alien_commander_background.dds"
+combat_GUIGameTimeCountDown.kBackgroundTexture = "ui/combat_count_down_bg.dds"
 
 combat_GUIGameTimeCountDown.kBackgroundWidth = GUIScale(210)
-combat_GUIGameTimeCountDown.kBackgroundHeight = GUIScale(115)
+combat_GUIGameTimeCountDown.kBackgroundHeight = GUIScale(80)
 combat_GUIGameTimeCountDown.kBackgroundOffsetX = GUIScale(0)
-combat_GUIGameTimeCountDown.kBackgroundOffsetY = GUIScale(10)
+combat_GUIGameTimeCountDown.kBackgroundOffsetY = GUIScale(0)
 
-combat_GUIGameTimeCountDown.kTitleOffset = Vector(0, GUIScale(30), 0)
-combat_GUIGameTimeCountDown.kTitleFontName = "fonts/AgencyFB_small.fnt"
-combat_GUIGameTimeCountDown.kTitleFontSize = 12
-
-combat_GUIGameTimeCountDown.kTimeOffset = Vector(0, GUIScale(80), 0)
+combat_GUIGameTimeCountDown.kTimeOffset = Vector(0, GUIScale(-10), 0)
 combat_GUIGameTimeCountDown.kTimeFontName = "fonts/AgencyFB_large.fnt"
-combat_GUIGameTimeCountDown.kTimeFontSize = 30
+combat_GUIGameTimeCountDown.kTimeFontSize = 25
 combat_GUIGameTimeCountDown.kTimeBold = true
 
-combat_GUIGameTimeCountDown.kBgCoords = {805, 15, 942, 87}
+combat_GUIGameTimeCountDown.kBgCoords = {14, 0, 112, 34}
 
-combat_GUIGameTimeCountDown.kBackgroundColor = Color(1, 1, 1, 0.8)
-combat_GUIGameTimeCountDown.kMarineTextColor = Color(1.0, 1.0, 1.0, 1)
-combat_GUIGameTimeCountDown.kAlienTextColor = Color(0.9, 0.7, 0.7, 1)
+combat_GUIGameTimeCountDown.kBackgroundColor = Color(1, 1, 1, 0.7)
+combat_GUIGameTimeCountDown.kMarineTextColor = kMarineFontColor
+combat_GUIGameTimeCountDown.kAlienTextColor = kAlienFontColor
 
 function combat_GUIGameTimeCountDown:Initialize()    
 
@@ -54,25 +50,12 @@ function combat_GUIGameTimeCountDown:Initialize()
     self.timerBackground:SetLayer(kGUILayerPlayerHUD)
     self.timerBackground:SetTexture(combat_GUIGameTimeCountDown.kBackgroundTexture)
     self.timerBackground:SetTexturePixelCoordinates(unpack(combat_GUIGameTimeCountDown.kBgCoords))
-	self.timerBackground:SetColor( Color(1, 1, 1, 0) )
+	self.timerBackground:SetColor( combat_GUIGameTimeCountDown.kBackgroundColor )
 	self.timerBackground:SetIsVisible(false)
-    
-    // Time remaining title
-    self.timeRemainingTitle = self:CreateAnimatedTextItem()
-    self.timeRemainingTitle:SetAnchor(GUIItem.Middle, GUIItem.Top)
-    self.timeRemainingTitle:SetPosition(combat_GUIGameTimeCountDown.kTitleOffset)
-	self.timeRemainingTitle:SetLayer(kGUILayerPlayerHUDForeground1)
-	self.timeRemainingTitle:SetTextAlignmentX(GUIItem.Align_Center)
-    self.timeRemainingTitle:SetTextAlignmentY(GUIItem.Align_Center)
-	self.timeRemainingTitle:SetText(Combat_ResolveString("TIME_REMAINING"))
-	self.timeRemainingTitle:SetColor(Color(1,1,1,1))
-	self.timeRemainingTitle:SetFontSize(combat_GUIGameTimeCountDown.kTitleFontSize)
-    self.timeRemainingTitle:SetFontName(combat_GUIGameTimeCountDown.kTitleFontName)
-	self.timeRemainingTitle:SetIsVisible(true)
 	
 	// Time remaining
     self.timeRemainingText = self:CreateAnimatedTextItem()
-    self.timeRemainingText:SetAnchor(GUIItem.Middle, GUIItem.Top)
+    self.timeRemainingText:SetAnchor(GUIItem.Middle, GUIItem.Center)
     self.timeRemainingText:SetPosition(combat_GUIGameTimeCountDown.kTimeOffset)
 	self.timeRemainingText:SetLayer(kGUILayerPlayerHUDForeground1)
 	self.timeRemainingText:SetTextAlignmentX(GUIItem.Align_Center)
@@ -85,7 +68,6 @@ function combat_GUIGameTimeCountDown:Initialize()
 	self.timeRemainingText:SetIsVisible(true)
  
 	self.background:AddChild(self.timerBackground)
-    self.timerBackground:AddChild(self.timeRemainingTitle)
 	self.timerBackground:AddChild(self.timeRemainingText)
     self:Update(0)
 
@@ -125,13 +107,9 @@ function combat_GUIGameTimeCountDown:Update(deltaTime)
 	
 	if (newTeam) then
 		if (self.playerTeam == "Marines") then
-			self.timerBackground:SetColor(Color(1,1,1,0))
-			self.timeRemainingTitle:SetColor(combat_GUIGameTimeCountDown.kMarineTextColor)
 			self.timeRemainingText:SetColor(combat_GUIGameTimeCountDown.kMarineTextColor)
 			self.showTimer = true
 		elseif (self.playerTeam == "Aliens") then
-			self.timerBackground:SetColor(Color(1,1,1,1))
-			self.timeRemainingTitle:SetColor(combat_GUIGameTimeCountDown.kAlienTextColor)
 			self.timeRemainingText:SetColor(combat_GUIGameTimeCountDown.kAlienTextColor)
 			self.showTimer = true
 		else
@@ -158,7 +136,6 @@ end
 function combat_GUIGameTimeCountDown:Uninitialize()
 
 	GUI.DestroyItem(self.timeRemainingText)
-    GUI.DestroyItem(self.timeRemainingTitle)
 	GUI.DestroyItem(self.timerBackground)
     GUI.DestroyItem(self.background)
 
