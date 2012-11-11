@@ -165,6 +165,11 @@ kCommandStationHealth = 4000
 // Make the Onos slightly more squishy!
 kOnosHealth = 1000
 kOnosArmor = 400
+kOnosArmorFullyUpgradedAmount = 600
+Onos.kHealth = kOnosHealth
+Onos.kArmor = kOnosArmor
+SetCachedTechData(kTechId.Onos, kTechDataMaxHealth, kOnosHealth)
+SetCachedTechData(kTechId.Onos, kTechDataMaxArmor, kOnosArmor)
 
 // dont Track the CombatMod anylonger (later we could maybe make our own tracking site?
 kStatisticsURL = ""
