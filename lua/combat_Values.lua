@@ -162,6 +162,9 @@ kHyperMutationCost = generalCost
 // Make the marine structures slightly less squishy...
 kArmoryHealth = 2500
 kCommandStationHealth = 4000
+// Make the Onos slightly more squishy!
+kOnosHealth = 1000
+kOnosArmor = 400
 
 // dont Track the CombatMod anylonger (later we could maybe make our own tracking site?
 kStatisticsURL = ""
