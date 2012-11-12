@@ -160,8 +160,8 @@ kHyperMutationCost = generalCost
 
 // Health values
 // Make the marine structures slightly less squishy...
-kArmoryHealth = 2500
-kCommandStationHealth = 4000
+kArmoryHealth = 5000
+kCommandStationHealth = 8000
 // Make the Onos slightly more squishy!
 kOnosHealth = 1000
 kOnosArmor = 400
