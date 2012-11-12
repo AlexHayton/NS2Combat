@@ -132,7 +132,8 @@ function ModSwitcher_Load(changeLocal)
     else
         // file not found, create it
         Shared.Message(kCombatModSwitcherPath .. " not found, will create it now.")
-        ModSwitcher_Save(kCombatModActive, kCombatPlayerThreshold, kCombatLastPlayerCount, kCombatTimeLimit, kCombatGlobalMic, true)       
+        newSettings = ModSwitcher_Save(kCombatModActive, kCombatPlayerThreshold, kCombatLastPlayerCount, kCombatTimeLimit, kCombatGlobalMic, true)
+		ModSwitcher_Output_Status(newSettings)
     end 
     
 end
@@ -213,6 +214,7 @@ function ModSwitcher_Save(ModActiveBool, ThresholdNumber, LastPlayers, TimeLimit
 	settingsFile:write(json.encode(kCombatModSwitcherConfig))
 	
 	io.close(settingsFile)
+	return kCombatModSwitcherConfig
 
 end
 

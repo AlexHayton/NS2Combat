@@ -10,8 +10,10 @@
 // Used to send messages to all players.
 function SendGlobalChatMessage(message)
 	local allPlayers = Shared.GetEntitiesWithClassname("Player")
-	for index, player in ientitylist(allPlayers) do
-		player:SendDirectMessage(message)
+	if (allPlayers:GetSize() > 0) then
+		for index, player in ientitylist(allPlayers) do
+			player:SendDirectMessage(message)
+		end
 	end
 	
 	// Also output to the console for admins.
