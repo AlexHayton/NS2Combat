@@ -107,6 +107,8 @@ kCamouflageUncloakFactor = 2 / 3
 kHealsprayDamage = 7
 // Conversely, reduce the welder's effectiveness from its original value of 150.
 kStructureWeldRate = 90
+// The rate at which players heal the hive/cc should be multiplied by this ratio.
+kHiveCCHealRate = 0.3
 // The rate at which players gain XP for healing... relative to damage dealt.
 kHealXpRate = 1
 // Rate at which players gain XP for healing other players...
@@ -160,8 +162,8 @@ kHyperMutationCost = generalCost
 
 // Health values
 // Make the marine structures slightly less squishy...
-kArmoryHealth = 2500
-kCommandStationHealth = 4000
+kArmoryHealth = 5000
+kCommandStationHealth = 8000
 // Make the Onos slightly more squishy!
 kOnosHealth = 1000
 kOnosArmor = 400
