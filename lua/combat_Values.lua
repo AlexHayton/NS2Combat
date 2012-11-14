@@ -175,3 +175,7 @@ SetCachedTechData(kTechId.Onos, kTechDataMaxArmor, kOnosArmor)
 kStatisticsURL = ""
 
 SetCachedTechData(kTechId.Hydra, kTechDataCostKey, kHydraCost)
+
+// to make sure focus is not nutrient mist in buy menu
+SetCachedTechData(kTechId.NutrientMist, kTechDataDisplayName, "FOCUS")
+SetCachedTechData(kTechId.NutrientMist, kTechDataTooltipInfo, "FOCUS_TOOLTIP")
