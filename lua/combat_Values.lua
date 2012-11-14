@@ -104,9 +104,9 @@ kCamouflageTime = 1.5
 kCamouflageUncloakFactor = 2 / 3
 
 // Gorge Healspray heals more (and makes a bit more damage)
-kHealsprayDamage = 10
+kHealsprayDamage = 7
 // Conversely, reduce the welder's effectiveness from its original value of 150.
-kStructureWeldRate = 120
+kStructureWeldRate = 90
 // The rate at which players gain XP for healing... relative to damage dealt.
 kHealXpRate = 1
 // Rate at which players gain XP for healing other players...
