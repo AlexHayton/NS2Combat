@@ -107,6 +107,8 @@ kCamouflageUncloakFactor = 2 / 3
 kHealsprayDamage = 10
 // Conversely, reduce the welder's effectiveness from its original value of 150.
 kStructureWeldRate = 120
+// The rate at which players heal the hive/cc should be multiplied by this ratio.
+kHiveCCHealRate = 0.3
 // The rate at which players gain XP for healing... relative to damage dealt.
 kHealXpRate = 1
 // Rate at which players gain XP for healing other players...
