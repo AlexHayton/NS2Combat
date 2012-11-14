@@ -265,7 +265,12 @@ end
 // If the client connects, send him the welcome Message
 // Also grant average XP.
 function CombatNS2Gamerules:OnClientConnect_Hook(self, client)
+
     local player = client:GetControllingPlayer()
+
+	// Tell the player that Combat Mode is active.
+    SendCombatModeActive(client, kCombatModActive)
+	
 	player:CheckCombatData()
     
     for i, message in ipairs(combatWelcomeMessage) do
