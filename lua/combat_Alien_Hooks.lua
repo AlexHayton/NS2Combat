@@ -19,9 +19,9 @@ function CombatAlien:OnLoad()
         self:ReplaceClassFunction("Alien", "LockTierTwo", function() end)
         self:ReplaceClassFunction("Alien", "UpdateNumHives","UpdateNumHives_Hook")
         self:PostHookClassFunction("Alien", "GetCanTakeDamageOverride", "GetCanTakeDamageOverride_Hook"):SetPassHandle(true)
-    else
-        self:PostHookClassFunction("Alien", "OnUpdateAnimationInput","OnUpdateAnimationInput_Hook")
     end
+    
+	self:PostHookClassFunction("Alien", "OnUpdateAnimationInput","OnUpdateAnimationInput_Hook")    
 	
 end
 
