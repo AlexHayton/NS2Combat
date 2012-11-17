@@ -14,7 +14,7 @@ if(not HotReload) then
 end
     
 function CombatSoundEffect:OnLoad()
-    self:ReplaceFunction("StartSoundEffectOnEntity", "StartSoundEffectOnEntity_Hook")    
+    self:PostHookFunction("StartSoundEffectOnEntity", "StartSoundEffectOnEntity_Hook")    
 end
 
 local kTauntSounds =
