@@ -7,19 +7,28 @@
 
 // combat_Locale.lua
 
-function Combat_ResolveString(input)
+// Replace the normal Locale.ResolveString with our own version!
+if Locale then
+	if Locale.ResolveString then
+		local NS2ResolveFunction = Locale.ResolveString
 
-	local resolvedString = nil
-	if (kCombatLocaleMessages) then
-		if (kCombatLocaleMessages[input] ~= nil) then
-			resolvedString = kCombatLocaleMessages[input]
+		function Combat_ResolveString(input)
+
+			local resolvedString = nil
+			if (kCombatLocaleMessages) then
+				if (kCombatLocaleMessages[input] ~= nil) then
+					resolvedString = kCombatLocaleMessages[input]
+				end
+			end
+			
+			if (resolvedString == nil) then
+				resolvedString = NS2ResolveFunction(input)
+			end
+			
+			return resolvedString
+
 		end
-	end
-	
-	if (resolvedString == nil) then
-		resolvedString = Locale.ResolveString(input)
-	end
-	
-	return resolvedString
 
+		Locale.ResolveString = Combat_ResolveString
+	end
 end
