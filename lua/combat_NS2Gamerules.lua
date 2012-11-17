@@ -436,9 +436,11 @@ function CombatNS2Gamerules:ResetGame_Hook(self)
     // reset SpawnCombo to set them again
     combatSpawnCombo = nil
     combatSpawnComboIndex  = nil
-    
-    // we deactivated the prop system so this is not needed at the moment
-    //CombatDeleteProps()
+	
+	// Send timer updates
+	for i, player in ientitylist(Shared.GetEntitiesWithClassname("Player")) do
+		SendCombatGameTimeUpdate(player)
+	end
 
 end
 
