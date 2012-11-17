@@ -390,6 +390,7 @@ function Player:Reset_Lite()
 	self.combatTable.lastReminderNotify = 0
 	self.combatTable.lastXpEffect = 0
 	self.combatTable.lastXpAmount = 0
+	self.combatTable.lastTauntTime = 0
 	self.combatTable.hasCamouflage = false
 	
 	self.combatTable.twoHives = false
