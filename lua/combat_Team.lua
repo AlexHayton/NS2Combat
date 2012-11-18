@@ -21,8 +21,6 @@ function CombatTeam:OnLoad()
 	
 end
 
-// AH: Old spawn code here has been moved to PlayingTeam now that we have a spawn queue implemented.
-
 // A cheap trick to stop waves from spawning on the Alien side.
 // This is a nasty way of doing it but it works for now!
 function CombatTeam:GetNumPlayersInQueue_Hook(self)

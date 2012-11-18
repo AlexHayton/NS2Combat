@@ -29,6 +29,7 @@ function CombatPlayerClient:OnLoad()
     
     _addHookToTable(self:ReplaceFunction("PlayerUI_GetArmorLevel", "PlayerUI_GetArmorLevel_Hook"))
     _addHookToTable(self:ReplaceFunction("PlayerUI_GetWeaponLevel", "PlayerUI_GetWeaponLevel_Hook"))
+	_addHookToTable(self:PostHookClassFunction("Player", "UpdateMisc", "UpdateMisc_Hook"))
 end
 
 // starting the custom buy menu for aliens
@@ -91,26 +92,29 @@ function CombatPlayerClient:OnInitLocalClient_Hook(self)
 end
 
 // Close the menu properly when a player dies.
+// Note: This does not trigger when players are killed via the console as that calls 'Kill' directly.
 function CombatPlayerClient:TriggerFirstPersonDeathEffects_Hook(self)
 
-    self:CloseMenu()
+    self:CloseMenu(true)
 
 end
 
 
 // costum CloseMenu that our buy menu will not be closed all the time (cause no structure is nearby)
-function CombatPlayerClient:CloseMenu_Hook(self)
+function CombatPlayerClient:CloseMenu_Hook(self, closeCombatBuy)
 
-    if self.buyMenu or g_MarineBuyMenu then
-        // only close it if its not the combatBuy
-        if not self.combatBuy then    
-            GetGUIManager():DestroyGUIScript(g_MarineBuyMenu)
-			g_MarineBuyMenu = nil
-            self.buyMenu = nil
-            MouseTracker_SetIsVisible(false)
-            return true
-        end        
-    end
+	if self:GetIsLocalPlayer() then
+		if self.buyMenu or g_MarineBuyMenu then
+			// only close it if its not the combatBuy
+			if closeCombatBuy or not self.combatBuy then    
+				GetGUIManager():DestroyGUIScript(g_MarineBuyMenu)
+				g_MarineBuyMenu = nil
+				self.buyMenu = nil
+				MouseTracker_SetIsVisible(false)
+				return true
+			end        
+		end
+	end
    
     return false
 end
@@ -188,7 +192,18 @@ function CombatPlayerClient:PlayerUI_GetWeaponLevel_Hook()
     return weaponLevel
 end
 
+function CombatPlayerClient:UpdateMisc_Hook(self, input)
 
+    if not Shared.GetIsRunningPrediction() then
+
+        // Close the buy menu if it is visible when the Player moves.
+        if input.move.x ~= 0 or input.move.z ~= 0 then
+            self:CloseMenu(true)
+        end
+        
+    end
+
+end
 
 
 if (not HotReload) then
