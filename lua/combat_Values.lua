@@ -123,6 +123,9 @@ kPowerPointPointValue = 0
 kAlienVisionCost = 0
 kAlienVisionEnergyRegenMod = 1
 
+// kill hydras after some time if the owner isn't a gorge
+kHydraKillTime = 60
+
 // Ammo for mines
 kNumMines = 1
 
