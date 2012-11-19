@@ -126,6 +126,9 @@ kAlienVisionEnergyRegenMod = 1
 // kill hydras after some time if the owner isn't a gorge
 kHydraKillTime = 60
 
+// kill hydras after some time if the owner isn't a gorge
+kExoPowerUpTime = 4
+
 // Ammo for mines
 kNumMines = 1
 

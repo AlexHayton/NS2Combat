@@ -193,6 +193,14 @@ function CombatPlayer:OnUpdatePlayer_Hook(self, deltaTime)
 			end
 	
 		end 
+		
+		if self.poweringUpFinishedTime then
+			if Shared.GetTime() >= self.poweringUpFinishedTime then
+				self:RetrieveMove()
+				self:SendDirectMessage("You can move again!")
+				self.poweringUpFinishedTime = nil
+			end
+		end
     end
 end
 
