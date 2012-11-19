@@ -26,6 +26,8 @@ function CombatNS2Gamerules:OnLoad()
     
     ClassHooker:SetClassCreatedIn("Gamerules", "lua/Gamerules.lua")
     self:PostHookClassFunction("Gamerules", "OnClientConnect", "OnClientConnect_Hook")
+    
+    self:ReplaceFunction("NS2Gamerules_GetUpgradedDamage", "NS2Gamerules_GetUpgradedDamage_Hook")
 	
 end
 
@@ -452,6 +454,37 @@ function CombatNS2Gamerules:UpdateMapCycle_Hook(self)
 		ModSwitcher_Save(nil, nil, playerCount, nil, nil, false)
 	
 	end
+
+end
+
+function CombatNS2Gamerules:NS2Gamerules_GetUpgradedDamage_Hook(attacker, doer, damage, damageType)
+
+    local damageScalar = 1
+
+    if attacker ~= nil then
+    
+        // Damage upgrades only affect weapons, not ARCs, Sentries, MACs, Mines, etc.
+        if doer:isa("Weapon") or doer:isa("Grenade") or doer:isa("Minigun") then
+        
+            if(GetHasTech(attacker, kTechId.Weapons3, true)) then
+            
+                damageScalar = kWeapons3DamageScalar
+                
+            elseif(GetHasTech(attacker, kTechId.Weapons2, true)) then
+            
+                damageScalar = kWeapons2DamageScalar
+                
+            elseif(GetHasTech(attacker, kTechId.Weapons1, true)) then
+            
+                damageScalar = kWeapons1DamageScalar
+                
+            end
+            
+        end
+        
+    end
+        
+    return damage * damageScalar
 
 end
 
