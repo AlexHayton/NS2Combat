@@ -52,19 +52,9 @@ function Player:GotFocus()
     if Server then
         if self.combatTable.hasFocus then
             // check the weapon
-            local activeWeapon = self:GetActiveWeapon()
-            if activeWeapon then
-                // only give focus when primary attacking, every weapon has itsn own attribute so its a bit dirty, but it works
-                // there is a primaryAttacking on every weapon, but only on bite its getting true
-                if (activeWeapon.primaryAttacking == true or activeWeapon.firingPrimary == true or activeWeapon.attacking == true or activeWeapon.attackButtonPressed == true) then
-                    local hudSlot = activeWeapon.GetHUDSlot()                
-                    if hudSlot == 1 then
-                        gotFocus = true 
-                    end 
-                end 
-      
-            end
-       
+            if self:IsAttackingPrimry() then
+                gotFocus = true
+            end       
         end  
         
     elseif Client then
@@ -73,7 +63,9 @@ function Player:GotFocus()
         if #techTree > 0 then
             for i, upgradeTechId in ipairs(techTree) do
                 if upgradeTechId == kTechId.NutrientMist then
-                    gotFocus = true
+                    if self:IsAttackingPrimry() then
+                        gotFocus = true
+                    end
                     break
                 end
             end
@@ -82,6 +74,21 @@ function Player:GotFocus()
     end
     
     return gotFocus
+end
+
+function  Player:IsAttackingPrimry()
+    local activeWeapon = self:GetActiveWeapon()
+    if activeWeapon then
+        // only give focus when primary attacking, every weapon has itsn own attribute so its a bit dirty, but it works
+        // there is a primaryAttacking on every weapon, but only on bite its getting true
+        if (activeWeapon.primaryAttacking == true or activeWeapon.firingPrimary == true or activeWeapon.attacking == true or activeWeapon.attackButtonPressed == true) then
+            local hudSlot = activeWeapon.GetHUDSlot()                
+            if hudSlot == 1 then
+                return true
+            end 
+        end              
+    end
+    return false
 end
 
 if Server then
