@@ -196,6 +196,7 @@ function CombatPlayer:OnUpdatePlayer_Hook(self, deltaTime)
 		
 		if self.poweringUpFinishedTime then
 			if Shared.GetTime() >= self.poweringUpFinishedTime then
+				self:SetCameraDistance(0)
 				self:RetrieveMove()
 				self:SendDirectMessage("You can move again!")
 				self.poweringUpFinishedTime = nil
