@@ -12,6 +12,10 @@ if(not HotReload) then
   CombatGUIAlienBuyMenu = {}
   ClassHooker:Mixin("CombatGUIAlienBuyMenu")
 end
+
+local kLargeFont = "fonts/AgencyFB_large.fnt"
+local kFont = "fonts/AgencyFB_small.fnt"
+local cannotSelectSound = "sound/NS2.fev/alien/common/vision_off"
     
 function CombatGUIAlienBuyMenu:OnLoad()
 
@@ -22,6 +26,7 @@ function CombatGUIAlienBuyMenu:OnLoad()
 	_addHookToTable(self:ReplaceClassFunction("GUIAlienBuyMenu", "_InitializeUpgradeButtons", "_InitializeUpgradeButtons_Hook"))
 	_addHookToTable(self:ReplaceClassFunction("GUIAlienBuyMenu", "SendKeyEvent", "SendKeyEvent_Hook"))
 	_addHookToTable(self:ReplaceClassFunction("GUIAlienBuyMenu", "_HandleUpgradeClicked", "_HandleUpgradeClicked_Hook"))
+	_addHookToTable(self:PostHookClassFunction("GUIAlienBuyMenu", "_UninitializeUpgradeButtons", "_UninitializeUpgradeButtons_Hook"))
 end
 
 function CombatGUIAlienBuyMenu:Initialize_Hook(self)
@@ -30,6 +35,11 @@ function CombatGUIAlienBuyMenu:Initialize_Hook(self)
 	GUIAlienBuyMenu.kMaxNumberOfUpgradeButtons = 10
 	GUIAlienBuyMenu.kUpgradeButtonDistance = GUIScale(kCombatAlienBuyMenuUpgradeButtonDistance)
 	GUIAlienBuyMenu.kBuyHUDTexture = "ui/combat_alien_buildmenu.dds"
+	GUIAlienBuyMenu.kRefundButtonWidth = GUIScale(80)
+	GUIAlienBuyMenu.kRefundButtonHeight = GUIScale(80)
+	GUIAlienBuyMenu.kRefundButtonYOffset = GUIScale(20)
+	GUIAlienBuyMenu.kRefundButtonTextSize = GUIScale(22)
+	GUIAlienBuyMenu.kRefundButtonTextureCoordinates = { 396, 428, 706, 511 }
 
 end
 
@@ -69,6 +79,29 @@ function CombatGUIAlienBuyMenu:_InitializeSlots_Hook(self)
         self.slots[i].Angle = angle
     
     end
+
+end
+
+// Create a 'refund' button
+local function InitializeRefundButton(self)
+
+    self.refundButtonBackground = GUIManager:CreateGraphicItem()
+    self.refundButtonBackground:SetAnchor(GUIItem.Right, GUIItem.Bottom)
+    self.refundButtonBackground:SetSize(Vector(GUIAlienBuyMenu.kRefundButtonWidth, GUIAlienBuyMenu.kRefundButtonHeight, 0))
+    self.refundButtonBackground:SetPosition(Vector(-GUIAlienBuyMenu.kRefundButtonWidth / 2, GUIAlienBuyMenu.kRefundButtonHeight / 2 + GUIAlienBuyMenu.kRefundButtonYOffset, 0))
+    self.refundButtonBackground:SetTexture(GUIAlienBuyMenu.kBuyMenuTexture)
+    self.refundButtonBackground:SetTexturePixelCoordinates(unpack(GUIAlienBuyMenu.kRefundButtonTextureCoordinates))
+    self.background:AddChild(self.refundButtonBackground)
+    
+    self.refundButtonText = GUIManager:CreateTextItem()
+    self.refundButtonText:SetAnchor(GUIItem.Middle, GUIItem.Center)
+    self.refundButtonText:SetFontName(kFont)
+    self.refundButtonText:SetTextAlignmentX(GUIItem.Align_Center)
+    self.refundButtonText:SetTextAlignmentY(GUIItem.Align_Center)
+    self.refundButtonText:SetText(Combat_ResolveString("COMBAT_REFUND_ALIEN"))
+    self.refundButtonText:SetColor(Color(242, 214, 42, 1))
+    self.refundButtonText:SetPosition(Vector(0, 0, 0))
+    self.refundButtonBackground:AddChild(self.refundButtonText)
 
 end
 
@@ -133,6 +166,9 @@ function CombatGUIAlienBuyMenu:_InitializeUpgradeButtons_Hook(self)
         end
     
     end
+	
+	// Create the refund button too.
+	InitializeRefundButton(self)
 
 end
 
@@ -209,7 +245,7 @@ local function UpdateEvolveButton(self)
     local numberOfSelectedUpgrades = GetNumberOfSelectedUpgrades(self)
     local evolveButtonTextureCoords = GUIAlienBuyMenu.kEvolveButtonTextureCoordinates
     
-    evolveText = Locale.ResolveString("ABM_SELECT_UPGRADES")
+    evolveText = Combat_ResolveString("ABM_SELECT_UPGRADES")
     
     // If the current alien is selected with no upgrades, cannot evolve.
     if self.selectedAlienType == AlienBuy_GetCurrentAlien() and numberOfSelectedUpgrades == 0 then
@@ -219,7 +255,7 @@ local function UpdateEvolveButton(self)
     
         // If cannot afford selected alien type and/or upgrades, cannot evolve.
         evolveButtonTextureCoords = GUIAlienBuyMenu.kEvolveButtonNeedResourcesTextureCoordinates
-        evolveText = Locale.ResolveString("ABM_NEED")
+        evolveText = Combat_ResolveString("ABM_NEED")
         evolveCost = AlienBuy_GetAlienCost(self.selectedAlienType) + selectedUpgradesCost - AlienBuy_GetHyperMutationCostReduction(self.selectedAlienType)
         
     else
@@ -232,7 +268,7 @@ local function UpdateEvolveButton(self)
             totalCost = totalCost + AlienBuy_GetAlienCost(self.selectedAlienType)
         end
         
-        evolveText = Locale.ResolveString("ABM_EVOLVE_FOR")
+        evolveText = Combat_ResolveString("ABM_EVOLVE_FOR")
         evolveCost = totalCost - AlienBuy_GetHyperMutationCostReduction(self.selectedAlienType) // shows also negative values
         
     end
@@ -279,6 +315,16 @@ local kDefaultColor = Color(1,1,1,1)
 local kNotAvailableColor = Color(0.3, 0.3, 0.3, 1)
 local kNotAllowedColor = Color(1, 0,0,1)
 
+local function UpdateRefundButton(self)
+
+	if self:_GetIsMouseOver(self.refundButtonBackground) then
+		local infoText = Combat_ResolveString("COMBAT_REFUND_TITLE_ALIEN")
+		local infoTip = Combat_ResolveString("COMBAT_REFUND_DESCRIPTION_ALIEN")
+		self:_ShowMouseOverInfo(infoText, infoTip, 0, 0, 0)
+	end
+
+end
+
 function CombatGUIAlienBuyMenu:Update_Hook(self, deltaTime)
 
 	// Call our version of the evolve button script.
@@ -302,7 +348,7 @@ function CombatGUIAlienBuyMenu:Update_Hook(self, deltaTime)
 		
 		if not currentButton.Selected and not AlienBuy_GetIsUpgradeAllowed(currentButton.TechId, self.upgradeList) then
 			useColor = kNotAllowedColor
-		end    
+		end
 		
 		currentButton.Icon:SetColor(useColor)
 		
@@ -318,6 +364,14 @@ function CombatGUIAlienBuyMenu:Update_Hook(self, deltaTime)
            
        end
 	end
+	
+	UpdateRefundButton(self)
+
+end
+
+local function ClickRefundButton(self)
+	
+	Shared.ConsoleCommand("co_refundall")
 
 end
 
@@ -397,15 +451,24 @@ function CombatGUIAlienBuyMenu:SendKeyEvent_Hook(self, key, down)
                     end
                     
                 end
+				
+				if self:_GetIsMouseOver(self.refundButtonBackground) then
+					ClickRefundButton(self)
+					closeMenu = true
+					inputHandled = true
+					AlienBuy_OnClose()
+				end
                 
                 // Check if the close button was pressed.
-                if self:_GetIsMouseOver(self.closeButton) then
-                
-                    closeMenu = true
-                    inputHandled = true
-                    AlienBuy_OnClose()
-                    
-                end
+				if not closeMenu then
+					if self:_GetIsMouseOver(self.closeButton) then
+					
+						closeMenu = true
+						inputHandled = true
+						AlienBuy_OnClose()
+						
+					end
+				end
                 
             end
             
@@ -431,21 +494,42 @@ local function _GetHasMaximumSelected(self)
     return false
 end
 
+local function UninitializeRefundButton(self)
+
+    GUI.DestroyItem(self.refundButtonText)
+    self.refundButtonText = nil
+	
+    GUI.DestroyItem(self.refundButtonBackground)
+    self.refundButtonBackground = nil
+
+end
+
+function CombatGUIAlienBuyMenu:_UninitializeUpgradeButtons_Hook(self)
+
+	UninitializeRefundButton(self)
+
+end
+
 function CombatGUIAlienBuyMenu:_HandleUpgradeClicked_Hook(self, mouseX, mouseY)
 
     local inputHandled = false
     
     for i, currentButton in ipairs(self.upgradeButtons) do
-        // Can't select if it has been purchased already.
-        if (not _GetHasMaximumSelected(self) or currentButton.Selected == true) and self:_GetIsMouseOver(currentButton.Icon) then
-            currentButton.Selected = not currentButton.Selected
-            inputHandled = true
-            if currentButton.Selected then AlienBuy_OnUpgradeSelected() else AlienBuy_OnUpgradeDeselected() end
-            // Setup a tweener based on the state of the button so it moves to the correct spot.
-            local currentTweener = self:_GetUpgradeTweener(currentButton)
-            currentTweener.setCurrent((currentButton.Selected and 1) or 2)
-            currentTweener.setMode((currentButton.Selected and "forward") or "backward")
-        end
+        // Can't select if it has been purchased already or is unselectable.
+		if (not _GetHasMaximumSelected(self) or currentButton.Selected == true) and self:_GetIsMouseOver(currentButton.Icon) then
+			if (not AlienBuy_GetIsUpgradeAllowed(currentButton.TechId, self.upgradeList) or currentButton.Purchased) then
+				// Play a sound or something to indicate this button isn't clickable.
+				PlayerUI_TriggerInvalidSound()
+			else
+				currentButton.Selected = not currentButton.Selected
+				inputHandled = true
+				if currentButton.Selected then AlienBuy_OnUpgradeSelected() else AlienBuy_OnUpgradeDeselected() end
+				// Setup a tweener based on the state of the button so it moves to the correct spot.
+				local currentTweener = self:_GetUpgradeTweener(currentButton)
+				currentTweener.setCurrent((currentButton.Selected and 1) or 2)
+				currentTweener.setMode((currentButton.Selected and "forward") or "backward")
+			end
+		end
     end
     
     return inputHandled

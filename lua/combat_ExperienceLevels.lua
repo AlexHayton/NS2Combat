@@ -26,6 +26,7 @@ XpList[9] = { Level=9, 		XP=2300, 	MarineName="Field Marshal", 		AlienName="Nigh
 XpList[10] = { Level=10, 	XP=2800, 	MarineName="General", 				AlienName="Behemoth", 		GivenXP=160}
 XpList[11] = { Level=11, 	XP=3500, 	MarineName="President", 			AlienName="Overlord", 		GivenXP=180}
 XpList[12] = { Level=12, 	XP=4500, 	MarineName="Badass", 				AlienName="Super Mutant", 	GivenXP=200}
+XpList[13] = { Level=13, 	XP=6000, 	MarineName="Rambo", 				AlienName="Hive Mind", 	 	GivenXP=210}
 
 maxLvl = table.maxn(XpList)
 maxXp = XpList[maxLvl]["XP"]

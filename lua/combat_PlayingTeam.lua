@@ -21,7 +21,7 @@ function CombatPlayingTeam:OnLoad()
     self:ReplaceClassFunction("PlayingTeam", "GetHasTeamLost", "GetHasTeamLost_Hook")
 	self:ReplaceClassFunction("PlayingTeam", "UpdateTechTree", "UpdateTechTree_Hook")
 	self:ReplaceClassFunction("PlayingTeam", "Update", "Update_Hook")
-	//self:ReplaceClassFunction("PlayingTeam", "RespawnPlayer", "RespawnPlayer_Hook")
+	self:ReplaceClassFunction("PlayingTeam", "RespawnPlayer", "RespawnPlayer_Hook")
     
 end
 
@@ -288,6 +288,9 @@ function CombatPlayingTeam:SpawnPlayer(player)
 			newPlayer.combatTable.justGotWelder = false
 			newPlayer:SwitchWeapon(1)
 		end
+		
+		// Send timer updates
+		SendCombatGameTimeUpdate(newPlayer)
     end
 
     return success
@@ -301,12 +304,6 @@ function CombatPlayingTeam:RespawnPlayer_Hook(self, player, origin, angles)
 
     local success = false
     local initialTechPoint = Shared.GetEntity(self.initialTechPointId)
-    
-    // delete the player from the Queue
-    local team = player:GetTeam(newTeamNumber)
-    if team ~= nil then
-        team:RemovePlayerFromRespawnQueue(player)
-    end
     
     if origin ~= nil and angles ~= nil then
         success = Team.RespawnPlayer(self, player, origin, angles)
@@ -325,36 +322,16 @@ function CombatPlayingTeam:RespawnPlayer_Hook(self, player, origin, angles)
         else
         
 			player:SendDirectMessage("Could not find a valid spawn point for you. We'll try to spawn you soon!")
-            Print("PlayingTeam:RespawnPlayer: Couldn't compute random spawn for player.\n")
+            Print("PlayingTeam:RespawnPlayer: Couldn't compute random spawn for player. Will retry at next wave...\n")
 			// Escape the player's name here... names like Sandwich% cause a crash to appear here!
 			local escapedPlayerName = string.gsub(player:GetName(), "%%", "")
 			Print("PlayingTeam:RespawnPlayer: Name: " .. escapedPlayerName .. " Class: " .. player:GetClassName())
-            Print(Script.CallStack())
-
             
         end
         
     else
         Print("PlayingTeam:RespawnPlayer(): No initial tech point.")
     end
-		
-	// try again
-    if (not success) then        
-        Print("PlayingTeam:RespawnPlayer(): Will try again to find a spawn.\n")   
-		// Destroy the existing player and create a spectator in their place (but only if it has an owner, ie not a body left behind by Phantom use)
-		local owner  = Server.GetOwner(player)
-		if owner then
-		
-			// Queue up the spectator for respawn.
-			local spectator = player:Replace(player:GetDeathMapName())
-			spectator:GetTeam():PutPlayerInRespawnQueue(spectator)
-			DestroyEntity(player)
-			// Insert the player into a list of players.
-			//table.insertunique(self.playerIds, spectator:GetId())
-			
-		end
-    end
-    
     
     return success
     
