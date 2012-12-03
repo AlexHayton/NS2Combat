@@ -82,6 +82,28 @@ function CombatMarineBuy_GUISortUps(upgradeList)
     return sortedList
 end
 
+
+function CombatMarineBuy_GetDisplayName(techId)
+
+    if techId ~= nil then
+        // special String for Medpack ( to show "Resupply")
+        if techId == kTechId.MedPack then
+            return "Resupply"
+
+	// special string for RifleUpgrade (Fastreload)
+        elseif techId == kTechId.RifleUpgrade then
+		return "Fast-Reload"
+	
+	else
+            return Locale.ResolveString(LookupTechData(techId, kTechDataDisplayName, ""))
+        end
+    else
+        return ""
+    end
+    
+end
+
+
 function CombatMarineBuy_GetWeaponDescription(techId)
 
     if not combatWeaponDescription then

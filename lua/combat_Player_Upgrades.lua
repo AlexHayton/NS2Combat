@@ -26,29 +26,6 @@ function GetIsPrimaryWeapon(kMapName)
     return isPrimary
 end
 
-function Player:GetCombatTechTree()
-
-	return self.combatTable.techtree
-	
-end
-
-// Check if a player has a given upgrade.
-function Player:GetHasCombatUpgrade(upgradeId)
-
-	local hasUpgrade = false
-	if self.combatTable then
-		for index, upgrade in ipairs(self.combatTable.techtree) do
-			if (upgrade:GetId() == upgradeId) then
-				hasUpgrade = true
-				break
-			end
-		end
-	end
-	
-	return hasUpgrade
-
-end
-
 function Player:CoEnableUpgrade(upgrades)
 
 	self:CheckCombatData()
@@ -114,8 +91,6 @@ function Player:CoEnableUpgrade(upgrades)
             self:spendlvlHints("neededOtherUp", GetUpgradeFromId(requirements):GetTextCode())
         elseif (not self:isa(team)) and not (self:isa("Exo") and team == "Marine") then
             self:spendlvlHints("wrong_team", team)
-		elseif upgrade:GetIsHardCapped(self) then
-			self:spendlvlHints("hardCapped")
         elseif alreadyGotUpgrade then
             self:spendlvlHints("already_owned", upgrade:GetTextCode())
         elseif noRoom then
@@ -390,7 +365,6 @@ function Player:Reset_Lite()
 	self.combatTable.lastReminderNotify = 0
 	self.combatTable.lastXpEffect = 0
 	self.combatTable.lastXpAmount = 0
-	self.combatTable.lastTauntTime = 0
 	self.combatTable.hasCamouflage = false
 	
 	self.combatTable.twoHives = false
@@ -425,20 +399,6 @@ function Player:Reset_Lite()
 	self.combatTable.techtree = {}
 	self:ClearCoUpgrades()
 	Server.SendNetworkMessage(self, "ClearTechTree", {}, true)
-
-end
-
-// Refunds all the upgrades and resets them back as if they had just joined the team.
-function Player:RefundAllUpgrades()
-
-	self:Reset_Lite()
-	self:AddLvlFree(self:GetLvl() - 1 + kCombatStartUpgradePoints)
-	self:SendDirectMessage("All points refunded. You can choose your upgrades again!")
-	
-	// Kill the player when they do this. Prevents abuse!
-	if (self:GetIsAlive()) then
-		self:Kill(nil, nil, self:GetOrigin())
-	end
 
 end
 

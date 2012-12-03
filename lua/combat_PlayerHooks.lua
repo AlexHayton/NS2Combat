@@ -21,6 +21,7 @@ function CombatPlayer:OnLoad()
 	self:PostHookClassFunction("Player", "OnCreate", "OnCreate_Hook")
 	self:PostHookClassFunction("Player", "UpdateArmorAmount", "UpdateArmorAmount_Hook")
 	self:PostHookClassFunction("Player", "GetCanTakeDamageOverride", "GetCanTakeDamageOverride_Hook"):SetPassHandle(true)
+	self:PostHookClassFunction("Player", "AdjustMove", "AdjustMove_Hook")
 
     self:ReplaceFunction("GetIsTechAvailable", "GetIsTechAvailable_Hook")
     
@@ -193,15 +194,6 @@ function CombatPlayer:OnUpdatePlayer_Hook(self, deltaTime)
 			end
 	
 		end 
-		
-		if self.poweringUpFinishedTime then
-			if Shared.GetTime() >= self.poweringUpFinishedTime then
-				self:SetCameraDistance(0)
-				self:RetrieveMove()
-				self:SendDirectMessage("You can move again!")
-				self.poweringUpFinishedTime = nil
-			end
-		end
     end
 end
 
@@ -219,6 +211,20 @@ function CombatPlayer:GetCanTakeDamageOverride_Hook(handle, self)
 
 	local canTakeDamage = handle:GetReturn() and not self.gotSpawnProtect	
 	handle:SetReturn(canTakeDamage)
+
+end
+
+function CombatPlayer:AdjustMove_Hook(self)
+
+	if self.combatTable.lastTauntTime == nil then
+		self.combatTable.lastTauntTime = 0
+	end
+
+	// Allow child classes to affect how much input is allowed at any time
+	if self.mode == kPlayerMode.Taunt and Shared.GetTime() - self.combatTable.lastTauntTime > kCombatTauntCheckInterval then
+		ProcessTauntAbilities()
+		self.combatTable.lastTauntTime = Shared.GetTime()
+	end
 
 end
 

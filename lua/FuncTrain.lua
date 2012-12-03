@@ -14,23 +14,25 @@ Script.Load("lua/Mixins/SignalEmitterMixin.lua")
 // needed for the MoveToTarget Command
 Script.Load("lua/PathingMixin.lua")
 Script.Load("lua/TriggerMixin.lua")
+Script.Load("lua/TrainMixin.lua")
+Script.Load("lua/LogicMixin.lua")
 
 class 'FuncTrain' (ScriptActor)
 
 FuncTrain.kMapName = "func_train"
-FuncTrain.kMoveSpeed = 3.0
-FuncTrain.kHoverHeight = 0.3
-FuncTrain.kDrivingState = enum( {'Forward1', 'Forward2', 'Forward3', 'Backwards'} )
+FuncTrain.kMoveSpeed = 15.0
+FuncTrain.kHoverHeight = 0.8
+FuncTrain.kDrivingState = enum( {'Stop', 'Forward1', 'Forward2', 'Forward3', 'Backwards'} )
 
 local networkVars =
-{
-    nextWaypointId = "entityid",
-    driving = "boolean",
+{    
     drivingState = "enum FuncTrain.kDrivingState",
 }
 
+AddMixinNetworkVars(LogicMixin, networkVars)
 AddMixinNetworkVars(BaseModelMixin, networkVars)
 AddMixinNetworkVars(ModelMixin, networkVars)
+AddMixinNetworkVars(TrainMixin, networkVars)
 
 
 function FuncTrain:OnCreate()
@@ -41,7 +43,8 @@ function FuncTrain:OnCreate()
     InitMixin(self, ModelMixin)
     InitMixin(self, SignalEmitterMixin)
     InitMixin(self, PathingMixin)
-  
+    InitMixin(self, TrainMixin)
+    
     self:SetUpdates(true)  
     
 end
@@ -50,41 +53,34 @@ function FuncTrain:OnInitialized()
 
     ScriptActor.OnInitialized(self)
     InitMixin(self, TriggerMixin)
-       
+    
+    if Server then
+        InitMixin(self, LogicMixin)
+        self:SetFindEntity()
+    end
+ 
     if self.model ~= nil then    
-        Shared.PrecacheModel(self.model)        
+        Shared.PrecacheModel(self.model)    
         local graphName = string.gsub(self.model, ".model", ".animation_graph")
         Shared.PrecacheAnimationGraph(graphName)        
-        self:SetModel(self.model, graphName)        
+        self:SetModel(self.model, graphName) 
+        
+        local coords = self:GetAngles():GetCoords(self:GetOrigin())
+        coords.xAxis = coords.xAxis * self.scale.x
+        coords.yAxis = coords.yAxis * self.scale.y
+        coords.zAxis = coords.zAxis * self.scale.z
+        self:SetCoords(coords)   
     end
     
+
     if self.autoStart then
         self.driving = true
+        self.kDrivingState = FuncTrain.kDrivingState.Forward1
     else
         self.driving = false
+        self.kDrivingState = FuncTrain.kDrivingState.Stop
     end
-    
-    if Server then
-        // set a box so it can be triggered
-        local extents = self:GetExtents()
-        extents = 20 * extents
-        self:SetBox(extents)
-    end
-
-    self.direction = "fw"
-    
-end
-
-
-function FuncTrain:OnUpdate(deltaTime)
-    if Server then
-        if self.driving then
-            self:UpdatePosition(deltaTime)
-            self:SetOldAngles(self:GetAngles())
-            self:MovePlayersInTrigger()        
-            self:MoveTrigger()    
-        end
-    end
+   
 end
 
 function FuncTrain:GetCanBeUsed(player, useSuccessTable)
@@ -96,11 +92,7 @@ function FuncTrain:OnUse(player, elapsedTime, useAttachPoint, usePoint, useSucce
     if Server then   
         self:ChangeDrivingStatus()
     elseif Client then
-        if self.Used then
-            self:DestroyDrivingGui()
-        else
-            self:ShowDrivingGui()
-        end
+        player:OnTrainUse(self) 
     end
     
 end
@@ -124,70 +116,6 @@ function FuncTrain:ChangeDrivingStatus()
   
 end 
 
-
-function FuncTrain:SetOrigin(origin)
-    // locally save the old origin
-    local oldOrigin = self:GetOrigin()    
-    Entity.SetOrigin(self, origin)
-    
-    if (oldOrigin.x + oldOrigin.y + oldOrigin.z) ~= 0 then
-        self:SetMovementVector(self:GetOrigin() - oldOrigin)        
-    end
-    
-    //if self.oldAngles then
-      //  self:SetDeltaAngles(self:GetAngles())
-//        self.oldAngles = self:GetAngles()
-  //  else
-    //    self.oldAngles = self:GetAngles()
-    //end
-        
-end
-
-// set and get Velocity to update the players movement, too
-function FuncTrain:SetMovementVector(newVector)
-    self.movementVector = newVector   
-end
-
-function FuncTrain:GetMovementVector()
-    return self.movementVector or Vector(0,0,0)     
-end
-
-function FuncTrain:SetOldAngles(newAngles)
-
-    if self.oldAngles then
-        self:SetOldAnglesDiff(newAngles)
-        self.oldAngles.yaw = math.abs(newAngles.yaw - self.oldAngles.yaw)
-        self.oldAngles.pitch = math.abs(newAngles.pitch - self.oldAngles.pitch)
-        self.oldAngles.roll = math.abs(newAngles.roll - self.oldAngles.roll)
-
-    else
-        self.oldAngles = newAngles
-    end
-end
-
-function FuncTrain:SetOldAnglesDiff(newAngles)
-
-    if self.oldAnglesDiff then
-        self.oldAnglesDiff.yaw = math.abs(newAngles.yaw - self.oldAngles.yaw)
-        self.oldAnglesDiff.pitch = math.abs(newAngles.pitch - self.oldAngles.pitch)
-        self.oldAnglesDiff.roll = math.abs(newAngles.roll - self.oldAngles.roll)
-    else
-        self.oldAnglesDiff = Angles(0,0,0)
-    end
-end
-
-
-function FuncTrain:GetDeltaAngles()
-    if not self.oldAnglesDiff then
-        local angles = Angles()
-        angles.pitch = 0
-        angles.yaw = 0
-        angles.roll = 0
-        self.oldAnglesDiff = angles   
-    end
-    return self.oldAnglesDiff   
-end
-
 function FuncTrain:GetSpeed()
     return self.moveSpeed or FuncTrain.kMoveSpeed
 end
@@ -199,6 +127,11 @@ end
 function FuncTrain:GetHoverHeight()
     return FuncTrain.kHoverHeight
 end
+
+function FuncTrain:GetPushPlayers()
+    return true
+end
+
 
 //**********************************
 // Viewing things
@@ -222,6 +155,46 @@ function FuncTrain:GetViewAngles()
     return angles
 end
 
+// will create a path so the train will know the next points
+function FuncTrain:CreatePath(onUpdate)
+    local origin = self:GetOrigin()
+    local tempList = {}
+    self.waypointList = {}
+    for _, ent in ientitylist(Shared.GetEntitiesWithClassname("FuncTrainWaypoint")) do 
+        // only search the waypoints for that train
+        if ent.trainName == self.name then
+            if ent.number > 0 then
+                self.waypointList[ent.number] = {}
+                self.waypointList[ent.number].origin = ent:GetOrigin()
+                self.waypointList[ent.number].delay = ent.waitDelay
+            end
+        end        
+    end
+    
+    // then copy the wayPointList into a new List so its 1-n
+    for i, wayPoint in ipairs(self.waypointList) do
+        table.insert(tempList, wayPoint)
+    end
+    
+    // create a smooth path
+    self.waypointList = self:CreateSmoothPath(tempList, 1)        
+    tempList = nil
+    
+    if onUpdate then
+        if (#self.waypointList  == 0) then
+            self:SetUpdates(false)
+            Print("Error: Train " .. self.name .. " found no waypoints!")
+        end
+    end
+end
+
+function FuncTrain:FindEntitys()
+    self:CreatePath()
+end
+
+function FuncTrain:OnLogicTrigger()
+    self:ChangeDrivingStatus()
+end
 
 //**********************************
 // Sever and Client only functions
@@ -231,15 +204,17 @@ if Server then
   
     function FuncTrain:UpdatePosition(deltaTime)
        
-        local nextWaypoint = Shared.GetEntity(self.nextWaypointId)
-
-        if nextWaypoint then
-            local hoverWaypont = GetHoverAt(self, nextWaypoint:GetOrigin())
+        if self.nextWaypoint then
+            // check if the waypoint got a delay
+            local hoverWaypont = GetHoverAt(self, self.nextWaypoint)
+            //hoverWaypont = self.nextWaypoint
             //if self:IsTargetReached(hoverWaypont, kAIMoveOrderCompleteDistance) then            
               //  self:GetNextWaypoint()
             //else
-                local target = self:MoveToTarget(PhysicsMask.AIMovement, hoverWaypont, self:GetSpeed(), deltaTime)
-                if target then
+                local done = self:TrainMoveToTarget(PhysicsMask.All, hoverWaypont, self:GetSpeed(), deltaTime, true)                
+                //if self:IsTargetReached(hoverWaypont, kAIMoveOrderCompleteDistance) then
+                if done then
+                    self.nextWaypoint = nil
                     self:GetNextWaypoint()
                 end
             //end          
@@ -251,115 +226,54 @@ if Server then
     
     
     function FuncTrain:GetNextWaypoint()
-    
-        local nearestWaypoint = nil
-        local nearestWaypointDistance = 0
-        
-        local nearestWaypointForward = nil
-        local nearestWaypointForwardDistance = 0
 
-        // search all waypoints and search the nearest                
-        for _, ent in ientitylist(Shared.GetEntitiesWithClassname("FuncTrainWaypoint")) do   
-            
-            // move to a new waypoint, don't take the acutally one
-            if  self.nextWaypointId ~= ent:GetId() then
+        if #self.waypointList > 0 then
+        
+            if not self.nextWaypointNr then
+                self.nextWaypointNr = 1
+                self.nextWaypoint = self.waypointList[self.nextWaypointNr].origin               
+            else
+                // check if the waypoint got a delay
+                local delay = self.waypointList[self.nextWaypointNr].delay 
+                local time = Shared.GetTime()
+    
+                if not self.nextWaypointCheck then
+                    self.nextWaypointCheck =  time + delay
+                end
                 
-                local dist = (ent:GetOrigin() - self:GetOrigin()):GetLength()
-                
-                local direction =  GetNormalizedVector(ent:GetOrigin() - self:GetOrigin())
-                local yawDiffRadians = GetAnglesDifference(GetYawFromVector(direction) , self:GetAngles().yaw)
-                //local yawDegrees = DegreesTo360(math.deg(yawDiffRadians)) 
-                
-                local angles = self:GetAngles()
-                local currentYaw = self:NormalizeYaw(angles.yaw)
-                local desiredYaw = self:NormalizeYaw(GetYawFromVector(direction))
-                local turnAmount,remainingYaw = self:CalcTurnAmount(desiredYaw, currentYaw, self:GetTurnSpeed(), Shared.GetTime())
-                local yawDegrees = DegreesTo360(math.deg(desiredYaw-currentYaw))
-            
-                if (yawDegrees >= 20) and (yawDegrees <= 160) then
-                    if (dist < nearestWaypointForwardDistance) or (nearestWaypointForwardDistance == 0) then
-                        nearestWaypointForward = ent
-                        nearestWaypointForwardDistance = dist
+                if (self.waypointList[self.nextWaypointNr].delay == 0) or time >= self.nextWaypointCheck then 
+                    self.waiting = false
+                    self.nextWaypointNr = self.nextWaypointNr + 1
+                    // TODO: Dont start at one if last Waypoint
+                    if self.nextWaypointNr > #self.waypointList then
+                        // end of track
+                        //self.driving = false
+                        //TODO : what happens then?
+                        self.nextWaypointNr = 1
                     end
-                else                                    
-                    if (dist < nearestWaypointDistance) or (nearestWaypointDistance == 0) then
-                        nearestWaypoint = ent
-                        nearestWaypointDistance = dist
-                    end
-                end   
-                
-            end
-                
-        end
-        
-        if nearestWaypointForward ~= nil then
-            self.nextWaypointId = nearestWaypointForward:GetId()
-        elseif nearestWaypoint ~= nil then
-            self.nextWaypointId = nearestWaypoint:GetId()
-        end
-        
-    end
-    
-    function FuncTrain:MovePlayersInTrigger()
-        for _, entity in ipairs(self:GetEntitiesInTrigger()) do 
-            if self.driving then
-                // update the position and the angles
-                // change position when the train is driging
-                local newOrigin = entity:GetOrigin()
-                local selfDeltaAngles = self:GetDeltaAngles()
-                local degrees = DegreesTo360(math.deg(selfDeltaAngles.yaw))                
-                local direction = newOrigin - self:GetOrigin()
-                local trainOrigin = self:GetOrigin()
-                
-                // change the position if he's also rotating                
-                //direction.z = (direction.z * math.sin(degrees) - direction.x * math.cos(degrees))
-                //direction.x = (direction.x * math.sin(degrees) + direction.z * math.cos(degrees))
-                
-                //direction.z = trainOrigin.z + (o.x - trainOrigin.x) * math.cos(degrees) - (o.y - trainOrigin.y) * math.sin(degrees);
-                //direction.x = trainOrigin.x + (o.z - trainOrigin.z) * math.sin(degrees) + (o.x - trainOrigin.x) * math.cos(degrees);
-                
+                    
+                    self.nextWaypoint = self.waypointList[self.nextWaypointNr].origin
+                    self.nextWaypointCheck = nil 
+                else
+                    self.waiting = true
+                end 
+              
+            end   
 
-                //newOrigin.z = trainOrigin.z + (math.cos(degrees) * (newOrigin.z - trainOrigin.z) -  math.sin(degrees) * (newOrigin.x - trainOrigin.x))                
-                //newOrigin.x = trainOrigin.x + (math.sin(degrees) * (newOrigin.z - trainOrigin.z) +  math.cos(degrees) * (newOrigin.x - trainOrigin.x))
-
-                                
-                // change the viewAngles
-                local newAngles = Angles()
-                local entityAngles = entity:GetAngles()
-                newAngles.pitch = entityAngles.pitch +  selfDeltaAngles.pitch             
-                newAngles.roll = entityAngles.roll +  selfDeltaAngles.roll
-                newAngles.yaw = entityAngles.yaw +  selfDeltaAngles.yaw
-
-
-                entity:SetOrigin(newOrigin  + self:GetMovementVector())
-                //entity:SetViewAngles(newAngles)
-                //entity:SetAngles(newAngles)
-            end
+        else
+            Print("Error: Train " .. self.name .. " found no waypoints!")
+            self.driving = false
         end
     end
-
-    // move the position of the trigger box
-    function FuncTrain:MoveTrigger()
-
-        // set a box so it can be triggered
-        local extents = self:GetExtents()
-        extents = 20 * extents
-        self:SetBox(extents)
     
-    end
-    
+    function FuncTrain:OnTriggerEntered(entity, triggerEnt)
+    end    
+
+    function FuncTrain:OnTriggerExited(entity, triggerEnt)
+        // destroy the GUI and let the player mov again
+    end       
 end
 
 
-if Client then
-    // small UI for driving
-    function FuncTrain:ShowDrivingGui()
-    
-    end
-        
-    function FuncTrain:DestroyDrivingGui()
-    
-    end
-end
 
 Shared.LinkClassToMap("FuncTrain", FuncTrain.kMapName, networkVars)

@@ -12,6 +12,9 @@ Script.Load("lua/PathUtil.lua")
 Script.Load("lua/fsfod_scripts.lua")
 Script.Load("lua/combat_Shared.lua")
 
+// Register Network Messages.
+Script.Load("lua/combat_NetworkMessages.lua")
+
 // load the ModSwitcher functions
 Script.Load("lua/combat_ModSwitcher.lua")
 ModSwitcher_Load(true)
@@ -22,10 +25,6 @@ if kCombatModActive then
 	// Register the files we don't want to ever load.
 	// Disabled for now - it would work if we didn't have the mod switcher!
 	//Script.Load("lua/combat_FileOverrides.lua")
-	
-	// Language Support
-	Script.Load("lua/combat_Locale.lua")
-	Script.Load("gamestrings/combat_enUS.lua")
 
     // Loading the Hook classes
     // TODO: Maybe we don't need the OnLoad?
@@ -46,9 +45,6 @@ if kCombatModActive then
     Script.Load("lua/combat_Armory.lua")
     Script.Load("lua/combat_Weapon.lua")    
     Script.Load("lua/combat_NS2Utility.lua")
-	// Hooks for Ink and EMP are in here.
-	Script.Load("lua/combat_SoundEffect.lua")
-	Script.Load("lua/combat_Hydra.lua")
     
 end
 

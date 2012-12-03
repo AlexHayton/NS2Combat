@@ -782,12 +782,12 @@
 	
     <!-- Teleport trigger -->
     <class name="teleport_trigger" placeable="true">
-        <parent>trigger</parent>
+	<parent>trigger</parent>
         
         <cone_radius>
-		<radius>distance</radius>
-		<angle>angle</angle>
-	</cone_radius>
+			<radius>distance</radius>
+			<angle>angle</angle>
+		</cone_radius>
 
         <parameter name="destination" type="string" label="Destination Name" help="Name of the destination of the TeleportTrigger (need to be a TeleportTrigger, too." default=""/>    
         <parameter name="exitonly" type="boolean" label="Exit only" help="This teleporter is only a Exit (Destination Name will be ignored)." default="false"/>
@@ -798,6 +798,22 @@
 
     </class>
 
+
+    <!-- Push trigger -->
+    <class name="push_trigger" placeable="true">
+        <parent>trigger</parent>
+        
+        <cone_radius>
+			<radius>distance</radius>
+			<angle>angle</angle>
+		</cone_radius>
+
+        <parameter name="pushForce" type="real" label="Push Force" help="" default="30"/>
+        <parameter name="enabled" type="boolean" label="Trigger enabled" help="Will not push when disabled." default="true"/>
+        <parameter name="distance" type="distance" label = "Distance" default="3.0" help="Just to show the direction in the Editor"/>
+        <parameter name="angle" type="angle" label = "Angles" default="30.0" help="Just to show the direction in the Editort"/>
+
+    </class>
     <!-- Func Train -->
     <class name="func_train" placeable="true">
         
@@ -816,7 +832,18 @@
             <scale>scale</scale>
         </size>
         <parameter name="scale" type="vector" label="scale" default="1.0, 1.0, 1.0"/>
+		
+        <model>
+            <file>models/system/editor/location.model</file>
+            <scale>scaleTrigger</scale>
+        </model>    
 
+        <size>
+            <scale>scaleTrigger</scale>
+        </size>
+
+		<parameter name="scaleTrigger" type="vector" label="scaleTrigger" elp="Scale of the trigger that makes the Players on it move." default="9.0, 4.0, 15.0"/>
+		<parameter name="name" type="string" label="name" help="Name of the train, important the the waypoints." default="train"/>
         <parameter name="teamNumber" type="choice" label="Team Number" default="1">
             <choice label="World" value="0"/>
             <choice label="Marine" value="1"/>
@@ -824,7 +851,7 @@
         </parameter>
 		
 		<parameter name="moveSpeed" type="real" label="Move Speed" help="How fast can the train drive." default="3.0"/>
-		<parameter name="drivable" type="boolean" label="drivable" help="Train will not drivable (automatic train)" default="true"/>
+		<parameter name="drivable" type="boolean" label="drivable" help="Train will not be drivable (automatic train)" default="true"/>
 		<parameter name="enabled" type="boolean" label="enabled" help="Train will not drive if its disabled" default="true"/>
 		<parameter name="autoStart" type="boolean" label="Auto-Start" help="Train will start driving by its own" default="false"/>
 		<parameter name="distance" type="distance" label = "Distance" default="3.0" help="Angle from the teleporter-output"/>
@@ -841,7 +868,112 @@
 		</model>
 
 		<parameter name="name" type="string" label="name" help="For testing." default=""/>
+		<parameter name="trainName" type="string" label="Train Name" help="Name of the train (need to be setted)." default="train"/>
+		<parameter name="number" type="real" label="Number" help="Number of the waypoint. Give every waypoint a increment number so the train will know his way." default=""/>
+		<parameter name="waitDelay" type="real" label="Wait Delay" help="How long the train should wait here in seconds." default="0"/>
 
+
+    </class>
+	
+		<!-- Func Train Waypoints -->
+		<!-- currently disabled -->
+	<class name="func_moveable" placeable="false">		
+	
+		<model>
+			<file>model</file>
+			<scale>scale</scale>
+		</model>
+		<parameter name="model" type="file" label="model" default="models/props/refinery/refinery_wallmods_17_panel1.model" filter="*.model"/>
+		
+        <size>
+            <scale>scale</scale>
+        </size>
+        <parameter name="scale" type="vector" label="scale" default="1.0, 1.0, 1.0"/>
+      
+        <parameter name="name" type="string" label="name" help="Name of logic_weldable which can be referenced by other entities" />
+		<parameter name="startsOpened" type="boolean" label="Starts opened" help="Starts opened or closed (when triggered opens or closes)" default="true"/>
+        <parameter name="direction" type="choice" label="Direction" help="Direction the movable will move after closing (place it in the map at its closed position)" default="0">
+            <choice label="Up" value="0"/>
+            <choice label="Down" value="1"/>
+            <choice label="Left" value="2"/>
+			<choice label="Right" value="3"/>
+        </parameter>
+
+    </class>
+
+
+	
+		<!-- Logic things -->				
+	<class name="logic_multiplier" placeable="true">	
+		
+        <model>
+            <file>models/system/editor/team_join.model</file>
+        </model>
+      
+        <parameter name="name" type="string" label="name" help="Name of logic_multiplier which can be referenced by other entities" />
+		<parameter name="output1" type="string" label="Output1" help="Name of the triggered entity" default=""/>
+		<parameter name="output2" type="string" label="Output2" help="Name of the triggered entity" default=""/>
+		<parameter name="output3" type="string" label="Output3" help="Name of the triggered entity" default=""/>
+		<parameter name="output4" type="string" label="Output4" help="Name of the triggered entity" default=""/>
+		<parameter name="output5" type="string" label="Output5" help="Name of the triggered entity" default=""/>
+		<parameter name="output6" type="string" label="Output6" help="Name of the triggered entity" default=""/>
+		<parameter name="output7" type="string" label="Output7" help="Name of the triggered entity" default=""/>
+		<parameter name="output8" type="string" label="Output8" help="Name of the triggered entity" default=""/>
+		<parameter name="output9" type="string" label="Output9" help="Name of the triggered entity" default=""/>
+		<parameter name="output10" type="string" label="Outpu10" help="Name of the triggered entity" default=""/>
+
+    </class>
+
+	
+	<class name="logic_timer" placeable="true">	
+		
+        <model>
+            <file>models/system/editor/team_join.model</file>
+        </model>
+      
+        <parameter name="name" type="string" label="name" help="Name of logic_timer which can be referenced by other entities" />
+		<parameter name="enabled" type="boolean" label="enabled" help="Timer will not start if its disabled" default="true"/>
+		<parameter name="waitDelay" type="real" label="Wait Delay" help="How long the train should wait here in seconds." default="0"/>
+		<parameter name="output1" type="string" label="Output" help="Name of the triggered entity (after timer is 0)" default=""/>
+
+    </class>
+	
+	
+	<class name="logic_weldable" placeable="true">		
+
+		<model>
+			<file>model</file>
+		</model>
+		<parameter name="model" type="file" label="model" default="models/props/generic/terminals/generic_controlpanel_01.model" filter="*.model"/>
+		
+        <parameter name="name" type="string" label="name" help="Name of logic_weldable which can be referenced by other entities" />
+		<parameter name="enabled" type="boolean" label="enabled" help="You can't weld it if it's disabled" default="true"/>
+		<parameter name="weldTime" type="real" label="Weld time in seconds" default="20.0"/>
+		<parameter name="output1" type="string" label="Output" help="Name of the triggered entity (after welded)" default=""/>
+
+    </class>
+	
+	
+	
+		    <!-- Timed Door-->
+    <class name="timed_door" placeable="true">
+	
+		
+		<model>
+			<file>models/misc/door/door.model</file>
+			<!--<scale>scale</scale>-->
+		</model>
+		
+		<!--
+        <size>
+            <scale>scale</scale>
+        </size>
+        <parameter name="scale" type="vector" label="scale" default="1.0, 1.0, 1.0"/>
+		-->        
+		<parameter name="name" type="string" label="name" help="Name of logic_timer which can be referenced by other entities"/>
+		<parameter name="startsOpen" type="boolean" label="Starts open" help="Starts open and will be locked after triggering." default="false"/>
+		<parameter name="stayOpen" type="boolean" label="Stay open" help="Stays open after unlocking." default="false"/>
+		<parameter name="clean" type="boolean" label="Uses the alternate clean version of the door model" default="false"/>
 
 
     </class>

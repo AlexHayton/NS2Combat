@@ -7,8 +7,6 @@
 
 // combat_Player_SharedUpgrade.lua
 
-// Sound Precache here
-
 // helper functions for the buy Menu
 
 function Player:GetScore()
@@ -190,24 +188,5 @@ function Player:GetLevelProgression()
 	local thisLevel = XpList[Experience_GetLvl(xp)]["XP"]
 	local nextLevel = XpList[Experience_GetLvl(xp) + 1]["XP"]
 	return (xp - thisLevel) / (nextLevel - thisLevel)
-
-end
-
-function PlayerUI_TriggerInvalidSound()
-
-	local player = Client.GetLocalPlayer()
-	player:TriggerInvalidSound()
-
-end
-
-function PlayerUI_GetTimeRemaining()
-
-	timeDigital = "00:00:00"
-	if (kCombatTimeLimit ~= nil) then
-		local exactTimeLeft = (kCombatTimeLimit - kCombatTimeSinceGameStart)
-		timeDigital = GetTimeDigital(exactTimeLeft)
-	end
-	
-	return timeDigital
 
 end

@@ -131,9 +131,6 @@ combat_GUIMarineBuyMenu.kResourceDisplayHeight = GUIScale(64)
 combat_GUIMarineBuyMenu.kResourceIconWidth = GUIScale(32)
 combat_GUIMarineBuyMenu.kResourceIconHeight = GUIScale(32)
 
-combat_GUIMarineBuyMenu.kHardCapOffsetX = GUIScale(5)
-combat_GUIMarineBuyMenu.kHardCapOffsetY = GUIScale(13)
-
 combat_GUIMarineBuyMenu.kMouseOverInfoTextSize = GUIScale(20)
 combat_GUIMarineBuyMenu.kMouseOverInfoOffset = Vector(GUIScale(-30), GUIScale(-20), 0)
 combat_GUIMarineBuyMenu.kMouseOverInfoResIconOffset = Vector(GUIScale(-40), GUIScale(-60), 0)
@@ -193,7 +190,6 @@ function combat_GUIMarineBuyMenu:Initialize()
     self:_InitializeResourceDisplay()
     self:_InitializeCloseButton()
     self:_InitializeEquipped()    
-	self:_InitializeRefundButton()
 
     // note: items buttons get initialized through SetHostStructure()
     MarineBuy_OnOpen()
@@ -211,7 +207,6 @@ function combat_GUIMarineBuyMenu:Update(deltaTime)
     self:_UpdateContent(deltaTime)
     self:_UpdateResourceDisplay(deltaTime)
     self:_UpdateCloseButton(deltaTime)
-	self:_UpdateRefundButton(deltaTime)
     
 end
 
@@ -224,7 +219,6 @@ function combat_GUIMarineBuyMenu:Uninitialize()
     self:_UninitializeContent()
     self:_UninitializeResourceDisplay()
     self:_UninitializeCloseButton()
-	self:_UninitializeRefundButton()
 
 end
 
@@ -301,7 +295,7 @@ function combat_GUIMarineBuyMenu:_InitializeEquipped()
     self.equippedTitle:SetTextAlignmentY(GUIItem.Align_Center)
     self.equippedTitle:SetColor(combat_GUIMarineBuyMenu.kEquippedColor)
     self.equippedTitle:SetPosition(Vector(0, combat_GUIMarineBuyMenu.kResourceDisplayHeight / 2, 0))
-    self.equippedTitle:SetText(Combat_ResolveString("EQUIPPED"))
+    self.equippedTitle:SetText(Locale.ResolveString("EQUIPPED"))
     self.equippedBg:AddChild(self.equippedTitle)
     
     
@@ -324,18 +318,6 @@ function combat_GUIMarineBuyMenu:_InitializeEquipped()
     
     end
     
-end
-
-local function GetHardCapText(upgrade)
-
-	local player = Client.GetLocalPlayer()
-    local teamInfo = GetTeamInfoEntity(player:GetTeamNumber())
-	local playerCount = teamInfo:GetPlayerCount()
-	if (kCombatUpgradeCounts[upgrade:GetId()] == nil) then
-		kCombatUpgradeCounts[upgrade:GetId()] = 0
-	end
-	return kCombatUpgradeCounts[upgrade:GetId()] .. "/" .. math.ceil(upgrade:GetHardCapScale() * playerCount)
-
 end
 
 function combat_GUIMarineBuyMenu:_InitializeItemButtons()
@@ -361,13 +343,13 @@ function combat_GUIMarineBuyMenu:_InitializeItemButtons()
     self.menuHeaderTitle:SetTextAlignmentX(GUIItem.Align_Center)
     self.menuHeaderTitle:SetTextAlignmentY(GUIItem.Align_Center)
     self.menuHeaderTitle:SetColor(combat_GUIMarineBuyMenu.kTextColor)
-    self.menuHeaderTitle:SetText(Combat_ResolveString("BUY"))
+    self.menuHeaderTitle:SetText(Locale.ResolveString("BUY"))
     self.menuHeader:AddChild(self.menuHeaderTitle)    
     
     self.itemButtons = { }
     
     local allUps = GetAllUpgrades("Marine")
-    // sort the ups, defined in this file
+    // sort the ups, definied in this file
     sortedList = CombatMarineBuy_GUISortUps(allUps) 
 
     // get the headlines
@@ -407,8 +389,8 @@ function combat_GUIMarineBuyMenu:_InitializeItemButtons()
                 
                 local costIcon = GUIManager:CreateGraphicItem()
                 costIcon:SetSize(Vector(combat_GUIMarineBuyMenu.kResourceIconWidth * 0.8, combat_GUIMarineBuyMenu.kResourceIconHeight * 0.8, 0))
-                costIcon:SetAnchor(GUIItem.Left, GUIItem.Bottom)
-                costIcon:SetPosition(Vector(5, -combat_GUIMarineBuyMenu.kResourceIconHeight, 0))
+                costIcon:SetAnchor(GUIItem.Right, GUIItem.Bottom)
+                costIcon:SetPosition(Vector(-32, -combat_GUIMarineBuyMenu.kResourceIconHeight * 0.5, 0))
                 costIcon:SetTexture(combat_GUIMarineBuyMenu.kResourceIconTexture)
                 costIcon:SetColor(combat_GUIMarineBuyMenu.kTextColor)
                 
@@ -433,27 +415,13 @@ function combat_GUIMarineBuyMenu:_InitializeItemButtons()
                 itemCost:SetScale(fontScaleVector)
                 itemCost:SetColor(combat_GUIMarineBuyMenu.kTextColor)
                 itemCost:SetText(ToString(upgrade:GetLevels()))
-				
-				if upgrade:GetHardCapScale() > 0 then
-					local hardCapCount = GUIManager:CreateTextItem()
-					hardCapCount:SetFontName(combat_GUIMarineBuyMenu.kFont)
-					hardCapCount:SetFontIsBold(true)
-					hardCapCount:SetAnchor(GUIItem.Left, GUIItem.Top)
-					hardCapCount:SetPosition(Vector(combat_GUIMarineBuyMenu.kSmallIconSize.x - combat_GUIMarineBuyMenu.kHardCapOffsetX, combat_GUIMarineBuyMenu.kHardCapOffsetY, 0))
-					hardCapCount:SetTextAlignmentX(GUIItem.Align_Max)
-					hardCapCount:SetTextAlignmentY(GUIItem.Align_Center)
-					hardCapCount:SetScale(fontScaleVector)
-					hardCapCount:SetColor(combat_GUIMarineBuyMenu.kTextColor)
-					hardCapCount:SetText(GetHardCapText(upgrade))
-					graphicItem:AddChild(hardCapCount) 
-				end
                 
                 costIcon:AddChild(itemCost)  
                 
-                graphicItem:AddChild(costIcon)   
+                graphicItem:AddChild(costIcon)  
                 
                 self.menu:AddChild(graphicItem)
-                table.insert(self.itemButtons, { Button = graphicItem, Highlight = graphicItemActive, TechId = itemTechId, Cost = itemCost, ResourceIcon = costIcon, Arrow = selectedArrow, HardCapCount = hardCapCount, Upgrade = upgrade} )
+                table.insert(self.itemButtons, { Button = graphicItem, Highlight = graphicItemActive, TechId = itemTechId, Cost = itemCost, ResourceIcon = costIcon, Arrow = selectedArrow , Upgrade = upgrade} )
                   
                 itemNr = itemNr +1
             end
@@ -565,9 +533,6 @@ function combat_GUIMarineBuyMenu:_UpdateItemButtons(deltaTime)
             item.Cost:SetColor(useColor)
             item.ResourceIcon:SetColor(useColor)
             item.Arrow:SetIsVisible(self.selectedItem == item.TechId)
-			if (item.HardCapCount) then
-				item.HardCapCount:SetText(GetHardCapText(item.Upgrade))
-			end
             
         end
     end
@@ -629,7 +594,7 @@ function combat_GUIMarineBuyMenu:_UpdateContent(deltaTime)
         local canAfford = PlayerUI_GetPlayerResources() >= itemCost + upgradesCost
 
         // the discription text under the buttons
-        self.itemName:SetText(GetDisplayNameForTechId(techId))
+        self.itemName:SetText(CombatMarineBuy_GetDisplayName(techId))
         self.itemDescription:SetText(CombatMarineBuy_GetWeaponDescription(techId))
         self.itemDescription:SetTextClipped(true, combat_GUIMarineBuyMenu.kItemDescriptionSize.x - 2* combat_GUIMarineBuyMenu.kPadding, combat_GUIMarineBuyMenu.kItemDescriptionSize.y - combat_GUIMarineBuyMenu.kPadding)
 
@@ -687,7 +652,7 @@ function combat_GUIMarineBuyMenu:_InitializeResourceDisplay()
     self.currentDescription:SetTextAlignmentX(GUIItem.Align_Max)
     self.currentDescription:SetTextAlignmentY(GUIItem.Align_Center)
     self.currentDescription:SetColor(combat_GUIMarineBuyMenu.kTextColor)
-    self.currentDescription:SetText(Combat_ResolveString("CURRENT"))
+    self.currentDescription:SetText(Locale.ResolveString("CURRENT"))
     
     self.resourceDisplayBackground:AddChild(self.currentDescription) 
 
@@ -751,53 +716,6 @@ function combat_GUIMarineBuyMenu:_UninitializeCloseButton()
 
 end
 
-function combat_GUIMarineBuyMenu:_InitializeRefundButton()
-    self.refundButton = GUIManager:CreateGraphicItem()
-    self.refundButton:SetAnchor(GUIItem.Right, GUIItem.Bottom)
-    self.refundButton:SetSize(Vector(combat_GUIMarineBuyMenu.kButtonWidth, combat_GUIMarineBuyMenu.kButtonHeight, 0))
-    self.refundButton:SetPosition(Vector(-combat_GUIMarineBuyMenu.kButtonWidth*2 - combat_GUIMarineBuyMenu.kPadding, combat_GUIMarineBuyMenu.kPadding, 0))
-    self.refundButton:SetTexture(combat_GUIMarineBuyMenu.kButtonTexture)
-    self.refundButton:SetLayer(kGUILayerPlayerHUDForeground4)
-    self.content:AddChild(self.refundButton)
-    
-    self.refundButtonText = GUIManager:CreateTextItem()
-    self.refundButtonText:SetAnchor(GUIItem.Middle, GUIItem.Center)
-    self.refundButtonText:SetFontName(combat_GUIMarineBuyMenu.kFont)
-    self.refundButtonText:SetTextAlignmentX(GUIItem.Align_Center)
-    self.refundButtonText:SetTextAlignmentY(GUIItem.Align_Center)
-	self.refundButtonText:SetText(Combat_ResolveString("COMBAT_REFUND_MARINE"))
-    self.refundButtonText:SetFontIsBold(true)
-    self.refundButtonText:SetColor(combat_GUIMarineBuyMenu.kCloseButtonColor)
-    self.refundButton:AddChild(self.refundButtonText)
-end
-
-function combat_GUIMarineBuyMenu:_UpdateRefundButton(deltaTime)
-
-    if self:_GetIsMouseOver(self.refundButton) then
-        self.refundButton:SetColor(Color(1, 1, 1, 1))
-        // the discription text under the buttons
-		self.itemName:SetText(Combat_ResolveString("COMBAT_REFUND_TITLE_MARINE"))
-        self.itemDescription:SetText(Combat_ResolveString("COMBAT_REFUND_DESCRIPTION_MARINE"))
-        self.itemDescription:SetTextClipped(true, combat_GUIMarineBuyMenu.kItemDescriptionSize.x - 2* combat_GUIMarineBuyMenu.kPadding, combat_GUIMarineBuyMenu.kItemDescriptionSize.y - combat_GUIMarineBuyMenu.kPadding)
-		self.itemName:SetIsVisible(true)
-		self.itemDescription:SetIsVisible(true)
-    else
-        self.refundButton:SetColor(Color(0.5, 0.5, 0.5, 1))
-    end
-
-end
-
-function combat_GUIMarineBuyMenu:_ClickRefundButton()
-
-    Shared.ConsoleCommand("co_refundall")
-	
-end
-
-function combat_GUIMarineBuyMenu:_UninitializeRefundButton()
-    GUI.DestroyItem(self.refundButton)
-    self.refundButton = nil
-end
-
 /**
  * Checks if the mouse is over the passed in GUIItem and plays a sound if it has just moved over.
  */
@@ -834,16 +752,6 @@ function combat_GUIMarineBuyMenu:SendKeyEvent(key, down)
                     inputHandled = true
                     self:OnClose()
                 end
-				
-				// Check if the close button was pressed.
-				if not closeMenu then
-					if self:_GetIsMouseOver(self.refundButton) then
-					self:_ClickRefundButton()
-					closeMenu = true
-                    inputHandled = true
-                    self:OnClose()
-					end
-				end
             end
         end
         
