@@ -94,6 +94,9 @@ function TimedDoor:GetCanBeWeldedOverride()
     return false
 end
 
+function TimedDoor:GetCanTakeDamageOverride()
+    return false
+end
 
 function TimedDoor:OnLogicTrigger()
 

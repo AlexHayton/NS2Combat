@@ -28,7 +28,10 @@ local function PushEntity(self, entity)
             
             // get him in the air a bit
             if entity:GetIsOnGround() then
-                entity:SetOrigin(entity:GetOrigin() + Vector(0,0.2,0))  
+                local extents = GetExtents(entity:GetTechId())            
+                if GetHasRoomForCapsule(extents, entity:GetOrigin() + Vector(0, extents.y + 0.2, 0), CollisionRep.Default, PhysicsMask.AllButPCsAndRagdolls, nil, EntityFilterTwo(self, entity)) then                
+                    entity:SetOrigin(entity:GetOrigin() + Vector(0,0.2,0)) 
+                end
                 entity.jumping = true                 
             end 
             
