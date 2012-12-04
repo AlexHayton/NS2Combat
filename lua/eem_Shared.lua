@@ -13,11 +13,14 @@ LoadTracker:LoadScriptAfter("lua/Shared.lua", "lua/TeleportTrigger.lua", nil)
 LoadTracker:LoadScriptAfter("lua/Shared.lua", "lua/FuncTrain.lua", nil)
 LoadTracker:LoadScriptAfter("lua/Shared.lua", "lua/FuncTrainWaypoint.lua", nil)
 LoadTracker:LoadScriptAfter("lua/Shared.lua", "lua/FuncMoveable.lua", nil)
+LoadTracker:LoadScriptAfter("lua/Shared.lua", "lua/FuncDoor.lua", nil)
 LoadTracker:LoadScriptAfter("lua/Shared.lua", "lua/PushTrigger.lua", nil)
-LoadTracker:LoadScriptAfter("lua/Shared.lua", "lua/TimedDoor.lua", nil)
 LoadTracker:LoadScriptAfter("lua/Shared.lua", "lua/LogicTimer.lua", nil)
 LoadTracker:LoadScriptAfter("lua/Shared.lua", "lua/LogicMultiplier.lua", nil)
 LoadTracker:LoadScriptAfter("lua/Shared.lua", "lua/LogicWeldable.lua", nil)
+LoadTracker:LoadScriptAfter("lua/Shared.lua", "lua/LogicFunction.lua", nil)
+LoadTracker:LoadScriptAfter("lua/Shared.lua", "lua/LogicCounter.lua", nil)
+LoadTracker:LoadScriptAfter("lua/Shared.lua", "lua/LogicTrigger.lua", nil)
 
 
 // file overrides
