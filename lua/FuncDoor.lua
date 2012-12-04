@@ -34,7 +34,7 @@ AddMixinNetworkVars(LogicMixin, networkVars)
 function FuncDoor:OnCreate()
 
     Door.OnCreate(self)
-    //self.state = Door.kState.Locked
+
 end
 
 local function InitModel(self)

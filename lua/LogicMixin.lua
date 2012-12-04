@@ -65,6 +65,10 @@ function LogicMixin:SetFindEntity()
     table.insert(kFindEntitiesAfterLoad, self:GetId())
 end
 
+function LogicMixin:CallEntity(entityId)
+
+end
+
 // needed when we have more than 1 output
 function LogicMixin:GetUsedOutputs()
     local outputs = {}
