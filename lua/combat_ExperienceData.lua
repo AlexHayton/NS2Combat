@@ -16,6 +16,9 @@ kCombatStartUpgradePoints = 0
 // How often to upgrade the counts for upgrades (secs)
 kCombatUpgradeUpdateInterval = 1
 
+// How much lvl you will lose when you rejoin the same team
+kCombatPenaltyLevel = 1
+
 // how much % from the avg xp can new player get
 avgXpAmount = 0.75
 

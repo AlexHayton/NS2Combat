@@ -126,12 +126,15 @@ if Server then
         // only make the effects once
         if not self.gotSpawnProtect then
             
-
-			if HasMixin(self, "NanoShieldAble") then				
-				self:ActivateNanoShield()
-            elseif self:isa("Alien") then            
+            if self:isa("Marine") then
+            
+                self:ActivateNanoShield()
+                
+            elseif self:isa("Alien") then
+            
                 local spawnProtectTimeLeft = self.combatTable.deactivateSpawnProtect - Shared.GetTime()
-                self:SetHasUmbra(true, spawnProtectTimeLeft)
+                self:SetHasUmbra(true, spawnProtectTimeLeft)       
+
             end
             
             /*

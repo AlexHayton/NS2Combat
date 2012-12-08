@@ -235,13 +235,23 @@ function CombatNS2Gamerules:JoinTeam_Hook(self, player, newTeamNumber, force)
 	
 	// This is the new bit for Combat
 	if (success) then
-		
-		// Only reset things like techTree, scan, camo etc.		
-		newPlayer:CheckCombatData()		
+        
+        // Only reset things like techTree, scan, camo etc.		
+		newPlayer:CheckCombatData()	
+		local lastTeamNumber = newPlayer.combatTable.lastTeamNumber
 		newPlayer:Reset_Lite()
 
 		//newPlayer.combatTable.xp = player:GetXp()
-		newPlayer:AddLvlFree(player:GetLvl() - 1 + kCombatStartUpgradePoints)
+		// if the player joins the same team, subtract one level
+		if lastTeamNumber == newTeamNumber then
+			if newPlayer:GetLvl() >= kCombatPenaltyLevel + 1 then
+			    local newXP = Experience_XpForLvl(newPlayer:GetLvl()-1)
+				newPlayer.score = newXP
+				newPlayer.combatTable.lvl = newPlayer:GetLvl()
+				newPlayer:SendDirectMessage( "You lost " .. kCombatPenaltyLevel .. " level for rejoining the same team!")
+			end
+		end
+		newPlayer:AddLvlFree(newPlayer:GetLvl() - 1 + kCombatStartUpgradePoints)
 		
 		//set spawn protect
 		newPlayer:SetSpawnProtect()

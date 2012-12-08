@@ -68,3 +68,14 @@ function Experience_GetLvlName(lvl, team)
 	return LvlName
 	
 end
+
+function Experience_XpForLvl(lvl)
+
+	local returnXp = XpList[1]["XP"]
+
+	if lvl > 0 then
+		returnXp = XpList[lvl]["XP"]
+	end
+
+	return returnXp
+end
