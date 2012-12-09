@@ -61,3 +61,14 @@ function CreateEemProp(self)
 
 end
 
+
+function Player:CanTakeFallDamage()
+
+    if self:isa("Marine") or self:isa("Gorge") or self:isa("Onos") then
+        return true
+    else
+        return false
+    end
+
+end
+

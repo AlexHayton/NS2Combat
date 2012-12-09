@@ -1,3 +1,10 @@
+//________________________________
+//
+//   	NS2 CustomEntitesMod   
+//	Made by JimWest 2012
+//
+//________________________________
+
 Script.Load("lua/Class.lua")
 
 // Overrides the function so its not printing "system" all the time
@@ -37,8 +44,34 @@ originalPlayerOnJumpLand = Class_ReplaceMethod( "Player", "OnJumpLand",
         
         if self.pushTime == -1 then
             self.pushTime = 0
-        end
+        elseif kFallDamage then
+            if landIntensity >= 1 then
+                if self:CanTakeFallDamage() then
+                    damage = landIntensity * 2 * 10                    
+                    if not self:GetCanTakeDamage() then
+                        damage = 0
+                    end
+                    self:DeductHealth(damage, self, self)
+                end
+            end
+        end        
         originalPlayerOnJumpLand(self, landIntensity, slowDown)
+        
+    end
+)
+
+
+// overrides PlayerOnUpdate so we can set jumping=true when falling 
+local originalPlayerOnUpdatePlayer
+originalPlayerOnUpdatePlayer = Class_ReplaceMethod( "Player", "OnUpdatePlayer",
+    function (self, deltaTime)
+                
+        if not self:GetIsOnGround() and self:CanTakeFallDamage() then
+            if not self.jumping then
+                self.jumping = true
+            end
+        end 
+        originalPlayerOnUpdatePlayer(self, deltaTime)           
         
     end
 )
