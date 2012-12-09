@@ -18,7 +18,7 @@ LogicLua.kMapName = "logic_lua"
 
 local networkVars =
 {
-    kLuaFile = "string (" .. 128 .. ")",
+    luaFile = "string (128)",
 }
 
 AddMixinNetworkVars(LogicMixin, networkVars)
@@ -34,11 +34,6 @@ function LogicLua:OnInitialized()
     end
     
     if self.luaFile then
-        // predict and client wont get the name from the map, so save it in a networkvariable
-        self.kLuaFile = self.luaFile        
-    end
-    
-    if self.kLuaFile then
         Script.Load(self.kLuaFile)
     end
     
@@ -49,10 +44,7 @@ function LogicLua:Reset()
 end
 
 
-function LogicLua:OnLogicTrigger()
-
-
-    
+function LogicLua:OnLogicTrigger()    
 end
 
 

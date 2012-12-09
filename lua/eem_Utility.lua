@@ -30,14 +30,14 @@ end
 
 function CreateEemProp(self)
 
-    if self.test ~= 0 then  
+    if self.model then  
 
         local coords = self:GetAngles():GetCoords(self:GetOrigin())
-        coords.xAxis = coords.xAxis * self.propScale.x
-        coords.yAxis = coords.yAxis * self.propScale.y
-        coords.zAxis = coords.zAxis * self.propScale.z
+        coords.xAxis = coords.xAxis * self.scale.x
+        coords.yAxis = coords.yAxis * self.scale.y
+        coords.zAxis = coords.zAxis * self.scale.z
          
-        self.physicsModel = Shared.CreatePhysicsModel(self.test, false, coords, nil) 
+        self.physicsModel = Shared.CreatePhysicsModel(self.model, false, coords, nil) 
         self.physicsModel:SetPhysicsType(CollisionObject.Static) 
         
         //self:SetModel(self.model) 
@@ -48,7 +48,7 @@ function CreateEemProp(self)
                 // All static props can be instanced.
                
             local renderModel = Client.CreateRenderModel(RenderScene.Zone_Default)       
-            renderModel:SetModel(self.test)            
+            renderModel:SetModel(self.model)            
             renderModel:SetCoords(coords)
             renderModel:SetIsStatic(true)
             renderModel:SetIsInstanced(true)  

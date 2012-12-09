@@ -24,8 +24,8 @@ local kAnimationGraph = PrecacheAsset("models/marine/sentry/sentry.animation_gra
 local networkVars =
 {
     weldedPercentage = "float",
-    propScale = "vector",
-    test = "resource",
+    scale = "vector",
+    model =  "string (128)",
 }
 
 AddMixinNetworkVars(LogicMixin, networkVars)
@@ -46,14 +46,9 @@ end
 function LogicWeldable:OnInitialized()
 
     InitMixin(self, WeldableMixin)
-    
-    if Server then
-        self.propScale = self.scale
-    end
   
     if self.model then
         Shared.PrecacheModel(self.model)
-        self.test = Shared.GetModelIndex(self.model)
         self:SetModel(self.model)
     end 
    

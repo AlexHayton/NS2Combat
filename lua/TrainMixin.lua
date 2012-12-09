@@ -38,6 +38,33 @@ TrainMixin.networkVars =
 	savedOrigin = "vector",
 }
 
+
+local function TransformPlayerCoordsForTrain(player, srcCoords, dstCoords)
+
+    local viewCoords = player:GetViewCoords()
+    
+    // If we're going through the backside of the phase gate, orient us
+    // so we go out of the front side of the other gate.
+    if Math.DotProduct(viewCoords.zAxis, srcCoords.zAxis) < 0 then
+    
+        srcCoords.zAxis = -srcCoords.zAxis
+        srcCoords.xAxis = -srcCoords.xAxis
+        
+    end
+    
+    // Redirect player velocity relative to gates
+    local invSrcCoords = srcCoords:GetInverse()   
+    local viewCoords = dstCoords * (invSrcCoords * viewCoords)
+    local viewAngles = Angles()
+    viewAngles:BuildFromCoords(viewCoords)
+    
+    player:SetBaseViewAngles(viewAngles)       
+    player:SetViewAngles(Angles(0, 0, 0))
+    player:SetAngles(Angles(0, viewAngles.yaw, 0))
+    
+end
+
+
 function TrainMixin:__initmixin() 
     self.driving = false
     self.waiting = false
@@ -134,13 +161,10 @@ end
 function TrainMixin:SetOldAnglesDiff(newAngles)
 
     if self.oldAnglesDiff then
-        //local turnAmount,remainingYaw = self:CalcTurnAmount(newAngles.yaw, self.oldAngles.yaw, self:GetTurnSpeed(), Shared.GetTime())
-        //self.oldAnglesDiff.yaw = (newAngles.yaw - self.oldAngles.yaw)
         local newYaw = (newAngles.yaw - self.oldAngles.yaw)
         self.oldAnglesDiff.yaw = newYaw
         self.oldAnglesDiff.pitch = (newAngles.pitch - self.oldAngles.pitch)
-        self.oldAnglesDiff.roll = (newAngles.roll - self.oldAngles.roll)
-        
+        self.oldAnglesDiff.roll = (newAngles.roll - self.oldAngles.roll)        
         
     else
         self.oldAnglesDiff = Angles(0,0,0)
@@ -169,19 +193,17 @@ function TrainMixin:MovePlayersInTrigger(deltaTime)
                 local newOrigin = entOrigin
                 
                 local selfDeltaAngles = self:GetDeltaAngles()              
+                local entityAngles = entity:GetAngles() 
                 local degrees = selfDeltaAngles.yaw
                 
                 // 2d rotation , I don't think I need 3d here, will get the correct position after rotating the train
                 newOrigin.z = trainOrigin.z + (math.cos(degrees) * (entOrigin.z - trainOrigin.z) -  math.sin(degrees) * (entOrigin.x - trainOrigin.x))                
-                newOrigin.x = trainOrigin.x + (math.sin(degrees) * (entOrigin.z - trainOrigin.z) +  math.cos(degrees) * (entOrigin.x - trainOrigin.x))                                
-               
-                // TODO: Also change Angles
-                /*test = entity:GetAngles()
-                test.yaw = test.yaw + degrees
+                newOrigin.x = trainOrigin.x + (math.sin(degrees) * (entOrigin.z - trainOrigin.z) +  math.cos(degrees) * (entOrigin.x - trainOrigin.x))  
 
-                entity:SetAngles(test)
-                entity:SetViewAngles(test)
-                */
+                entityAngles.yaw = entityAngles.yaw + selfDeltaAngles.yaw
+                local coords = Coords.GetLookIn(newOrigin, self:GetAngles():GetCoords().zAxis)
+                //TransformPlayerCoordsForTrain(entity, entity:GetCoords(), coords)
+               
                 entity:SetOrigin(newOrigin  + self:GetMovementVector())
 
             end

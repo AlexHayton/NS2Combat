@@ -793,6 +793,11 @@
         <parameter name="exitonly" type="boolean" label="Exit only" help="This teleporter is only a Exit (Destination Name will be ignored)." default="false"/>
         <parameter name="waitDelay" type="real" label="Wait Delay" help="Delay how long a Player has to wait before he can use the Teleporter exit (in sec.)." default="2"/>
         <parameter name="enabled" type="boolean" label="Trigger enabled" help="Will not teleport when disabled." default="true"/>
+		<parameter name="teamNumber" type="choice" label="Team Number" help="Only this team can use the teleporter." default="0">
+            <choice label="Both teams" value="0"/>
+            <choice label="Marine" value="1"/>
+            <choice label="Alien" value="2"/>
+        </parameter>
         <parameter name="distance" type="distance" label = "Distance" default="3.0" help="Angle from the teleporter-output"/>
         <parameter name="angle" type="angle" label = "Angles" default="30.0" help="Angle from the teleporter-output"/>
 
@@ -814,6 +819,17 @@
         <parameter name="angle" type="angle" label = "Angles" default="30.0" help="Just to show the direction in the Editort"/>
 
     </class>
+	
+	    <!-- Logic trigger -->
+    <class name="logic_trigger" placeable="true">
+        <parent>trigger</parent>
+        
+        <parameter name="enabled" type="boolean" label="Trigger enabled" help="Will not trigger when disabled." default="true"/>
+		<parameter name="output1" type="string" label="Output1" help="Name of the triggered entity" default=""/>
+
+    </class>
+	
+	
     <!-- Func Train -->
     <class name="func_train" placeable="true">
         
@@ -876,7 +892,7 @@
     </class>
 	
 		<!-- Func Train Waypoints -->
-	<class name="func_moveable" placeable="false">		
+	<class name="func_moveable" placeable="true">		
 	
 		<model>
 			<file>model</file>
@@ -891,11 +907,19 @@
       
         <parameter name="name" type="string" label="name" help="Name of logic_weldable which can be referenced by other entities" />
 		<parameter name="startsOpened" type="boolean" label="Starts opened" help="Starts opened or closed (when triggered opens or closes)" default="true"/>
+		
+		<!-- Only up and down is working at the moment
         <parameter name="direction" type="choice" label="Direction" help="Direction the movable will move after closing (place it in the map at its closed position)" default="0">
             <choice label="Up" value="0"/>
             <choice label="Down" value="1"/>
             <choice label="Left" value="2"/>
 			<choice label="Right" value="3"/>
+        </parameter>
+		-->
+		
+		<parameter name="direction" type="choice" label="Direction" help="Direction the movable will move after closing (place it in the map at its closed position)" default="0">
+            <choice label="Up" value="0"/>
+            <choice label="Down" value="1"/>
         </parameter>
 
     </class>
@@ -936,8 +960,48 @@
 		<parameter name="output1" type="string" label="Output" help="Name of the triggered entity (after timer is 0)" default=""/>
 
     </class>
+			
 	
+	<class name="logic_counter" placeable="true">		
+
+        <model>
+            <file>models/system/editor/team_join.model</file>
+        </model>
+		
+        <parameter name="name" type="string" label="name" help="Name of logic_counter which can be referenced by other entities" />
+		<parameter name="counter" type="real" label="Counter" help="Count amount, fires the output after getting triggered this time" default="2"/>
+		<parameter name="output1" type="string" label="Output" help="Name of the triggered entity (counter reached)" default=""/>
+
+    </class>
 	
+	<class name="logic_function" placeable="true">		
+
+        <model>
+            <file>models/system/editor/team_join.model</file>
+        </model>
+		
+        <parameter name="name" type="string" label="name" help="Name of logic_function which can be referenced by other entities" />
+        <parameter name="callFunction" type="choice" label="Function" help="Function that will be called after getting triggered" default="0">
+            <choice label="Print(&quot;Test&quot;)" value="0"/>
+            <choice label="Team 1 win" value="1"/>
+            <choice label="Team 2 win" value="2"/>
+        </parameter>
+
+    </class>
+	
+	<class name="logic_lua" placeable="true">		
+
+        <model>
+            <file>models/system/editor/team_join.model</file>
+        </model>
+		
+        <parameter name="name" type="string" label="name" help="Name of logic_function which can be referenced by other entities" />
+		<parameter name="luaFile" type="string" label="Lua file" help="This file will be loaded directly after loading. Create a lua folder into your map-mod and place there the lua file." default="lua&#47;your_lua_file.lua" />
+
+
+    </class>
+	
+		
 	<class name="logic_weldable" placeable="true">		
 
 		<model>
@@ -951,11 +1015,10 @@
 		<parameter name="output1" type="string" label="Output" help="Name of the triggered entity (after welded)" default=""/>
 
     </class>
-	
-	
+
 	
 		    <!-- Timed Door-->
-    <class name="timed_door" placeable="true">
+    <class name="func_door" placeable="true">
 	
 		
 		<model>
@@ -974,6 +1037,18 @@
 		<parameter name="stayOpen" type="boolean" label="Stay open" help="Stays open after unlocking." default="false"/>
 		<parameter name="clean" type="boolean" label="Uses the alternate clean version of the door model" default="false"/>
 
+
+    </class>
+	
+		<!-- Map settings-->
+	<class name="map_settings" placeable="true">
+		
+		<model>
+            <file>models/system/editor/team_location.model</file>
+        </model>
+
+		<parameter name="viewDistance" type="real" label="View distance" help="This value changes how far you can see in the map before entities, players etc. disappear (140 should be a good value to see everything in the map)" default="40"/>
+		<parameter name="fallDmg" type="boolean" label="Fall damage" help="This will enable fall damage" default="false"/>
 
     </class>
 

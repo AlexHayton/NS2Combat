@@ -30,7 +30,7 @@ originalPlayerOnClampSpeed = Class_ReplaceMethod( "Player", "OnClampSpeed",
 	function(self, input, velocity)
 
         // when not getting pushed, call the original method
-        if self.pushTime ~= -1 then
+        if self.pushTime ~= -1 or self:isa("Lerk") then
             originalPlayerOnClampSpeed(self, input, velocity)
         end
     end
@@ -42,19 +42,23 @@ local originalPlayerOnJumpLand
 originalPlayerOnJumpLand = Class_ReplaceMethod( "Player", "OnJumpLand",
     function (self, landIntensity, slowDown)
         
-        if self.pushTime == -1 then
-            self.pushTime = 0
-        elseif kFallDamage then
-            if landIntensity >= 1 then
-                if self:CanTakeFallDamage() then
-                    damage = landIntensity * 2 * 10                    
-                    if not self:GetCanTakeDamage() then
-                        damage = 0
+        if Server then
+        
+            if self.pushTime == -1 then
+                self.pushTime = 0
+            elseif kFallDamage then
+                if landIntensity >= 1 then
+                    if self:CanTakeFallDamage() then
+                        damage = landIntensity * 2 * 10                    
+                        if not self:GetCanTakeDamage() then
+                            damage = 0
+                        end
+                        self:DeductHealth(damage, self, self)
                     end
-                    self:DeductHealth(damage, self, self)
                 end
             end
-        end        
+   
+        end     
         originalPlayerOnJumpLand(self, landIntensity, slowDown)
         
     end

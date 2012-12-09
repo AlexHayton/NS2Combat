@@ -15,7 +15,8 @@ MapSettings.kMapName = "map_settings"
 
 local networkVars =
 {
-    networkViewDistance  = "private integer (0 to 2048)",  
+    viewDistance  = "integer (0 to 2048)",  
+    fallDmg = "boolean",
 }
 
 
@@ -23,13 +24,9 @@ function MapSettings:OnCreate()
 end
 
 function MapSettings:OnInitialized()
-    // this need to be loaded via client and Server, so we need to save it in a networkVar
-    if self.viewDistance then
-        self.networkViewDistance = self.viewDistance
-    end
     
-    if self.networkViewDistance then
-        kMaxRelevancyDistance = self.networkViewDistance 
+    if self.viewDistance then
+        kMaxRelevancyDistance = self.viewDistance 
     end
     
     if self.fallDmg then
