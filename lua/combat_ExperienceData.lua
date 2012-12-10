@@ -69,6 +69,11 @@ end
 
 local function GiveExo(player, techUpgrade)
 	local exoMarine = player:Replace(Exo.kMapName, player:GetTeamNumber(), false, player:GetOrigin(), { layout = "ClawMinigun" })
+	// powering up, dont let him move
+	exoMarine:BlockMove()
+	exoMarine:SetCameraDistance(4)
+    exoMarine:SendDirectMessage("Powering up. You have to wait " .. kExoPowerUpTime .. " sec till you can move again.")
+    exoMarine.poweringUpFinishedTime = Shared.GetTime() + kExoPowerUpTime
 	return exoMarine
 end
 
