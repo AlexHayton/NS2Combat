@@ -10,6 +10,7 @@
 // our SteamIds so we can use some commands even when cheats are off
 local kSuperAdmins = {
                6303568, // Jimwest 
+			   18247580, // MCMLXXXIV
                 }
                 
 //testSound = PrecacheAsset("sound/ns2c.fev/ns2c/alien/skulk/bite")
