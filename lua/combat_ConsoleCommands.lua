@@ -292,6 +292,35 @@ function OnCommandChangeMap(client, mapName)
     
 end
 
+// this should only be used when a player makes racistic comments etc. and no admin is there! 
+function OnCommandSuperAdminKick(client, userId)
+
+    local steamId = client:GetUserId()
+    if Shared.GetCheatsEnabled() or IsSuperAdmin(steamId)  then  
+        if userId then        
+            for _, player in ientitylist(Shared.GetEntitiesWithClassname("Player")) do   
+                local playerClient = Server.GetOwner(player)      
+                if  playerClient:GetUserId() == tonumber(userId) then
+                    Server.DisconnectClient(playerClient)
+                    break
+                end                
+            end
+
+        else
+            Shared.Message("Player List -")        
+            for _, player in ientitylist(Shared.GetEntitiesWithClassname("Player")) do
+            
+                local playerClient = Server.GetOwner(player)
+                Shared.Message(player:GetName() .. " : " .. playerClient:GetUserId())
+                
+            end
+        end
+    end
+    
+end
+
+Event.Hook("Console_superadminkick",       OnCommandSuperAdminKick) 
+
 function OnCommandSoundTest(client)
 
     local player = client:GetControllingPlayer()

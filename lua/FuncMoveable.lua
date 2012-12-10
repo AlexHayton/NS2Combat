@@ -15,6 +15,7 @@ Script.Load("lua/PathingMixin.lua")
 Script.Load("lua/TrainMixin.lua")
 
 
+
 class 'FuncMoveable' (ScriptActor)
 
 FuncMoveable.kMapName = "func_moveable"
@@ -22,8 +23,8 @@ FuncMoveable.kMapName = "func_moveable"
 
 local networkVars =
 {
-    propScale = "vector",
-    test = "resource",
+    scale = "vector",
+    model = "string (128)",
 }
 
 AddMixinNetworkVars(LogicMixin, networkVars)
@@ -41,33 +42,16 @@ function FuncMoveable:OnCreate()
     InitMixin(self, TrainMixin)
 end
 
-
 function FuncMoveable:OnInitialized()
 
     ScriptActor.OnInitialized(self)
     
-    if Server then
-        self.propScale = self.scale
-    end
-  
     if self.model then
         Shared.PrecacheModel(self.model)
-        self.test = Shared.GetModelIndex(self.model)
     end 
-   
+    
     CreateEemProp(self)
-    /*
-    if self.model ~= nil then    
-        Shared.PrecacheModel(self.model)
-        self:SetModel(self.model) 
-        
-        local coords = self:GetAngles():GetCoords(self:GetOrigin())
-        coords.xAxis = coords.xAxis * self.scale.x
-        coords.yAxis = coords.yAxis * self.scale.y
-        coords.zAxis = coords.zAxis * self.scale.z
-        self:SetCoords(coords)   
-    end
-    */
+
     if Server then
         InitMixin(self, LogicMixin) 
     end
@@ -82,6 +66,7 @@ end
 function FuncMoveable:UpdatePosition(deltaTime)
    
     if self.driving and self.nextWaypoint then
+        self:CheckBlocking()
         local done = self:TrainMoveToTarget(PhysicsMask.All, self.nextWaypoint, self:GetSpeed(), deltaTime, false)
         if done then
             self.driving = false
@@ -89,6 +74,24 @@ function FuncMoveable:UpdatePosition(deltaTime)
     end
             
 end 
+
+
+function FuncMoveable:CheckBlocking()
+    // kill entities that blocks us
+    //local startPoint = self:GetOrigin()    
+    local coords = self:GetCoords()
+    local middle = coords.origin + (coords.yAxis / 2)
+    
+    local endPoint = self.nextWaypoint 
+    local extents = self.scale or self:GetExtents()    
+    local trace = Shared.TraceRay(middle, endPoint, CollisionRep.Move, PhysicsMask.All, EntityFilterOne(self))
+    if trace.entity then
+        if HasMixin(trace.entity, "Live") then
+            trace.entity:Kill()
+        end
+    end
+
+end
 
 
 /* will create a path so the train will know the next points
@@ -163,7 +166,6 @@ function FuncMoveable:OnUpdateRender()
         end
         
         if self.lastPosition ~= origin  then
-            Print("new position")
             local viewModel =  self.viewModel[1]
             local physicsModel =  self.viewModel[2]
             local viewCoords = viewModel:GetCoords()

@@ -129,6 +129,13 @@ kHydraKillTime = 60
 // kill hydras after some time if the owner isn't a gorge
 kExoPowerUpTime = 4
 
+// decrease the exo dmg a bit (with lvl 3 it will be then a bit above the standard 25)
+kMinigunDamage = 20
+
+// reduce the spike dmg a bit
+kSpikeMaxDamage = 10
+kSpikeMinDamage = 8
+
 // Ammo for mines
 kNumMines = 1
 

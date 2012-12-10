@@ -5,7 +5,10 @@
 //
 //________________________________
 
+
 // add every new class (entity based) here
+
+Script.Load("lua/eem_Globals.lua")
 
 LoadTracker:LoadScriptAfter("lua/Shared.lua", "lua/eem_Utility.lua", nil)
 LoadTracker:LoadScriptAfter("lua/Shared.lua", "lua/NS2Gamerules_hook.lua", nil)
@@ -21,7 +24,8 @@ LoadTracker:LoadScriptAfter("lua/Shared.lua", "lua/LogicWeldable.lua", nil)
 LoadTracker:LoadScriptAfter("lua/Shared.lua", "lua/LogicFunction.lua", nil)
 LoadTracker:LoadScriptAfter("lua/Shared.lua", "lua/LogicCounter.lua", nil)
 LoadTracker:LoadScriptAfter("lua/Shared.lua", "lua/LogicTrigger.lua", nil)
-
+LoadTracker:LoadScriptAfter("lua/Shared.lua", "lua/LogicLua.lua", nil)
+LoadTracker:LoadScriptAfter("lua/Shared.lua", "lua/MapSettings.lua", nil)
 
 // file overrides
 LoadTracker:LoadScriptAfter("lua/Shared.lua", "lua/eem_MovementModifier.lua", nil)

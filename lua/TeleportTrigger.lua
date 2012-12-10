@@ -123,38 +123,41 @@ function TeleportTrigger:TeleportEntity(entity)
     if Server then        
         if self.enabled then
         
-            if self.destinationId then      
-                local time = Shared.GetTime()
-                if (not entity.timeOfLastPhase) or (time >= (entity.timeOfLastPhase + self.waitDelay)) then
-                    local destinationEntity = Shared.GetEntity(self.destinationId)  
-                    local destOrigin = destinationEntity:GetOrigin()
-                    local destAnlges = destinationEntity:GetAngles()
-                    local extents = LookupTechData(entity:GetTechId(), kTechDataMaxExtents)
-                    local antiStuckVector = Vector(0,0,0)
-                    
-                    entity.timeOfLastPhase = time  
-                    // that the sound is also getting played for aliens
-                    entity:TriggerEffects("teleport", {classname = "Marine"})  
-                    
-                    TransformPlayerCoordsForPhaseGate(entity, self:GetCoords(), destinationEntity:GetCoords())
-                    
-                    // make sure nothing blocks us
-                    local teleportPointBlocked = Shared.CollideCapsule(destOrigin, extents.y, math.max(extents.x, extents.z), CollisionRep.Default, PhysicsMask.AllButPCs, nil)
-                    if teleportPointBlocked then
-                        // move it a bit so we're not getting blocked
-                        antiStuckVector.z = math.cos(destAnlges.yaw)
-                        antiStuckVector.x = math.sin(destAnlges.yaw)
-                        antiStuckVector.y = 0.5
+            if not self.teamNumber or self.teamNumber == 0 or (self.teamNumber ~= 0 and entity:GetTeamNumber() == self.teamNumber) then
+                if self.destinationId then      
+                    local time = Shared.GetTime()
+                    if (not entity.timeOfLastPhase) or (time >= (entity.timeOfLastPhase + self.waitDelay)) then
+                        local destinationEntity = Shared.GetEntity(self.destinationId)  
+                        local destOrigin = destinationEntity:GetOrigin()
+                        local destAnlges = destinationEntity:GetAngles()
+                        local extents = LookupTechData(entity:GetTechId(), kTechDataMaxExtents)
+                        local antiStuckVector = Vector(0,0,0)
+                        
+                        entity.timeOfLastPhase = time  
+                        // that the sound is also getting played for aliens
+                        entity:TriggerEffects("teleport", {classname = "Marine"})  
+                        
+                        TransformPlayerCoordsForPhaseGate(entity, self:GetCoords(), destinationEntity:GetCoords())
+                        
+                        // make sure nothing blocks us
+                        local teleportPointBlocked = Shared.CollideCapsule(destOrigin, extents.y, math.max(extents.x, extents.z), CollisionRep.Default, PhysicsMask.AllButPCs, nil)
+                        if teleportPointBlocked then
+                            // move it a bit so we're not getting blocked
+                            antiStuckVector.z = math.cos(destAnlges.yaw)
+                            antiStuckVector.x = math.sin(destAnlges.yaw)
+                            antiStuckVector.y = 0.5
+                        end
+                        entity:SetOrigin(destOrigin + antiStuckVector)
                     end
-                    entity:SetOrigin(destOrigin + antiStuckVector)
+                    
+                else
+                    if not self.exitonly then
+                        Print("Error: TeleportTrigger " .. self.name .. " destination not found")
+                    end
                 end
-                
-            else
-                if not self.exitonly then
-                    Print("Error: TeleportTrigger " .. self.name .. " destination not found")
-                end
-            end
+            end            
         // Just do nothing if the teleporter isn't enabled (exit only)
+        
         end
     end
     

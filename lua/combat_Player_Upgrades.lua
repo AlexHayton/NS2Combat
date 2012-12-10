@@ -422,6 +422,13 @@ function Player:Reset_Lite()
 	self.combatTable.deactivateSpawnProtect = nil
     
     self.combatTable.giveClassAfterRespawn = nil	
+	
+	// save the last team
+	local teamNumber = self:GetTeamNumber()
+	if teamNumber ~= 0 then
+		self.combatTable.lastTeamNumber = teamNumber
+	end
+	
 	self.combatTable.techtree = {}
 	self:ClearCoUpgrades()
 	Server.SendNetworkMessage(self, "ClearTechTree", {}, true)
