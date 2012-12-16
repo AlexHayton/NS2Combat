@@ -8,9 +8,10 @@
 // combat_ConsoleCommands.lua
 
 // our SteamIds so we can use some commands even when cheats are off
+// Disabled until Xmas. We will integrate this into the config somewhere?
 local kSuperAdmins = {
-               6303568, // Jimwest 
-			   18247580, // MCMLXXXIV
+//               6303568, // Jimwest 
+//			     18247580, // MCMLXXXIV
                 }
                 
 //testSound = PrecacheAsset("sound/ns2c.fev/ns2c/alien/skulk/bite")
