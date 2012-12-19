@@ -16,8 +16,8 @@ end
 function CombatAlien:OnLoad()
    
     if Server then
-        self:ReplaceClassFunction("Alien", "LockTierTwo", function() end)
-        self:ReplaceClassFunction("Alien", "UpdateNumHives","UpdateNumHives_Hook")
+        self:ReplaceClassFunction("Alien", "GetHasTwoHives","GetHasTwoHives_Hook")
+        self:ReplaceClassFunction("Alien", "GetHasThreeHives","GetHasThreeHives_Hook")
         self:PostHookClassFunction("Alien", "GetCanTakeDamageOverride", "GetCanTakeDamageOverride_Hook"):SetPassHandle(true)
     end
     
@@ -26,26 +26,15 @@ function CombatAlien:OnLoad()
 end
 
 if Server then
-    function CombatAlien:UpdateNumHives_Hook(self)
 
-        local time = Shared.GetTime()
-        if self.timeOfLastNumHivesUpdate == nil or (time > self.timeOfLastNumHivesUpdate + 0.5) then
+    function CombatAlien:GetHasTwoHives_Hook(self)
+        self:CheckCombatData()
+        return self.combatTable.twoHives
+    end
 
-            if self.combatTable then
-                if self.combatTable.twoHives and self.combatTable.twoHives ~= self.twoHives then
-                    self.twoHives = true
-                    self:UnlockTierTwo()
-                end
-                
-                if self.combatTable.threeHives and self.combatTable.threeHives ~= self.threeHives then
-                    self.threeHives = true
-                    self:UnlockTierThree()
-                end
-            end
-            
-            self.timeOfLastNumHivesUpdate = time
-            
-        end
+    function CombatAlien:GetHasThreeHives_Hook(self)
+        self:CheckCombatData()
+        return self.combatTable.threeHives
     end
 
     function CombatAlien:GetCanTakeDamageOverride_Hook(handle, self)
