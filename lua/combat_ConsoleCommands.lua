@@ -334,6 +334,7 @@ end
 Event.Hook("Console_soundtest",       OnCommandSoundTest) 
 
 
+
 // All commands that should be accessible via the chat need to be in this list
 combatCommands = {"co_spendlvl", "co_help", "co_status", "co_upgrades", "/upgrades", "/status", "/buy", "/help", "/timeleft"}
 

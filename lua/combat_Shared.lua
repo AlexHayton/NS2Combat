@@ -19,6 +19,8 @@ Script.Load("lua/eem_shared.lua")
 LoadTracker:LoadScriptAfter("lua/Shared.lua", "lua/AITEST.lua", nil)
 LoadTracker:LoadScriptAfter("lua/Shared.lua", "lua/combat_Player.lua", nil)
 LoadTracker:LoadScriptAfter("lua/Shared.lua", "lua/combat_SpawnProtectClass.lua", nil)
+LoadTracker:LoadScriptAfter("lua/Shared.lua", "lua/combat_Xmas.lua", nil)
+LoadTracker:LoadScriptAfter("lua/Shared.lua", "lua/combat_XmasGift.lua", nil)
 
 
 // Register Network Messages here.

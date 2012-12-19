@@ -321,6 +321,10 @@ function CombatNS2Gamerules:OnUpdate_Hook(self, timePassed)
 			    if kCombatHalloweenMode then
                     combatHalloween_CheckTime(timeTaken)
 			    end
+				// spawn Xmas gift after some time
+				if kCombatXmasMode then
+                    combatXmas_CheckTime(timeTaken)
+			    end
 				// send timeleft to all players, but only every few min
                 if 	kCombatTimeLeftPlayed ~= timeLeft and
 					((timeLeft % kCombatTimeReminderInterval) == 0 or 

@@ -1,0 +1,118 @@
+//________________________________
+//
+//   	NS2 Combat Mod     
+//	Made by JimWest and MCMLXXXIV, 2012
+//
+//________________________________
+
+// combat_Xmas.lua
+// functions for the Xmas special
+
+kCombatXmasMode = true
+
+kXmasMessage = {"!!! A Xmas gift has appeared !!!",
+                    "Find it to earn some extra XP!",
+                     }
+                     
+//kXmasSpawnTime = math.random(0.5, 3) * 60
+kXmasNextSpawn = 0
+
+
+function combatXmas_GetRandomTime()
+
+    local random = math.random(40, 100)
+    if random == 0 then
+        random = 60
+    end    
+    return random 
+
+end
+
+function combatXmas_CheckTime(timeTaken)
+    // palce a new gift after some time, but only if the old has been found, if not, destroy it
+    if not kXmasNextSpawn or kXmasNextSpawn == 0 then
+        kXmasNextSpawn = timeTaken + combatXmas_GetRandomTime()
+    else
+        if timeTaken >= kXmasNextSpawn then
+            if kCombatGiftId then
+                local xmasGift = Shared.GetEntity(kCombatGiftId)
+            end
+            if xmasGift then
+                //DestroyEntity(xmasGift)
+            end
+            combatXmas_AddGift()
+            kXmasNextSpawn = timeTaken + combatXmas_GetRandomTime()
+        end
+    end
+end   
+
+
+function combatXmas_AddGift(player)
+
+    local position
+    local randomPlayer = nil
+    
+    if player then
+        position = player:GetOrigin()
+    else
+        // if the command is not called by a player, spawn it randomly beside one player
+        local playerCount = Shared.GetEntitiesWithClassname("Player"):GetSize()
+        local players = EntityListToTable(Shared.GetEntitiesWithClassname("Player"))
+        
+        randomPlayer = players[math.random(playerCount)]
+        /*
+        for index = 1, 25 do
+            if not randomPlayer:GetIsOnGround() then
+                randomPlayer = players[math.random(playerCount)]
+            else 
+                break
+            end
+        end
+         */       
+        if randomPlayer then
+            for index = 1, 25 do
+                position = GetRandomSpawnForCapsule(0.5, 0.5, randomPlayer:GetOrigin(), 10, 60, EntityFilterOne(randomPlayer))
+                if position then
+                    break                
+                end
+            end
+        end
+    end
+
+    if position then
+        // now we got a position, wait a bit maybe the player is dissapeared then
+        local combatGift = CreateEntity(CombatXmasGift.kMapName, position , randomPlayer:GetTeamNumber())
+      
+        if combatGift then
+            kCombatGiftId = combatGift:GetId()
+            combatXmas_SendAppearMessage()
+        end
+    end
+    
+end
+
+function combatXmas_SendAppearMessage()
+
+    local players = Shared.GetEntitiesWithClassname("Player")
+    for i, player in ientitylist(players) do
+        for j, message in ipairs(kXmasMessage) do
+            player:SendDirectMessage(message)  
+        end
+    end
+    
+end
+
+function OnCommandCoXmas(client)
+
+    local player = client:GetControllingPlayer()
+    if Shared.GetCheatsEnabled() then
+        combatXmas_AddGift(player)
+    end
+
+end
+
+if kCombatXmasMode then
+    Event.Hook("Console_co_xmas",       OnCommandCoXmas) 
+end
+
+    
