@@ -44,7 +44,7 @@ end
 
 function CombatXmasGift:GetIsValidRecipient(recipient)
     if not Client then
-        return recipient:isa("Marine") or recipient:isa("Alien")
+        return ( recipient:isa("Marine") or recipient:isa("Alien") ) and (recipient:GetXp() < maxXp)
     else
         // return false to avoid the GUIPicups (will cause an error)
         return false
@@ -53,6 +53,10 @@ end
 
 // that the xmas gift doesnt appear anymore
 function CombatXmasGift:GetIsPermanent()
+    return true
+end
+
+function CombatXmasGift:GetPlayInstantRagdoll()
     return true
 end
 

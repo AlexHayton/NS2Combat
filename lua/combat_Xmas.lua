@@ -8,17 +8,16 @@
 // combat_Xmas.lua
 // functions for the Xmas special
 
+Script.Load("lua/Ragdoll.lua")
+
 kCombatXmasMode = true
 
 kXmasMessage = {"Ho Ho Ho, Santa Gorge brought you a Xmas gift",
                 "Find it to earn some extra XP!",
                 }
                      
-kXmasFoundMessage = " has found the Xmas gift!"
-                     
-//kXmasSpawnTime = math.random(0.5, 3) * 60
+kXmasFoundMessage = " has found the Xmas gift!"                     
 kXmasNextSpawn = 0
-
 
 function combatXmas_GetRandomTime()
 
@@ -39,9 +38,7 @@ function combatXmas_CheckTime(timeTaken)
             if kCombatGiftId then
                 local xmasGift = Shared.GetEntity(kCombatGiftId)
             end
-            if xmasGift then
-                //DestroyEntity(xmasGift)
-            end
+
             combatXmas_AddGift()
             kXmasNextSpawn = timeTaken + combatXmas_GetRandomTime()
         end
@@ -62,17 +59,9 @@ function combatXmas_AddGift(player)
         local players = EntityListToTable(Shared.GetEntitiesWithClassname("Player"))
         
         randomPlayer = players[math.random(playerCount)]
-        /*
-        for index = 1, 25 do
-            if not randomPlayer:GetIsOnGround() then
-                randomPlayer = players[math.random(playerCount)]
-            else 
-                break
-            end
-        end
-         */       
+   
         if randomPlayer then
-            for index = 1, 25 do
+            for index = 1, 50 do
                 position = GetRandomSpawnForCapsule(0.5, 0.5, randomPlayer:GetOrigin(), 10, 60, EntityFilterOne(randomPlayer))
                 if position then
                     break                
@@ -84,7 +73,6 @@ function combatXmas_AddGift(player)
     if position then
         // now we got a position, wait a bit maybe the player is dissapeared then
         local combatGift = CreateEntity(CombatXmasGift.kMapName, position , randomPlayer:GetTeamNumber())
-      
         if combatGift then
             kCombatGiftId = combatGift:GetId()
             combatXmas_SendAppearMessage()
