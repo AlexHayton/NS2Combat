@@ -10,9 +10,11 @@
 
 kCombatXmasMode = true
 
-kXmasMessage = {"!!! A Xmas gift has appeared !!!",
-                    "Find it to earn some extra XP!",
-                     }
+kXmasMessage = {"Ho Ho Ho, Santa Gorge brought you a Xmas gift",
+                "Find it to earn some extra XP!",
+                }
+                     
+kXmasFoundMessage = " has found the Xmas gift!"
                      
 //kXmasSpawnTime = math.random(0.5, 3) * 60
 kXmasNextSpawn = 0
@@ -20,7 +22,7 @@ kXmasNextSpawn = 0
 
 function combatXmas_GetRandomTime()
 
-    local random = math.random(40, 100)
+    local random = math.random(20, 60)
     if random == 0 then
         random = 60
     end    
@@ -97,6 +99,17 @@ function combatXmas_SendAppearMessage()
     for i, player in ientitylist(players) do
         for j, message in ipairs(kXmasMessage) do
             player:SendDirectMessage(message)  
+        end
+    end
+    
+end
+
+function combatHalloween_SendPickedUpMessage(pickedUpPlayerName)
+
+    if pickedUpPlayerName then
+        local players = Shared.GetEntitiesWithClassname("Player")
+        for i, player in ientitylist(players) do
+            player:SendDirectMessage(pickedUpPlayerName .. kXmasFoundMessage  )  
         end
     end
     

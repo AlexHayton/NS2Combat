@@ -38,6 +38,7 @@ function CombatXmasGift:OnTouch(recipient)
     // give xp
     StartSoundEffectAtOrigin(AmmoPack.kPickupSound, recipient:GetOrigin())
     recipient:AddXp(CombatXmasGift.Xp * (math.random(1, 5) / 5))
+    combatHalloween_SendPickedUpMessage(recipient:GetName())
     
 end
 
@@ -50,5 +51,9 @@ function CombatXmasGift:GetIsValidRecipient(recipient)
     end
 end
 
+// that the xmas gift doesnt appear anymore
+function CombatXmasGift:GetIsPermanent()
+    return true
+end
 
 Shared.LinkClassToMap("CombatXmasGift", CombatXmasGift.kMapName)
