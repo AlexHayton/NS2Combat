@@ -9,6 +9,7 @@
 
 Script.Load("lua/DropPack.lua")
 Script.Load("lua/PickupableMixin.lua")
+Script.Load("lua/combat_ExperienceLevels.lua")
 
 class 'CombatXmasGift' (DropPack)
 
@@ -44,7 +45,8 @@ end
 
 function CombatXmasGift:GetIsValidRecipient(recipient)
     if not Client then
-        return ( recipient:isa("Marine") or recipient:isa("Alien") ) and (recipient:GetXp() < maxXp)
+        //return ( recipient:isa("Marine") or recipient:isa("Alien") ) and (recipient:GetXp() < maxXp)
+        return ( recipient:isa("Marine") or recipient:isa("Alien") ) and recipient:GetXp() < maxXp
     else
         // return false to avoid the GUIPicups (will cause an error)
         return false

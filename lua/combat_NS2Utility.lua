@@ -17,7 +17,8 @@ function CombatNS2Utility:OnLoad()
     self:ReplaceFunction("AttackMeleeCapsule", "AttackMeleeCapsule_Hook")    
     self:ReplaceClassFunction("Spit", "ProcessHit", "ProcessHit_Hook") 
     self:ReplaceFunction("GetAreEnemies", "GetAreEnemies_Hook") 
-	self:ReplaceFunction("GetRandomSpawnForCapsule", "GetRandomSpawnForCapsule_Hook") 
+	self:ReplaceFunction("GetRandomSpawnForCapsule", "GetRandomSpawnForCapsule_Hook")
+    self:PostHookFunction("UpdateAbilityAvailability", "UpdateAbilityAvailability_Hook"):SetPassHandle(true)
 end
 
 // for focus to make more dmg
@@ -173,6 +174,45 @@ function CombatNS2Utility:GetRandomSpawnForCapsule_Hook(capsuleHeight, capsuleRa
     
 end
 
+// to get tier2 and tier3 working again
+local function UnlockAbility(forAlien, techId)
+
+    local mapName = LookupTechData(techId, kTechDataMapName)
+    if mapName and forAlien:GetIsAlive() then
+    
+        local activeWeapon = forAlien:GetActiveWeapon()
+
+        local tierWeapon = forAlien:GetWeapon(mapName)
+        if not tierWeapon then
+            forAlien:GiveItem(mapName)
+        end
+        
+        if activeWeapon then
+            forAlien:SetActiveWeapon(activeWeapon:GetMapName())
+        end
+    
+    end
+
+end
+
+function CombatNS2Utility:UpdateAbilityAvailability_Hook(handle, forAlien, tierTwoTechId, tierThreeTechId)
+    
+    forAlien:CheckCombatData()
+    if tierTwoTechId then
+        if forAlien.combatTable.twoHives then
+            UnlockAbility(forAlien, tierTwoTechId)
+            handle:BlockOrignalCall()
+        end
+    end 
+    
+    if tierThreeTechId then
+        if forAlien.combatTable.threeHives then
+            UnlockAbility(forAlien, tierThreeTechId)
+            handle:BlockOrignalCall()
+        end
+    end
+
+end
 
 if (not HotReload) then
 	CombatNS2Utility:OnLoad()
