@@ -58,16 +58,18 @@ function combatXmas_AddGift(player)
         local playerCount = Shared.GetEntitiesWithClassname("Player"):GetSize()
         local players = EntityListToTable(Shared.GetEntitiesWithClassname("Player"))
         
-        randomPlayer = players[math.random(playerCount)]
-   
-        if randomPlayer then
-            for index = 1, 50 do
-                position = GetRandomSpawnForCapsule(0.5, 0.5, randomPlayer:GetOrigin(), 10, 60, EntityFilterOne(randomPlayer))
-                if position then
-                    break                
-                end
-            end
-        end
+		if (playerCount > 0) then
+			randomPlayer = players[math.random(1, playerCount)]
+	   
+			if randomPlayer then
+				for index = 1, 50 do
+					position = GetRandomSpawnForCapsule(0.5, 0.5, randomPlayer:GetOrigin(), 10, 60, EntityFilterOne(randomPlayer))
+					if position then
+						break                
+					end
+				end
+			end
+		end
     end
 
     if position then
