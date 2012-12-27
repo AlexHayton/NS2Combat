@@ -63,6 +63,8 @@ function combatLoadClientFunctions()
     Script.Load("lua/combat_Marine_Client.lua")
     Script.Load("lua/Hud/combat_GUIExperienceBar.lua")
 	Script.Load("lua/Hud/combat_GUIGameTimeCountDown.lua")
+	Script.Load("lua/Hud/GUIDevouredPlayer.lua")
+	Script.Load("lua/Hud/GUIDevourOnos.lua")
 
 end
 

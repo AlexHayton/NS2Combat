@@ -204,10 +204,20 @@ function CombatNS2Utility:UpdateAbilityAvailability_Hook(handle, forAlien, tierT
             handle:BlockOrignalCall()
         end
     end 
-    
+        
     if tierThreeTechId then
         if forAlien.combatTable.threeHives then
             UnlockAbility(forAlien, tierThreeTechId)
+            handle:BlockOrignalCall()
+        end
+    end   
+ 
+    // enable new abilities
+    if forAlien:isa("Onos") and forAlien.combatTable.threeHives then
+        // only if we dont got already devour
+        local abilities = GetChildEntities(forAlien, "Devour")
+        if (abilities ~= nil) and (#abilities == 0) then
+            forAlien:GiveItem(Devour.kMapName)
             handle:BlockOrignalCall()
         end
     end

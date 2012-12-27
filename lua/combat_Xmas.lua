@@ -10,7 +10,7 @@
 
 Script.Load("lua/Ragdoll.lua")
 
-kCombatXmasMode = true
+kCombatXmasMode = false
 
 kXmasMessage = {"Ho Ho Ho, Santa Gorge brought you a Xmas gift",
                 "Find it to earn some extra XP!",
