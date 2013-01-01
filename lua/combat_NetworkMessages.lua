@@ -122,15 +122,3 @@ elseif Client then
     Client.HookNetworkMessage("CombatGameTimeUpdate", GetCombatGameTimeUpdate)
     
 end
-
-
-// creates a global hook table that we can Remove all hooks, if necessary
-function _addHookToTable(hook)
-
-    if not globalHookTable then
-        globalHookTable = {}
-    end
-
-    table.insert(globalHookTable , hook)
-
-end
