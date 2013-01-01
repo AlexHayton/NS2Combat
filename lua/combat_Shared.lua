@@ -34,9 +34,9 @@ LoadTracker:LoadScriptAfter("lua/Shared.lua", "lua/combat_SpawnProtectClass.lua"
 LoadTracker:LoadScriptAfter("lua/Shared.lua", "lua/combat_Xmas.lua", nil)
 LoadTracker:LoadScriptAfter("lua/Shared.lua", "lua/combat_XmasGift.lua", nil)
 LoadTracker:LoadScriptAfter("lua/Shared.lua", "lua/Weapons/Alien/Devour.lua", nil)
-LoadTracker:LoadScriptAfter("lua/Shared.lua", "lua/Weapons/Alien/WebAbility.lua", nil)
-LoadTracker:LoadScriptAfter("lua/Shared.lua", "lua/Weapons/Alien/Web.lua", nil)
-LoadTracker:LoadScriptAfter("lua/Shared.lua", "lua/Weapons/Alien/WebShot.lua", nil)
+//LoadTracker:LoadScriptAfter("lua/Shared.lua", "lua/Weapons/Alien/WebAbility.lua", nil)
+//LoadTracker:LoadScriptAfter("lua/Shared.lua", "lua/Weapons/Alien/Web.lua", nil)
+//LoadTracker:LoadScriptAfter("lua/Shared.lua", "lua/Weapons/Alien/WebShot.lua", nil)
 LoadTracker:LoadScriptAfter("lua/Shared.lua", "lua/DevouredPlayer.lua", nil)
 
 
