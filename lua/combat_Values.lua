@@ -186,6 +186,9 @@ Onos.kArmor = kOnosArmor
 SetCachedTechData(kTechId.Onos, kTechDataMaxHealth, kOnosHealth)
 SetCachedTechData(kTechId.Onos, kTechDataMaxArmor, kOnosArmor)
 
+// Range for evolving to Onos/Exo from the Hive/CommandStation
+kTechRange = 20.0
+
 // dont Track the CombatMod anylonger (later we could maybe make our own tracking site?
 kStatisticsURL = ""
 

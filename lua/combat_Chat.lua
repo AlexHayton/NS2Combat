@@ -66,6 +66,7 @@ local function OnChatReceived(client, message)
                 end
                 
                 Shared.Message("Chat " .. (message.teamOnly and "Team - " or "All - ") .. playerName .. ": " .. chatMessage)
+                Server.AddChatToHistory(chatMessage, playerName, client:GetUserId(), playerTeamNumber, message.teamOnly)
                 
             end
             

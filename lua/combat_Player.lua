@@ -514,7 +514,17 @@ if Server then
             //self:SendDirectMessage("You already own the upgrade " .. type)
             
         elseif hint == "no_room" then
-            self:SendDirectMessage( type .." upgrade failed, maybe not enough room")   
+            self:SendDirectMessage( type .." upgrade failed, maybe not enough room")  
+
+        elseif hint == "not_in_techrange" then
+            local techType = ""
+            
+            if type == "Alien" then
+                techType = "hive for evolving to onos"
+            else
+                teamtext = "command station for getting exosuit"
+            end
+            self:SendDirectMessage("You have to be near the " .. techType .. "!")
             
         elseif hint == "wrong_team" then
             local teamtext = ""

@@ -59,6 +59,7 @@ function Player:CoEnableUpgrade(upgrades)
 	
         local alreadyGotUpgrade = false
         local noRoom = false
+        local notInTechRange = false
 		local mutuallyExclusive = false
 		local mutuallyExclusiveDescription = ""
         local requirements = upgrade:GetRequirements()
@@ -93,7 +94,7 @@ function Player:CoEnableUpgrade(upgrades)
 			end
         end
         
-        // Check whether we have room to evolve
+        // Check whether we have room to evolve and the player is near a hive/command station for evolving to onos/exo
         if self:isa("Alien") then
             local lifeFormTechId = kTechId.Skulk
             if self:GetIsAlive() then 
@@ -106,6 +107,14 @@ function Player:CoEnableUpgrade(upgrades)
             
             if not self:HasRoomToEvolve(techId) then
                 noRoom = true
+            end
+           
+            if techId == kTechId.Onos and #GetEntitiesWithinRange("Hive", self:GetOrigin(), kTechRange) == 0 then
+                notInTechRange = true
+            end
+        else
+            if techId == kTechId.DualMinigunExosuit and #GetEntitiesWithinRange("CommandStation", self:GetOrigin(), kTechRange) == 0 then
+                notInTechRange = true
             end
         end
 
@@ -120,6 +129,8 @@ function Player:CoEnableUpgrade(upgrades)
             self:spendlvlHints("already_owned", upgrade:GetTextCode())
         elseif noRoom then
             self:spendlvlHints("no_room")
+        elseif notInTechRange then
+            self:spendlvlHints("not_in_techrange", team)
         elseif self:GetLvlFree() < neededLvl then
             self:spendlvlHints("neededLvl", neededLvl)
 		elseif mutuallyExclusive then
