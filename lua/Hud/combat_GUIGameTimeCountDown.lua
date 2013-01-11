@@ -13,14 +13,14 @@ class 'combat_GUIGameTimeCountDown' (GUIAnimatedScript)
 
 combat_GUIGameTimeCountDown.kBackgroundTexture = "ui/combat_count_down_bg.dds"
 
-combat_GUIGameTimeCountDown.kBackgroundWidth = GUIScale(210)
-combat_GUIGameTimeCountDown.kBackgroundHeight = GUIScale(80)
+combat_GUIGameTimeCountDown.kBackgroundWidth = GUIScale(135)
+combat_GUIGameTimeCountDown.kBackgroundHeight = GUIScale(50)
 combat_GUIGameTimeCountDown.kBackgroundOffsetX = GUIScale(0)
 combat_GUIGameTimeCountDown.kBackgroundOffsetY = GUIScale(0)
 
-combat_GUIGameTimeCountDown.kTimeOffset = Vector(0, GUIScale(-10), 0)
-combat_GUIGameTimeCountDown.kTimeFontName = "fonts/AgencyFB_large.fnt"
-combat_GUIGameTimeCountDown.kTimeFontSize = 25
+combat_GUIGameTimeCountDown.kTimeOffset = Vector(0, GUIScale(-5), 0)
+combat_GUIGameTimeCountDown.kTimeFontName = "fonts/AgencyFB_small.fnt"
+combat_GUIGameTimeCountDown.kTimeFontSize = 16
 combat_GUIGameTimeCountDown.kTimeBold = true
 
 combat_GUIGameTimeCountDown.kBgCoords = {14, 0, 112, 34}
