@@ -520,9 +520,9 @@ if Server then
             local techType = ""
             
             if type == "Alien" then
-                techType = "hive for evolving to onos"
+                techType = "Hive to evolve to an Onos"
             else
-                teamtext = "command station for getting exosuit"
+                techType = "Command Station to get an Exosuit"
             end
             self:SendDirectMessage("You have to be near the " .. techType .. "!")
             
