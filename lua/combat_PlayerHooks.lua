@@ -157,42 +157,44 @@ function CombatPlayer:OnUpdatePlayer_Hook(self, deltaTime)
 			end
 		end 
 
-		// Provide scan and resupply function
-		if self.combatTable.hasScan then
-			// SCAN!!
-			if (self.combatTable.lastScan + deltaTime >= kScanTimer) then
-				
-				local success = self:ScanNow()
-				
-				if success then
-					self.combatTable.lastScan = 0	            
-				end
-				
-			else
-				self.combatTable.lastScan = self.combatTable.lastScan + deltaTime
-			end
-		end 
-		
-		if self.combatTable.hasResupply then
-			if (self.combatTable.lastResupply + deltaTime >= kResupplyTimer) then
-				
-				// Keep the timer going, even if we don't need to resupply.
-				local success = false
-				if (self:NeedsResupply()) then
-					success = self:ResupplyNow()
-				else
-					success = true
-				end
-				
-				if success then
-					self.combatTable.lastResupply = 0
-				end
-			   
-			else
-				self.combatTable.lastResupply = self.combatTable.lastResupply + deltaTime
-			end
-	
-		end 
+        // Only if player get not devoured
+        if self.kMapName ~= DevouredPlayer.kMapName then        
+            // Provide scan and resupply function
+            if self.combatTable.hasScan then
+                // SCAN!!
+                if (self.combatTable.lastScan + deltaTime >= kScanTimer) then
+                    
+                    local success = self:ScanNow()
+                    
+                    if success then
+                        self.combatTable.lastScan = 0	            
+                    end
+                    
+                else
+                    self.combatTable.lastScan = self.combatTable.lastScan + deltaTime
+                end
+            end 
+            
+            if self.combatTable.hasResupply then
+                if (self.combatTable.lastResupply + deltaTime >= kResupplyTimer) then
+                    
+                    // Keep the timer going, even if we don't need to resupply.
+                    local success = false
+                    if (self:NeedsResupply()) then
+                        success = self:ResupplyNow()
+                    else
+                        success = true
+                    end
+                    
+                    if success then
+                        self.combatTable.lastResupply = 0
+                    end
+                   
+                else
+                    self.combatTable.lastResupply = self.combatTable.lastResupply + deltaTime
+                end        
+            end 
+        end
 		
 		if self.poweringUpFinishedTime then
 			if Shared.GetTime() >= self.poweringUpFinishedTime then
