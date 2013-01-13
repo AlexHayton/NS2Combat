@@ -40,7 +40,6 @@ if kCombatModActive then
     Script.Load("lua/combat_PowerPoint.lua")
     Script.Load("lua/combat_PlayerHooks.lua")
     Script.Load("lua/combat_Marine_Hooks.lua")
-    Script.Load("lua/combat_Alien_Hooks.lua")
     Script.Load("lua/combat_CommandStructure_Hooks.lua")
     Script.Load("lua/combat_Hive.lua")
     Script.Load("lua/combat_Armory.lua")

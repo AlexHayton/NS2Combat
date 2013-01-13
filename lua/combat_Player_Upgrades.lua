@@ -402,10 +402,10 @@ function Player:Reset_Lite()
 	self.combatTable.lastXpEffect = 0
 	self.combatTable.lastXpAmount = 0
 	self.combatTable.lastTauntTime = 0
-	self.combatTable.hasCamouflage = false
-	
-	self.combatTable.twoHives = false
-	self.combatTable.threeHives = false
+	self.combatTable.hasCamouflage = false	
+
+	self.twoHives = false
+	self.threeHives = false
 
     // scan and resupp values	
     self.combatTable.hasScan = false

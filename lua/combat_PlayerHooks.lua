@@ -19,7 +19,6 @@ function CombatPlayer:OnLoad()
 	self:ReplaceClassFunction("Player", "GetTechTree", "GetTechTree_Hook") 
 	self:PostHookClassFunction("Player", "OnUpdatePlayer", "OnUpdatePlayer_Hook")
 	self:PostHookClassFunction("Player", "OnCreate", "OnCreate_Hook")
-	self:PostHookClassFunction("Player", "UpdateArmorAmount", "UpdateArmorAmount_Hook")
 	self:PostHookClassFunction("Player", "GetCanTakeDamageOverride", "GetCanTakeDamageOverride_Hook"):SetPassHandle(true)
 
     self:ReplaceFunction("GetIsTechAvailable", "GetIsTechAvailable_Hook")
@@ -204,16 +203,6 @@ function CombatPlayer:OnUpdatePlayer_Hook(self, deltaTime)
 			end
 		end
     end
-end
-
-function CombatPlayer:UpdateArmorAmount_Hook(self)
-
-	// Always set the hives back to false, so that later on we can enable tier 2/3 even after embryo.
-	if (self:isa("Alien") and self:GetTeamNumber() ~= kTeamReadyRoom) then
-		self.twoHives = false
-		self.threeHives = false
-	end
-
 end
 
 function CombatPlayer:GetCanTakeDamageOverride_Hook(handle, self)

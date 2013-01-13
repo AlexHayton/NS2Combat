@@ -27,21 +27,11 @@ function CombatAlien:OnLoad()
 end
 
 function CombatAlien:GetHasTwoHives_Hook(self)
-    if Server then
-        self:CheckCombatData()
-        return self.combatTable.twoHives
-    elseif Client then
-        return self:GotItemAlready(GetUpgradeFromId(kCombatUpgrades.TierTwo))
-    end
+	return self.twoHives
 end
 
 function CombatAlien:GetHasThreeHives_Hook(self)
-    if Server then
-        self:CheckCombatData()
-        return self.combatTable.threeHives
-    elseif Client then
-        return self:GotItemAlready(GetUpgradeFromId(kCombatUpgrades.TierThree))
-    end
+	return self.threeHives
 end
 
 function CombatAlien:OnUpdateAnimationInput_Hook(self, modelMixin)
