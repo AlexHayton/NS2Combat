@@ -65,7 +65,6 @@ if kCombatModActive then
     Script.Load("lua/combat_TechNode.lua")
     Script.Load("lua/combat_Chat.lua")
 	Script.Load("lua/combat_CustomEffects.lua")
-	Script.Load("lua/combat_PowerConsumerMixin.lua")
     Script.Load("lua/combat_CommandStructure.lua")
     Script.Load("lua/combat_StaticTargetMixin.lua")
     Script.Load("lua/combat_AlienTeam_NewFuncs.lua")
@@ -82,6 +81,7 @@ if kCombatModActive then
     Script.Load("lua/combat_Halloween.lua")
 
     // due to a bug, this needs to be loaded here
+	Script.Load("lua/combat_PowerConsumerMixin.lua")
     Script.Load("lua/combat_PointGiverMixin.lua")
     Script.Load("lua/combat_WeldableMixin.lua")
 	Script.Load("lua/combat_LiveMixin.lua")

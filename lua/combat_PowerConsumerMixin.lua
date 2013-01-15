@@ -9,6 +9,7 @@
 
 function PowerConsumerMixin:GetIsPowered()
 
-    isPowered = true
+    self.powered = true
+	return self.powered
     
 end
