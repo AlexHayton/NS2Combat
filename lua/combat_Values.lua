@@ -42,6 +42,7 @@ kCombatMarineSpawnProtectTime = 4
 kNanoShieldDuration = kCombatMarineSpawnProtectTime 
 kCombatAlienSpawnProtectTime = 5
 kSpawnMaxRetries = 50
+kSpawnArmoryMaxRetries = 200
 kSpawnMinDistance = 2
 kSpawnMaxDistance = 70
 kSpawnMaxVertical = 30
