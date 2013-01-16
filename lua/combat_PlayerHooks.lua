@@ -157,7 +157,7 @@ function CombatPlayer:OnUpdatePlayer_Hook(self, deltaTime)
 		end 
 
 		// Only if player get not devoured
-		if self.kMapName ~= DevouredPlayer.kMapName then 
+		if not self:isa("DevouredPlayer") then 
 		// Provide scan and resupply function
 			if self.combatTable.hasScan then
 				// SCAN!!

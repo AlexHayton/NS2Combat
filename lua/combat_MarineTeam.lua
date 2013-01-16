@@ -30,7 +30,7 @@ function CombatMarineTeam:SpawnInitialStructures_Hook(self, techPoint)
     local tower, commandStation = PlayingTeam.SpawnInitialStructures(self, techPoint)
 
 	//Check if there is already an Armory
-	if #GetEntitiesForTeam(Armory.kMapName, self:GetTeamNumber()) == 0 then	
+	if #GetEntitiesForTeam("Armory", self:GetTeamNumber()) == 0 then	
 		// Don't Spawn an IP, make an armory instead!
 		// spawn initial Armory for marine team    
 		local techPointOrigin = techPoint:GetOrigin() + Vector(0, 2, 0)
