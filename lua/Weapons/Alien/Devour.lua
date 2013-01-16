@@ -159,7 +159,7 @@ function Devour:ClearPlayer()
     local onos = self:GetParent() 
     if onos and self.eatingPlayerId ~= 0 then
         local player = Shared.GetEntity(self.eatingPlayerId)
-        if player then
+        if player and player.Replace then
             local oldHealth = player:GetHealth()
             newPlayer = player:Replace(player.previousMapName , player:GetTeamNumber(), false,  onos:GetOrigin())
             newPlayer.health = oldHealth 
