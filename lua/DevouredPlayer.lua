@@ -35,7 +35,6 @@ function DevouredPlayer:OnInitialized()
     self:DestroyController()    
     // Other players never see a DevouredPlayer.
     self:SetPropagate(Entity.Propagate_Never) 
-    self:BlockMove()  
     
     // due to a bug with MarineActionFinder, this need to be called here
     if Client then
@@ -62,6 +61,26 @@ function DevouredPlayer:OnDestroy()
     end
     
 end
+
+// let the player chat, but but nove
+function DevouredPlayer:OverrideInput(input)
+
+    AdjustInputForInversion(input)
+    
+    ClampInputPitch(input)
+    
+    // Completely override movement and commands
+    input.move.x = 0
+    input.move.y = 0
+    input.move.z = 0
+    
+    // Only allow some actions like going to menu, chatting and Scoreboard (not jump, use, etc.)
+    input.commands = bit.band(input.commands, Move.Exit) + bit.band(input.commands, Move.TeamChat) + bit.band(input.commands, Move.TextChat) + bit.band(input.commands, Move.Scoreboard) + bit.band(input.commands, Move.ShowMap)
+    
+    return input
+    
+end
+
 
 function DevouredPlayer:GetDevourPercentage()
     return self.devouringPercentage
@@ -93,10 +112,6 @@ end
 
 function DevouredPlayer:GetTraceCapsule()
     return 0, 0
-end
-
-function DevouredPlayer:GetTechId()
-    return kTechId.Player
 end
 
 function DevouredPlayer:GetCanTakeDamageOverride()
@@ -146,7 +161,9 @@ if Client then
             GetGUIManager():DestroyGUIScriptSingle(self.guiDevouredPlayer)        
         end
         
-        self.guiDevouredPlayer = GetGUIManager():CreateGUIScriptSingle("Hud/GUIDevouredPlayer")
+        self.guiDevouredPlayer = GetGUIManager():CreateGUIScriptSingle("Hud/GUIDevouredPlayer")                
+        // to get chat working
+        GetGUIManager():CreateGUIScriptSingle("GUIChat")
         
     end
   

@@ -45,7 +45,7 @@ local function DevourAttack(self, player, hitTarget, excludeTarget)
     
     local targets = GetEntitiesWithMixinForTeamWithinRange ("Live", GetEnemyTeamNumber(player:GetTeamNumber()), attackOrigin, kAttackRadius)
     
-    if hitTarget and HasMixin(hitTarget, "Live") then
+    if hitTarget and HasMixin(hitTarget, "Live") and hitTarget:GetIsVisible() and hitTarget:GetCanTakeDamage() then
         table.insertunique(targets, hitTarget)
     end
 
@@ -161,6 +161,8 @@ function Devour:ClearPlayer()
             local oldHealth = player:GetHealth()
             newPlayer = player:Replace(player.previousMapName , player:GetTeamNumber(), false,  onos:GetOrigin())
             newPlayer.health = oldHealth 
+            // give him his weapons back
+            newPlayer:GiveUpsBack()
         end 
     end
     self.eatingPlayerId = 0

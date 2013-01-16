@@ -30,7 +30,7 @@ GUIDevouredPlayer.kAlienTextColor = kAlienFontColor
     self.background:SetAnchor(GUIItem.Top, GUIItem.Top)
     self.background:SetPosition( Vector(0, 0, 0) ) 
     self.background:SetTexture(GUIDevouredPlayer.kBackgroundTexture)
-    self.background:SetLayer(kGUILayerDebugText)    
+    //self.background:SetLayer(kGUILayerDebugText)    
     self.background:SetShader("shaders/GUIWavy.surface_shader")
     self.background:SetAdditionalTexture("wavyMask", GUIDevouredPlayer.kMaskTexture)
     self.background:SetIsVisible(true)
@@ -39,7 +39,7 @@ GUIDevouredPlayer.kAlienTextColor = kAlienFontColor
     self.devourText = self:CreateAnimatedTextItem()
     self.devourText:SetAnchor(GUIItem.Middle, GUIItem.Center)
     self.devourText:SetPosition(GUIDevouredPlayer.kTimeOffset)
-	self.devourText:SetLayer(kGUILayerPlayerHUDForeground1)
+	//self.devourText:SetLayer(kGUILayerPlayerHUDForeground1)
 	self.devourText:SetTextAlignmentX(GUIItem.Align_Center)
     self.devourText:SetTextAlignmentY(GUIItem.Align_Center)
 	self.devourText:SetText("Getting devoured")
@@ -47,7 +47,6 @@ GUIDevouredPlayer.kAlienTextColor = kAlienFontColor
 	self.devourText:SetFontSize(GUIDevouredPlayer.kTimeFontSize)
     self.devourText:SetFontName(GUIDevouredPlayer.kTimeFontName)
 	self.devourText:SetFontIsBold(GUIDevouredPlayer.kTimeBold)
-	self.devourText:SetLayer(kGUILayerPlayerHUDBackground)
 	self.devourText:SetIsVisible(true)
 	
     // devour bar    
@@ -57,7 +56,7 @@ GUIDevouredPlayer.kAlienTextColor = kAlienFontColor
     self.devourBar:SetAnchor(GUIItem.Left, GUIItem.Bottom) 
     self.devourBar:SetTexture(GUIDevourOnos.kJetpackFuelTexture)
     self.devourBar:SetTexturePixelCoordinates(unpack(GUIDevourOnos.kBarCoords))
-    self.devourBar:SetLayer(kGUILayerPlayerHUDBackground)
+    //self.devourBar:SetLayer(kGUILayerPlayerHUDBackground)
     self.devourBar:SetIsVisible(false)
  
 	self.background:AddChild(self.devourText)
