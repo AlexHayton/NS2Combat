@@ -89,10 +89,12 @@ local function GiveExoDualMinigun(player, techUpgrade)
 end
 
 local function TierTwo(player, techUpgrade)
+    player.combatTable.twoHives = true
 	player.twoHives = true
 end
 
 local function TierThree(player, techUpgrade)
+    player.combatTable.threeHives = true
 	player.threeHives = true
 end
 
