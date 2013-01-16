@@ -1,1 +1,1 @@
-kCombatLocalVersion = 3.1
+kCombatLocalVersion = 3.2
