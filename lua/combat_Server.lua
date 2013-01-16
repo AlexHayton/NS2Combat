@@ -49,6 +49,7 @@ if kCombatModActive then
 	// Hooks for Ink and EMP are in here.
 	Script.Load("lua/combat_SoundEffect.lua")
 	Script.Load("lua/combat_Hydra.lua")
+	Script.Load("lua/Weapons/Alien/combat_StructureAbility.lua")
     
 end
 

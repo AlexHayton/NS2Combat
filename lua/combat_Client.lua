@@ -33,6 +33,7 @@ Script.Load("lua/Hud/combat_GUIPlayerResources.lua")
 Script.Load("lua/combat_Player_ClientHook.lua")
 Script.Load("lua/combat_Alien_Hooks.lua")
 Script.Load("lua/combat_Armory_Client.lua")
+Script.Load("lua/Weapons/Alien/combat_StructureAbility.lua")
 
 // Load the normal Ns2 Server Scripts
 Script.Load("lua/Client.lua")
