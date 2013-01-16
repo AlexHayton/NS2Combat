@@ -25,9 +25,6 @@ end
 // Hooks MarineTeam
 //___________________
 
-local kArmorySpawnMinDistance = 6
-local kArmorySpawnMaxDistance = 30
-
 function CombatMarineTeam:SpawnInitialStructures_Hook(self, techPoint)
 
     local tower, commandStation = PlayingTeam.SpawnInitialStructures(self, techPoint)
