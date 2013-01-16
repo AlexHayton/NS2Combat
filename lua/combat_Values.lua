@@ -197,4 +197,7 @@ kTechRange = 20.0
 // dont Track the CombatMod anylonger (later we could maybe make our own tracking site?
 kStatisticsURL = ""
 
+// EMP energy drain
+kEMPBlastEnergyDamage = 100
+
 SetCachedTechData(kTechId.Hydra, kTechDataCostKey, kHydraCost)
