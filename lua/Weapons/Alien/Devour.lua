@@ -56,13 +56,15 @@ local function DevourAttack(self, player, hitTarget, excludeTarget)
         
         if target:isa("Player") and not target:isa("Exo") then
             // ToDo: eat nearest target
-            didHit = true      
-            self.eatingPlayerId = target:GetId()
-            if Server then
-                target:BlockMove()
-                self:DevourPlayer(target)
+            if not Shared.GetCheatsEnabled() and (target:GetTeamNumber() ~= self:GetTeamNumber()) then
+                didHit = true      
+                self.eatingPlayerId = target:GetId()
+                if Server then
+                    target:BlockMove()
+                    self:DevourPlayer(target)
+                end
+                break
             end
-            break
         end
     
     end

@@ -155,16 +155,16 @@ end
 if Client then     
         
     function DevouredPlayer:OnInitLocalClient()    
-        
-        Marine.OnInitLocalClient(self)
-        if self.guiDevouredPlayer then    
-            GetGUIManager():DestroyGUIScriptSingle(self.guiDevouredPlayer)        
+        if self:GetTeamNumber() ~=  kTeamReadyRoom then
+            Marine.OnInitLocalClient(self)
+            if self.guiDevouredPlayer then    
+                GetGUIManager():DestroyGUIScriptSingle(self.guiDevouredPlayer)        
+            end
+            
+            self.guiDevouredPlayer = GetGUIManager():CreateGUIScriptSingle("Hud/GUIDevouredPlayer")                
+            // to get chat working
+            GetGUIManager():CreateGUIScriptSingle("GUIChat")
         end
-        
-        self.guiDevouredPlayer = GetGUIManager():CreateGUIScriptSingle("Hud/GUIDevouredPlayer")                
-        // to get chat working
-        GetGUIManager():CreateGUIScriptSingle("GUIChat")
-        
     end
   
     function DevouredPlayer:UpdateClientEffects(deltaTime, isLocal)
