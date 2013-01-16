@@ -105,7 +105,7 @@ kAlienEggsPerHive = 0
 
 // Tweaks for weapons and upgrades
 // Camouflage
-kCamouflageTime = 1.5
+kCamouflageTime = 2
 kCamouflageUncloakFactor = 2 / 3
 
 // Gorge Healspray heals more (and makes a bit more damage)
