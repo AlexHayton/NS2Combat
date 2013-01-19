@@ -5,8 +5,7 @@
 //
 //________________________________
 
-// initially, this was for my singlepalyer project, but lets make a cool halloween ai with that
-
+// combat_SpawnProtectClass
 
 //******************************************
 //* Scripts 
@@ -24,7 +23,8 @@ class 'CombatSpawnProtect' (ScriptActor)
 CombatSpawnProtect.kMapName = "combatspawnprotect"
 CombatSpawnProtect.materialFile = "cinematics/vfx_materials/spawnProtect.material"
 CombatSpawnProtect.viewMaterialFile = "cinematics/vfx_materials/spawnProtect_view.material"  
-
+Shared.PrecacheSurfaceShader("cinematics/vfx_materials/spawnProtect.surface_shader")
+Shared.PrecacheSurfaceShader("cinematics/vfx_materials/spawnProtect_view.surface_shader")
 
 
 //******************************************
@@ -42,8 +42,6 @@ AddMixinNetworkVars(TeamMixin, networkVars)
 //******************************************
 //* Functions
 //******************************************
-
-
 // onCreate and OnInitilized need every class
 function CombatSpawnProtect:OnCreate()
     InitMixin(self, TeamMixin)
@@ -62,7 +60,7 @@ function CombatSpawnProtect:OnInitialized()
         end
     end
     
-    if Client then
+    if Client and not Shared.GetIsRunningPrediction() then
         if self.playerId then
             self:_CreateEffect()
         end
@@ -71,7 +69,7 @@ function CombatSpawnProtect:OnInitialized()
 end
 
 function CombatSpawnProtect:OnUpdate(deltaTime)
-    if Client then
+    if Client and not Shared.GetIsRunningPrediction() then
         if not self.effectSuccess then
             self:_CreateEffect()
         end
@@ -79,87 +77,87 @@ function CombatSpawnProtect:OnUpdate(deltaTime)
 end
 
 function CombatSpawnProtect:OnDestroy()
-	if Client then		
+	if Client and not Shared.GetIsRunningPrediction() then	
         self:_RemoveEffect()
 	end
 end
 
 if Client then
-
-    function CombatSpawnProtect:CreateSpawnProtectEffect() 
-        /*
-        self.protectEffect = Client.CreateCinematic(RenderScene.Zone_Default)
-        local cinematicName = CombatSpawnProtect.kCinematic 
+	/** Adds the material effect to the entity and all child entities (that have a Model mixin) */
+    local function AddEffect(entity, material, viewMaterial, entities)
+    
+        local numChildren = entity:GetNumChildren()
         
-        self.protectEffect:SetCinematic(cinematicName)
-        self.protectEffect:SetRepeatStyle(Cinematic.Repeat_Endless)
-        self.protectEffect:SetIsVisible(true)
-        self:UpdateEffect()
-        */
-    end
-     /** Adds the material effect to the entity and all child entities (hat have a Model mixin) */
-    local function AddEffect(player, material, viewMaterial)    
-       
-        if HasMixin(player, "Model") then
-            local model = player._renderModel
+        if HasMixin(entity, "Model") then
+            local model = entity._renderModel
             if model ~= nil then
                 if model:GetZone() == RenderScene.Zone_ViewModel then
                     model:AddMaterial(viewMaterial)
-                    return true
                 else
                     model:AddMaterial(material)
-                    return true
                 end
-            end            
+                table.insert(entities, entity:GetId())
+            end
         end
         
-        return false
+        for i = 1, entity:GetNumChildren() do
+            local child = entity:GetChildAtIndex(i - 1)
+            AddEffect(child, material, viewMaterial, entities)
+        end
     
     end
     
-    local function RemoveEffect(player, material, viewMaterial)
-
-        if player ~= nil and HasMixin(player, "Model") then
-            local model = player._renderModel
-            if model ~= nil then
-                if model:GetZone() == RenderScene.Zone_ViewModel then
-                    model:RemoveMaterial(viewMaterial)
-                else
-                    model:RemoveMaterial(material)
-                end
-            end                    
-        end 
-       
+    local function RemoveEffect(entities, material, viewMaterial)
+    
+        for i =1, #entities do
+            local entity = Shared.GetEntity( entities[i] )
+            if entity ~= nil and HasMixin(entity, "Model") then
+                local model = entity._renderModel
+                if model ~= nil then
+                    if model:GetZone() == RenderScene.Zone_ViewModel then
+                        model:RemoveMaterial(viewMaterial)
+                    else
+                        model:RemoveMaterial(material)
+                    end
+                end                    
+            end
+        end
+        
     end
 
-    function CombatSpawnProtect:_CreateEffect()   
+    function CombatSpawnProtect:_CreateEffect()
+   
+        if not self.nanoShieldMaterial then
         
-        self.material = Client.CreateRenderMaterial()
-        self.material:SetMaterial(CombatSpawnProtect.materialFile)
+            local material = Client.CreateRenderMaterial()
+            material:SetMaterial(CombatSpawnProtect.materialFile)
 
-        self.viewMaterial = Client.CreateRenderMaterial()
-        self.viewMaterial:SetMaterial(CombatSpawnProtect.viewMaterialFile)   
-        
-        local player = Shared.GetEntity(self.playerId)
-        local success = AddEffect(player, self.material, self.viewMaterial)  
-        if success then
-            self.effectSuccess = true        
-        end
+            local viewMaterial = Client.CreateRenderMaterial()
+            viewMaterial:SetMaterial(CombatSpawnProtect.viewMaterialFile)
+            
+            self.nanoShieldEntities = {}
+            self.nanoShieldMaterial = material
+            self.nanoShieldViewMaterial = viewMaterial
+			local player = Shared.GetEntity(self.playerId)
+            AddEffect(player, material, viewMaterial, self.nanoShieldEntities)
+            
+        end    
         
     end
 
     function CombatSpawnProtect:_RemoveEffect()
 
-        if self.playerId then  
-            local player = Shared.GetEntity(self.playerId)      
-            RemoveEffect(player, self.material, self.viewMaterial)
-            Client.DestroyRenderMaterial(self.material)
-            Client.DestroyRenderMaterial(self.viewMaterial)     
-        end
-        
-    end       
+        if self.nanoShieldMaterial then
+            RemoveEffect(self.nanoShieldEntities, self.nanoShieldMaterial, self.nanoShieldViewMaterial)
+            Client.DestroyRenderMaterial(self.nanoShieldMaterial)
+            Client.DestroyRenderMaterial(self.nanoShieldViewMaterial)
+            self.nanoShieldMaterial = nil
+            self.nanoShieldViewMaterial = nil
+            self.nanoShieldEntities = nil
+        end            
+
+    end    
 
 end
-
 
 Shared.LinkClassToMap("CombatSpawnProtect", CombatSpawnProtect.kMapName, networkVars, true)

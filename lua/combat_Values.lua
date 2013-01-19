@@ -36,12 +36,6 @@ kAlienWaveSpawnInterval = 12
 // Rebalancing Intervals (secs)
 kCombatRebalanceInterval = 300
 
-// Spawn protection
-kCombatMarineSpawnProtectTime = 4
-// nano shield = spawn Protection
-kNanoShieldDuration = kCombatMarineSpawnProtectTime 
-kCombatAlienSpawnProtectTime = 5
-
 // Spawning radius and retries.
 kSpawnMaxRetries = 50
 kSpawnMinDistance = 2
@@ -96,6 +90,14 @@ kGestateTime[kTechId.Lerk] = 2
 kGestateTime[kTechId.Fade] = 3
 kGestateTime[kTechId.Onos] = 6
 kSkulkGestateTime = kGestateTime[kTechId.Skulk]
+
+// Spawn protection
+kCombatSpawnProtectDelay = 0.1
+kCombatMarineSpawnProtectTime = 2
+// nano shield = spawn Protection
+kNanoShieldDuration = kCombatMarineSpawnProtectTime 
+// Alien time includes time spent in the egg.
+kCombatAlienSpawnProtectTime = kSkulkGestateTime + 2
 
 // No eggs
 kAlienEggsPerHive = 0

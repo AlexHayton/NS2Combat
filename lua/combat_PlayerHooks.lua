@@ -112,6 +112,13 @@ function CombatPlayer:OnUpdatePlayer_Hook(self, deltaTime)
 		
 			if not self.combatTable.deactivateSpawnProtect then
 				// set the real spawn protect time here
+				local spawnProtectTime = 0
+				if self:isa("Alien") then
+					spawnProtectTime = kCombatAlienSpawnProtectTime
+				else
+					spawnProtectTime = kCombatMarineSpawnProtectTime
+				end
+				
 				self.combatTable.deactivateSpawnProtect = Shared.GetTime() +  kCombatMarineSpawnProtectTime
 			end
 			

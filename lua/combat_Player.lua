@@ -122,29 +122,41 @@ if Server then
     end
 
     function Player:PerformSpawnProtect()
-            
-        // only make the effects once
-        if not self.gotSpawnProtect then
-            
-
-			if HasMixin(self, "NanoShieldAble") then				
-				self:ActivateNanoShield()
-            elseif self:isa("Alien") then            
-                local spawnProtectTimeLeft = self.combatTable.deactivateSpawnProtect - Shared.GetTime()
-                self:SetHasUmbra(true, spawnProtectTimeLeft)
-            end
-            
-            /*
-            local position = self:GetOrigin()
-            local spawnProtectEffect = CreateEntity(CombatSpawnProtect.kMapName, position, self:GetTeamNumber())
-			self.spawnProtectEntity = spawnProtectEffect:GetId()
-			*/
+        
+		// Only make the effects once. 
+		if not self.gotSpawnProtect then 
+		
+			// Fire the effects on a slight delay because something in the NS2 code normally clears it first!
+			if not self.spawnProtectActivateTime then
 			
-            self.gotSpawnProtect = true
-
+				self.spawnProtectActivateTime = Shared.GetTime() + kCombatSpawnProtectDelay
 			
-            
-        end    
+			elseif Shared.GetTime() >= self.spawnProtectActivateTime then
+
+				if HasMixin(self, "NanoShieldAble") then	
+				
+					self:ActivateNanoShield()
+					if self.nanoShielded then
+						self.gotSpawnProtect = true
+					end
+					
+				elseif self:isa("Alien") then          
+				
+					local spawnProtectTimeLeft = self.combatTable.deactivateSpawnProtect - Shared.GetTime()
+					self:SetHasUmbra(true, spawnProtectTimeLeft)
+					self.gotSpawnProtect = true
+					
+				end
+				
+				/*
+				local position = self:GetOrigin()
+				local spawnProtectEffect = CreateEntity(CombatSpawnProtect.kMapName, position, self:GetTeamNumber())
+				self.spawnProtectEntity = spawnProtectEffect:GetId()
+				*/
+				
+			end    
+			
+		end
         
      end
 
