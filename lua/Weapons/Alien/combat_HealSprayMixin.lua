@@ -69,9 +69,9 @@ local function HealEntity(self, player, targetEntity)
 		healXp = math.floor( (val * 10) + 0.5) / (10)
 	end
 		
-	// Award XP but suppress the message, but only the player is not the parent
+	// Award XP, but only the player is not the parent
 	if targetEntity:isa("Player") or targetEntity:GetOwner() ~= player then
-	    player:AddXp(healXp, true)
+	    player:AddXp(healXp)
     end
 
     if targetEntity.OnHealSpray then

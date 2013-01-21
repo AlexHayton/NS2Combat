@@ -32,8 +32,8 @@ function StaticTargetMixin:OnTakeDamage(damage, attacker, doer, point)
 				local maxXp = GetXpValue(self)
 				local dmgXp = setDecimalPlaces(maxXp * damage / self:GetMaxHealth(), 1)
 				
-				// Award XP but suppress the message.
-				pointOwner:AddXp(dmgXp, true)
+				// Award XP
+				pointOwner:AddXp(dmgXp)
 			end
 		end
 	end

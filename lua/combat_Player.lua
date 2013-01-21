@@ -388,7 +388,7 @@ if Server then
         
     end
 
-    function Player:AddXp(amount, suppressmessage)
+    function Player:AddXp(amount)
         
         self:CheckCombatData()
         //self:TriggerEffects("issueOrderSounds")
@@ -398,15 +398,10 @@ if Server then
             if (amount > 10) then
                 self:TriggerEffects("combat_xp")
             end
-        
-            // Make sure we don't go over the max XP.
-            if (self:GetXp() + amount) > maxXp and not suppressmessage then
-                    self:SendDirectMessage("Max-XP reached")
-            end
             
             // show the cool effect, no direct Message is needed anymore
             self:XpEffect(amount)
-            self:CheckLvlUp(self.score, suppressmessage) 
+            self:CheckLvlUp(self.score) 
             self:SetScoreboardChanged(true)
         end   
     end
@@ -461,7 +456,7 @@ if Server then
 
     end
 
-    function Player:CheckLvlUp(xp, suppressmessage)
+    function Player:CheckLvlUp(xp)
         
         if self:GetLvl() > self.combatTable.lvl then
             //Lvl UP
@@ -483,12 +478,6 @@ if Server then
 			// Trigger an effect
             self:TriggerEffects("combat_level_up")
         end     
-        
-        if self:GetLvl() < maxLvl and not suppressmessage then
-            // Fix the decimal places here...
-            local currentXp = math.floor(self:GetXp())
-            self:SendDirectMessage(currentXp .. " XP: " .. (XpList[self:GetLvl() + 1]["XP"] - currentXp).. " XP until next level!")
-        end
         
     end
 
