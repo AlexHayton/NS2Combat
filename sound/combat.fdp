@@ -59,7 +59,7 @@
 <volume_randmethod>1</volume_randmethod>
 <volume_random_min>0</volume_random_min>
 <volume_random_max>0</volume_random_max>
-<volume_randomization>0</volume_randomization>
+<volume_randomization>-20</volume_randomization>
 <position_randomization_min>0</position_randomization_min>
 <position_randomization>0</position_randomization>
 <trigger_delay_min>0</trigger_delay_min>
@@ -98,7 +98,7 @@
 <volume_randmethod>1</volume_randmethod>
 <volume_random_min>0</volume_random_min>
 <volume_random_max>0</volume_random_max>
-<volume_randomization>0</volume_randomization>
+<volume_randomization>-20</volume_randomization>
 <position_randomization_min>0</position_randomization_min>
 <position_randomization>0</position_randomization>
 <trigger_delay_min>0</trigger_delay_min>
@@ -137,7 +137,7 @@
 <volume_randmethod>1</volume_randmethod>
 <volume_random_min>0</volume_random_min>
 <volume_random_max>0</volume_random_max>
-<volume_randomization>0</volume_randomization>
+<volume_randomization>-20</volume_randomization>
 <position_randomization_min>0</position_randomization_min>
 <position_randomization>0</position_randomization>
 <trigger_delay_min>0</trigger_delay_min>
@@ -176,7 +176,7 @@
 <volume_randmethod>1</volume_randmethod>
 <volume_random_min>0</volume_random_min>
 <volume_random_max>0</volume_random_max>
-<volume_randomization>0</volume_randomization>
+<volume_randomization>-20</volume_randomization>
 <position_randomization_min>0</position_randomization_min>
 <position_randomization>0</position_randomization>
 <trigger_delay_min>0</trigger_delay_min>
@@ -215,7 +215,7 @@
 <volume_randmethod>1</volume_randmethod>
 <volume_random_min>0</volume_random_min>
 <volume_random_max>0</volume_random_max>
-<volume_randomization>0</volume_randomization>
+<volume_randomization>-20</volume_randomization>
 <position_randomization_min>0</position_randomization_min>
 <position_randomization>0</position_randomization>
 <trigger_delay_min>0</trigger_delay_min>
@@ -254,7 +254,7 @@
 <volume_randmethod>1</volume_randmethod>
 <volume_random_min>0</volume_random_min>
 <volume_random_max>0</volume_random_max>
-<volume_randomization>0</volume_randomization>
+<volume_randomization>-20</volume_randomization>
 <position_randomization_min>0</position_randomization_min>
 <position_randomization>0</position_randomization>
 <trigger_delay_min>0</trigger_delay_min>
