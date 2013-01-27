@@ -202,4 +202,7 @@ kStatisticsURL = ""
 // EMP energy drain
 kEMPBlastEnergyDamage = 100
 
+// Cooldown for buying exo/onos
+kHeavyTechCooldown = 120
+
 SetCachedTechData(kTechId.Hydra, kTechDataCostKey, kHydraCost)

@@ -526,6 +526,16 @@ if Server then
                 techType = "Command Station to get an Exosuit"
             end
             self:SendDirectMessage("You have to be near the " .. techType .. "!")
+			
+		elseif hint == "heavytech_cooldown" then
+			local techType = ""
+            
+            if type == "Alien" then
+                techType = "evolving to an Onos"
+            else
+                techType = "buying an Exosuit"
+            end
+			self:SendDirectMessage("You have to wait " .. math.floor(kHeavyTechCooldown - (Shared.GetTime() - self.combatTable.timeLastHeavyTech)) .. " seconds for " .. techType .. " again!")			
             
         elseif hint == "wrong_team" then
             local teamtext = ""

@@ -60,6 +60,7 @@ function Player:CoEnableUpgrade(upgrades)
         local alreadyGotUpgrade = false
         local noRoom = false
         local notInTechRange = false
+		local heavyTechCooldown = false
 		local mutuallyExclusive = false
 		local mutuallyExclusiveDescription = ""
         local requirements = upgrade:GetRequirements()
@@ -93,7 +94,7 @@ function Player:CoEnableUpgrade(upgrades)
 				end
 			end
         end
-        
+
         // Check whether we have room to evolve and the player is near a hive/command station for evolving to onos/exo
         if self:isa("Alien") then
             local lifeFormTechId = kTechId.Skulk
@@ -109,13 +110,29 @@ function Player:CoEnableUpgrade(upgrades)
                 noRoom = true
             end
            
-            if techId == kTechId.Onos and #GetEntitiesWithinRange("Hive", self:GetOrigin(), kTechRange) == 0 then
-                notInTechRange = true
-            end
+            if techId == kTechId.Onos then
+				if (Shared.GetTime() - self.combatTable.timeLastHeavyTech) < kHeavyTechCooldown then
+					heavyTechCooldown = true
+				else
+					if #GetEntitiesWithinRange("Hive", self:GetOrigin(), kTechRange) == 0 then
+						notInTechRange = true
+					else
+						self.combatTable.timeLastHeavyTech = Shared.GetTime()
+					end
+				end
+			end
         else
-            if techId == kTechId.DualMinigunExosuit and #GetEntitiesWithinRange("CommandStation", self:GetOrigin(), kTechRange) == 0 then
-                notInTechRange = true
-            end
+            if techId == kTechId.DualMinigunExosuit then
+				if (Shared.GetTime() - self.combatTable.timeLastHeavyTech) < kHeavyTechCooldown then
+					heavyTechCooldown = true
+				else
+					if #GetEntitiesWithinRange("CommandStation", self:GetOrigin(), kTechRange) == 0 then
+						notInTechRange = true
+					else
+						self.combatTable.timeLastHeavyTech = Shared.GetTime()
+					end
+				end
+            end				
         end
 
         // Sanity checks before we actually go further.
@@ -131,6 +148,8 @@ function Player:CoEnableUpgrade(upgrades)
             self:spendlvlHints("no_room")
         elseif notInTechRange then
             self:spendlvlHints("not_in_techrange", team)
+		elseif heavyTechCooldown then
+            self:spendlvlHints("heavytech_cooldown", team)
         elseif self:GetLvlFree() < neededLvl then
             self:spendlvlHints("neededLvl", neededLvl)
 		elseif mutuallyExclusive then

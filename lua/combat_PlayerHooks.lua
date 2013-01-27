@@ -41,7 +41,10 @@ function CombatPlayer:Reset_Hook(self)
 	
 	// getAvgXP is called before giving the score, so this needs to be implemented here
 	self.score = 0
-	    
+	
+	// Set it to -kHeavyTechCooldown for buying exo/onos at the beginning
+	self.combatTable.timeLastHeavyTech = -kHeavyTechCooldown
+	
 end
 
 // Copy old lvl and XP when respawning 
