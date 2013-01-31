@@ -23,6 +23,7 @@ function CombatNS2Gamerules:OnLoad()
 	self:PostHookClassFunction("NS2Gamerules", "ChooseTechPoint", "ChooseTechPoint_Hook"):SetPassHandle(true)
 	self:RawHookClassFunction("NS2Gamerules", "ResetGame", "ResetGame_Hook")
 	self:RawHookClassFunction("NS2Gamerules", "UpdateMapCycle", "UpdateMapCycle_Hook")
+	self:ReplaceClassFunction("NS2Gamerules", "CheckGameStart", "CheckGameStart_Hook")
     
     ClassHooker:SetClassCreatedIn("Gamerules", "lua/Gamerules.lua")
     self:PostHookClassFunction("Gamerules", "OnClientConnect", "OnClientConnect_Hook")
@@ -499,6 +500,28 @@ function CombatNS2Gamerules:NS2Gamerules_GetUpgradedDamage_Hook(attacker, doer, 
     end
         
     return damage * damageScalar
+
+end
+
+function CombatNS2Gamerules:CheckGameStart_Hook(self)
+
+    if self:GetGameState() == kGameState.NotStarted or self:GetGameState() == kGameState.PreGame then
+        
+        // Start pre-game when both teams have players or when once side does if cheats are enabled
+        local team1Players = self.team1:GetNumPlayers()
+        local team2Players = self.team2:GetNumPlayers()
+            
+        if (team1Players > 0 and team2Players > 0) or (Shared.GetCheatsEnabled() and (team1Players > 0 or team2Players > 0)) then
+            
+            if self:GetGameState() == kGameState.NotStarted then
+                    self:SetGameState(kGameState.PreGame)
+            end
+                
+        elseif self:GetGameState() == kGameState.PreGame then
+            self:SetGameState(kGameState.NotStarted)
+        end
+            
+    end
 
 end
 
