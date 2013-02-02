@@ -62,6 +62,7 @@ function Player:CoEnableUpgrade(upgrades)
         local notInTechRange = false
 		local heavyTechCooldown = false
 		local mutuallyExclusive = false
+		local hardCapped = upgrade:GetIsHardCapped(self)
 		local mutuallyExclusiveDescription = ""
         local requirements = upgrade:GetRequirements()
         local techId = upgrade:GetTechId()
@@ -110,7 +111,7 @@ function Player:CoEnableUpgrade(upgrades)
                 noRoom = true
             end
            
-            if techId == kTechId.Onos then
+            if techId == kTechId.Onos and not hardCapped then
 				if (Shared.GetTime() - self.combatTable.timeLastHeavyTech) < kHeavyTechCooldown then
 					heavyTechCooldown = true
 				else
@@ -122,7 +123,7 @@ function Player:CoEnableUpgrade(upgrades)
 				end
 			end
         else
-            if techId == kTechId.DualMinigunExosuit then
+            if techId == kTechId.DualMinigunExosuit and not hardCapped then
 				if (Shared.GetTime() - self.combatTable.timeLastHeavyTech) < kHeavyTechCooldown then
 					heavyTechCooldown = true
 				else
@@ -140,7 +141,7 @@ function Player:CoEnableUpgrade(upgrades)
             self:spendlvlHints("neededOtherUp", GetUpgradeFromId(requirements):GetTextCode())
         elseif (not self:isa(team)) and not (self:isa("Exo") and team == "Marine") then
             self:spendlvlHints("wrong_team", team)
-		elseif upgrade:GetIsHardCapped(self) then
+		elseif hardCapped then
 			self:spendlvlHints("hardCapped")
         elseif alreadyGotUpgrade then
             self:spendlvlHints("already_owned", upgrade:GetTextCode())
