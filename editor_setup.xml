@@ -6,6 +6,7 @@
             <file>model</file>
             <scale>scale</scale>
 			<casts_shadows>castsShadows</casts_shadows>
+            <default_model>models/system/editor/team_location.model</default_model>
         </model>
         <size>
             <scale>scale</scale>
@@ -31,6 +32,19 @@
         <parameter name="material" type="file" label="material" filter="*.material" default="materials/editor/unknown_billboard.material"/>
 		<parameter name="size" type="vector" label="size" default="1.0, 1.0, 1.0"/>
     </class>
+	
+    <class name="decal" placeable="true">
+        <decal>
+            <file>material</file>
+            <extents>extents</extents>
+            <default_material>materials/dev/checkerboard.material</default_material>
+        </decal>
+		<box>
+            <extents>extents</extents>
+        </box>			
+        <parameter name="extents" type="vector" label="Extents" default="1.0, 1.0, 1.0"/>
+        <parameter name="material" type="file" label="Material" filter="*.material"/>
+    </class>	
 
 	<class name="reflection_probe" placeable="true">
 		<sphere>
@@ -306,8 +320,7 @@
 	</class>
 	
 	<class name="marine"> <parent>base_marine</parent><model><file>models/marine/male/male.model</file></model></class>
-	
-	<!--
+
 	<class name="exo">
 		<parent>base_marine</parent>
 		<model><file>models/marine/exosuit/exosuit_cm.model</file></model>
@@ -316,7 +329,6 @@
             <choice label="Dual Minigun" value="2"/>
         </parameter>
 	</class>
-	-->
 	
 	<class name="skulk"> <parent>base_alien</parent><model><file>models/alien/skulk/skulk.model</file></model></class>
 	<class name="gorge"> <parent>base_alien</parent><model><file>models/alien/gorge/gorge.model</file></model></class>
@@ -387,6 +399,20 @@
         <parameter name="emitOnce" type="boolean" label="Emit only once" help="Signal will continue to emit at the rate defined by time when false." default="true"/>
         <parameter name="emitChannel" type="integer" label="Emit channel" help="Only entities listening on this channel will receive the message." default="0"/>
         <parameter name="emitMessage" type="string" label="Emit message" help="The listening entity must respond to this message." default="" />
+        
+    </class>
+    
+    <class name="button_emitter">
+    
+        <parent>signal_emitter</parent>
+        
+        <model>
+            <file>models/system/editor/waypoint.model</file>
+        </model> 
+        
+        <parameter name="emitChannel" type="integer" label="Emit channel" help="Only entities listening on this channel will receive the message." default="0"/>
+        <parameter name="emitMessage" type="string" label="Emit message" help="The listening entity must respond to this message." default="" />
+        <parameter name="coolDownTime" type="real" label="Cooldown time" help="The amount of seconds to wait after the button is pressed until it can be pressed again." default="0" />
         
     </class>
 
@@ -466,6 +492,15 @@
     <class name="ambient_sound">
         <help>Plays sound for local player when entering radius.</help>
 
+		<sound>
+            <file>eventName</file>
+			<volume>volume</volume>
+			<min_distance>minFalloff</min_distance>
+			<max_distance>maxFalloff</max_distance>
+			<pitch>pitch</pitch>
+			<rolloff>falloffType</rolloff>
+        </sound>    		
+	
 		<billboard>
 			<file>materials/editor/sound_billboard.material</file>
 		</billboard>
@@ -538,6 +573,8 @@
             <choice label="Alien start" value="2"/>
         </parameter>
         
+        <parameter name="extendAmount" type="real" label="Arm extension" help="This controls how long the Hive arms are. The value must be between 0 and 1." default="0"/>
+        
     </class>
     
     <!-- Tech point to be used in smaller rooms -->
@@ -582,6 +619,11 @@
   <!-- Cinematic entity -->
   <class name="cinematic_base" placeable="false">
 
+	<cinematic>
+		<file>cinematicName</file>
+		<repeat_style>repeatStyle</repeat_style>
+	</cinematic>
+
     <parameter name="cinematicName" type="file" label="Cinematic file" default="" filter="*.cinematic" help="Name of cinematic file (created with Cinematic Editor)"/>
 
     <parameter name="repeatStyle" type="choice" label="Repeat Style" default="1">
@@ -615,9 +657,9 @@
         
         <model>
             <file>models/system/editor/ambient_sound.model</file>
-        </model>    
-        
-        <parameter name="eventName" type="file" filter="sound" label="FMOD eFvent name" default="" help="Sound to play."/>
+        </model>   
+
+        <parameter name="eventName" type="file" filter="sound" label="FMOD event name" default="" help="Sound to play."/>
         <parameter name="startsOnMessage" type="string" label="Play on message" help="The sound effect will play when this message is received" default="play"/>
         
     </class>
@@ -646,19 +688,41 @@
         <parameter name="emitChannel" type="integer" label="Tag emit channel" help="All animation tags will be emitted as a signal on this channel." default="0"/>
         
     </class>
-
-  
-  <!-- Skybox cinematic - child of generic cinematic -->
-  <class name="skybox">
     
-    <parent>cinematic_base</parent>
+    <class name="prop_dynamic_animator">
+    
+        <parent>signal_listener</parent>
+        
+        <model>
+            <file>models/system/editor/waypoint.model</file>
+        </model> 
+        
+        <parameter name="listenMessage" type="string" label="Animate on message" help="Will activate when this message is received." default=""/>
+        <parameter name="inputName" type="string" label="Input name" help="Name of the animation input to affect." default=""/>
+        <parameter name="inputValue" type="string" label="Input Value" help="Input name will be set to this value." default=""/>
+        <sphere><radius>range</radius></sphere>
+        <parameter name="range" type="distance" label="Search radius" default="10" help="Only prop_dynamics within this range will be affected."/>
+    
+    </class>
+    
+    <!-- Skybox cinematic -->
+    <class name="skybox">
+
+	<cinematic>
+		<file>cinematicName</file>
+		<repeat_style>endless</repeat_style>
+		<render_zone>sky</render_zone>
+	</cinematic>
+
+    <parameter name="cinematicName" type="file" label="Cinematic file" default="" filter="*.cinematic" help="Name of cinematic file (created with Cinematic Editor)"/>
+
     <help>Creates a skybox cinematic that's always centered around the viewer.</help>
 
     <model>
-      <file>models/system/editor/skybox.model</file>
+        <file>models/system/editor/skybox.model</file>
     </model>
 
-  </class>
+    </class>
   
 	<class name="target" placeable="true">
 		<model>
@@ -774,8 +838,8 @@
       <parameter name="option_tile_size" type="real" label="Tile Size" default="48.0"/>
 
       <help>Allows tuning of pathing settings to help optimize pathing</help>
-   </class>
-   
+  </class>
+
 	<!-- **************************************** -->
 	<!-- ExtraEntites like teleporter, train etc. -->
 	<!-- **************************************** -->
@@ -793,11 +857,12 @@
         <parameter name="exitonly" type="boolean" label="Exit only" help="This teleporter is only a Exit (Destination Name will be ignored)." default="false"/>
         <parameter name="waitDelay" type="real" label="Wait Delay" help="Delay how long a Player has to wait before he can use the Teleporter exit (in sec.)." default="2"/>
         <parameter name="enabled" type="boolean" label="Trigger enabled" help="Will not teleport when disabled." default="true"/>
+		<parameter name="clearVelocity" type="boolean" label="Clear velocity" help="This will elimante the velocity of the player so he won't loses his speed he got as he teleportet. Set this to the in teleporter, not to the exit." default="false"/>
 		<parameter name="teamNumber" type="choice" label="Team Number" help="Only this team can use the teleporter." default="0">
             <choice label="Both teams" value="0"/>
             <choice label="Marine" value="1"/>
             <choice label="Alien" value="2"/>
-        </parameter>
+		</parameter>
         <parameter name="distance" type="distance" label = "Distance" default="3.0" help="Angle from the teleporter-output"/>
         <parameter name="angle" type="angle" label = "Angles" default="30.0" help="Angle from the teleporter-output"/>
 
@@ -826,6 +891,15 @@
         
         <parameter name="enabled" type="boolean" label="Trigger enabled" help="Will not trigger when disabled." default="true"/>
 		<parameter name="output1" type="string" label="Output1" help="Name of the triggered entity" default=""/>
+
+    </class>
+	
+	
+		    <!-- nobuild_area -->
+    <class name="nobuild_area" placeable="true">
+        <parent>trigger</parent>
+        
+        <parameter name="enabled" type="boolean" label="Trigger enabled" help="Will not trigger when disabled." default="true"/>
 
     </class>
 	
@@ -876,6 +950,36 @@
 
     </class>
 	
+	    <!-- Func Train -->
+    <class name="func_platform" placeable="true">
+        
+		<model>
+			<file>model</file>
+			<scale>scale</scale>
+		</model>
+		<parameter name="model" type="file" label="model" default="models/props/refinery/refinery_elevator1_platform.model" filter="*.model"/>
+		
+        <size>
+            <scale>scale</scale>
+        </size>
+        <parameter name="scale" type="vector" label="scale" default="1.0, 1.0, 1.0"/>
+		
+        <model>
+            <file>models/system/editor/location.model</file>
+            <scale>scaleTrigger</scale>
+        </model>    
+
+        <size>
+            <scale>scaleTrigger</scale>
+        </size>
+
+		<parameter name="scaleTrigger" type="vector" label="scaleTrigger" elp="Scale of the trigger that makes the Players on it move." default="9.0, 4.0, 15.0"/>
+		<parameter name="name" type="string" label="name" help="Name of the platform, important the the waypoints." default="train"/>
+		<parameter name="moveSpeed" type="real" label="Move Speed" help="How fast can the train drive." default="3.0"/>
+
+
+    </class>
+	
 	    <!-- Func Train Waypoints -->
     <class name="func_train_waypoint" placeable="true">
         
@@ -905,10 +1009,12 @@
         </size>
         <parameter name="scale" type="vector" label="scale" default="1.0, 1.0, 1.0"/>
       
-        <parameter name="name" type="string" label="name" help="Name of logic_weldable which can be referenced by other entities" />
+        <parameter name="name" type="string" label="name" help="Name of logic_weldable which can be referenced by other entities" />		
 		<parameter name="startsOpened" type="boolean" label="Starts opened" help="Starts opened or closed (when triggered opens or closes)" default="true"/>
+		<parameter name="isDoor" type="boolean" label="Act like a door" help="Open and closes when a player comes near the moveable (when enabled = true, starts opened whill then ignored)." default="false"/>
+		<parameter name="enabled" type="boolean" label="enabled" help="Moveable will not start if its disabled (if not act like a door, this will be ignored)." default="true"/>
 		
-		<!-- Only up and down is working at the moment
+		<!-- Only up and down is working at the moment -->
         <parameter name="direction" type="choice" label="Direction" help="Direction the movable will move after closing (place it in the map at its closed position)" default="0">
             <choice label="Up" value="0"/>
             <choice label="Down" value="1"/>
@@ -957,7 +1063,32 @@
         <parameter name="name" type="string" label="name" help="Name of logic_timer which can be referenced by other entities" />
 		<parameter name="enabled" type="boolean" label="enabled" help="Timer will not start if its disabled" default="true"/>
 		<parameter name="waitDelay" type="real" label="Wait Delay" help="How long the train should wait here in seconds." default="0"/>
+		<parameter name="triggerAction" type="choice" label="On Trigger action" help="What should the timer do when getting triggered ? (If the trigger is disabled at start, it will be enabled even if you choice restart)" default="0">
+            <choice label="Disable/Enable" value="0"/>
+            <choice label="Restart" value="1"/>
+        </parameter>
 		<parameter name="output1" type="string" label="Output" help="Name of the triggered entity (after timer is 0)" default=""/>
+
+    </class>
+	
+	<class name="logic_button" placeable="true">		
+
+		<model>
+			<file>model</file>
+			<scale>scale</scale>
+		</model>
+		
+		<size>
+            <scale>scale</scale>
+        </size>
+        <parameter name="scale" type="vector" label="scale" default="1.0, 1.0, 1.0"/>
+		
+		<parameter name="model" type="file" label="model" default="models/props/generic/terminals/generic_controlpanel_02.model" filter="*.model"/>		
+        <parameter name="name" type="string" label="name" help="Name of logic_button which can be referenced by other entities" />
+		<parameter name="enabled" type="boolean" label="enabled" help="You can't press it if its disabled" default="true"/>
+		<parameter name="coolDownTime" type="real" label="Cooldown time" help="The amount of seconds to wait after the button is pressed until it can be pressed again." default="0" />
+		<parameter name="output1" type="string" label="Output" help="Name of the triggered entity (after pressed)" default=""/>
+
 
     </class>
 			
@@ -1006,9 +1137,15 @@
 
 		<model>
 			<file>model</file>
+			<scale>scale</scale>
 		</model>
-		<parameter name="model" type="file" label="model" default="models/props/generic/terminals/generic_controlpanel_01.model" filter="*.model"/>
 		
+		<size>
+            <scale>scale</scale>
+        </size>
+        <parameter name="scale" type="vector" label="scale" default="1.0, 1.0, 1.0"/>
+		
+		<parameter name="model" type="file" label="model" default="models/props/generic/terminals/generic_controlpanel_01.model" filter="*.model"/>		
         <parameter name="name" type="string" label="name" help="Name of logic_weldable which can be referenced by other entities" />
 		<parameter name="enabled" type="boolean" label="enabled" help="You can't weld it if it's disabled" default="true"/>
 		<parameter name="weldTime" type="real" label="Weld time in seconds" default="20.0"/>
@@ -1023,15 +1160,15 @@
 		
 		<model>
 			<file>models/misc/door/door.model</file>
-			<!--<scale>scale</scale>-->
+			<scale>scale</scale>
 		</model>
 		
-		<!--
+
         <size>
             <scale>scale</scale>
         </size>
         <parameter name="scale" type="vector" label="scale" default="1.0, 1.0, 1.0"/>
-		-->        
+     
 		<parameter name="name" type="string" label="name" help="Name of logic_timer which can be referenced by other entities"/>
 		<parameter name="startsOpen" type="boolean" label="Starts open" help="Starts open and will be locked after triggering." default="false"/>
 		<parameter name="stayOpen" type="boolean" label="Stay open" help="Stays open after unlocking." default="false"/>
