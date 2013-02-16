@@ -1,10 +1,9 @@
 //________________________________
 //
-//   	NS2 Combat Mod     
-//	Made by JimWest and MCMLXXXIV, 2012
+//   	NS2 CustomEntitesMod   
+//	Made by JimWest 2012
 //
 //________________________________
-
 // FuncTrain.lua
 // Entity for mappers to create drivable trains
 
@@ -14,8 +13,9 @@ Script.Load("lua/Mixins/SignalEmitterMixin.lua")
 // needed for the MoveToTarget Command
 Script.Load("lua/PathingMixin.lua")
 Script.Load("lua/TriggerMixin.lua")
-Script.Load("lua/TrainMixin.lua")
-Script.Load("lua/LogicMixin.lua")
+Script.Load("lua/ExtraEntitiesMod/TrainMixin.lua")
+Script.Load("lua/ExtraEntitiesMod/LogicMixin.lua")
+Script.Load("lua/ExtraEntitiesMod/ScaledModelMixin.lua")
 
 class 'FuncTrain' (ScriptActor)
 
@@ -27,6 +27,8 @@ FuncTrain.kDrivingState = enum( {'Stop', 'Forward1', 'Forward2', 'Forward3', 'Ba
 local networkVars =
 {    
     drivingState = "enum FuncTrain.kDrivingState",
+    scale = "vector",
+    model = "string (128)",
 }
 
 AddMixinNetworkVars(LogicMixin, networkVars)
@@ -53,25 +55,11 @@ function FuncTrain:OnInitialized()
 
     ScriptActor.OnInitialized(self)
     InitMixin(self, TriggerMixin)
+    InitMixin(self, ScaledModelMixin)
     
     if Server then
         InitMixin(self, LogicMixin)
-        self:SetFindEntity()
     end
- 
-    if self.model ~= nil then    
-        Shared.PrecacheModel(self.model)    
-        local graphName = string.gsub(self.model, ".model", ".animation_graph")
-        Shared.PrecacheAnimationGraph(graphName)        
-        self:SetModel(self.model, graphName) 
-        
-        local coords = self:GetAngles():GetCoords(self:GetOrigin())
-        coords.xAxis = coords.xAxis * self.scale.x
-        coords.yAxis = coords.yAxis * self.scale.y
-        coords.zAxis = coords.zAxis * self.scale.z
-        self:SetCoords(coords)   
-    end
-    
 
     if self.autoStart then
         self.driving = true
@@ -132,6 +120,10 @@ function FuncTrain:GetPushPlayers()
     return true
 end
 
+function FuncTrain:GetRotationEnabled()
+    return true
+end
+
 
 //**********************************
 // Viewing things
@@ -172,12 +164,15 @@ function FuncTrain:CreatePath(onUpdate)
     end
     
     // then copy the wayPointList into a new List so its 1-n
+    
     for i, wayPoint in ipairs(self.waypointList) do
         table.insert(tempList, wayPoint)
     end
     
     // create a smooth path
-    self.waypointList = self:CreateSmoothPath(tempList, 1)        
+    //self.waypointList = self:CreateSmoothPath(tempList, 1)      
+    self.waypointList = tempList  
+
     tempList = nil
     
     if onUpdate then
@@ -186,10 +181,6 @@ function FuncTrain:CreatePath(onUpdate)
             Print("Error: Train " .. self.name .. " found no waypoints!")
         end
     end
-end
-
-function FuncTrain:FindEntitys()
-    self:CreatePath()
 end
 
 function FuncTrain:OnLogicTrigger()
@@ -206,12 +197,7 @@ if Server then
        
         if self.nextWaypoint then
             // check if the waypoint got a delay
-            local hoverWaypont = GetHoverAt(self, self.nextWaypoint)
-            //hoverWaypont = self.nextWaypoint
-            //if self:IsTargetReached(hoverWaypont, kAIMoveOrderCompleteDistance) then            
-              //  self:GetNextWaypoint()
-            //else
-                local done = self:TrainMoveToTarget(PhysicsMask.All, hoverWaypont, self:GetSpeed(), deltaTime, true)                
+                local done = self:TrainMoveToTarget(PhysicsMask.All, self.nextWaypoint, self:GetSpeed(), deltaTime)                
                 //if self:IsTargetReached(hoverWaypont, kAIMoveOrderCompleteDistance) then
                 if done then
                     self.nextWaypoint = nil

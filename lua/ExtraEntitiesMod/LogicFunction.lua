@@ -1,14 +1,14 @@
 //________________________________
 //
-//   	NS2 Combat Mod     
-//	Made by JimWest and MCMLXXXIV, 2012
+//   	NS2 CustomEntitesMod   
+//	Made by JimWest 2012
 //
 //________________________________
 
 // LogicFunction.lua
 // Base entity for LogicFunction things
 
-Script.Load("lua/LogicMixin.lua")
+Script.Load("lua/ExtraEntitiesMod/LogicMixin.lua")
 
 
 class 'LogicFunction' (Entity)

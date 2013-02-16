@@ -7,6 +7,10 @@
 
 // combat_Server.lua
 
+// sewleks framework
+Script.Load("lua/PreLoadMod.lua")
+Script.Load("lua/ClassUtility.lua")
+
 // Load the script from fsfod that we can hook some functions
 Script.Load("lua/PathUtil.lua")
 Script.Load("lua/fsfod_scripts.lua")
@@ -56,6 +60,10 @@ end
 // but load the weapon hook, even in vanilla ns2 that marine reloading is working
 Script.Load("lua/Weapons/Marines/combat_ClipWeapon.lua")
 
+Script.Load("lua/Shared.lua")
+// load the extra entities
+Script.Load("lua/ExtraEntitiesMod/eem_Shared.lua")
+
 // Load the normal Ns2 Server Scripts
 Script.Load("lua/Server.lua")
 
@@ -100,6 +108,8 @@ Script.Load("lua/combat_ConsoleCommands.lua")
 // Load the Versions Checker and kill him
 Script.Load("lua/combat_VersionsCheck.lua")
 CombatInitCheckVersion()
+
+Script.Load("lua/PostLoadMod.lua")
 
 // Tell the class hooker that we've fully loaded.
 ClassHooker:OnLuaFullyLoaded()

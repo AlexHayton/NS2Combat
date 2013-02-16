@@ -1,20 +1,20 @@
 //________________________________
 //
-//   	NS2 Combat Mod     
-//	Made by JimWest and MCMLXXXIV, 2012
+//   	NS2 CustomEntitesMod   
+//	Made by JimWest 2012
 //
 //________________________________
-
 // LogicWeldable.lua
 // Base entity for LogicWeldable things
 
-Script.Load("lua/LogicMixin.lua")
+Script.Load("lua/ExtraEntitiesMod/LogicMixin.lua")
 Script.Load("lua/WeldableMixin.lua")
 Script.Load("lua/LiveMixin.lua")
 Script.Load("lua/TeamMixin.lua")
+Script.Load("lua/ExtraEntitiesMod/ScaledModelMixin.lua")
+Script.Load("lua/GameEffectsMixin.lua")
 
-
-class 'LogicWeldable' (Entity)
+class 'LogicWeldable' (ScriptActor)
 
 LogicWeldable.kMapName = "logic_weldable"
 
@@ -25,7 +25,7 @@ local networkVars =
 {
     weldedPercentage = "float",
     scale = "vector",
-    model =  "string (128)",
+    model = "string (128)",
 }
 
 AddMixinNetworkVars(LogicMixin, networkVars)
@@ -33,54 +33,38 @@ AddMixinNetworkVars(LiveMixin, networkVars)
 AddMixinNetworkVars(TeamMixin, networkVars)
 AddMixinNetworkVars(BaseModelMixin, networkVars)
 AddMixinNetworkVars(ModelMixin, networkVars)
+AddMixinNetworkVars(GameEffectsMixin, networkVars)
 
 
 function LogicWeldable:OnCreate()
+    ScriptActor.OnCreate(self)
     InitMixin(self, BaseModelMixin)
     InitMixin(self, ModelMixin)
     InitMixin(self, LiveMixin)
     InitMixin(self, TeamMixin)
+    InitMixin(self, GameEffectsMixin)
 end
 
 
 function LogicWeldable:OnInitialized()
-
+    ScriptActor.OnInitialized(self)
     InitMixin(self, WeldableMixin)
-  
-    if self.model then
-        Shared.PrecacheModel(self.model)
-        self:SetModel(self.model)
-    end 
-   
-    //CreateEemProp(self)
-    
+    InitMixin(self, ScaledModelMixin)
+
     if Server then
         InitMixin(self, LogicMixin)
-        
-        if self.output1 then
-            self:SetFindEntity()
-        else
-            Print("Error: No Output-Entity declared")
-        end
         self:SetUpdates(true)
         self.weldPercentagePerSecond  = 1 / self.weldTime
 
         // weldables always belong to the Marine team.
         self:SetTeamNumber(kTeam1Index)  
     end
-    self:SetHealth(0)
+    self:SetArmor(0)
     self.weldedPercentage = 0
 end
 
-function LogicWeldable:OnUpdateRender()
-
-    PROFILE("LogicWeldable:OnUpdateRender")
-    
- 
-end
-
 function LogicWeldable:Reset()
-    self:SetHealth(0)
+    self:SetArmor(0)
     self.weldedPercentage = 0
 end
 
@@ -113,51 +97,23 @@ function LogicWeldable:GetTechId()
 end
 
 
-function LogicWeldable:FindEntitys()
-    // find the output entity
-    local entitys = self:GetEntityList()
-    for name, entityId in pairs(entitys) do
-        if name == self.output1 then
-            self.output1_id = entityId
-            break                
-        end
-    end
-    
+function LogicWeldable:GetOutputNames()
+    return {self.output1}
 end
 
-
 function LogicWeldable:OnWelded()
-    if Server then
-        if self.output1_id then
-            local entity = Shared.GetEntity(self.output1_id)
-            if entity then
-                if  HasMixin(entity, "Logic") then
-                    entity:OnLogicTrigger()
-                else
-                    Print("Error: Entity " .. entity.name .. " has no Logic function!")
-                end
-            else
-                // something is wrong, search again
-                self:FindEntitys()
-                self:OnLogicTrigger()
-            end
-        else
-            Print("Error: Entity " .. self.output1 .. " not found!")
-        end
-    end
+    self:SetArmor(self:GetMaxArmor())
+    self:TriggerOutputs()
 end
 
 
 function LogicWeldable:OnLogicTrigger()
     if self.enabled then
-        self.enabled = false
- 
+        self.enabled = false 
     else
         self.enabled = true
-
     end       
 end
-
 
 
 Shared.LinkClassToMap("LogicWeldable", LogicWeldable.kMapName, networkVars)

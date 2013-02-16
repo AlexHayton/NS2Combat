@@ -5,6 +5,10 @@
 //
 //________________________________
 
+// sewleks framework
+Script.Load("lua/PreLoadMod.lua")
+Script.Load("lua/ClassUtility.lua")
+
 // Load the script from fsfod that we can hook some functions
 Script.Load("lua/PathUtil.lua")
 Script.Load("lua/fsfod_scripts.lua")
@@ -34,6 +38,10 @@ Script.Load("lua/combat_Player_ClientHook.lua")
 Script.Load("lua/combat_Alien_Hooks.lua")
 Script.Load("lua/combat_Armory_Client.lua")
 Script.Load("lua/Weapons/Alien/combat_StructureAbility.lua")
+
+Script.Load("lua/Shared.lua")
+// load the extra entities
+Script.Load("lua/ExtraEntitiesMod/eem_Shared.lua")
 
 // Load the normal Ns2 Server Scripts
 Script.Load("lua/Client.lua")
@@ -71,6 +79,8 @@ function combatLoadClientFunctions()
 	Script.Load("lua/Hud/GUIDevourOnos.lua")
 
 end
+
+Script.Load("lua/PostLoadMod.lua")
 
 // Tell the class hooker that we've fully loaded.
 ClassHooker:OnLuaFullyLoaded()

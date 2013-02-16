@@ -1,14 +1,14 @@
 //________________________________
 //
-//   	NS2 Combat Mod     
-//	Made by JimWest and MCMLXXXIV, 2012
+//   	NS2 CustomEntitesMod   
+//	Made by JimWest 2012
 //
 //________________________________
 
 // LogicTimer.lua
 // Base entity for LogicTimer things
 
-Script.Load("lua/LogicMixin.lua")
+Script.Load("lua/ExtraEntitiesMod/LogicMixin.lua")
 
 
 class 'LogicTimer' (Entity)
@@ -36,13 +36,13 @@ function LogicTimer:OnInitialized()
         if not self.waitDelay then
             self.waitDelay = kDefaultWaitDelay 
         end 
-        if self.output1 then
-            self:SetFindEntity()
-        else
-            Print("Error: No Output-Entity declared")
-        end
         self:SetUpdates(true)    
     end
+    
+end
+
+function LogicTimer:Reset() 
+    self.unlockTime = nil
 end
 
 
@@ -73,23 +73,19 @@ function LogicTimer:CheckTimer()
 end
 
 
-function LogicTimer:FindEntitys()
-    // find the output entity
-    local entitys = self:GetEntityList()
-    for name, entityId in pairs(entitys) do
-        if name == self.output1 then
-            self.output1_id = entityId
-            break                
-        end
-    end    
-    
+function LogicTimer:GetOutputNames()
+    return {self.output1}
 end
 
 
 function LogicTimer:OnLogicTrigger()
     if self.enabled then
-        self.enabled = false
-        self.unlockTime = nil
+        if self.triggerAction == 1 then 
+            self.unlockTime = Shared.GetTime() + self.waitDelay
+        elseif self.triggerAction == 0 or self.triggerAction == nil then
+            self.enabled = false
+            self.unlockTime = nil
+        end
     else
         self.enabled = true
         self:CheckTimer()
@@ -98,25 +94,9 @@ end
 
 
 function LogicTimer:OnTime()
-    if self.output1_id then
-        local entity = Shared.GetEntity(self.output1_id)
-        if entity then
-            if  HasMixin(entity, "Logic") then
-                entity:OnLogicTrigger()
-                // to disable this timer
-                self:OnLogicTrigger()
-            else
-                Print("Error: Entity " .. entity.name .. " has no Logic function!")
-            end
-        else
-            // something is wrong, search again
-            self:FindEntitys()
-            self:OnLogicTrigger()
-        end
-    else
-        Print("Error: Entity " .. self.output1 .. " not found!")
-        DestroyEntity(self)
-    end
+    self:TriggerOutputs()
+    // to reset the timer
+    self:OnLogicTrigger()
 end
 
 Shared.LinkClassToMap("LogicTimer", LogicTimer.kMapName, networkVars)

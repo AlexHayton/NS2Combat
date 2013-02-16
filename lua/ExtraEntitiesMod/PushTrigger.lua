@@ -1,14 +1,14 @@
 //________________________________
 //
-//   	NS2 Combat Mod     
-//	Made by JimWest and MCMLXXXIV, 2012
+//   	NS2 CustomEntitesMod   
+//	Made by JimWest 2012
 //
 //________________________________
 
 // PushTrigger.lua
 // Entity for mappers to create teleporters
 
-Script.Load("lua/LogicMixin.lua")
+Script.Load("lua/ExtraEntitiesMod/LogicMixin.lua")
 
 class 'PushTrigger' (Trigger)
 

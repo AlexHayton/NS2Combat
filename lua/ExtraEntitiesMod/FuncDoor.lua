@@ -1,14 +1,14 @@
-// ======= Copyright (c) 2003-2011, Unknown Worlds Entertainment, Inc. All rights reserved. =======
+//________________________________
 //
-// lua\Door.lua
+//   	NS2 CustomEntitesMod   
+//	Made by JimWest 2012
 //
-//    Created by:   Charlie Cleveland (charlie@unknownworlds.com) and
-//                  Max McGuire (max@unknownworlds.com)
-//
-// ========= For more information, visit us at http://www.unknownworlds.com =====================
+//________________________________
 
 Script.Load("lua/Door.lua")
-Script.Load("lua/LogicMixin.lua")
+Script.Load("lua/ExtraEntitiesMod/LogicMixin.lua")
+Script.Load("lua/ObstacleMixin.lua")
+Script.Load("lua/ExtraEntitiesMod/ScaledModelMixin.lua")
 
 class 'FuncDoor' (Door)
 
@@ -27,13 +27,16 @@ local kDoorAnimationGraph = PrecacheAsset("models/misc/door/door.animation_graph
 
 local networkVars =
 {
+    scale = "vector",
 }
 
 AddMixinNetworkVars(LogicMixin, networkVars)
+AddMixinNetworkVars(ObstacleMixin, networkVars)
 
 function FuncDoor:OnCreate()
 
     Door.OnCreate(self)
+    InitMixin(self, ObstacleMixin)
 
 end
 
@@ -45,13 +48,15 @@ local function InitModel(self)
     end
     
     self:SetModel(modelName, kDoorAnimationGraph)
-    
+       
 end
 
 function FuncDoor:OnInitialized()
-
-    Door.OnInitialized(self) 
+    // Don't call Door OnInit, we want to create or own Model
+    ScriptActor.OnInitialized(self) 
     InitModel(self)
+    
+    InitMixin(self, ScaledModelMixin)
     
     if self.startsOpen then
         self:SetState(Door.kState.Open)
@@ -65,11 +70,31 @@ function FuncDoor:OnInitialized()
         if self.stayOpen then  
             self.timedCallbacks = {}
         end
+        // the ObsticleMixin includes the object automatically to the mesh
+        self.AddedToMesh = true
+        self:SetPhysicsType(PhysicsType.Kinematic)
+        self:SetPhysicsGroup(PhysicsGroup.BigStructuresGroup)
     end
 
 end
 
 function FuncDoor:OnUpdate(deltaTime) 
+    local state = self:GetState()
+    if state and (state == Door.kState.Welded or state == Door.kState.Locked) then
+        if not self.AddedToMesh then
+            self:AddToMesh()
+            self.AddedToMesh = true
+        end
+    else
+        if self.AddedToMesh then
+            for obstacle, v in pairs(gAllObstacles) do
+                if obstacle == self then
+                    obstacle:RemoveFromMesh()
+                end
+            end                
+            self.AddedToMesh = false
+        end
+    end
 end
 
 function FuncDoor:Reset() 
@@ -82,6 +107,9 @@ function FuncDoor:Reset()
     end
   
     InitModel(self)
+end
+
+function FuncDoor:OnUse(player, elapsedTime)
 end
 
 function FuncDoor:OnWeldOverride(doer, elapsedTime)
@@ -106,6 +134,18 @@ function FuncDoor:OnLogicTrigger()
     else
         self:SetState(Door.kState.Open)
     end
+    
+end
+
+// only way to scale the model
+function FuncDoor:OnAdjustModelCoords(modelCoords)
+
+    local coords = modelCoords
+    coords.xAxis = coords.xAxis * self.scale.x
+    coords.yAxis = coords.yAxis * self.scale.y
+    coords.zAxis = coords.zAxis * self.scale.z
+      
+    return coords
     
 end
 
