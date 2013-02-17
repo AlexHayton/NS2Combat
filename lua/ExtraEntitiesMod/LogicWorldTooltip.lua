@@ -14,7 +14,7 @@ class 'LogicWorldTooltip' (Entity)
 LogicWorldTooltip.kMapName            = "logic_worldtooltip"
 
 local networkVars = { 
-    tooltipText = string.format("string (%d)", kMaxEntityStringLength),
+    tooltipText = string.format("string (%d)", 256),
     enabled = "boolean",
 }
 

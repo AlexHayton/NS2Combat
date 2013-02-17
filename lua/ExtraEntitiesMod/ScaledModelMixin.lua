@@ -31,15 +31,20 @@ ScaledModelMixin.networkVars =
 
 // create a model if theres a model value
 function ScaledModelMixin:__initmixin() 
-    if self.model ~= nil then    
-        Shared.PrecacheModel(self.model)    
-        local graphName = string.gsub(self.model, ".model", ".animation_graph")
+end
+
+
+function ScaledModelMixin:SetScaledModel(model)
+    if model ~= nil then    
+        Shared.PrecacheModel(model)    
+        local graphName = string.gsub(model, ".model", ".animation_graph")
         if graphName then
             Shared.PrecacheAnimationGraph(graphName)        
         end
-        self:SetModel(self.model, graphName)  
+        self:SetModel(model, graphName)  
     end
 end
+
 
 // only way to scale the model
 function ScaledModelMixin:OnAdjustModelCoords(modelCoords)

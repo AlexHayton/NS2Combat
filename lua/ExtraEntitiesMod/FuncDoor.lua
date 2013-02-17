@@ -57,6 +57,7 @@ function FuncDoor:OnInitialized()
     InitModel(self)
     
     InitMixin(self, ScaledModelMixin)
+	self:SetScaledModel(self.model)
     
     if self.startsOpen then
         self:SetState(Door.kState.Open)

@@ -90,7 +90,8 @@ function FuncMoveable:OnInitialized()
 
     ScriptActor.OnInitialized(self)  
     InitMixin(self, ScaledModelMixin)
-
+	self:SetScaledModel(self.model)
+	
     if Server then
         InitMixin(self, LogicMixin)  
         if self.isDoor then

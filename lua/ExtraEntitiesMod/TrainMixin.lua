@@ -117,14 +117,7 @@ function TrainMixin:SetOrigin(origin)
     if not self.oldOrigin then
         self.oldOrigin = self:GetOrigin()  
     end
-    
-    local physicsModel = self:GetPhysicsModel()
-    if physicsModel then
-        local coords = physicsModel:GetCoords()
-        coords.origin = origin
-        physicsModel:SetBoneCoords(coords, self.boneCoords)
-    end
-    
+
     local movementVector = origin - self.oldOrigin
     if (movementVector.x + movementVector.y + movementVector.z) ~= 0 then
         self:SetMovementVector(movementVector)  
@@ -202,7 +195,6 @@ function TrainMixin:MovePlayersInTrigger(deltaTime)
                 //TransformPlayerCoordsForTrain(entity, entity:GetCoords(), coords)
                
                 entity:SetOrigin(newOrigin  + self:GetMovementVector())
-
             end
         end
     end
@@ -210,7 +202,7 @@ end
 
     
 function TrainMixin:MoveTrigger()
-    
+    /*
     local scale = Vector(1,1,1)
     if self.scaleTrigger then
         scale = self.scaleTrigger
@@ -221,8 +213,31 @@ function TrainMixin:MoveTrigger()
         scale = self:GetExtents()
     end
     self:SetBox(scale)
+    self:SetTriggerCollisionEnabled(true)
+    */
+    if self.modelIndex then
+    
+        if self.triggerModel then
+            Shared.DestroyCollisionObject(self.triggerModel)
+            self.triggerModel = nil
+        end        
+
+        // make it a bit bigger so were inside the trigger
+        local coords = self:GetCoords()
+        coords.yAxis = coords.yAxis  * 5
+
+        self.triggerModel = Shared.CreatePhysicsModel(self.modelIndex, true, coords , self)
+        
+        if self.triggerModel ~= nil then
+            self.triggerModel:SetTriggerEnabled(true)
+            self.triggerModel:SetCollisionEnabled(false)
+            self.triggerModel:SetEntity(self)         
+        end
+
+    end
     
 end
+
 
 //**********************************
 // Driving things

@@ -16,6 +16,7 @@ Script.Load("lua/ExtraEntitiesMod/eem_Utility.lua")
 // Class overrides here
 Script.Load("lua/ExtraEntitiesMod/eem_MovementModifier.lua")
 Script.Load("lua/ExtraEntitiesMod/PathingUtility_Modded.lua")
+Script.Load("lua/ExtraEntitiesMod/eem_ParticleEffect.lua")
 
 // New classes
 Script.Load("lua/ExtraEntitiesMod/TeleportTrigger.lua")
