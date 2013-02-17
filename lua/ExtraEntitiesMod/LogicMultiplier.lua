@@ -9,7 +9,6 @@
 
 Script.Load("lua/ExtraEntitiesMod/LogicMixin.lua")
 
-
 class 'LogicMultiplier' (Entity)
 
 LogicMultiplier.kMapName = "logic_multiplier"
@@ -24,9 +23,7 @@ AddMixinNetworkVars(LogicMixin, networkVars)
 function LogicMultiplier:OnCreate()
 end
 
-function LogicMultiplier:OnInitialized()
-    
-
+function LogicMultiplier:OnInitialized()   
     
     if Server then
         InitMixin(self, LogicMixin)     

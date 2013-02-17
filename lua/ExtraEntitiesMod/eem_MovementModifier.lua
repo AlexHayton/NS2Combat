@@ -37,13 +37,12 @@ originalPlayerOnClampSpeed = Class_ReplaceMethod( "Player", "OnClampSpeed",
 )
 
 
-// overrides OnJumpLand so the ClampSpeed can work right
-local originalPlayerOnJumpLand
-originalPlayerOnJumpLand = Class_ReplaceMethod( "Player", "OnJumpLand",
-    function (self, landIntensity, slowDown)
-        
-        if Server then
-        
+if Server then
+
+    // overrides OnJumpLand so the ClampSpeed can work right
+    local originalPlayerOnJumpLand
+    originalPlayerOnJumpLand = Class_ReplaceMethod( "Player", "OnJumpLand",
+        function (self, landIntensity, slowDown)        
             if self.pushTime == -1 then
                 self.pushTime = 0
             elseif kFallDamage then
@@ -56,28 +55,29 @@ originalPlayerOnJumpLand = Class_ReplaceMethod( "Player", "OnJumpLand",
                         self:DeductHealth(damage, self, self)
                     end
                 end
-            end
-   
-        end     
-        originalPlayerOnJumpLand(self, landIntensity, slowDown)
-        
-    end
-)
+            end   
+
+            originalPlayerOnJumpLand(self, landIntensity, slowDown)
+            
+        end
+    )
 
 
-// overrides PlayerOnUpdate so we can set jumping=true when falling 
-local originalPlayerOnUpdatePlayer
-originalPlayerOnUpdatePlayer = Class_ReplaceMethod( "Player", "OnUpdatePlayer",
-    function (self, deltaTime)
-                
-        if not self:GetIsOnGround() and self:CanTakeFallDamage() then
-            if not self.jumping then
-                self.jumping = true
-            end
-        end 
-        originalPlayerOnUpdatePlayer(self, deltaTime)           
-        
-    end
-)
+    // overrides PlayerOnUpdate so we can set jumping=true when falling 
+    local originalPlayerOnUpdatePlayer
+    originalPlayerOnUpdatePlayer = Class_ReplaceMethod( "Player", "OnUpdatePlayer",
+        function (self, deltaTime)
+                    
+            if not self:GetIsOnGround() and self:CanTakeFallDamage() then
+                if not self.jumping then
+                    self.jumping = true
+                end
+            end 
+            originalPlayerOnUpdatePlayer(self, deltaTime)           
+            
+        end
+    )
+    
+end
 
 

@@ -32,7 +32,10 @@ Script.Load("lua/ExtraEntitiesMod/LogicFunction.lua")
 Script.Load("lua/ExtraEntitiesMod/LogicCounter.lua")
 Script.Load("lua/ExtraEntitiesMod/LogicTrigger.lua")
 Script.Load("lua/ExtraEntitiesMod/LogicLua.lua")
+Script.Load("lua/ExtraEntitiesMod/LogicEmitter.lua")
+Script.Load("lua/ExtraEntitiesMod/LogicListener.lua")
 Script.Load("lua/ExtraEntitiesMod/LogicButton.lua")
+Script.Load("lua/ExtraEntitiesMod/LogicWorldTooltip.lua")
 Script.Load("lua/ExtraEntitiesMod/MapSettings.lua")
 Script.Load("lua/ExtraEntitiesMod/NobuildArea.lua")
 
@@ -43,6 +46,6 @@ Script.Load("lua/ExtraEntitiesMod/NobuildArea.lua")
 
 
 if Client then
-//	Script.Load("lua/ExtraEntitiesMod/eem_Player_Client.lua")
+	Script.Load("lua/ExtraEntitiesMod/eem_Player_Client.lua")
 //	Script.Load("lua/ExtraEntitiesMod/Hud/GUIFuncTrain.lua")
 end

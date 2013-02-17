@@ -165,7 +165,7 @@ function FuncTrain:CreatePath(onUpdate)
     
     // then copy the wayPointList into a new List so its 1-n
     
-    for i, wayPoint in ipairs(self.waypointList) do
+    for i, wayPoint in pairs(self.waypointList) do
         table.insert(tempList, wayPoint)
     end
     
