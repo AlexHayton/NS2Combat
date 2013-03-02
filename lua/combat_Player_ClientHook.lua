@@ -19,14 +19,12 @@ function CombatPlayerClient:OnLoad()
 	_addHookToTable(self:ReplaceClassFunction("Player", "Buy", "Buy_Hook_Marine"))
 	_addHookToTable(self:PostHookClassFunction("Alien", "Buy", "Buy_Hook"))
 	_addHookToTable(self:HookClassFunction("Player", "OnInitLocalClient", "OnInitLocalClient_Hook"))
-	_addHookToTable(self:HookClassFunction("Player", "TriggerFirstPersonDeathEffects", "TriggerFirstPersonDeathEffects_Hook"))
+	_addHookToTable(self:HookClassFunction("Player", "AddTakeDamageIndicator", "AddTakeDamageIndicator_Hook"))
 	_addHookToTable(self:ReplaceClassFunction("Marine", "CloseMenu", "CloseMenu_Hook"))
 	// To allow exosuits to use the menu.
     _addHookToTable(self:ReplaceClassFunction("Player", "CloseMenu", "CloseMenu_Hook"))
 	_addHookToTable(self:PostHookClassFunction("Marine", "UpdateClientEffects", "UpdateClientEffects_Hook"))
-    
-    _addHookToTable(self:PostHookFunction("InitTechTreeMaterialOffsets", "InitTechTreeMaterialOffsets_Hook"))
-    
+   
     _addHookToTable(self:ReplaceFunction("PlayerUI_GetArmorLevel", "PlayerUI_GetArmorLevel_Hook"))
     _addHookToTable(self:ReplaceFunction("PlayerUI_GetWeaponLevel", "PlayerUI_GetWeaponLevel_Hook"))
 	_addHookToTable(self:PostHookClassFunction("Player", "UpdateMisc", "UpdateMisc_Hook"))
@@ -93,10 +91,10 @@ end
 
 // Close the menu properly when a player dies.
 // Note: This does not trigger when players are killed via the console as that calls 'Kill' directly.
-function CombatPlayerClient:TriggerFirstPersonDeathEffects_Hook(self)
-
-    self:CloseMenu(true)
-
+function CombatPlayerClient:AddTakeDamageIndicator_Hook(self, damagePosition)    
+    if not self:GetIsAlive() and not self.deathTriggered then    
+		self:CloseMenu(true)        
+    end
 end
 
 
@@ -125,15 +123,6 @@ function CombatPlayerClient:UpdateClientEffects_Hook(self, deltaTime, isLocal)
 	if self.buyMenu then
         self:CloseMenu()
     end    
-	
-end
-
-// that tier2 and tier3 have the right icons
-function CombatPlayerClient:InitTechTreeMaterialOffsets_Hook()
-
-    // Icons for tier2 and 3
-    kTechIdToMaterialOffset[kTechId.TwoHives] = 95
-    kTechIdToMaterialOffset[kTechId.ThreeHives] = 77
 	
 end
 

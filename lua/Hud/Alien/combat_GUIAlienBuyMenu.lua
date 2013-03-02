@@ -132,10 +132,32 @@ function CombatGUIAlienBuyMenu:_InitializeUpgradeButtons_Hook(self)
             buttonIcon:SetPosition(Vector(-GUIAlienBuyMenu.kUpgradeButtonSize / 2, GUIAlienBuyMenu.kUpgradeButtonSize, 0))
             buttonIcon:SetTexture(GUIAlienBuyMenu.kBuyHUDTexture)
             
-            local iconX, iconY = GetMaterialXYOffset(techId, false)
-            iconX = iconX * GUIAlienBuyMenu.kUpgradeButtonTextureSize
-            iconY = iconY * GUIAlienBuyMenu.kUpgradeButtonTextureSize        
-            buttonIcon:SetTexturePixelCoordinates(iconX, iconY, iconX + GUIAlienBuyMenu.kUpgradeButtonTextureSize, iconY + GUIAlienBuyMenu.kUpgradeButtonTextureSize)
+            // hackish but just wanted that combat work again
+            // handle tier2 and tier3
+            local iconX = nil
+            local iconY = nil
+            
+            local index = nil
+            local columns = 12
+            
+            if techId == 167 then
+                index = 95 
+            elseif techId == 168 then
+                index = 77
+            else 
+                iconX, iconY = GetMaterialXYOffset(techId, false)
+            end
+            
+            if index then
+                iconX = index % columns
+                iconY = math.floor(index / columns)  
+            end
+            
+            if iconX and iconY then
+                iconX = iconX * GUIAlienBuyMenu.kUpgradeButtonTextureSize
+                iconY = iconY * GUIAlienBuyMenu.kUpgradeButtonTextureSize        
+                buttonIcon:SetTexturePixelCoordinates(iconX, iconY, iconX + GUIAlienBuyMenu.kUpgradeButtonTextureSize, iconY + GUIAlienBuyMenu.kUpgradeButtonTextureSize)            
+            end
             
             // Render above the Alien image.
             buttonIcon:SetLayer(kGUILayerPlayerHUDForeground3)

@@ -127,7 +127,7 @@ function FuncDoor:GetCanTakeDamageOverride()
     return false
 end
 
-function FuncDoor:OnLogicTrigger()
+function FuncDoor:OnLogicTrigger(player)
 
     local state = self:GetState()
     if state ~= Door.kState.Welded then

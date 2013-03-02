@@ -44,11 +44,11 @@ function LogicCounter:GetOutputNames()
 end
 
 
-function LogicCounter:OnLogicTrigger()
+function LogicCounter:OnLogicTrigger(player)
 
     self.countAmount = self.countAmount + 1
     if self.countAmount == self.counter then
-        self:TriggerOutputs()  
+        self:TriggerOutputs(player)  
         self.countAmount = 0
     end
     

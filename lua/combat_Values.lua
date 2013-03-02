@@ -179,6 +179,13 @@ kSapCost = generalCost
 kBoneShieldCost = generalCost
 kCelerityCost = generalCost
 kHyperMutationCost = generalCost
+kGorgeTunnelCost = generalCost
+kBabblerCost = generalCost
+
+// to get it loaded into the TechData
+SetCachedTechData(kTechId.Hydra, kTechDataCostKey, kHydraCost)
+SetCachedTechData(kTechId.GorgeTunnel, kTechDataCostKey, kGorgeTunnelCost)
+SetCachedTechData(kTechId.BabblerEgg, kTechDataCostKey,kBabblerCost)
 
 // Health values
 // Make the marine structures slightly less squishy...
@@ -205,4 +212,3 @@ kEMPBlastEnergyDamage = 100
 // Cooldown for buying exo/onos
 kHeavyTechCooldown = 120
 
-SetCachedTechData(kTechId.Hydra, kTechDataCostKey, kHydraCost)

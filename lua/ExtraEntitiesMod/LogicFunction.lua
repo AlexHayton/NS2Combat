@@ -39,7 +39,7 @@ function LogicFunction:Reset()
 end
 
 
-function LogicFunction:OnLogicTrigger()
+function LogicFunction:OnLogicTrigger(player)
 
     if self.callFunction == 0 then
         Print("Test")

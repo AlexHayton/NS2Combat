@@ -17,6 +17,7 @@ Script.Load("lua/ExtraEntitiesMod/eem_Utility.lua")
 Script.Load("lua/ExtraEntitiesMod/eem_MovementModifier.lua")
 Script.Load("lua/ExtraEntitiesMod/PathingUtility_Modded.lua")
 Script.Load("lua/ExtraEntitiesMod/eem_ParticleEffect.lua")
+Script.Load("lua/ExtraEntitiesMod/eem_Player.lua")
 
 // New classes
 Script.Load("lua/ExtraEntitiesMod/TeleportTrigger.lua")
@@ -40,6 +41,8 @@ Script.Load("lua/ExtraEntitiesMod/LogicWorldTooltip.lua")
 Script.Load("lua/ExtraEntitiesMod/MapSettings.lua")
 Script.Load("lua/ExtraEntitiesMod/NobuildArea.lua")
 
+// old ns2 alpha entity, made as logic
+Script.Load("lua/ExtraEntitiesMod/LogicTarget.lua")
 
 // disable the portal gun, was just 4 fun, maybe make it later better
 // Script.Load("lua/ExtraEntitiesMod/PortalGunTeleport.lua")

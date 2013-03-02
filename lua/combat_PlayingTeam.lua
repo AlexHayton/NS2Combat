@@ -212,7 +212,7 @@ function CombatPlayingTeam:Update_Hook(self, timePassed)
 						// TODO: Update the GUI so that marines can get the 'ready to spawn in ... ' message too.
 						// After that is done, remove the AlienSpectator check here.
 						if (player:isa("AlienSpectator")) then
-							player:SetWaveSpawnEndTime(nextSpawnTime)
+							player.timeWaveSpawnEnd = nextSpawnTime
 						end
 					end
 				end
@@ -253,9 +253,9 @@ function CombatPlayingTeam:SpawnPlayer(player)
     if Server then
         
         if player.SetSpectatorMode then
-            player:SetSpectatorMode(Spectator.kSpectatorMode.Following)
-        end        
- 
+            player:SetSpectatorMode(kSpectatorMode.Following)
+        end
+  
     end
 
     if player.combatTable and player.combatTable.giveClassAfterRespawn then

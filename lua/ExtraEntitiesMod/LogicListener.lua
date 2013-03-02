@@ -37,7 +37,7 @@ function LogicListener:GetOutputNames()
 end
 
 
-function LogicListener:OnLogicTrigger() 
+function LogicListener:OnLogicTrigger(player) 
 end
 
 

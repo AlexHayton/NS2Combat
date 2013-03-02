@@ -39,6 +39,8 @@ Script.Load("lua/combat_Alien_Hooks.lua")
 Script.Load("lua/combat_Armory_Client.lua")
 Script.Load("lua/Weapons/Alien/combat_StructureAbility.lua")
 
+
+Script.Load("lua/ClientResources.lua")
 Script.Load("lua/Shared.lua")
 // load the extra entities
 Script.Load("lua/ExtraEntitiesMod/eem_Shared.lua")

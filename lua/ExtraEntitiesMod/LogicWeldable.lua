@@ -108,7 +108,7 @@ function LogicWeldable:OnWelded()
 end
 
 
-function LogicWeldable:OnLogicTrigger()
+function LogicWeldable:OnLogicTrigger(player)
     if self.enabled then
         self.enabled = false 
     else

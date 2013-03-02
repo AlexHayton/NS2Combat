@@ -60,8 +60,8 @@ function CombatMarineBuy_GUISortUps(upgradeList)
 		
         // 4, Class Upgrades
         kTechId.Jetpack,     
-	    kTechId.Exosuit,
-	    kTechId.DualMinigunExosuit
+	    kTechId.DualMinigunExosuit,
+	    kTechId.ClawRailgunExosuit,
     }
     
     local sortedList = {}    
@@ -114,6 +114,7 @@ function CombatMarineBuy_GetWeaponDescription(techId)
         combatWeaponDescription[kTechId.Jetpack] = "You get a Jetpack, but you need Armor 2 first..."
         combatWeaponDescription[kTechId.Exosuit] = "Suit up! You will need Armor 2 first..."
 		combatWeaponDescription[kTechId.DualMinigunExosuit] = "Dual Miniguns for the Exosuit."
+		combatWeaponDescription[kTechId.ClawRailgunExosuit] = "RailGun with a Claw for the Exosuit."
     
     end
     

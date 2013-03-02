@@ -57,8 +57,8 @@ function LogicMultiplier:GetOutputNames()
 end
 
 
-function LogicMultiplier:OnLogicTrigger()
-    self:TriggerOutputs()    
+function LogicMultiplier:OnLogicTrigger(player)
+    self:TriggerOutputs(player)    
 end
 
 Shared.LinkClassToMap("LogicMultiplier", LogicMultiplier.kMapName, networkVars)

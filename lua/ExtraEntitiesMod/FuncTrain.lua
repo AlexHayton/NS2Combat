@@ -184,7 +184,7 @@ function FuncTrain:CreatePath(onUpdate)
     end
 end
 
-function FuncTrain:OnLogicTrigger()
+function FuncTrain:OnLogicTrigger(player)
     self:ChangeDrivingStatus()
 end
 

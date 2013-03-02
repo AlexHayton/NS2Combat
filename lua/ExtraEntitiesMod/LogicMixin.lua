@@ -65,10 +65,10 @@ function LogicMixin:Reset()
     kLogicEntitiesSearched = false
 end
 
-function LogicMixin:TriggerOutputs(names)   
+function LogicMixin:TriggerOutputs(player)   
  
     local retryTriggerEntities = {}
-    for i, name in ipairs(names or self:GetOutputNames()) do 
+    for i, name in ipairs(self:GetOutputNames()) do 
         local entity
         for l, logicEntity in ipairs(kLogicEntityList) do
             if name == logicEntity.name then
@@ -78,7 +78,7 @@ function LogicMixin:TriggerOutputs(names)
         end    
         if entity then
             if  HasMixin(entity, "Logic") then
-                entity:OnLogicTrigger()
+                entity:OnLogicTrigger(player)
             else
                 Print("Error: Entity " .. name .. " has no Logic function!")
             end

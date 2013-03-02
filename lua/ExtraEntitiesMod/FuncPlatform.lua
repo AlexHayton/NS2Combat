@@ -43,7 +43,7 @@ end
 // Viewing things
 //**********************************
 
-function FuncPlatform:OnLogicTrigger()
+function FuncPlatform:OnLogicTrigger(player)
     // if the elevator is moving, dont stop him
     if not self.driving then
         self:ChangeDrivingStatus()

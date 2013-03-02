@@ -48,7 +48,7 @@ function LogicEmitter:SetEmitMessage(setMessage)
     
 end
 
-function LogicEmitter:OnLogicTrigger()
+function LogicEmitter:OnLogicTrigger(player)
     self:EmitSignal(self.emitChannel, self.emitMessage)
 end
 

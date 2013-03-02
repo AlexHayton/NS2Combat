@@ -76,14 +76,14 @@ function LogicButton:OnUse(player, elapsedTime, useAttachPoint, usePoint, useSuc
 
     if Server then   
         if self.enabled then
-            self:TriggerOutputs()
+            self:TriggerOutputs(player)
         end
     elseif Client then
     end
     
 end
 
-function LogicButton:OnLogicTrigger()
+function LogicButton:OnLogicTrigger(player)
     if self.enabled then
         self.enabled = false 
     else

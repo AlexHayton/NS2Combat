@@ -78,7 +78,7 @@ function LogicTimer:GetOutputNames()
 end
 
 
-function LogicTimer:OnLogicTrigger()
+function LogicTimer:OnLogicTrigger(player)
     if self.enabled then
         if self.triggerAction == 1 then 
             self.unlockTime = Shared.GetTime() + self.waitDelay

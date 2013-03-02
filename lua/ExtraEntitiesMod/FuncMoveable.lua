@@ -223,7 +223,7 @@ function FuncMoveable:GetRotationEnabled()
     return false
 end
 
-function FuncMoveable:OnLogicTrigger()
+function FuncMoveable:OnLogicTrigger(player)
     self.driving = true
 end
 

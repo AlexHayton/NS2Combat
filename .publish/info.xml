@@ -1,8 +1,8 @@
 <options>
-    <build></build>
     <description>NS2Combat: A Combat-style mod for Natural Selection 2&#x0A;&#x0A;Our Design Aims:&#x0A;Try and reproduce as much of the old NS1 Combat Mode’s game mechanics as possible but bring some of the new skills and game mechanics from NS2 into play as well.&#x0A;Players get experience (score) for killing enemies or being around their teammates who are killing enemies.&#x0A;You can level up ten times in a game, getting an upgrade point to spend each time. This buys you weapons, evolves and upgrades.&#x0A;We’ve tried to balance support classes with offensive ones. You can specialise as any of the Alien lifeforms and as a Marine can choose to go Jetpack, Exo or some kind of ninja engineer.</description>
     <id>99831877</id>
     <kind>Game</kind>
-    <title>Combat Mode</title>
+    <build></build>
     <visibility>Public</visibility>
+    <title>Combat Mode</title>
 </options>
