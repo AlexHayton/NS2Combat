@@ -194,10 +194,6 @@ function TeleportTrigger:OnLogicTrigger()
         else
             self.enabled = true
         end
-        
-        if Server then
-            self:SetUpdates(true)
-        end
     end
     
 end

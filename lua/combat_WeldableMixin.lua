@@ -13,8 +13,9 @@ local function setDecimalPlaces(num, idp)
     else return math.ceil(num * mult) / mult end
 end
 
+
 // Give some XP to the damaging entity.
-function WeldableMixin:OnWeld(doer, elapsedTime)
+function WeldableMixin:OnWeld(doer, elapsedTime, player)
 
     if self:GetCanBeWelded(doer) then
     
@@ -37,6 +38,10 @@ function WeldableMixin:OnWeld(doer, elapsedTime)
 			// Award XP.
 			local doerPlayer = doer:GetParent()
 			doerPlayer:AddXp(healXp)
+        end
+		
+		if player and player.OnWeldTarget then
+            player:OnWeldTarget(self)
         end
         
     end
