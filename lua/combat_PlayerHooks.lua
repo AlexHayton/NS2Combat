@@ -153,20 +153,6 @@ function CombatPlayer:OnUpdatePlayer_Hook(self, deltaTime)
 	// only trigger Scan and Resupply when player is alive
 	if self:GetIsAlive() then
 
-		if self.combatTable.hasCamouflage then
-			if HasMixin(self, "Cloakable") then
-				self:SetIsCloaked(true, 1, false)
-		
-				// Trigger uncloak when you reach a certain speed, based on lifeform's max speed.
-				local velocity = self:GetVelocity():GetLength()
-				
-				if velocity >= (self:GetMaxSpeed(true) * kCamouflageUncloakFactor) then
-					self:SetIsCloaked(false)
-					self.cloakChargeTime = kCamouflageTime
-				end
-			end
-		end 
-
 		// Only if player get not devoured
 		if not self:isa("DevouredPlayer") then 
 		// Provide scan and resupply function

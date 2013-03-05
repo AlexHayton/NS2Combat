@@ -45,6 +45,16 @@ function CombatAlien:OnUpdateAnimationInput_Hook(self, modelMixin)
     
 end
 
+// no hook, replace it
+function GetHasCamouflageUpgrade(callingEntity)
+    if Server then
+        return callingEntity.combatTable and callingEntity.combatTable.hasCamouflage 
+    elseif Client then
+        local upgrade = GetUpgradeFromId(GetUpgradeFromId(upgradeId))
+        return callingEntity:GotItemAlready(upgrade)
+    end
+end
+
 
 if Server then
 
