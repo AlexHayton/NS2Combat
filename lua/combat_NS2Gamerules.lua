@@ -479,7 +479,7 @@ function CombatNS2Gamerules:NS2Gamerules_GetUpgradedDamage_Hook(attacker, doer, 
     if attacker ~= nil then
     
         // Damage upgrades only affect weapons, not ARCs, Sentries, MACs, Mines, etc.
-        if doer:isa("Weapon") or doer:isa("Grenade") or doer:isa("Minigun") then
+        if doer:isa("Weapon") or doer:isa("Grenade") or doer:isa("Minigun") or doer:isa("Railgun") then
         
             if(GetHasTech(attacker, kTechId.Weapons3, true)) then
             
