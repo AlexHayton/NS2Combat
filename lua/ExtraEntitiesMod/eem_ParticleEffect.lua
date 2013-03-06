@@ -5,6 +5,12 @@
 //
 //________________________________
 
+
+local networkVars =
+{
+    repeatStyle = "integer (0 to 2)",
+}
+
 if Server then
 
     local function EmitParticleEffect(self)
@@ -29,3 +35,16 @@ if Server then
     
 end
 
+if Client then
+
+    local overrideParticleEffecOnInitialized = ParticleEffect.OnInitialized
+    function ParticleEffect:OnInitialized()
+        overrideParticleEffecOnInitialized(self)
+        if self.cinematic then
+            self.cinematic:SetRepeatStyle(self.repeatStyle or Cinematic.Repeat_Endless)
+        end
+    end
+
+end
+
+Class_Reload("ParticleEffect", networkVars)

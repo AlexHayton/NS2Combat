@@ -7,7 +7,6 @@
 
 // sewleks framework
 Script.Load("lua/PreLoadMod.lua")
-Script.Load("lua/ClassUtility.lua")
 
 // Load the script from fsfod that we can hook some functions
 Script.Load("lua/PathUtil.lua")
@@ -41,7 +40,10 @@ Script.Load("lua/Weapons/Alien/combat_StructureAbility.lua")
 
 
 Script.Load("lua/ClientResources.lua")
+
 Script.Load("lua/Shared.lua")
+Script.Load("lua/ClassUtility.lua")
+
 // load the extra entities
 Script.Load("lua/ExtraEntitiesMod/eem_Shared.lua")
 

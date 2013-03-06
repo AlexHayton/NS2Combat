@@ -890,6 +890,11 @@
         <parent>trigger</parent>
         
         <parameter name="enabled" type="boolean" label="Trigger enabled" help="Will not trigger when disabled." default="true"/>
+		<parameter name="teamNumber" type="choice" label="Team Number" help="Will only be triggered by this team." default="0">
+            <choice label="Both teams" value="0"/>
+            <choice label="Marine" value="1"/>
+            <choice label="Alien" value="2"/>
+		</parameter>
 		<parameter name="output1" type="string" label="Output1" help="Name of the triggered entity" default=""/>
 
     </class>
@@ -922,17 +927,7 @@
             <scale>scale</scale>
         </size>
         <parameter name="scale" type="vector" label="scale" default="1.0, 1.0, 1.0"/>
-		
-        <model>
-            <file>models/system/editor/location.model</file>
-            <scale>scaleTrigger</scale>
-        </model>    
 
-        <size>
-            <scale>scaleTrigger</scale>
-        </size>
-
-		<parameter name="scaleTrigger" type="vector" label="scaleTrigger" elp="Scale of the trigger that makes the Players on it move." default="9.0, 4.0, 15.0"/>
 		<parameter name="name" type="string" label="name" help="Name of the train, important the the waypoints." default="train"/>
         <parameter name="teamNumber" type="choice" label="Team Number" default="1">
             <choice label="World" value="0"/>
@@ -963,17 +958,7 @@
             <scale>scale</scale>
         </size>
         <parameter name="scale" type="vector" label="scale" default="1.0, 1.0, 1.0"/>
-		
-        <model>
-            <file>models/system/editor/location.model</file>
-            <scale>scaleTrigger</scale>
-        </model>    
 
-        <size>
-            <scale>scaleTrigger</scale>
-        </size>
-
-		<parameter name="scaleTrigger" type="vector" label="scaleTrigger" elp="Scale of the trigger that makes the Players on it move." default="9.0, 4.0, 15.0"/>
 		<parameter name="name" type="string" label="name" help="Name of the platform, important the the waypoints." default="train"/>
 		<parameter name="moveSpeed" type="real" label="Move Speed" help="How fast can the train drive." default="3.0"/>
 
@@ -1014,7 +999,7 @@
 		<parameter name="isDoor" type="boolean" label="Act like a door" help="Open and closes when a player comes near the moveable (when enabled = true, starts opened whill then ignored)." default="false"/>
 		<parameter name="enabled" type="boolean" label="enabled" help="Moveable will not start if its disabled (if not act like a door, this will be ignored)." default="true"/>
 		
-		<!-- Only up and down is working at the moment -->
+		<!-- Only up and down is working at the moment 
         <parameter name="direction" type="choice" label="Direction" help="Direction the movable will move after closing (place it in the map at its closed position)" default="0">
             <choice label="Up" value="0"/>
             <choice label="Down" value="1"/>
@@ -1152,6 +1137,56 @@
 		<parameter name="output1" type="string" label="Output" help="Name of the triggered entity (after welded)" default=""/>
 
     </class>
+	
+	<class name="logic_emitter" placeable="true">		
+
+		<model>
+            <file>models/system/editor/team_join.model</file>
+		</model>
+			
+        <parameter name="name" type="string" label="name" help="Name of logic_emitter which can be referenced by other entities" />
+        <parameter name="signalRange" type="distance" label="Emit radius" default="10" help="This is the maximum distance the signal will reach."/>
+        <parameter name="emitChannel" type="integer" label="Emit channel" help="Only entities listening on this channel will receive the message." default="0"/>
+        <parameter name="emitMessage" type="string" label="Emit message" help="The listening entity must respond to this message." default="" />
+
+    </class>
+	
+	<class name="logic_listener" placeable="true">		
+
+		<model>
+            <file>models/system/editor/team_join.model</file>
+		</model>
+			
+        <parameter name="name" type="string" label="name" help="Name of logic_listener which can be referenced by other entities" />	
+		<parameter name="listenChannel" type="integer" label="Listen channel" help="Messages not on this channel will be ignored." default="0"/>
+        <parameter name="startsOnMessage" type="string" label="Will be triggered when this message is received" default="play"/>
+		<parameter name="output1" type="string" label="Output" help="Name of the triggered entity (receiving the message)" default=""/>
+
+    </class>
+	
+	
+	<class name="logic_worldtooltip">	
+	
+		<parameter name="name" type="string" label="name" help="Name of logic_listener which can be referenced by other entities" />	
+		<parameter name="enabled" type="boolean" label="enabled" help="Worldtooltip will not show up if its disabled (can be triggered by other entities)" default="true"/>
+		<parameter name="tooltip" type="string" label="tooltip" help="Displays a tooltip to the player when looking at it (close range)." />
+		
+        <model>
+            <file>models/misc/attentionmark/attentionmark.model</file>
+        </model> 
+	
+	</class>
+	
+	<class name="logic_target">	
+	
+		<parent>target</parent>
+		<parameter name="name" type="string" label="name" help="Name of logic_listener which can be referenced by other entities" />	
+		<!-- <parameter name="enabled" type="boolean" label="enabled" help="You can't weld it if it's disabled" default="true"/> -->
+		<parameter name="output1" type="string" label="Output" help="Name of the triggered entity (after killed)" default=""/>
+	
+	</class>
+	
+
 
 	
 		    <!-- Timed Door-->
