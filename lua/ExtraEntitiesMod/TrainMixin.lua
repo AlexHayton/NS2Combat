@@ -247,7 +247,7 @@ function TrainMixin:OnTriggerEntered(enterEnt, triggerEnt)
 end
 
 function TrainMixin:OnTriggerExited(exitEnt, triggerEnt)
-    DebugCircle(self:GetOrigin(), 2, Vector(1, 0, 0), 1, 1, 1, 1, 1)
+    //DebugCircle(self:GetOrigin(), 2, Vector(1, 0, 0), 1, 1, 1, 1, 1)
 end
 
 

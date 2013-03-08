@@ -19,7 +19,6 @@ class 'LogicWeldable' (ScriptActor)
 LogicWeldable.kMapName = "logic_weldable"
 
 LogicWeldable.kModelName = PrecacheAsset("models/props/generic/terminals/generic_controlpanel_01.model")
-local kAnimationGraph = PrecacheAsset("models/marine/sentry/sentry.animation_graph")
 
 local networkVars =
 {
@@ -105,6 +104,10 @@ end
 function LogicWeldable:OnWelded()
     self:SetArmor(self:GetMaxArmor())
     self:TriggerOutputs()
+end
+
+function LogicWeldable:GetCanBeUsed(player, useSuccessTable)
+    useSuccessTable.useSuccess = false  
 end
 
 

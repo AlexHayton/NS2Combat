@@ -16,6 +16,9 @@ if Server then
     local function EmitParticleEffect(self)
         // dont kill it if its endless or loop
         local effect = Shared.CreateEffect(nil, self.cinematicName, nil, self:GetCoords())
+        effect.repeatStyle = self.repeatStyle
+        effect.startsOnMessage = self.startsOnMessage
+        effect.listenChannel = self:GetListenChannel()
         if self.repeatStyle == 1 or self.repeatStyle == 2 then
             effect.lifeTime = -1
         end

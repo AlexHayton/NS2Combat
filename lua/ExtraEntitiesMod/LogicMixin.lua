@@ -65,10 +65,10 @@ function LogicMixin:Reset()
     kLogicEntitiesSearched = false
 end
 
-function LogicMixin:TriggerOutputs(player)   
+function LogicMixin:TriggerOutputs(player, number)   
  
     local retryTriggerEntities = {}
-    for i, name in ipairs(self:GetOutputNames()) do 
+    for i, name in ipairs(self:GetOutputNames(number)) do 
         local entity
         for l, logicEntity in ipairs(kLogicEntityList) do
             if name == logicEntity.name then

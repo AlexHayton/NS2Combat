@@ -90,16 +90,13 @@ function LogicTarget:OnLogicTrigger(player)
 end
 
 if (Server) then
-
-    function LogicTarget:OnDestroy()
-        self:TriggerOutputs(player)  
-    end
   
     function LogicTarget:OnKill(damage, attacker, doer, point, direction)
     
         // Create a rag doll.
         self:SetPhysicsType(PhysicsType.Dynamic)
         self:SetPhysicsGroup(PhysicsGroup.RagdollGroup)
+        self:TriggerOutputs(player)  
 
     end
  

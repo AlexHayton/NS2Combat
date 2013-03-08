@@ -122,7 +122,7 @@ function FuncTrain:GetPushPlayers()
 end
 
 function FuncTrain:GetRotationEnabled()
-    return true
+    return not self.waiting
 end
 
 
@@ -156,11 +156,9 @@ function FuncTrain:CreatePath(onUpdate)
     for _, ent in ientitylist(Shared.GetEntitiesWithClassname("FuncTrainWaypoint")) do 
         // only search the waypoints for that train
         if ent.trainName == self.name then
-            if ent.number > 0 then
-                self.waypointList[ent.number] = {}
-                self.waypointList[ent.number].origin = ent:GetOrigin()
-                self.waypointList[ent.number].delay = ent.waitDelay
-            end
+            self.waypointList[ent.number] = {}
+            self.waypointList[ent.number].origin = ent:GetOrigin()
+            self.waypointList[ent.number].delay = ent.waitDelay
         end        
     end
     
@@ -188,11 +186,6 @@ function FuncTrain:OnLogicTrigger(player)
     self:ChangeDrivingStatus()
 end
 
-
-
-function FuncTrain:OnCollision(entity)
-    Print("Collision")
-end
 
 //**********************************
 // Sever and Client only functions
