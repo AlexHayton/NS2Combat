@@ -180,7 +180,7 @@ kBoneShieldCost = generalCost
 kCelerityCost = generalCost
 kHyperMutationCost = generalCost
 kGorgeTunnelCost = generalCost
-kBabblerCost = generalCost
+kBabblerCost = 0
 
 // to get it loaded into the TechData
 SetCachedTechData(kTechId.Hydra, kTechDataCostKey, kHydraCost)

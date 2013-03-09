@@ -59,7 +59,7 @@ local function HealEntity(self, player, targetEntity)
     /*
 	 * Addition for Combat Mode to give XP for healing.
 	 */
-	local maxXp = GetXpValue(targetEntity)
+	local maxXp = GetXpValue(targetEntity) or 1
 	local healXp = 0
 	if targetEntity:isa("Player") then
 		val = (maxXp * kPlayerHealXpRate * kHealXpRate * amountHealed / targetEntity:GetMaxHealth())
