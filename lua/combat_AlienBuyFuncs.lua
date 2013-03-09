@@ -31,6 +31,35 @@ function GetPurchasedTechIds(techId)
     
 end
 
+
+function AlienBuy_GetUpgradePurchased(techId)
+    
+    local player = Client.GetLocalPlayer()
+    
+    if player then
+        // get All ups from the personal combat table (send from the server via OnCommandSetUpgrades(upgradeId)
+        local gotTechId = false
+        
+        if player.combatUpgrades then
+            for i, upgradeId in ipairs (player.combatUpgrades) do
+                local upgrade =  GetUpgradeFromId(tonumber(upgradeId))            
+                // don't show the icon from a class
+                if (upgrade and upgrade:GetType() ~= kCombatUpgradeTypes.Class) then
+                    if techId == upgrade:GetTechId() then
+                        gotTechId = true
+                        break
+                    end
+                end
+            end
+        end
+        
+        return gotTechId
+    end
+        
+    return false
+    
+end
+
 function AlienUI_GetUpgradesForCategory(category)
 
     return { category }

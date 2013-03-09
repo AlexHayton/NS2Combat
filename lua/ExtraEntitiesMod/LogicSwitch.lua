@@ -36,6 +36,13 @@ function LogicSwitch:OnInitialized()
     
 end
 
+function LogicSwitch:Reset() 
+    self.currentOutput = 1 
+    if self.startOutput == 1 then
+        self.currentOutput = math.random(self.outputSize)
+    end
+end
+
 function LogicSwitch:GetOutputNames(number)
     local returnNames = {}
     if not self.outputNames then   
