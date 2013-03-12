@@ -18,8 +18,10 @@ end
 function CombatAlienUpgrade:TeamSpecificLogic(player)
 	
 	if not player.isRespawning then
+	    // Eliminate velocity so that we don't slide or jump as an egg
+        player:SetVelocity(Vector(0, 0, 0))
 		player:DropToFloor()
-		player:EvolveTo(self:GetTechId())
+        success = player:EvolveTo(self:GetTechId())		
 	end
 	
 end

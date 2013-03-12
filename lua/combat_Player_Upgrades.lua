@@ -288,12 +288,13 @@ function Player:HasRoomToEvolve(techId)
     local physicsMask = PhysicsMask.AllButPCsAndRagdolls
     local position = self:GetOrigin()
     
-    if self:GetIsOnGround() and
-		GetHasRoomForCapsule(eggExtents, position + Vector(0, eggExtents.y + Embryo.kEvolveSpawnOffset, 0), CollisionRep.Default, physicsMask, self) and
+    //if self:GetIsOnGround() and
+		if GetHasRoomForCapsule(eggExtents, position + Vector(0, eggExtents.y + Embryo.kEvolveSpawnOffset, 0), CollisionRep.Default, physicsMask, self) and
 		GetHasRoomForCapsule(newAlienExtents, position + Vector(0, newAlienExtents.y + Embryo.kEvolveSpawnOffset, 0), CollisionRep.Default, physicsMask, self) then
 		
 		success = true
-    end
+		end
+    //end
 	
 	return success
 	
