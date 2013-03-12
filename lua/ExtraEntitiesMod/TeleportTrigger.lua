@@ -124,7 +124,8 @@ end
 
 function TeleportTrigger:TeleportEntity(entity)
 
-    if Server then        
+    // only teleport players
+    if Server and entity:isa("Player") then        
         if self.enabled then
         
             if not self.teamNumber or self.teamNumber == 0 or (self.teamNumber ~= 0 and entity:GetTeamNumber() == self.teamNumber) then

@@ -50,15 +50,17 @@ function LogicTrigger:Reset()
 end
 
 if Server then
-    function LogicTrigger:OnTriggerEntered(enterEnt, triggerEnt)
 
+    
+    function LogicTrigger:CheckTrigger(enterEnt)
+    
         local timeOk = ((Shared.GetTime() + self.coolDownTime) >= self.timeLastTriggered)
         
         if self.enabled and timeOk then
         
             local teamNumber = enterEnt:GetTeamNumber()
             local teamOk = false
-            if self.teamNumber == 0 then
+            if self.teamNumber == 0 or self.teamNumber == nil then
                 teamOk = true
             elseif self.teamNumber == 1 then
                 if teamNumber == 1 then
@@ -73,7 +75,7 @@ if Server then
             if teamOk then
                 local typeOk = false
                 
-                if self.teamType == 0 or nil then           // triggers all the time
+                if self.teamType == 0 or self.teamType == nil then           // triggers all the time
                     typeOk = true                
                 elseif self.teamType == 1 then              // trigger once per player
                     local playerId = enterEnt:GetId()
@@ -94,7 +96,18 @@ if Server then
             end
             
         end
+    end
+
+    function LogicTrigger:OnTriggerEntered(enterEnt, triggerEnt) 
+        if self.triggerStyle == 0 or self.triggerStyle == nil then
+            self:CheckTrigger(enterEnt)
+        end
+    end
         
+    function LogicTrigger:OnTriggerExited(exitEnt, triggerEnt)
+        if self.triggerStyle == 1 then
+            self:CheckTrigger(exitEnt)
+        end
     end
 
     function LogicTrigger:OnLogicTrigger(player)

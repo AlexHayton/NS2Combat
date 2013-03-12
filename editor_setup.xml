@@ -485,6 +485,7 @@
         <parent>signal_listener</parent>
         
         <parameter name="enabled" type="boolean" label="Trigger enabled" help="Will not kill when disabled." default="true"/>
+        <parameter name="damageOverTime" type="real" label="Damage over time" help="If set to any value greater than 0, this amount of damage will be applied per second." default="0"/>
         
     </class>
     
@@ -499,6 +500,7 @@
 			<max_distance>maxFalloff</max_distance>
 			<pitch>pitch</pitch>
 			<rolloff>falloffType</rolloff>
+			<type>positioning</type>
         </sound>    		
 	
 		<billboard>
@@ -895,6 +897,16 @@
             <choice label="Marine" value="1"/>
             <choice label="Alien" value="2"/>
 		</parameter>
+		<parameter name="teamType" type="choice" label="Trigger type" help="Can the trigger getting triggered only once, or everytime etc." default="0">
+            <choice label="All the time" value="0"/>
+            <choice label="Once per player" value="1"/>
+            <choice label="Only once" value="2"/>
+		</parameter>
+		<parameter name="triggerStyle" type="choice" label="Trigger style" help="When trigger, When the player enters, exits etc." default="0">
+            <choice label="OnEnter" value="0"/>
+            <choice label="OnExit" value="1"/>
+		</parameter>
+		<parameter name="coolDownTime" type="real" label="Cooldown time" help="The amount of seconds to wait after triggered until it can be triggered again." default="0" />
 		<parameter name="output1" type="string" label="Output1" help="Name of the triggered entity" default=""/>
 
     </class>
@@ -998,20 +1010,21 @@
 		<parameter name="startsOpened" type="boolean" label="Starts opened" help="Starts opened or closed (when triggered opens or closes)" default="true"/>
 		<parameter name="isDoor" type="boolean" label="Act like a door" help="Open and closes when a player comes near the moveable (when enabled = true, starts opened whill then ignored)." default="false"/>
 		<parameter name="enabled" type="boolean" label="enabled" help="Moveable will not start if its disabled (if not act like a door, this will be ignored)." default="true"/>
-		
-		<!-- Only up and down is working at the moment 
-        <parameter name="direction" type="choice" label="Direction" help="Direction the movable will move after closing (place it in the map at its closed position)" default="0">
+		<parameter name="moveSpeed" type="real" label="Move Speed" help="How fast the func_moveable will move." default="40.0"/>
+		<parameter name="direction" type="choice" label="Direction" help="Direction the movable will move after closing (place it in the map at its closed position). If you choose waypoint you have to place one func_train_waypoint and name it like the moveable." default="0">
             <choice label="Up" value="0"/>
             <choice label="Down" value="1"/>
             <choice label="Left" value="2"/>
 			<choice label="Right" value="3"/>
+			<choice label="WayPoint" value="4"/>
         </parameter>
-		-->
-		
+				
+		<!-- 
 		<parameter name="direction" type="choice" label="Direction" help="Direction the movable will move after closing (place it in the map at its closed position)" default="0">
             <choice label="Up" value="0"/>
-            <choice label="Down" value="1"/>
+            <choice label="Down" value="1"/>			
         </parameter>
+		-->
 
     </class>
 
@@ -1025,6 +1038,38 @@
         </model>
       
         <parameter name="name" type="string" label="name" help="Name of logic_multiplier which can be referenced by other entities" />
+		<parameter name="output1" type="string" label="Output1" help="Name of the triggered entity" default=""/>
+		<parameter name="output2" type="string" label="Output2" help="Name of the triggered entity" default=""/>
+		<parameter name="output3" type="string" label="Output3" help="Name of the triggered entity" default=""/>
+		<parameter name="output4" type="string" label="Output4" help="Name of the triggered entity" default=""/>
+		<parameter name="output5" type="string" label="Output5" help="Name of the triggered entity" default=""/>
+		<parameter name="output6" type="string" label="Output6" help="Name of the triggered entity" default=""/>
+		<parameter name="output7" type="string" label="Output7" help="Name of the triggered entity" default=""/>
+		<parameter name="output8" type="string" label="Output8" help="Name of the triggered entity" default=""/>
+		<parameter name="output9" type="string" label="Output9" help="Name of the triggered entity" default=""/>
+		<parameter name="output10" type="string" label="Outpu10" help="Name of the triggered entity" default=""/>
+
+    </class>
+	
+	<class name="logic_switch" placeable="true">	
+		
+        <model>
+            <file>models/system/editor/team_join.model</file>
+        </model>
+      
+        <parameter name="name" type="string" label="name" help="Name of logic_switch which can be referenced by other entities" />
+		
+		<parameter name="startOutput" type="choice" label="StartOutput" help="The first output that will be triggered" default="0">
+            <choice label="Output1" value="0"/>
+            <choice label="Random" value="1"/>
+        </parameter>
+		
+		<parameter name="switchType" type="choice" label="Switch type" help="Switch behavior of the outputs after trigger. If you put only some Outputs in, it will skip the empty one." default="0">
+            <choice label="Forwards" value="0"/>
+			<choice label="Backwars" value="1"/>
+            <choice label="Random" value="2"/>
+        </parameter>
+		
 		<parameter name="output1" type="string" label="Output1" help="Name of the triggered entity" default=""/>
 		<parameter name="output2" type="string" label="Output2" help="Name of the triggered entity" default=""/>
 		<parameter name="output3" type="string" label="Output3" help="Name of the triggered entity" default=""/>
@@ -1151,6 +1196,18 @@
 
     </class>
 	
+	<class name="logic_emitter_destroyer" placeable="true">		
+
+		<model>
+            <file>models/system/editor/team_join.model</file>
+		</model>
+			
+        <parameter name="name" type="string" label="name" help="Name of logic_emitter which can be referenced by other entities" />
+        <parameter name="emitChannel" type="integer" label="Destroy channel" help="Only entities listening on this channel will be destroyed." default="0"/>
+        <parameter name="emitMessage" type="string" label="Destroy message" help="Only entities with this message will be destroyed." default="" />
+
+    </class>
+	
 	<class name="logic_listener" placeable="true">		
 
 		<model>
@@ -1170,6 +1227,7 @@
 		<parameter name="name" type="string" label="name" help="Name of logic_listener which can be referenced by other entities" />	
 		<parameter name="enabled" type="boolean" label="enabled" help="Worldtooltip will not show up if its disabled (can be triggered by other entities)" default="true"/>
 		<parameter name="tooltip" type="string" label="tooltip" help="Displays a tooltip to the player when looking at it (close range)." />
+		<parameter name="shownOnce" type="boolean" label="shown once" help="Show only once this message (per player)" default="false"/>
 		
         <model>
             <file>models/misc/attentionmark/attentionmark.model</file>
@@ -1184,10 +1242,40 @@
 		<!-- <parameter name="enabled" type="boolean" label="enabled" help="You can't weld it if it's disabled" default="true"/> -->
 		<parameter name="output1" type="string" label="Output" help="Name of the triggered entity (after killed)" default=""/>
 	
-	</class>
+	</class>	
+		
+	<class name="logic_waypoint" placeable="true">		
+
+		<model>
+            <file>models/system/editor/team_join.model</file>
+		</model>		
+        <parameter name="name" type="string" label="name" help="Name of logic_waypoint which can be referenced by other entities" />
+		<parameter name="type" type="choice"  label="Type"  default="0" help="Type of the Waypoint">
+            <choice label="Move" value="0"/>
+            <choice label="Attack" value="1"/>
+			<choice label="Weld" value="2"/> 
+            <!-- <choice label="Build" value="3"/>-->
+		</parameter>
+		<parameter name="output1" type="string" label="Output1" help="Name of the triggered entity (after reaching the waypoint)" default=""/>
+
+    </class>
 	
+	<class name="logic_give_item" placeable="true">		
 
-
+		<model>
+            <file>models/system/editor/team_join.model</file>
+		</model>		
+        <parameter name="name" type="string" label="name" help="Name of logic_give_item which can be referenced by other entities" />
+		<parameter name="type" type="choice"  label="Type"  default="0" help="Type of the item">
+            <choice label="Axe" value="0"/>
+            <choice label="Welder" value="1"/>
+            <choice label="Pistol" value="2"/>
+			<choice label="Rifle" value="3"/>
+			<choice label="Rifle, Pistol, Axe" value="4"/>
+			<choice label="Armor-Suit (HUD)" value="5"/>
+		</parameter>
+		
+    </class>
 	
 		    <!-- Timed Door-->
     <class name="func_door" placeable="true">

@@ -41,7 +41,7 @@ overridePlayerUpdateClientEffects = Class_ReplaceMethod( "Player", "UpdateClient
                 local target = GetEntitiesWithinRangeInView("LogicWorldTooltip", 2, player)
 
                 if target and target[1] and target[1].GetTooltipText then
-                    info = target[1]:GetTooltipText()
+                    info = target[1]:GetTooltipText(player)
                     if info then
                         player.gEemToolTipScript:UpdateData("", "", 0, "", "", info, 0)                
                     end

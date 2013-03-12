@@ -16,6 +16,7 @@ LogicWorldTooltip.kMapName            = "logic_worldtooltip"
 local networkVars = { 
     tooltipText = string.format("string (%d)", 256),
     enabled = "boolean",
+    shownOnce = "boolean",
 }
 
 AddMixinNetworkVars(LogicMixin, networkVars)
@@ -32,14 +33,35 @@ function LogicWorldTooltip:OnInitialized()
     if Server then
         InitMixin(self, LogicMixin)     
     end
-    
+    self.shownPlayers = {}
     self:SetUpdates(false)   
 end
 
-function LogicWorldTooltip:GetTooltipText()
+function LogicWorldTooltip:Reset()
+    self.shownPlayers = {}  
+end
+
+function LogicWorldTooltip:GetTooltipText(player)    
     if self.enabled then
-        local string = Locale.ResolveString(self.tooltipText)
-        return SubstituteBindStrings(string)
+        local showOk = true
+        local playerId = player:GetId()
+        if self.shownOnce then 
+            for i, shownPlayerId in ipairs(self.shownPlayers) do            
+                if shownPlayerId == playerId  then
+                    showOk = false
+                    break
+                end
+            end
+        end
+        
+        if showOk then
+            local string = Locale.ResolveString(self.tooltipText)
+            table.insertunique(self.shownPlayers, playerId )
+            
+            return SubstituteBindStrings(string)
+        else
+            return nil
+        end
     end
 end 
 

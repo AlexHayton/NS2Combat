@@ -16,6 +16,7 @@ Script.Load("lua/ExtraEntitiesMod/eem_Utility.lua")
 // Class overrides here
 Script.Load("lua/ExtraEntitiesMod/eem_MovementModifier.lua")
 Script.Load("lua/ExtraEntitiesMod/PathingUtility_Modded.lua")
+Script.Load("lua/ExtraEntitiesMod/OrdersMixin_Modded.lua")
 Script.Load("lua/ExtraEntitiesMod/eem_ParticleEffect.lua")
 Script.Load("lua/ExtraEntitiesMod/eem_Player.lua")
 
@@ -40,6 +41,9 @@ Script.Load("lua/ExtraEntitiesMod/LogicEmitterDestroyer.lua")
 Script.Load("lua/ExtraEntitiesMod/LogicListener.lua")
 Script.Load("lua/ExtraEntitiesMod/LogicButton.lua")
 Script.Load("lua/ExtraEntitiesMod/LogicWorldTooltip.lua")
+Script.Load("lua/ExtraEntitiesMod/LogicWaypoint.lua")
+Script.Load("lua/ExtraEntitiesMod/LogicGiveItem.lua")
+
 Script.Load("lua/ExtraEntitiesMod/MapSettings.lua")
 Script.Load("lua/ExtraEntitiesMod/NobuildArea.lua")
 
