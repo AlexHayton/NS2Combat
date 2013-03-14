@@ -202,5 +202,6 @@ kStatisticsURL = ""
 kEMPBlastEnergyDamage = 100
 
 // Cooldown for buying exo/onos
-kHeavyTechCooldown = 120
+// disabled this for better balance
+kHeavyTechCooldown = 0
 
