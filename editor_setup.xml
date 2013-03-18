@@ -1117,6 +1117,16 @@
         <parameter name="name" type="string" label="name" help="Name of logic_button which can be referenced by other entities" />
 		<parameter name="enabled" type="boolean" label="enabled" help="You can't press it if its disabled" default="true"/>
 		<parameter name="coolDownTime" type="real" label="Cooldown time" help="The amount of seconds to wait after the button is pressed until it can be pressed again." default="0" />
+		<parameter name="teamNumber" type="choice" label="Team Number" help="Will only be triggered by this team." default="0">
+            <choice label="Both teams" value="0"/>
+            <choice label="Marine" value="1"/>
+            <choice label="Alien" value="2"/>
+		</parameter>
+		<parameter name="teamType" type="choice" label="Trigger type" help="Can the button pressed only once, or everytime etc." default="0">
+            <choice label="All the time" value="0"/>
+            <choice label="Once per player" value="1"/>
+            <choice label="Only once" value="2"/>
+		</parameter>
 		<parameter name="output1" type="string" label="Output" help="Name of the triggered entity (after pressed)" default=""/>
 
 
@@ -1247,7 +1257,7 @@
 	<class name="logic_waypoint" placeable="true">		
 
 		<model>
-            <file>models/system/editor/team_join.model</file>
+            <file>models/system/editor/waypoint.model</file>
 		</model>		
         <parameter name="name" type="string" label="name" help="Name of logic_waypoint which can be referenced by other entities" />
 		<parameter name="type" type="choice"  label="Type"  default="0" help="Type of the Waypoint">
@@ -1308,9 +1318,79 @@
         </model>
 
 		<parameter name="viewDistance" type="real" label="View distance" help="This value changes how far you can see in the map before entities, players etc. disappear (140 should be a good value to see everything in the map)" default="40"/>
-		<parameter name="fallDmg" type="boolean" label="Fall damage" help="This will enable fall damage" default="false"/>
-
+		<parameter name="fallDmg" type="boolean" label="Fall damage"  
     </class>
+	
+		<!-- NPCs -->	
 
+	<class name="npc_wave_manager" placeable="true">
+		<model>
+			<file>models/system/editor/player_spawn.model</file>
+		</model>
+		
+		<parameter name="name" type="string" label="name" help="Name of npc_manager which can be referenced by other entities"/>
+		<parameter name="team" type="choice"  label="Team"  default="1" help="Team">
+            <choice label="Neutral" value="0"/>
+            <choice label="Marine" value="1"/>
+			<choice label="Alien/Enemy" value="2"/>
+		</parameter>
+		<parameter name="waveTime" type="real" label="Wave time" help="Time till next wave starts" default="20"/>
+		<parameter name="maxWaveNumber" type="real" label="Wave number" help="How many waves will spawn" default="5"/>
+		<parameter name="npcNumber" type="real" label="Numer of Spawning Npcs" help="How many npcs will spawn" default="5"/>
+		<parameter name="waypoint" type="string" label="Waypoint Name" help="Name of the waypoint the npcs should walk to (use logic_waypoint)" default=""/>
+
+	</class>		
+
+	<class name="npc_base" placeable="false">
+		<parameter name="name" type="string" label="name" help="Name of the npc (also shown in Game)"/>
+		<parameter name="team" type="choice"  label="Team"  default="1" help="Team">
+            <choice label="Neutral" value="0"/>
+            <choice label="Marine" value="1"/>
+			<choice label="Alien/Enemy" value="2"/>
+		</parameter>
+		<parameter name="startsActive" type="boolean" label="Starts active" help="Will only start after getting triggered. If invisible npc will be active and visible after trigger" default="false"/>
+	</class>
+
+	<class name="npc_spawner_marine" placeable="true">
+		<parent>npc_base</parent>
+		<model>
+			<file>models/marine/male/male.model</file>
+		</model>
+				
+		<parameter name="weapons" type="choice"  label="Starts with Weapon"  default="0" help="Start weapons of the npc.">
+            <choice label="Rifle, Pistol, Axe" value="0"/>
+            <choice label="Pistol, Axe" value="1"/>
+            <choice label="Axe" value="2"/>
+			<choice label="GrenadeLuncher" value="3"/>
+			<choice label="FlameThrower" value="4"/>
+			<choice label="Nothing" value="5"/>
+		</parameter>
+
+    </class>	
+	
+	<class name="npc_spawner_marine_exo" placeable="true">
+		<parent>npc_base</parent>
+		<model>
+			<file>models/marine/exosuit/exosuit_cm.model</file>
+		</model>
+				
+		<parameter name="weapons" type="choice"  label="Starts with Weapon"  default="0" help="Start weapons of the npc.">
+            <choice label="Claw, Minigun" value="0"/>
+            <choice label="Minigun, Minigun" value="1"/>
+            <choice label="Claw, Railgun" value="2"/>
+			<choice label="Railgun, Railgun" value="3"/>
+		</parameter>
+
+    </class>	
+	
+	<class name="npc_spawner_skulk" placeable="true">
+		<parent>npc_base</parent>
+		<model>
+			<file>models/alien/skulk/skulk.model</file>
+		</model>
+
+    </class>	
+	
+	
 </classes>
 
