@@ -63,7 +63,8 @@ function LogicWaypoint:OnLogicTrigger(player)
             orderId = kTechId.Build
         end
         
-        player:GiveOrder(orderId, param, self:GetOrigin())
+        player:GiveOrder(orderId, param, self:GetOrigin())            
+        player.mapWaypoint = param
     end
     
 end

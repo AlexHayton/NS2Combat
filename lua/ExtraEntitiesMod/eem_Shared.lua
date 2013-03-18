@@ -47,6 +47,16 @@ Script.Load("lua/ExtraEntitiesMod/LogicGiveItem.lua")
 Script.Load("lua/ExtraEntitiesMod/MapSettings.lua")
 Script.Load("lua/ExtraEntitiesMod/NobuildArea.lua")
 
+// npc things
+
+Script.Load("lua/ExtraEntitiesMod/npc/NpcSpawner.lua")
+Script.Load("lua/ExtraEntitiesMod/npc/NpcSpawnerMarine.lua")
+Script.Load("lua/ExtraEntitiesMod/npc/NpcSpawnerMarineExo.lua")
+Script.Load("lua/ExtraEntitiesMod/npc/NpcSpawnerSkulk.lua")
+
+Script.Load("lua/ExtraEntitiesMod/npc/NpcWaveManager.lua")
+
+
 // old ns2 alpha entity, made as logic
 Script.Load("lua/ExtraEntitiesMod/LogicTarget.lua")
 

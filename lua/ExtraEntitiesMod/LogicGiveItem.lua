@@ -38,7 +38,9 @@ function LogicGiveItem:OnLogicTrigger(player)
             table.insert(items, Axe.kMapName)        
         elseif self.type == 1 then
             // due to a bug we need to get axe first
-            table.insert(items, Axe.kMapName) 
+            if not player:GetWeaponInHUDSlot(3) then
+                table.insert(items, Axe.kMapName) 
+            end
             table.insert(items, Welder.kMapName)        
         elseif self.type == 2 then
             table.insert(items, Pistol.kMapName)

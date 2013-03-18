@@ -12,8 +12,8 @@ LogicMixin = CreateMixin( LogicMixin )
 LogicMixin.type = "Logic"
 
 // table with all logic entities in it
-local kLogicEntityList = {}
-local kLogicEntitiesSearched = false
+kLogicEntityList = {}
+kLogicEntitiesSearched = false
 
 LogicMixin.expectedMixins =
 {
@@ -60,22 +60,30 @@ function LogicMixin:__initmixin()
     end
 end
 
+
 function LogicMixin:Reset() 
     self.enabled = self.initialEnabled
     kLogicEntitiesSearched = false
 end
 
+
+function LogicMixin:GetLogicEntityWithName(name) 
+    local entity = nil
+    for l, logicEntity in ipairs(kLogicEntityList) do
+        if name == logicEntity.name then
+            entity = Shared.GetEntity(logicEntity.id)
+            break
+        end
+    end   
+    return entity
+end
+
+
 function LogicMixin:TriggerOutputs(player, number)   
  
     local retryTriggerEntities = {}
     for i, name in ipairs(self:GetOutputNames(number)) do 
-        local entity
-        for l, logicEntity in ipairs(kLogicEntityList) do
-            if name == logicEntity.name then
-                entity = Shared.GetEntity(logicEntity.id)
-                break
-            end
-        end    
+        local entity = self:GetLogicEntityWithName(name)
         if entity then
             if  HasMixin(entity, "Logic") then
                 entity:OnLogicTrigger(player)

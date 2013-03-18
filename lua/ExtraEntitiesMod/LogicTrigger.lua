@@ -47,6 +47,7 @@ end
 function LogicTrigger:Reset()
     self.triggered = false
     self.triggerPlayerList = {}
+    self.timeLastTriggered = 0
 end
 
 if Server then
