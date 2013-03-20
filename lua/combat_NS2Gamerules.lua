@@ -124,9 +124,6 @@ end
 
 function CombatNS2Gamerules:OnCreate_Hook(self)
 
-	// Add the timed callback mixin.
-    InitMixin(self, TimedCallbackMixin)
-
 	self.UpgradeCounts = {}
 	self.UpgradeCounts[kTeam1Index] = {}
 	for index, upgrade in ipairs(GetAllUpgrades(kTeam1Index)) do

@@ -93,7 +93,6 @@ function TrainMixin:OnUpdate(deltaTime)
             self:UpdatePosition(deltaTime)
             self:MoveTrigger()
             if not self.waiting  and self:GetPushPlayers() then
-                self:SetOldOrigin(self:GetOrigin())
                 self:SetOldAngles(self:GetAngles())
                 self:MovePlayersInTrigger(deltaTime)
 
@@ -113,9 +112,9 @@ function TrainMixin:Reset()
     
 end
 
-function TrainMixin:SetOldOrigin(origin)
+function TrainMixin:SetOrigin(origin)
     // locally save the old origin   
-    //Entity.SetOrigin(self, origin)
+    Entity.SetOrigin(self, origin)
     if not self.oldOrigin then
         self.oldOrigin = self:GetOrigin()  
     end

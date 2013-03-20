@@ -1318,7 +1318,7 @@
         </model>
 
 		<parameter name="viewDistance" type="real" label="View distance" help="This value changes how far you can see in the map before entities, players etc. disappear (140 should be a good value to see everything in the map)" default="40"/>
-		<parameter name="fallDmg" type="boolean" label="Fall damage"  
+		<parameter name="fallDmg" type="boolean" label="Fall damage" default="false" />
     </class>
 	
 		<!-- NPCs -->	

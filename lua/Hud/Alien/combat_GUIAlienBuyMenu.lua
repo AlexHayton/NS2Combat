@@ -140,9 +140,9 @@ function CombatGUIAlienBuyMenu:_InitializeUpgradeButtons_Hook(self)
             local index = nil
             local columns = 12
             
-            if techId == 167 then
+            if techId == 169 then
                 index = 95 
-            elseif techId == 168 then
+            elseif techId == 170 then
                 index = 77
             else 
                 iconX, iconY = GetMaterialXYOffset(techId, false)
