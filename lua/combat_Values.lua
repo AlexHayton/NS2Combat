@@ -68,6 +68,8 @@ kScanRadius = 40
 // Make these less "spammy"
 kEMPTimer = 30
 kInkTimer = 30
+// reduce ink amount a bit
+ShadeInk.kShadeInkDisorientRadius = 9
 kCombatTauntCheckInterval = 4
 
 // fast reload
