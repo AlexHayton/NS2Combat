@@ -64,9 +64,7 @@ end
 
 // let the player chat, but but nove
 function DevouredPlayer:OverrideInput(input)
-
-    AdjustInputForInversion(input)
-    
+  
     ClampInputPitch(input)
     
     // Completely override movement and commands
