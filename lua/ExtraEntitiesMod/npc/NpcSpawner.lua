@@ -27,6 +27,9 @@ if Server then
 
     function NpcSpawner:OnInitialized()
         InitMixin(self, LogicMixin) 
+        if self.spawnDirectly then
+            self:Spawn()
+        end        
     end    
         
     function NpcSpawner:GetTechId()
@@ -74,6 +77,18 @@ if Server then
     end
 
     function NpcSpawner:Spawn()
+    end
+    
+    function NpcSpawner:SetWayPoint(entity)
+        local waypoint = nil
+        if self.waypoint then
+            waypoint = self:GetLogicEntityWithName(self.waypoint)
+        end
+        
+        if waypoint then
+            entity:GiveOrder(kTechId.Move , waypoint:GetId(), waypoint:GetOrigin(), nil, true, true)
+            entity.mapWaypoint = waypoint:GetId()
+        end        
     end
     
 end

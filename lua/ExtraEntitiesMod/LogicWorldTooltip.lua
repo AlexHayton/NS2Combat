@@ -66,11 +66,7 @@ function LogicWorldTooltip:GetTooltipText(player)
 end 
 
 function LogicWorldTooltip:OnLogicTrigger()
-    if self.enabled then
-        self.enabled = false 
-    else
-        self.enabled = true
-    end     
+	self:OnTriggerAction()
 end 
 
 

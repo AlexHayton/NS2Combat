@@ -42,21 +42,21 @@ end
 
 local function InitModel(self)
 
-    local modelName = kModelNameDefault
+    self.model = kModelNameDefault
     if self.clean then
-        modelName = kModelNameClean
+        self.model = kModelNameClean
     end
     
-    self:SetModel(modelName, kDoorAnimationGraph)
+    //self:SetModel(modelName, kDoorAnimationGraph)
        
 end
 
 function FuncDoor:OnInitialized()
     // Don't call Door OnInit, we want to create or own Model
     ScriptActor.OnInitialized(self) 
-    InitModel(self)
-    
+    InitModel(self)    
     InitMixin(self, ScaledModelMixin)
+    
 	self:SetScaledModel(self.model)
     
     if self.startsOpen then
@@ -75,27 +75,40 @@ function FuncDoor:OnInitialized()
         self.AddedToMesh = true
         self:SetPhysicsType(PhysicsType.Kinematic)
         self:SetPhysicsGroup(PhysicsGroup.BigStructuresGroup)
+        //Pathing.CreatePathingObject(self.model, self:GetCoords())
     end
 
 end
 
+function FuncDoor:GetResetsPathing()
+    return true
+end
+
+function FuncDoor:GetExtents()
+    local min, max = self:GetModelExtents()
+    return max
+end
+
 function FuncDoor:OnUpdate(deltaTime) 
-    local state = self:GetState()
-    if state and (state == Door.kState.Welded or state == Door.kState.Locked) then
-        if not self.AddedToMesh then
-            self:AddToMesh()
-            self.AddedToMesh = true
-        end
-    else
-        if self.AddedToMesh then
-            for obstacle, v in pairs(gAllObstacles) do
-                if obstacle == self then
-                    obstacle:RemoveFromMesh()
-                end
-            end                
-            self.AddedToMesh = false
-        end
-    end
+	if GetGamerules() and GetGamerules():GetGameStarted() then
+		local state = self:GetState()
+		if state and (state == Door.kState.Welded or state == Door.kState.Locked) then
+			if not self.AddedToMesh then
+				self:AddToMesh()
+                Pathing.SetPolyFlags(self:GetOrigin(), self:GetExtents(), Pathing.PolyFlag_Closed)
+				self.AddedToMesh = true
+			end
+		else
+			if self.AddedToMesh then
+				for obstacle, v in pairs(gAllObstacles) do
+					if obstacle == self then
+						obstacle:RemoveFromMesh()
+					end
+				end                
+				self.AddedToMesh = false
+			end
+		end
+	end
 end
 
 function FuncDoor:Reset() 
@@ -106,8 +119,8 @@ function FuncDoor:Reset()
     else
         self:SetState(Door.kState.Welded)
     end
-  
-    InitModel(self)
+	self.AddedToMesh = false
+    //InitModel(self)
 end
 
 function FuncDoor:OnUse(player, elapsedTime)

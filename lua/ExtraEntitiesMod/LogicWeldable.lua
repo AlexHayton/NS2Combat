@@ -112,11 +112,7 @@ end
 
 
 function LogicWeldable:OnLogicTrigger(player)
-    if self.enabled then
-        self.enabled = false 
-    else
-        self.enabled = true
-    end       
+	self:OnTriggerAction()     
 end
 
 

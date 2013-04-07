@@ -39,7 +39,10 @@ if Server then
         // destroy all weapons and give them our weapons
         entity:DestroyWeapons()        
         
-        local items = {}     
+        local items = {}             
+        
+        // always include builder
+        table.insert(items, Builder.kMapName)
       
         if self.weapons == 0 then
             table.insert(items, Pistol.kMapName)
@@ -54,12 +57,14 @@ if Server then
             table.insert(items, GrenadeLauncher.kMapName)
         elseif self.weapons == 4 then
             table.insert(items, Flamethrower.kMapName)
-        end        
+        end   
         
         for i, item in ipairs(items) do
             entity:GiveItem(item)
         end
-        
+
+        self:SetWayPoint(entity)        
+
     end
     
 end

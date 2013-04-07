@@ -35,21 +35,13 @@ overridePlayerUpdateClientEffects = Class_ReplaceMethod( "Player", "UpdateClient
                 player.gEemToolTipScript = GetGUIManager():CreateGUIScript("ExtraEntitiesMod/GUIEemHint")
             end
 
-            // Hide in ready room
-            if player:GetIsOnPlayingTeam() then
+            local target = GetEntitiesWithinRangeInView("LogicWorldTooltip", 2, player)
 
-                local target = GetEntitiesWithinRangeInView("LogicWorldTooltip", 2, player)
-
-                if target and target[1] and target[1].GetTooltipText then
-                    info = target[1]:GetTooltipText(player)
-                    if info then
-                        player.gEemToolTipScript:UpdateData("", "", 0, "", "", info, 0)                
-                    end
+            if target and target[1] and target[1].GetTooltipText then
+                info = target[1]:GetTooltipText(player)
+                if info then
+                    player.gEemToolTipScript:UpdateData("", "", 0, "", "", info, 0)                
                 end
-                
-            else
-                // Don't show tooltip in ready room
-                player.gEemToolTipScript:FadeOut()
             end
 
         end

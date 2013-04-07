@@ -846,9 +846,21 @@
 	<!-- ExtraEntites like teleporter, train etc. -->
 	<!-- **************************************** -->
 	
+	<!-- base entity for entities that can be switched on and off -->
+	<class name="logic_toggle_base" placeable="false">
+		<parameter name="enabled" type="boolean" label="Entity enabled" help="Will not work when disabled (need to be triggered first" default="true"/>
+		<parameter name="onTriggerAction" type="choice" label="On getting triggered" help="What should the entity do when getting triggered" default="0">
+            <choice label="Disable/Enable" value="0"/>
+            <choice label="Stay enabled" value="1"/>
+			<choice label="Stay disabled" value="2"/>
+        </parameter>
+	</class>
+	
+	
     <!-- Teleport trigger -->
     <class name="teleport_trigger" placeable="true">
-	<parent>trigger</parent>
+		<parent>trigger</parent>
+		<parent>logic_toggle_base</parent>
         
         <cone_radius>
 			<radius>distance</radius>
@@ -858,7 +870,6 @@
         <parameter name="destination" type="string" label="Destination Name" help="Name of the destination of the TeleportTrigger (need to be a TeleportTrigger, too." default=""/>    
         <parameter name="exitonly" type="boolean" label="Exit only" help="This teleporter is only a Exit (Destination Name will be ignored)." default="false"/>
         <parameter name="waitDelay" type="real" label="Wait Delay" help="Delay how long a Player has to wait before he can use the Teleporter exit (in sec.)." default="2"/>
-        <parameter name="enabled" type="boolean" label="Trigger enabled" help="Will not teleport when disabled." default="true"/>
 		<parameter name="clearVelocity" type="boolean" label="Clear velocity" help="This will elimante the velocity of the player so he won't loses his speed he got as he teleportet. Set this to the in teleporter, not to the exit." default="false"/>
 		<parameter name="teamNumber" type="choice" label="Team Number" help="Only this team can use the teleporter." default="0">
             <choice label="Both teams" value="0"/>
@@ -874,14 +885,14 @@
     <!-- Push trigger -->
     <class name="push_trigger" placeable="true">
         <parent>trigger</parent>
-        
+		<parent>logic_toggle_base</parent>
+		
         <cone_radius>
 			<radius>distance</radius>
 			<angle>angle</angle>
 		</cone_radius>
 
         <parameter name="pushForce" type="real" label="Push Force" help="" default="30"/>
-        <parameter name="enabled" type="boolean" label="Trigger enabled" help="Will not push when disabled." default="true"/>
         <parameter name="distance" type="distance" label = "Distance" default="3.0" help="Just to show the direction in the Editor"/>
         <parameter name="angle" type="angle" label = "Angles" default="30.0" help="Just to show the direction in the Editort"/>
 
@@ -890,8 +901,8 @@
 	    <!-- Logic trigger -->
     <class name="logic_trigger" placeable="true">
         <parent>trigger</parent>
+		<parent>logic_toggle_base</parent>
         
-        <parameter name="enabled" type="boolean" label="Trigger enabled" help="Will not trigger when disabled." default="true"/>
 		<parameter name="teamNumber" type="choice" label="Team Number" help="Will only be triggered by this team." default="0">
             <choice label="Both teams" value="0"/>
             <choice label="Marine" value="1"/>
@@ -916,13 +927,14 @@
     <class name="nobuild_area" placeable="true">
         <parent>trigger</parent>
         
-        <parameter name="enabled" type="boolean" label="Trigger enabled" help="Will not trigger when disabled." default="true"/>
+        <!-- <parameter name="enabled" type="boolean" label="Trigger enabled" help="Will not trigger when disabled." default="true"/> -->
 
     </class>
 	
 	
     <!-- Func Train -->
     <class name="func_train" placeable="true">
+		<parent>logic_toggle_base</parent>
         
         <cone_radius>
 			<radius>distance</radius>
@@ -949,7 +961,6 @@
 		
 		<parameter name="moveSpeed" type="real" label="Move Speed" help="How fast can the train drive." default="3.0"/>
 		<parameter name="drivable" type="boolean" label="drivable" help="Train will not be drivable (automatic train)" default="true"/>
-		<parameter name="enabled" type="boolean" label="enabled" help="Train will not drive if its disabled" default="true"/>
 		<parameter name="autoStart" type="boolean" label="Auto-Start" help="Train will start driving by its own" default="false"/>
 		<parameter name="distance" type="distance" label = "Distance" default="3.0" help="Angle from the teleporter-output"/>
         <parameter name="angle" type="angle" label = "Angles" default="30.0" help="Angle from the teleporter-output"/>
@@ -994,7 +1005,8 @@
 	
 		<!-- Func Train Waypoints -->
 	<class name="func_moveable" placeable="true">		
-	
+		<parent>logic_toggle_base</parent>
+		
 		<model>
 			<file>model</file>
 			<scale>scale</scale>
@@ -1009,7 +1021,6 @@
         <parameter name="name" type="string" label="name" help="Name of logic_weldable which can be referenced by other entities" />		
 		<parameter name="startsOpened" type="boolean" label="Starts opened" help="Starts opened or closed (when triggered opens or closes)" default="true"/>
 		<parameter name="isDoor" type="boolean" label="Act like a door" help="Open and closes when a player comes near the moveable (when enabled = true, starts opened whill then ignored)." default="false"/>
-		<parameter name="enabled" type="boolean" label="enabled" help="Moveable will not start if its disabled (if not act like a door, this will be ignored)." default="true"/>
 		<parameter name="moveSpeed" type="real" label="Move Speed" help="How fast the func_moveable will move." default="40.0"/>
 		<parameter name="direction" type="choice" label="Direction" help="Direction the movable will move after closing (place it in the map at its closed position). If you choose waypoint you have to place one func_train_waypoint and name it like the moveable." default="0">
             <choice label="Up" value="0"/>
@@ -1082,27 +1093,49 @@
 		<parameter name="output10" type="string" label="Outpu10" help="Name of the triggered entity" default=""/>
 
     </class>
+	
+	<class name="logic_reset" placeable="true">	
+		
+        <model>
+            <file>models/system/editor/team_join.model</file>
+        </model>
+      
+        <parameter name="name" type="string" label="name" help="Name of logic_reset which can be referenced by other entities" />
+		<parameter name="output1" type="string" label="Output1" help="Name of the entity that should be resetted" default=""/>
+		<parameter name="output2" type="string" label="Output2" help="Name of the entity that should be resetted" default=""/>
+		<parameter name="output3" type="string" label="Output3" help="Name of the entity that should be resetted" default=""/>
+		<parameter name="output4" type="string" label="Output4" help="Name of the entity that should be resetted" default=""/>
+		<parameter name="output5" type="string" label="Output5" help="Name of the entity that should be resetted" default=""/>
+		<parameter name="output6" type="string" label="Output6" help="Name of the entity that should be resetted" default=""/>
+		<parameter name="output7" type="string" label="Output7" help="Name of the entity that should be resetted" default=""/>
+		<parameter name="output8" type="string" label="Output8" help="Name of the entity that should be resetted" default=""/>
+		<parameter name="output9" type="string" label="Output9" help="Name of the entity that should be resetted" default=""/>
+		<parameter name="output10" type="string" label="Outpu10" help="Name of the entity that should be resetted" default=""/>
+
+    </class>
 
 	
 	<class name="logic_timer" placeable="true">	
+		<parent>logic_toggle_base</parent>
 		
         <model>
             <file>models/system/editor/team_join.model</file>
         </model>
       
         <parameter name="name" type="string" label="name" help="Name of logic_timer which can be referenced by other entities" />
-		<parameter name="enabled" type="boolean" label="enabled" help="Timer will not start if its disabled" default="true"/>
 		<parameter name="waitDelay" type="real" label="Wait Delay" help="How long the train should wait here in seconds." default="0"/>
-		<parameter name="triggerAction" type="choice" label="On Trigger action" help="What should the timer do when getting triggered ? (If the trigger is disabled at start, it will be enabled even if you choice restart)" default="0">
-            <choice label="Disable/Enable" value="0"/>
-            <choice label="Restart" value="1"/>
+		<parameter name="onTimeAction" type="choice" label="On Time action" help="What should the timer do after after triggered the output" default="0">
+            <choice label="Disable (need re-trigger)" value="0"/>
+			<choice label="Reset (editor state)" value="1"/>
+            <choice label="Restart (restarts timing)" value="2"/>
         </parameter>
 		<parameter name="output1" type="string" label="Output" help="Name of the triggered entity (after timer is 0)" default=""/>
 
     </class>
 	
 	<class name="logic_button" placeable="true">		
-
+		<parent>logic_toggle_base</parent>
+		
 		<model>
 			<file>model</file>
 			<scale>scale</scale>
@@ -1115,7 +1148,6 @@
 		
 		<parameter name="model" type="file" label="model" default="models/props/generic/terminals/generic_controlpanel_02.model" filter="*.model"/>		
         <parameter name="name" type="string" label="name" help="Name of logic_button which can be referenced by other entities" />
-		<parameter name="enabled" type="boolean" label="enabled" help="You can't press it if its disabled" default="true"/>
 		<parameter name="coolDownTime" type="real" label="Cooldown time" help="The amount of seconds to wait after the button is pressed until it can be pressed again." default="0" />
 		<parameter name="teamNumber" type="choice" label="Team Number" help="Will only be triggered by this team." default="0">
             <choice label="Both teams" value="0"/>
@@ -1174,7 +1206,8 @@
 	
 		
 	<class name="logic_weldable" placeable="true">		
-
+		<parent>logic_toggle_base</parent>	
+		
 		<model>
 			<file>model</file>
 			<scale>scale</scale>
@@ -1186,8 +1219,7 @@
         <parameter name="scale" type="vector" label="scale" default="1.0, 1.0, 1.0"/>
 		
 		<parameter name="model" type="file" label="model" default="models/props/generic/terminals/generic_controlpanel_01.model" filter="*.model"/>		
-        <parameter name="name" type="string" label="name" help="Name of logic_weldable which can be referenced by other entities" />
-		<parameter name="enabled" type="boolean" label="enabled" help="You can't weld it if it's disabled" default="true"/>
+        <parameter name="name" type="string" label="name" help="Name of logic_weldable which can be referenced by other entities" />	
 		<parameter name="weldTime" type="real" label="Weld time in seconds" default="20.0"/>
 		<parameter name="output1" type="string" label="Output" help="Name of the triggered entity (after welded)" default=""/>
 
@@ -1203,6 +1235,7 @@
         <parameter name="signalRange" type="distance" label="Emit radius" default="10" help="This is the maximum distance the signal will reach."/>
         <parameter name="emitChannel" type="integer" label="Emit channel" help="Only entities listening on this channel will receive the message." default="0"/>
         <parameter name="emitMessage" type="string" label="Emit message" help="The listening entity must respond to this message." default="" />
+		<!-- <parameter name="emitOnStart" type="boolean" label="Emit on Start" help="Will start the cinematic directly after loading the map." default="false"/> -->
 
     </class>
 	
@@ -1233,9 +1266,9 @@
 	
 	
 	<class name="logic_worldtooltip">	
-	
+		<parent>logic_toggle_base</parent>
+		
 		<parameter name="name" type="string" label="name" help="Name of logic_listener which can be referenced by other entities" />	
-		<parameter name="enabled" type="boolean" label="enabled" help="Worldtooltip will not show up if its disabled (can be triggered by other entities)" default="true"/>
 		<parameter name="tooltip" type="string" label="tooltip" help="Displays a tooltip to the player when looking at it (close range)." />
 		<parameter name="shownOnce" type="boolean" label="shown once" help="Show only once this message (per player)" default="false"/>
 		
@@ -1302,7 +1335,7 @@
         </size>
         <parameter name="scale" type="vector" label="scale" default="1.0, 1.0, 1.0"/>
      
-		<parameter name="name" type="string" label="name" help="Name of logic_timer which can be referenced by other entities"/>
+		<parameter name="name" type="string" label="name" help="Name of func_door which can be referenced by other entities"/>
 		<parameter name="startsOpen" type="boolean" label="Starts open" help="Starts open and will be locked after triggering." default="false"/>
 		<parameter name="stayOpen" type="boolean" label="Stay open" help="Stays open after unlocking." default="false"/>
 		<parameter name="clean" type="boolean" label="Uses the alternate clean version of the door model" default="false"/>
@@ -1334,11 +1367,20 @@
             <choice label="Marine" value="1"/>
 			<choice label="Alien/Enemy" value="2"/>
 		</parameter>
+		<parameter name="class" type="choice"  label="Spawning class"  default="0">
+            <choice label="Skulk" value="0"/>
+            <choice label="Gorge" value="1"/>
+            <choice label="Lerk" value="2"/>
+			<choice label="Fade" value="3"/>
+			<choice label="Onos" value="4"/>
+			<choice label="Marine" value="5"/>			
+		</parameter>
 		<parameter name="waveTime" type="real" label="Wave time" help="Time till next wave starts" default="20"/>
 		<parameter name="maxWaveNumber" type="real" label="Wave number" help="How many waves will spawn" default="5"/>
 		<parameter name="npcNumber" type="real" label="Numer of Spawning Npcs" help="How many npcs will spawn" default="5"/>
 		<parameter name="waypoint" type="string" label="Waypoint Name" help="Name of the waypoint the npcs should walk to (use logic_waypoint)" default=""/>
-
+		<parameter name="output1" type="string" label="Output1" help="Name of the triggered entity (after wave ended)" default=""/>
+		
 	</class>		
 
 	<class name="npc_base" placeable="false">
@@ -1349,6 +1391,7 @@
 			<choice label="Alien/Enemy" value="2"/>
 		</parameter>
 		<parameter name="startsActive" type="boolean" label="Starts active" help="Will only start after getting triggered. If invisible npc will be active and visible after trigger" default="false"/>
+		<!-- <parameter name="spawnDirectly" type="boolean" label="Spawn directly" help="Will directly spawn the Npc (don't need to be triggered)" default="false"/> -->
 	</class>
 
 	<class name="npc_spawner_marine" placeable="true">
@@ -1389,8 +1432,8 @@
 			<file>models/alien/skulk/skulk.model</file>
 		</model>
 
-    </class>	
-	
+    </class>
+
 	
 </classes>
 

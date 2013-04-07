@@ -8,39 +8,32 @@
 // Entity for mappers to create teleporters
 
 Script.Load("lua/ExtraEntitiesMod/LogicMixin.lua")
-Script.Load("lua/PathingMixin.lua")
 
-class 'NobuildArea' (Trigger)
+class 'NobuildArea' (Entity)
 
 NobuildArea.kMapName = "nobuild_area"
 
 local networkVars =
 	{
-	    enabled = "boolean",
+	    scale = "vector",
+	    enabled = "boolean"
 	}
 	
 AddMixinNetworkVars(LogicMixin, networkVars)
 
 
 function NobuildArea:OnCreate() 
-    Trigger.OnCreate(self)
-    InitMixin(self, PathingMixin)
-    self:SetPathingFlags(Pathing.PolyFlag_NoBuild)
 end
 
 function NobuildArea:OnInitialized()
-
-    Trigger.OnInitialized(self)
     self.startEnabled = self.enabled
-
+    local extents = self.scale * 0.2
+    extents.y = math.max(extents.y, 1)
+    Pathing.SetPolyFlags(self:GetOrigin(), extents, Pathing.PolyFlag_NoBuild)
 end
 
 function NobuildArea:Reset()
     self.enabled = self.startEnabled  
-end
-
-function NobuildArea:GetIsFlying()
-    return false
 end
 
 function NobuildArea:OnLogicTrigger()

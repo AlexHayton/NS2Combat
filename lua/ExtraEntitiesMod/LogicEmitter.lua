@@ -10,7 +10,8 @@
 Script.Load("lua/ExtraEntitiesMod/LogicMixin.lua")
 Script.Load("lua/Mixins/SignalEmitterMixin.lua")
 
-class 'LogicEmitter' (Entity)
+// changed it to ScriptActor so it can be called from the "mappostload" function 
+class 'LogicEmitter' (ScriptActor)
 
 LogicEmitter.kMapName = "logic_emitter"
 
@@ -28,8 +29,15 @@ function LogicEmitter:OnInitialized()
     
     if Server then
         InitMixin(self, LogicMixin)
+
     end
     
+end
+
+function LogicEmitter:OnMapPostLoad()
+    if self.emitOnStart then
+        self:EmitSignal(self.emitChannel, self.emitMessage)
+    end
 end
 
 function LogicEmitter:SetEmitChannel(setChannel)
@@ -45,6 +53,12 @@ function LogicEmitter:SetEmitMessage(setMessage)
 
     assert(type(setMessage) == "string")    
     self.emitMessage = setMessage
+    
+end
+
+function LogicEmitter:OnDestroy()
+
+    Entity.OnDestroy(self)    
     
 end
 

@@ -79,24 +79,21 @@ end
 
 
 function LogicTimer:OnLogicTrigger(player)
-    if self.enabled then
-        if self.triggerAction == 1 then 
-            self.unlockTime = Shared.GetTime() + self.waitDelay
-        elseif self.triggerAction == 0 or self.triggerAction == nil then
-            self.enabled = false
-            self.unlockTime = nil
-        end
-    else
-        self.enabled = true
-        self:CheckTimer()
-    end       
+    self:OnTriggerAction()     
 end
 
 
 function LogicTimer:OnTime()
     self:TriggerOutputs()
     // to reset the timer
-    self:OnLogicTrigger()
+    if self.onTimeAction == 0 or self.onTimeAction == nil then
+        self.enabled = false
+        self.unlockTime = nil
+    elseif self.onTimeAction == 1 then
+        self:Reset()
+    elseif self.onTimeAction == 2 then 
+        self.unlockTime = Shared.GetTime() + self.waitDelay
+    end
 end
 
 Shared.LinkClassToMap("LogicTimer", LogicTimer.kMapName, networkVars)

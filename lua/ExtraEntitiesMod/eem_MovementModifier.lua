@@ -9,7 +9,7 @@ Script.Load("lua/Class.lua")
 
 // Overrides the function so its not printing "system" all the time
 local originalSkulkConstrainMoveVelocity
-SkulkConstrainMoveVelocity = Class_ReplaceMethod( "Skulk", "ConstrainMoveVelocity", 
+originalSkulkConstrainMoveVelocity = Class_ReplaceMethod( "Skulk", "ConstrainMoveVelocity", 
 	function(self, moveVelocity)
 
         // allow acceleration in air for skulks   

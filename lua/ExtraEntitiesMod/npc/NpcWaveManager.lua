@@ -37,13 +37,17 @@ if Server then
     end    
         
     function NpcManager:GetTechId()
-        return kTechId.Marine
+        return kTechId.Skulk
     end    
 
     function NpcManager:Reset() 
         self.active = false
         self.lastWaveSpawn = nil
         self.currentWave = 1
+    end
+    
+    function NpcManager:GetOutputNames()
+        return {self.output1}
     end
 
     function NpcManager:OnLogicTrigger(player) 
@@ -60,58 +64,58 @@ if Server then
                     waypoint = self:GetLogicEntityWithName(self.waypoint)
                 end
                 for i = 1, self.npcNumber do
-                    self:Spawn(waypoint)
+                    NpcUtility_Spawn(self:GetOrigin(), self:GetSpawnClass(), self:GetValues(), waypoint)
                 end
                 self.lastWaveSpawn = time
                 self.currentWave = self.currentWave + 1
                 
                 if self.currentWave >= self.maxWaveNumber then
                     // max wave reached
+                    self:TriggerOutputs()
                     self:Reset()
                 end
                 
             end
         end 
     end
-    
-    function NpcManager:GetClearSpawn()
-    
-        local extents = LookupTechData(self:GetTechId(), kTechDataMaxExtents) or Vector(1,1,1)
-
-        // search clear spawn pos
-        for index = 1, 50 do
-            position = GetRandomSpawnForCapsule(extents.y, extents.x , self:GetOrigin(), 0, 4, EntityFilterOne(self))
-            if position then
-                break                
-            end
-        end
-            
-        return position
+   
+    function NpcManager:GetSpawnClass()
+        if not self.spawnClass then
         
+            local class = Skulk.kMapName
+            if self.class then
+                if self.class == 1 then
+                    class = Gorge.kMapName
+                elseif self.class == 2 then
+                    class = Lerk.kMapName 
+                elseif self.class == 3 then
+                    class = Fade.kMapName
+                elseif self.class == 4 then
+                    class = Onos.kMapName
+                elseif self.class == 5 then
+                    class = Marine.kMapName
+                end
+            end
+                
+            self.spawnClass = class
+            return class
+            
+        else
+            return self.spawnClass
+        end
+
     end
+        
 
     function NpcManager:GetValues()
-        local spawnOrigin = self:GetClearSpawn()
         // values every npc needs for the npc mixin
         local values = { 
-                        origin = spawnOrigin,
                         angles = self:GetAngles(),
                         team = self.team,
                         startsActive = true,
                         isaNpc = true,
                         }
         return values
-    end
-
-    function NpcManager:Spawn(waypoint)
-        local values = self:GetValues() 
-        local entity = Server.CreateEntity(Skulk.kMapName, values)
-        // init the xp mixin for the new npc
-        InitMixin(entity, NpcMixin)
-        if waypoint then
-            entity:GiveOrder(kTechId.Move , waypoint:GetId(), waypoint:GetOrigin(), nil, true, true)
-            entity.mapWaypoint = waypoint:GetId()
-        end
     end
     
 end

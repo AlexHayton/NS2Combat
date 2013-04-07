@@ -31,10 +31,11 @@ if Server then
     end    
 
     function NpcSpawnerSkulk:Spawn()
-    local values = self:GetValues() 
-    local entity = Server.CreateEntity(Skulk.kMapName, values)
-	// init the xp mixin for the new npc
-	InitMixin(entity, NpcMixin)
+        local values = self:GetValues() 
+        local entity = Server.CreateEntity(Skulk.kMapName, values)
+        // init the xp mixin for the new npc
+        InitMixin(entity, NpcMixin)	
+        self:SetWayPoint(entity)
     end
     
 end

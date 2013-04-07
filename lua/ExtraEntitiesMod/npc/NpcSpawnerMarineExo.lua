@@ -49,6 +49,8 @@ if Server then
         local entity = Server.CreateEntity(Exo.kMapName, values)
         InitMixin(entity, NpcMixin)
         
+        self:SetWayPoint(entity)
+        
        
     end
     

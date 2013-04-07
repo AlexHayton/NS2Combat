@@ -190,11 +190,7 @@ end
 function TeleportTrigger:OnLogicTrigger()
 
     if not self.exitonly then
-        if self.enabled == true then
-            self.enabled = false
-        else
-            self.enabled = true
-        end
+		self:OnTriggerAction()
     end
     
 end

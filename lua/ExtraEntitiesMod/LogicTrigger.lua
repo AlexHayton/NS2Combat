@@ -112,11 +112,7 @@ if Server then
     end
 
     function LogicTrigger:OnLogicTrigger(player)
-        if self.enabled then
-            self.enabled = false 
-        else
-            self.enabled = true
-        end    
+		self:OnTriggerAction() 
     end
 
 end

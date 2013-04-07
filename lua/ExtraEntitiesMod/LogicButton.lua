@@ -128,11 +128,7 @@ function LogicButton:OnUse(player, elapsedTime, useAttachPoint, usePoint, useSuc
 end
 
 function LogicButton:OnLogicTrigger(player)
-    if self.enabled then
-        self.enabled = false 
-    else
-        self.enabled = true
-    end       
+	self:OnTriggerAction()   
 end
 
 
