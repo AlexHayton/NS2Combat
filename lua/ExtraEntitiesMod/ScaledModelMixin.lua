@@ -34,14 +34,18 @@ function ScaledModelMixin:__initmixin()
 end
 
 
-function ScaledModelMixin:SetScaledModel(model)
+function ScaledModelMixin:SetScaledModel(model, animationGraph)
     if model ~= nil then    
         Shared.PrecacheModel(model)    
-        local graphName = string.gsub(model, ".model", ".animation_graph")
-        if graphName then
-            Shared.PrecacheAnimationGraph(graphName)        
-        end
-        self:SetModel(model, graphName)  
+        //local graphName = string.gsub(model, ".model", ".animation_graph")
+        //if graphName then
+        //    Shared.PrecacheAnimationGraph(graphName)        
+        //end
+		if animationGraph then
+			self:SetModel(model, animationGraph)  
+		else
+			self:SetModel(model)
+		end
     end
 end
 

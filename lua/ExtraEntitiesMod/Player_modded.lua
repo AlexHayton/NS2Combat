@@ -11,6 +11,7 @@ Script.Load("lua/Player.lua")
 // original network variables are not deleted
 local networkVars =
 {
+    gravityTrigger = "entityid",
 }
 
 
@@ -18,6 +19,17 @@ local networkVars =
 // every player needs order mixin so we can give them orders etc
 Script.Load("lua/OrdersMixin.lua")
 AddMixinNetworkVars(OrdersMixin, networkVars)
+
+// override for the gravity trigger
+function Player:AdjustGravityForceOverride(gravity)
+    if self.gravityTrigger and self.gravityTrigger ~= 0 then
+        local ent = Shared.GetEntity(self.gravityTrigger)
+        if ent then
+            gravity = ent:GetGravityOverride(gravity) 
+        end
+    end
+    return gravity
+end
 
 local overridePlayerOnInitialized = Player.OnInitialized
 function Player:OnInitialized()

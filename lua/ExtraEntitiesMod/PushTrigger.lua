@@ -32,7 +32,11 @@ local function PushEntity(self, entity)
                 if GetHasRoomForCapsule(extents, entity:GetOrigin() + Vector(0, extents.y + 0.2, 0), CollisionRep.Default, PhysicsMask.AllButPCsAndRagdolls, nil, EntityFilterTwo(self, entity)) then                
                     entity:SetOrigin(entity:GetOrigin() + Vector(0,0.2,0)) 
                 end
-                entity.jumping = true                 
+                
+                entity.timeOfLastJump = Shared.GetTime()
+                entity.onGroundNeedsUpdate = true
+                entity.jumping = true  
+               
             end 
             
             entity.pushTime = -1

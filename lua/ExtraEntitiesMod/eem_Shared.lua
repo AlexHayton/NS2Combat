@@ -22,10 +22,10 @@ Script.Load("lua/ExtraEntitiesMod/Player_modded.lua")
 Script.Load("lua/ExtraEntitiesMod/Spit_modded.lua")
 Script.Load("lua/ExtraEntitiesMod/Team_modded.lua")
 Script.Load("lua/ExtraEntitiesMod/eem_ParticleEffect.lua")
-Script.Load("lua/ExtraEntitiesMod/eem_Player.lua")
 Script.Load("lua/ExtraEntitiesMod/Exo_modded.lua")
 Script.Load("lua/ExtraEntitiesMod/RagdollMixin_modded.lua")
 Script.Load("lua/ExtraEntitiesMod/NS2Utiliy_modded.lua")
+Script.Load("lua/ExtraEntitiesMod/BaseMoveMixin_modded.lua")
 
 // New classes
 Script.Load("lua/ExtraEntitiesMod/TeleportTrigger.lua")
@@ -55,8 +55,10 @@ Script.Load("lua/ExtraEntitiesMod/LogicReset.lua")
 Script.Load("lua/ExtraEntitiesMod/MapSettings.lua")
 Script.Load("lua/ExtraEntitiesMod/NobuildArea.lua")
 
-// npc things
+Script.Load("lua/ExtraEntitiesMod/GravityTrigger.lua")
 
+
+// npc things
 Script.Load("lua/ExtraEntitiesMod/npc/NpcUtility.lua")
 Script.Load("lua/ExtraEntitiesMod/npc/NpcSpawner.lua")
 Script.Load("lua/ExtraEntitiesMod/npc/NpcSpawnerMarine.lua")

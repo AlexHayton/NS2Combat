@@ -923,6 +923,14 @@
     </class>
 	
 	
+		<!-- gravity trigger -->
+    <class name="gravity_trigger" placeable="true">
+        <parent>trigger</parent>
+		<parent>logic_toggle_base</parent>
+		<parameter name="gravityForce" type="real" label="Gravity force" help="0 will be no gravity, -50 higher etc., +10 would work a bit like a push trigger. Allowed are values form -100 to 100" default="0" />
+
+    </class>
+	
 		    <!-- nobuild_area -->
     <class name="nobuild_area" placeable="true">
         <parent>trigger</parent>
@@ -1432,8 +1440,8 @@
 			<file>models/alien/skulk/skulk.model</file>
 		</model>
 
-    </class>
-
+    </class>	
+	
 	
 </classes>
 

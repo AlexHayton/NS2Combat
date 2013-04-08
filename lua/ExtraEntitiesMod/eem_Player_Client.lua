@@ -48,3 +48,16 @@ overridePlayerUpdateClientEffects = Class_ReplaceMethod( "Player", "UpdateClient
     end
 
 )
+
+local originalPlayerGetName = Player.GetName
+function Player:GetName(forEntity)
+    
+    local name = originalPlayerGetName(self, forEntity)
+    
+    if name == "No Name" then
+        name = " "
+    end
+    
+    return name
+    
+end

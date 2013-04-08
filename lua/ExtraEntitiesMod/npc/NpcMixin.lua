@@ -32,9 +32,8 @@ NpcMixin.kJumpRange = 2
 
 // update rates to increase performance
 NpcMixin.kUpdateRate = 0.01
-NpcMixin.kTargetUpdateRate = 0.5
+NpcMixin.kTargetUpdateRate = 1
 NpcMixin.kRangeUpdateRate = 2
-
 
 
 NpcMixin.expectedMixins =
@@ -165,7 +164,7 @@ end
 
 // that the bot act on allerts like follow me
 function NpcMixin:TriggerAlert(techId, entity)
-    Print("alarm")
+    //Print("alarm")
 end
 
 function NpcMixin:OnKill()
@@ -194,13 +193,12 @@ function NpcMixin:OnUpdate(deltaTime)
             self:GenerateMove(deltaTime)
             if self.active and updateOK and self:GetIsAlive() then
                 self:AiSpecialLogic()
-                // not working atm
                 self:CheckImportantEvents() 
                 self:ChooseOrder()
                 self:ProcessOrder()         
                 // Update order values for client
                 self:UpdateOrderVariables()                                 
-                self.timeLastUpdate = Shared.GetTime()
+                //self.timeLastUpdate = Shared.GetTime()
             end
             
             assert(self.move ~= nil)
@@ -234,20 +232,27 @@ end
 
 function NpcMixin:ChooseOrder()
 
-    // don't search for targets if neutral
-    if self:GetTeam() ~= 0 then
-        self:FindVisibleTarget()
-    end
+    if (not self.timeLastTargetCheck or (Shared.GetTime() - self.timeLastTargetCheck > NpcMixin.kTargetUpdateRate)) then
     
-    order = self:GetCurrentOrder()   
-    // try to reach the mapWaypoint
-    if not order and self.mapWaypoint then
-        local waypoint = Shared.GetEntity(self.mapWaypoint)
-        if waypoint then
-            self:GiveOrder(kTechId.Move , waypoint:GetId(), waypoint:GetOrigin(), nil, true, true)
-        end
-    end   
-    
+        local order = self:GetCurrentOrder()   
+
+        if not order or self.orderType ~= kTechId.Attack then    
+            // don't search for targets if neutral
+            if self:GetTeam() ~= 0 then
+                self:FindVisibleTarget()
+            end    
+            if self.mapWaypoint then
+                // try to reach the mapWaypoint
+                local waypoint = Shared.GetEntity(self.mapWaypoint)
+                if waypoint then
+                    self:GiveOrder(kTechId.Move , waypoint:GetId(), waypoint:GetOrigin(), nil, true, true)
+                end
+            end
+        end           
+                    
+        self.timeLastTargetCheck = Shared.GetTime() 
+        
+    end    
     
 end
 
@@ -257,7 +262,7 @@ function NpcMixin:ProcessOrder()
     local order = self:GetCurrentOrder() 
     if order then 
         self:UpdateOrderLogic()
-        local orderLocation = order:GetLocation()      
+        local orderLocation = self.orderPosition      
         if orderLocation then
             self:MoveToPoint(orderLocation)
         end
@@ -268,9 +273,10 @@ end
 
 function NpcMixin:UpdateOrderVariables()
     local order = self:GetCurrentOrder() 
-    if order then
+    if order and (not oldOrder or order ~= oldOrder) then 
         self.orderPosition = Vector(order:GetLocation())
         self.orderType = order:GetType()   
+        oldOrder = order
     end
 end
 
@@ -330,7 +336,7 @@ function NpcMixin:MoveToPoint(toPoint)
     if order and self.inTargetRange then
         local target = self:GetTarget()
         if target then
-            toPoint = target:GetEngagementPoint()
+            toPoint = self:GetTargetEngagementPoint(target)
         end
     end
     
@@ -420,7 +426,6 @@ end
 
 function NpcMixin:DeleteCurrentOrder()
     self:CompletedCurrentOrder()
-    self:ResetOrderParamters()
 end
 
 function NpcMixin:OnOrderComplete(currentOrder)
@@ -469,40 +474,36 @@ function NpcMixin:GetAttackDistance()
     
 end
 
+
+function NpcMixin:GetTargetEngagementPoint(target)
+    assert(target~=nil)
+    local engagementPoint = target:GetEngagementPoint()
+    if self.EngagementPointOverride then
+        engagementPoint = self:EngagementPointOverride(target) or engagementPoint
+    end
+    return engagementPoint 
+end
+
+
 function NpcMixin:FindVisibleTarget()
 
     // Are there any visible enemy players or structures nearby?
     local success = false
 
-    if (not self.timeLastTargetCheck or (Shared.GetTime() - self.timeLastTargetCheck > NpcMixin.kTargetUpdateRate)) then 
-        if not self.target then
-            self.targetSelector:AttackerMoved()
-            local target = self.targetSelector:AcquireTarget()
+    if not self.target then
+        self.targetSelector:AttackerMoved()
+        local target = self.targetSelector:AcquireTarget()
 
-            if target then
-            
-                self.target = target:GetId()
-                
-                local name = SafeClassName(target)
-                if target:isa("Player") then
-                    name = target:GetName()
-                end
-                
-                local engagementPoint = target:GetEngagementPoint()
-                if self.EngagementPointOverride then
-                    engagementPoint = self:EngagementPointOverride(target) or engagementPoint
-                end
-                self:GiveOrder(kTechId.Attack, self.target, engagementPoint, nil, true, true)
-                
-                success = true
-            end
-                
-            self.timeLastTargetCheck = Shared.GetTime() 
-        else
-            self.target = nil
-            self:DeleteCurrentOrder()
-        end
+        if target then
         
+            self.target = target:GetId()
+            self:GiveOrder(kTechId.Attack, self.target, target:GetOrigin(), nil, true, true)
+            
+            success = true
+        end
+    else
+        self.target = nil
+        self:DeleteCurrentOrder()
     end
     
     return success
@@ -539,21 +540,21 @@ end
 function NpcMixin:UpdateOrderLogic()
 
     assert(self.move ~= nil)
-    local order = self:GetCurrentOrder()             
-    local activeWeapon = self:GetActiveWeapon()
+    local order = self:GetCurrentOrder()  
 
     if order ~= nil then
-        if (order:GetType() == kTechId.Attack) and self.target then
+        if (self.orderType == kTechId.Attack) and self.target then
 
-            
+            local activeWeapon = self:GetActiveWeapon()
             local target = Shared.GetEntity(self.target)
+            
             if target then            
                     
                 // if were in range, only updated it after some time
                 if not self.timeLastRangeUpdate or not self.inTargetRange or (self.inTargetRange and ((Shared.GetTime() -  self.timeLastRangeUpdate ) > NpcMixin.kRangeUpdateRate)) then
-                            
-                    // Attack target! TODO: We should have formal point where attack emanates from.
-                    local distToTarget = (target:GetEngagementPoint() - self:GetModelOrigin()):GetLength()
+                
+                    local engagementPoint = self:GetTargetEngagementPoint(target)                   
+                    local distToTarget = (engagementPoint - self:GetModelOrigin()):GetLength()
                     local attackDist = self:GetAttackDistance()
                     
                     self.inTargetRange = false
@@ -561,8 +562,9 @@ function NpcMixin:UpdateOrderLogic()
                     if activeWeapon and attackDist and (distToTarget <= attackDist) then        
                         // Make sure we can see target
                         local filter = EntityFilterTwo(self, activeWeapon)
-                        local trace = Shared.TraceRay(self:GetEyePos(), target:GetEngagementPoint(), CollisionRep.Damage, PhysicsMask.Bullets, filter)
-                        if trace.entity == target or (target:GetEngagementPoint() - trace.endPoint):GetLengthXZ() <= 2  then                                        
+
+                        local trace = Shared.TraceRay(self:GetEyePos(), engagementPoint , CollisionRep.Damage, PhysicsMask.Bullets, filter)
+                        if trace.entity == target or (engagementPoint - trace.endPoint):GetLengthXZ() <= 2  then                                        
                             self.inTargetRange = true   
                         end
                     end
@@ -616,8 +618,8 @@ function NpcMixin:OnTakeDamage(damage, attacker, doer, point)
         self.lastAttacker = attacker 
         local order = self:GetCurrentOrder()
         // if were getting attacked, attack back
-        if not order or (order and (order:GetType() ~= kTechId.Attack or not Shared.GetEntity(order:GetParam()):isa("Player")) ) then
-            self:GiveOrder(kTechId.Attack, attacker:GetId(), attacker:GetEngagementPoint(), nil, true, true)       
+        if not order or (order and (self.orderType ~= kTechId.Attack or not Shared.GetEntity(order:GetParam()):isa("Player")) ) then
+            self:GiveOrder(kTechId.Attack, attacker:GetId(), self:GetTargetEngagementPoint(attacker), nil, true, true)       
         end
     end
 end
@@ -629,7 +631,7 @@ end
 
 
 function NpcMixin:GetNextPoint(order, toPoint)
-    if (order and order:GetType() ~= kTechId.Attack) or (not self.toClose and not self.inTargetRange) then
+    if (order and self.orderType ~= kTechId.Attack) or (not self.toClose and not self.inTargetRange) then
     //if order:GetType() ~= kTechId.Attack then
         // if its the same point, lets look if we can still move there
         if self.oldPoint and self.oldOrigin and self.oldPoint == toPoint then
@@ -668,7 +670,7 @@ function NpcMixin:GetNextPoint(order, toPoint)
                     self.index = self.index + 1
                 end
             else
-                if order:GetType() ~= kTechId.Attack then
+                if self.orderType ~= kTechId.Attack then
                     // end point is reached
                     self:DeleteCurrentOrder()
                 end
