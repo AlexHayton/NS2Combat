@@ -13,7 +13,7 @@ combat_GUIExperienceBar.kMarineBarTextureName = "ui/combat_xpbar_marine.png"
 combat_GUIExperienceBar.kMarineBackgroundTextureName = "ui/combat_xpbarbg_marine.png"
 combat_GUIExperienceBar.kAlienBarTextureName = "ui/combat_xpbar_alien.png"
 combat_GUIExperienceBar.kAlienBackgroundTextureName = "ui/combat_xpbarbg_alien.png"
-combat_GUIExperienceBar.kTextFontName = "MicrogrammaDBolExt"
+combat_GUIExperienceBar.kTextFontName = "fonts/AgencyFB_small.fnt"
 
 combat_GUIExperienceBar.kExperienceBackgroundWidth = 450
 combat_GUIExperienceBar.kExperienceBackgroundHeight = 30
@@ -61,7 +61,7 @@ combat_GUIExperienceBar.kBarFadeInRate = 0.2
 combat_GUIExperienceBar.kBarFadeOutDelay = 0.5
 combat_GUIExperienceBar.kBarFadeOutRate = 0.1
 combat_GUIExperienceBar.kBackgroundBarRate = 90
-combat_GUIExperienceBar.kTextIncreaseRate = 50
+combat_GUIExperienceBar.kTextIncreaseRate = 150
 
 local function GetTeamType()
 
