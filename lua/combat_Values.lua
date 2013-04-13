@@ -58,7 +58,7 @@ kXPForgetTimer = 5
 
 // Timers for Scan, Resupply and Catalyst packs.
 kScanTimer = 14
-kResupplyTimer = 10
+kResupplyTimer = 6
 AmmoPack.kNumClips = 1
 kCatalystTimer = 14
 // scan Duration, maybe we need to tune it a bit
@@ -133,10 +133,10 @@ kAlienVisionCost = 0
 kAlienVisionEnergyRegenMod = 1
 
 // kill hydras after some time if the owner isn't a gorge
-kHydraKillTime = 60
+kHydraKillTime = 30
 
 // Time delay for exo suits to power up.
-kExoPowerUpTime = 4
+kExoPowerUpTime = 3
 
 // decrease the exo dmg a bit (with lvl 3 it will be then a bit above the standard 25)
 kMinigunDamage = 20
