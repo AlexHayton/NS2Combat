@@ -1,6 +1,16 @@
-// ======= Copyright (c) 2003-2011, Unknown Worlds Entertainment, Inc. All rights reserved. =======//// lua\GUIDevouredPlayer.lua//// Created by: Jon 'Huze' Hughes (jon@jhuze.com)//// Spectator: Loads all the insight GUI elements//// ========= For more information, visit us at http://www.unknownworlds.com =====================
+// ======= Copyright (c) 2003-2011, Unknown Worlds Entertainment, Inc. All rights reserved. =======
+//
+// lua\GUIDevouredPlayer.lua
+//
+// Created by: Jon 'Huze' Hughes (jon@jhuze.com)
+//
+// Spectator: Loads all the insight GUI elements
+//
+// ========= For more information, visit us at http://www.unknownworlds.com =====================
 
- Script.Load("lua/GUIAnimatedScript.lua")class 'GUIDevouredPlayer' (GUIAnimatedScript)
+ Script.Load("lua/GUIAnimatedScript.lua")
+
+class 'GUIDevouredPlayer' (GUIAnimatedScript)
 
 GUIDevouredPlayer.kBackgroundTexture = "ui/devour.dds"
 GUIDevouredPlayer.kMaskTexture = PrecacheAsset("ui/white.png")
@@ -20,8 +30,11 @@ GUIDevouredPlayer.kBgCoords = {14, 0, 112, 34}
 GUIDevouredPlayer.kBackgroundColor = Color(1, 1, 1, 0.7)
 GUIDevouredPlayer.kMarineTextColor = kMarineFontColor
 GUIDevouredPlayer.kAlienTextColor = kAlienFontColor
-function GUIDevouredPlayer:Initialize()
-	GUIAnimatedScript.Initialize(self)
+
+
+function GUIDevouredPlayer:Initialize()
+
+	GUIAnimatedScript.Initialize(self)
     
 	// Used for Global Offset
 	self.background = self:CreateAnimatedGraphicItem()
@@ -61,7 +74,9 @@ GUIDevouredPlayer.kAlienTextColor = kAlienFontColor
  
 	self.background:AddChild(self.devourText)
 	self.background:AddChild(self.devourBar)
-    self:Update(0)	end
+    self:Update(0)
+	
+end
 
 function GUIDevouredPlayer:SetDevourBar(devourValue)
 
@@ -72,15 +87,18 @@ function GUIDevouredPlayer:SetDevourBar(devourValue)
                                  //0 ,
                                  //GUIDevourOnos.kFuelBarOpacity) )
 
-end	function GUIDevouredPlayer:Uninitialize()    
+end
+	
+function GUIDevouredPlayer:Uninitialize()    
 	GUI.DestroyItem(self.devourText)
     GUI.DestroyItem(self.background)
-    GUI.DestroyItem(self.devourBar)end
+    GUI.DestroyItem(self.devourBar)
+end
 
 function GUIDevouredPlayer:Update(deltaTime)
 
     local player = Client.GetLocalPlayer()    
-    if player and player:isa("DevouredPlayer") then
+    if player and player:isa("DevouredPlayer") and player:GetTeamNumber() == 1 then
         self.background:SetIsVisible(true)
         local devourPercentage = player:GetDevourPercentage()
         if devourPercentage ~= 0 then
@@ -92,4 +110,4 @@ function GUIDevouredPlayer:Update(deltaTime)
         GetGUIManager():DestroyGUIScript(self)
     end
 
-end
+end
