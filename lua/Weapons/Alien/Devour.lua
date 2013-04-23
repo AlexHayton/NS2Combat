@@ -90,10 +90,7 @@ local function UpdateDevour(self)
         if self.eatingPlayerId ~= 0 then
             local player = Shared.GetEntity(self.eatingPlayerId)            
             if player then
-                local coords = player:GetViewCoords()
-                local newOrigin = onos:GetOrigin()
-                coords.origin = newOrigin
-                player:SetOrigin(newOrigin)
+                local coords = onos:GetCoords()
                 player:SetCoords(coords)                
                 
                 if Shared.GetTime() >= self.lastDevourTime then
