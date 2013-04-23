@@ -34,7 +34,7 @@ function LogicLua:OnInitialized()
     end
     
     if self.luaFile then
-        Script.Load(self.kLuaFile)
+        Script.Load(self.luaFile)
     end
     
 end

@@ -26,7 +26,6 @@ FuncTrain.kDrivingState = enum( {'Stop', 'Forward1', 'Forward2', 'Forward3', 'Ba
 
 local networkVars =
 {    
-    drivingState = "enum FuncTrain.kDrivingState",
     scale = "vector",
     model = "string (128)",
 }
@@ -48,6 +47,7 @@ function FuncTrain:OnCreate()
     InitMixin(self, TrainMixin)
     
     self:SetUpdates(true)  
+    self:SetLagCompensated(true)
     
 end
 
@@ -58,18 +58,25 @@ function FuncTrain:OnInitialized()
     InitMixin(self, ScaledModelMixin)
 	self:SetScaledModel(self.model)
     
+    self:SetPhysicsType(PhysicsType.Kinematic)
+    // to prevent collision with whip bombs
+    self:SetPhysicsGroup(PhysicsGroup.MediumStructuresGroup)
+    
     if Server then
         InitMixin(self, LogicMixin)
+        
+        if self.autoStart then
+            self.driving = true
+        else
+            self.driving = false
+        end
     end
 
-    if self.autoStart then
-        self.driving = true
-        self.kDrivingState = FuncTrain.kDrivingState.Forward1
-    else
-        self.driving = false
-        self.kDrivingState = FuncTrain.kDrivingState.Stop
-    end
    
+end
+
+function FuncTrain:Reset()
+    self.nextWaypointNr = nil
 end
 
 function FuncTrain:GetCanBeUsed(player, useSuccessTable)
@@ -197,8 +204,8 @@ if Server then
        
         if self.nextWaypoint then
             // check if the waypoint got a delay
-                local done = self:TrainMoveToTarget(PhysicsMask.All, self.nextWaypoint, self:GetSpeed(), deltaTime)                
-                //if self:IsTargetReached(hoverWaypont, kAIMoveOrderCompleteDistance) then
+            local done = self:TrainMoveToTarget(PhysicsMask.All, self.nextWaypoint, self:GetSpeed(), deltaTime)                
+            //if self:IsTargetReached(hoverWaypont, kAIMoveOrderCompleteDistance) then
                 if done then
                     self.nextWaypoint = nil
                     self:GetNextWaypoint()

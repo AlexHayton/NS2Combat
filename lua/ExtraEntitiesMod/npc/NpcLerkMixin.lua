@@ -34,19 +34,45 @@ function NpcLerkMixin:AiSpecialLogic()
 
      if self:GetCurrentOrder() then
         if not self.inTargetRange then
+        
             if not self.nextFlyStop then
-                self.nextFlyStop = Shared.GetTime() + 2    
-            end
-
-            if not ((self.nextFlyStop - Shared.GetTime()) >  2)  then
-                self:PressButton(Move.Jump) 
-                self.nextFlyStop = Shared.GetTime() + 2                 
+                self.nextFlyStop = Shared.GetTime() + 1.5 
             end
             
+            if Shared.GetTime() < self.nextFlyStop then
+                self:PressButton(Move.Jump) 
+            else
+                self.nextFlyStop = nil
+            end
         end  
     end
 
 end
+
+function NpcLerkMixin:UpdateOrderLogic()
+
+    local order = self:GetCurrentOrder()             
+    local activeWeapon = self:GetActiveWeapon()
+
+    if order ~= nil then
+        if (order:GetType() == kTechId.Attack) then
+        
+            local target = Shared.GetEntity(order:GetParam())
+            if target then
+            
+                if activeWeapon then          
+                    // attack with spikes also, when seeing the entitiy
+                    if GetCanSeeEntity(self, target) then
+                        self:PressButton(Move.SecondaryAttack)                   
+                    end
+                end              
+
+            end
+        end
+    end   
+    
+end
+
 
 function NpcLerkMixin:GetAttackDistanceOverride()
     return 1.2

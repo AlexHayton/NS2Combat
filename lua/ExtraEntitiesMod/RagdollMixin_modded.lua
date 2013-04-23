@@ -8,7 +8,7 @@ if Server then
     
         originalRagdollMixinOnTag(self, tagName)
         
-        if not self.GetHasClientModel or not self:GetHasClientModel() then        
+        if self.isaNpc and (not self.GetHasClientModel or not self:GetHasClientModel()) then        
             if tagName == "death_end" then            
                 if self.bypassRagdoll then
                     DestroyEntitySafe(self)
