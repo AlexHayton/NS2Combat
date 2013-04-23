@@ -27,7 +27,7 @@ combat_GUIMarineBuyMenu.kArrowTexture = "ui/menu/arrow_horiz.dds"
 combat_GUIMarineBuyMenu.kFont = "fonts/AgencyFB_small.fnt"
 combat_GUIMarineBuyMenu.kFont2 = "fonts/AgencyFB_small.fnt"
 
-combat_GUIMarineBuyMenu.kDescriptionFontName = "fonts/AgencyFB_tinyn.fnt"
+combat_GUIMarineBuyMenu.kDescriptionFontName = "fonts/AgencyFB_tiny.fnt"
 combat_GUIMarineBuyMenu.kDescriptionFontSize = GUIScale(20)
 
 combat_GUIMarineBuyMenu.kScanLineHeight = GUIScale(256)
