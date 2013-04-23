@@ -32,6 +32,21 @@ end
 function NpcExoMixin:CheckImportantEvents()
 end
 
+function NpcExoMixin:GetAttackDistanceOverride()
+    if self.target and self:GetTarget() then
+        if self:GetTarget():isa("Egg") then
+            // walk onto the egg to smash it
+            return 0
+        end
+    end
+    
+    local activeWeapon = self:GetActiveWeapon()
+
+    if activeWeapon then
+        return math.min(activeWeapon:GetRange(), 40)
+    end  
+end
+
 function NpcExoMixin:AttackOverride(activeWeapon) 
 
     local leftWeapon = activeWeapon:GetLeftSlotWeapon()
@@ -41,16 +56,10 @@ function NpcExoMixin:AttackOverride(activeWeapon)
         attackLeft = false
     end
     
-    if not self.fired then    
-        if attackLeft then
-            self:PressButton(Move.PrimaryAttack)
-        end
-        self:PressButton(Move.SecondaryAttack)
-        
-        self.fired = true
-    else
-        self.fired = false
-    end    
+    if attackLeft then
+        self:PressButton(Move.PrimaryAttack)
+    end
+    self:PressButton(Move.SecondaryAttack)        
 
 end
 

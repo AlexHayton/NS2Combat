@@ -100,13 +100,13 @@ if Server then
     end
 
     function LogicTrigger:OnTriggerEntered(enterEnt, triggerEnt) 
-        if self.triggerStyle == 0 or self.triggerStyle == nil then
+        if enterEnt:isa("Player") and (self.triggerStyle == 0 or self.triggerStyle == nil) then
             self:CheckTrigger(enterEnt)
         end
     end
         
     function LogicTrigger:OnTriggerExited(exitEnt, triggerEnt)
-        if self.triggerStyle == 1 then
+        if exitEnt:isa("Player") and self.triggerStyle == 1 then
             self:CheckTrigger(exitEnt)
         end
     end

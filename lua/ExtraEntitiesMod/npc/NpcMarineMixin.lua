@@ -12,7 +12,7 @@ NpcMarineMixin = CreateMixin( NpcMarineMixin )
 NpcMarineMixin.type = "NpcMarine"
 
 NpcMarineMixin.kAmmoUpdateRate = 4
-NpcMarineMixin.lowHealthFactor = 0.2 // if health is 20% we need to do something
+NpcMarineMixin.lowHealthFactor = 0.3 // if health is 30% we need to do something
 NpcMarineMixin.armorySearchRange = 20 // armory will be searched in this range
 
 NpcMarineMixin.expectedMixins =

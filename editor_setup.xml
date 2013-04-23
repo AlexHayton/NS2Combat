@@ -1440,8 +1440,20 @@
 			<file>models/alien/skulk/skulk.model</file>
 		</model>
 
+    </class>
+
+	<class name="factions_gamerules_picker" placeable="true">
+		<model>
+            <file>models/system/editor/team_location.model</file>
+        </model>
+
+        <parameter name="gameType" type="choice" label="Game Type" default="0" help="Only working for the factions mod, other mods will ignore it.">
+			<choice label="Combat Deathmatch" value="1"/>
+			<choice label="Xenoswarm" value="2"/>
+			<choice label="Marine Deathmatch" value="3"/>
+        </parameter>
+		
     </class>	
-	
 	
 </classes>
 

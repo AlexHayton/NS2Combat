@@ -13,7 +13,7 @@ combat_GUIExperienceBar.kMarineBarTextureName = "ui/combat_xpbar_marine.png"
 combat_GUIExperienceBar.kMarineBackgroundTextureName = "ui/combat_xpbarbg_marine.png"
 combat_GUIExperienceBar.kAlienBarTextureName = "ui/combat_xpbar_alien.png"
 combat_GUIExperienceBar.kAlienBackgroundTextureName = "ui/combat_xpbarbg_alien.png"
-combat_GUIExperienceBar.kTextFontName = "fonts/AgencyFB_small.fnt"
+combat_GUIExperienceBar.kTextFontName = "fonts/Arial_17.fnt"
 
 combat_GUIExperienceBar.kExperienceBackgroundWidth = 450
 combat_GUIExperienceBar.kExperienceBackgroundHeight = 30
@@ -55,7 +55,7 @@ combat_GUIExperienceBar.kExperienceTextFontSize = 15
 combat_GUIExperienceBar.kExperienceTextOffset = Vector(0, -10, 0)
 combat_GUIExperienceBar.kNormalAlpha = 0.9
 combat_GUIExperienceBar.kMinimisedTextAlpha = 0.7
-combat_GUIExperienceBar.kMinimisedAlpha = 0.7
+combat_GUIExperienceBar.kMinimisedAlpha = 0.6
 
 combat_GUIExperienceBar.kBarFadeInRate = 0.2
 combat_GUIExperienceBar.kBarFadeOutDelay = 0.5
@@ -229,7 +229,7 @@ function combat_GUIExperienceBar:UpdateExperienceBar(deltaTime)
 		end
 	end
 	
-	if (self.experienceData.targetExperience == maxXp) then
+	if (self.experienceData.targetExperience >= maxXp) then
 		currentBarWidth = combat_GUIExperienceBar.kExperienceBarWidth
 		targetBarWidth = combat_GUIExperienceBar.kExperienceBarWidth
 		calculatedBarWidth = combat_GUIExperienceBar.kExperienceBarWidth
@@ -255,22 +255,12 @@ end
 
 function combat_GUIExperienceBar:UpdateFading(deltaTime)
 
-	local currentBarHeight = self.experienceBar:GetSize().y
-	local currentBackgroundHeight = self.experienceBarBackground:GetSize().y
 	local currentBarColor = self.experienceBar:GetColor()
 	local currentTextColor = self.experienceText:GetColor()
-	local targetBarHeight = currentBarHeight
-	local targetBackgroundHeight = currentBackgroundHeight
-	local targetBarColor = currentBarColor
 	local targetAlpha = combat_GUIExperienceBar.kNormalAlpha
 	local targetTextAlpha = combat_GUIExperienceBar.kNormalAlpha
 		
 	if (self.barMoving or Shared.GetTime() < self.fadeOutTime) then
-		targetBarHeight = combat_GUIExperienceBar.kExperienceBarHeight
-		targetBackgroundHeight = combat_GUIExperienceBar.kExperienceBackgroundHeight
-	else
-		targetBarHeight = combat_GUIExperienceBar.kExperienceBarMinimisedHeight
-		targetBackgroundHeight = combat_GUIExperienceBar.kExperienceBackgroundMinimisedHeight
 		targetAlpha = combat_GUIExperienceBar.kMinimisedAlpha
 		targetTextAlpha = combat_GUIExperienceBar.kMinimisedTextAlpha
 	end
@@ -278,15 +268,21 @@ function combat_GUIExperienceBar:UpdateFading(deltaTime)
 	self.experienceAlpha = Slerp(self.experienceAlpha, targetAlpha, deltaTime*combat_GUIExperienceBar.kBarFadeOutRate)
 	self.experienceTextAlpha = Slerp(self.experienceTextAlpha, targetTextAlpha, deltaTime*combat_GUIExperienceBar.kBarFadeOutRate)
 	
-	self.experienceBarBackground:SetSize(Vector(combat_GUIExperienceBar.kExperienceBackgroundWidth, Slerp(currentBackgroundHeight, targetBackgroundHeight, deltaTime*combat_GUIExperienceBar.kBackgroundBarRate), 0))
-	self.experienceBar:SetSize(Vector(self.experienceBar:GetSize().x, Slerp(currentBarHeight, targetBarHeight, deltaTime*combat_GUIExperienceBar.kBackgroundBarRate), 0))
 	self.experienceBar:SetColor(Color(currentBarColor.r, currentBarColor.g, currentBarColor.b, self.experienceAlpha))
-	self.experienceText:SetColor(Color(currentTextColor.r, currentTextColor.g, currentTextColor.b, self.experienceAlpha))
+	self.experienceText:SetColor(Color(currentTextColor.r, currentTextColor.g, currentTextColor.b, self.experienceTextAlpha))
+	
 end
 
 function combat_GUIExperienceBar:UpdateText(deltaTime)
+	local updateRate = combat_GUIExperienceBar.kTextIncreaseRate
+	// Handle the case when the experience jumps up by a huge amount
+	if self.experienceData.targetExperience > self.currentExperience and
+	   self.experienceData.targetExperience - self.currentExperience > combat_GUIExperienceBar.kTextIncreaseRate*2 then
+	   updateRate = combat_GUIExperienceBar.kTextIncreaseRate * 10
+	end
+	   
 	// Tween the experience text too!
-	self.currentExperience = Slerp(self.currentExperience, self.experienceData.targetExperience, deltaTime*combat_GUIExperienceBar.kTextIncreaseRate)
+	self.currentExperience = Slerp(self.currentExperience, self.experienceData.targetExperience, deltaTime*updateRate)
 	
 	// Handle the case when the round changes and we are set back to 0 experience.
 	if self.currentExperience > self.experienceData.targetExperience then

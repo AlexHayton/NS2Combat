@@ -34,9 +34,15 @@ function NpcFadeMixin:AiSpecialLogic()
     local order = self:GetCurrentOrder()
     if order then
         if self.points and self.index and self.points[self.index] then
-            if (self:GetOrigin() - self.points[self.index]):GetLengthXZ() > 8 then
-                // shadow step will bring you 8 miles forward
-                self:PressButton(Move.MovementModifier)
+            if ((self:GetOrigin() - self.points[self.index]):GetLengthXZ() > 3) and not self.usedShadowStep then
+                // shadow step will bring you faster forward
+                // only random
+                if math.random(1, 100) < 10 then
+                    self:PressButton(Move.MovementModifier)
+                    self.usedShadowStep = true
+                end
+            else            
+                self.usedShadowStep = false
             end
         end
     end

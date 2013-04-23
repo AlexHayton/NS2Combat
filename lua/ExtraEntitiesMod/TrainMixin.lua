@@ -78,6 +78,8 @@ function TrainMixin:OnInitialized()
     self.savedAngles = Angles(self:GetAngles())
         
     if Server then
+        InitMixin(self, ControllerMixin)
+        self:CreateController(PhysicsGroup.WhipGroup)
         // set a box so it can be triggered, use the trigger scale from the mapEditor
         if self:GetPushPlayers() then
             self:MoveTrigger()        
@@ -86,7 +88,7 @@ function TrainMixin:OnInitialized()
     
 end
 
-function TrainMixin:OnUpdate(deltaTime)   
+function TrainMixin:OnUpdate(deltaTime)  
     
     if Server then 
         if self.driving then
@@ -98,11 +100,21 @@ function TrainMixin:OnUpdate(deltaTime)
                 self:MovePlayersInTrigger(deltaTime)
 
             end
+            self:UpdateControllerFromEntity()
         end  
     end
     
 end
 
+// Required by ControllerMixin.
+function TrainMixin:GetControllerSize()
+    return GetTraceCapsuleFromExtents(self:GetExtents())    
+end
+
+// Required by ControllerMixin.
+function TrainMixin:GetMovePhysicsMask()
+    return PhysicsMask.Movement
+end
 
 
 function TrainMixin:Reset()
@@ -110,6 +122,17 @@ function TrainMixin:Reset()
     // Restore original origin, angles, etc. as it could have been rag-dolled
     self:SetOrigin(self.savedOrigin)
     self:SetAngles(self.savedAngles)
+    self.driving = false
+    if self.autoStart then
+        self.driving = true
+    end
+    self.waiting = false
+    
+    self.points = nil
+    self.cursor = nil
+    
+    self.movementVector = nil
+    self.oldAngles = nil
     
 end
 
@@ -177,7 +200,7 @@ end
 
 function TrainMixin:MovePlayersInTrigger(deltaTime)
     for _, entity in ipairs(self:GetEntitiesInTrigger()) do 
-        if self.driving then
+        if self.driving and entity~= self then
             if not entity:GetIsJumping() then
                 // change position when the train is driving
                 local entOrigin = entity:GetOrigin()
@@ -195,7 +218,7 @@ function TrainMixin:MovePlayersInTrigger(deltaTime)
                 entityAngles.yaw = entityAngles.yaw + selfDeltaAngles.yaw
                 local coords = Coords.GetLookIn(newOrigin, self:GetAngles():GetCoords().zAxis)
                 //TransformPlayerCoordsForTrain(entity, entity:GetCoords(), coords)               
-                entity:SetOrigin(newOrigin  + self:GetMovementVector())          
+                entity:SetOrigin(newOrigin  + self:GetMovementVector())
                     
             end
         end
@@ -271,7 +294,7 @@ function TrainMixin:TrainMoveToTarget(physicsGroupMask, endPoint, movespeed, tim
     // save the cursor in case we need to slow down
     local origCursor = PathCursor():Clone(self.cursor)    
     
-    self.cursor:Advance(movespeed, time)    
+    self.cursor:Advance(movespeed, time, self)    
     local maxSpeed = moveSpeed 
     local rotate = self:GetRotationEnabled()
     maxSpeed = self:TrainSmoothTurn(time, self.cursor:GetDirection(), movespeed, rotate)
@@ -287,7 +310,7 @@ function TrainMixin:TrainMoveToTarget(physicsGroupMask, endPoint, movespeed, tim
     if maxSpeed < movespeed then
         // use the copied cursor and discard the current cursor
         self.cursor = origCursor
-        self.cursor:Advance(maxSpeed, time)
+        self.cursor:Advance(maxSpeed, time, self)
     
     end
     
@@ -346,7 +369,7 @@ function TrainMixin:CheckTrainTarget(endPoint)
         self.points = {}
         table.insert(self.points, 1, self:GetOrigin())        
         table.insert(self.points, endPoint)  
-        SmoothPathPoints( self.points, 0.5 , 6) 
+        SmoothPathPoints( self.points, 0.5 , 40) 
         
         self.cursor = PathCursor():Init(self.points)
         
