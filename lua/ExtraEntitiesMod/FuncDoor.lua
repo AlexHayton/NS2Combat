@@ -57,6 +57,10 @@ function FuncDoor:OnInitialized()
     InitModel(self)    
     InitMixin(self, ScaledModelMixin)
     
+    if not self.scale then
+        self.scale = Vector(1,1,1)
+    end
+    
 	self:SetScaledModel(self.model, kDoorAnimationGraph)
     
     if self.startsOpen then
@@ -77,7 +81,6 @@ function FuncDoor:OnInitialized()
         self:SetPhysicsGroup(PhysicsGroup.BigStructuresGroup)
         //Pathing.CreatePathingObject(self.model, self:GetCoords())
     end
-
 end
 
 function FuncDoor:GetResetsPathing()

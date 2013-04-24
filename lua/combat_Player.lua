@@ -203,27 +203,20 @@ if Server then
     function Player:ResupplyNow()
 
         local success = false
-        local mapNameHealth = LookupTechData(kTechId.MedPack, kTechDataMapName) 
-        local position = self:GetOrigin()
-
-        if (mapNameHealth) then
-        
-            local droppackHealth = CreateEntity(mapNameHealth, position, self:GetTeamNumber())
-            // dont drop a ammo pack, give ammo via a new function
-            self:GiveAllAmmo()
+		local newHealth = math.min(self:GetHealth() + MedPack.kHealth, self:GetMaxHealth())
+		self:SetHealth(newHealth)
+		
+		// dont drop a ammo pack, give ammo via a new function
+		self:GiveAmmoToEveryWeapon()
             
-            StartSoundEffectAtOrigin(MedPack.kHealthSound, self:GetOrigin())
-            success = true
-            
-            //Destroy them so they can't be used by somebody else (if they are unused)
-            DestroyEntity(droppackHealth)		
-        end
+		StartSoundEffectAtOrigin(MedPack.kHealthSound, self:GetOrigin())
+		success = true
 
         return success
 
     end
 
-    function Player:GiveAllAmmo()
+    function Player:GiveAmmoToEveryWeapon()
 
         for i = 0, self:GetNumChildren() - 1 do
 

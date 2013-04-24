@@ -33,7 +33,14 @@ NpcMixin.kJumpRange = 2
 // update rates to increase performance
 NpcMixin.kUpdateRate = 0.01
 NpcMixin.kTargetUpdateRate = 1
-NpcMixin.kRangeUpdateRate = 2
+NpcMixin.kRangeUpdateRate = 0.2
+NpcMixin.kStuckingUpdateRate = 4
+
+// random offset for npcs that they will not stay all at one spot
+local moveOffset = { 
+                    x = {-1, -0.5, 0 ,0.5 ,1}, 
+                    z = {-1, -0.5, 0 ,0.5 ,1}, 
+                    }
 
 
 NpcMixin.expectedMixins =
@@ -262,7 +269,13 @@ function NpcMixin:ProcessOrder()
     local order = self:GetCurrentOrder() 
     if order then 
         self:UpdateOrderLogic()
-        local orderLocation = self.orderPosition      
+        local orderLocation = order:GetLocation()
+        if self.target then
+            local target = self:GetTarget()
+            if target then
+                orderLocation = self:GetTargetEngagementPoint(target)
+            end
+        end
         if orderLocation then
             self:MoveToPoint(orderLocation)
         end
@@ -331,15 +344,7 @@ function NpcMixin:MoveToPoint(toPoint)
     
     local order = self:GetCurrentOrder()
     toPoint = self:GetNextPoint(order, toPoint) or toPoint
-    
-    // if we have an target and are in range, look at it
-    if order and self.inTargetRange then
-        local target = self:GetTarget()
-        if target then
-            toPoint = self:GetTargetEngagementPoint(target)
-        end
-    end
-    
+
     // Fill in move to get to specified point
     local diff = (toPoint - self:GetEyePos())
     local direction = GetNormalizedVector(diff)
@@ -389,9 +394,14 @@ function NpcMixin:MoveToPoint(toPoint)
             end
         end
         moved = true       
-        
+        self.toClose = false
     else
         self:CheckCrouch(toPoint)
+    end
+    
+    // check if we need to unstuck
+    if self.unstuckXMove then
+        self.move.move.x = self.unstuckXMove
     end
     
     if moved and not self.target then
@@ -422,6 +432,26 @@ end
 function NpcMixin:OnOrderGiven()
     // delete old values
     self:ResetOrderParamters()
+    local currentOrder = self:GetCurrentOrder()
+    if currentOrder:GetType() == kTechId.Attack then        
+        self.target = currentOrder:GetParam()
+    else
+        // apply an offset for waypoints so not staying at one spot
+        if self.mapWaypoint == currentOrder:GetParam()  then
+        
+            local randomOffset = math.random(1, #moveOffset.x)
+            local offsetVector = Vector(0,0,0)
+            
+            if math.random(1, 2) == 1 then
+                offsetVector.x = moveOffset.x[randomOffset]
+            else
+                offsetVector.z = moveOffset.z[randomOffset] 
+            end
+
+            currentOrder:SetLocation(currentOrder:GetLocation() + offsetVector)
+            
+        end
+    end
 end
 
 function NpcMixin:DeleteCurrentOrder()
@@ -430,15 +460,15 @@ end
 
 function NpcMixin:OnOrderComplete(currentOrder)
     self:ResetOrderParamters()
+    // delete mapWaypoint if we really reached it
+    if self.mapWaypoint == currentOrder:GetParam() then
+        self.mapWaypoint = nil
+    end
 end
 
 function NpcMixin:ResetOrderParamters()
     local currentOrder = self:GetCurrentOrder()
-    if currentOrder then
-        if self.mapWaypoint == currentOrder:GetId() or self.mapWaypoint == currentOrder:GetParam() then
-            self.mapWaypoint = nil
-        end
-        
+    if currentOrder then        
         if currentOrder:GetParam() ~= self.target then
             self.target = nil
         end
@@ -450,6 +480,8 @@ function NpcMixin:ResetOrderParamters()
 
     self.toClose = false
     self.inTargetRange = false
+    self.unstuckXMove = nil
+    self.timeLastOrder = nil
     
 end
 
@@ -492,15 +524,7 @@ function NpcMixin:FindVisibleTarget()
 
     if not self.target then
         self.targetSelector:AttackerMoved()
-        local target = self.targetSelector:AcquireTarget()
-
-        if target then
-        
-            self.target = target:GetId()
-            self:GiveOrder(kTechId.Attack, self.target, target:GetOrigin(), nil, true, true)
-            
-            success = true
-        end
+        success = NpcUtility_AcquireTarget(self)
     else
         self.target = nil
         self:DeleteCurrentOrder()
@@ -534,7 +558,7 @@ end
 
 
 function NpcMixin:CanAttackTarget(targetOrigin)
-    return (targetOrigin - self:GetModelOrigin()):GetLength() < (self:GetAttackDistance() or 0)
+    return GetCanSeeEntity(self, targetOrigin) and (targetOrigin - self:GetModelOrigin()):GetLength() < (self:GetAttackDistance() or 0)
 end
 
 function NpcMixin:UpdateOrderLogic()
@@ -558,6 +582,7 @@ function NpcMixin:UpdateOrderLogic()
                     local attackDist = self:GetAttackDistance()
                     
                     self.inTargetRange = false
+                    self.toClose = false
                     
                     if activeWeapon and attackDist and (distToTarget <= attackDist) then        
                         // Make sure we can see target
@@ -566,15 +591,14 @@ function NpcMixin:UpdateOrderLogic()
                         local trace = Shared.TraceRay(self:GetEyePos(), engagementPoint , CollisionRep.Damage, PhysicsMask.Bullets, filter)
                         if trace.entity == target or (engagementPoint - trace.endPoint):GetLengthXZ() <= 2  then                                        
                             self.inTargetRange = true   
+                                                                            
+                             // if its not a structure, dont come to close
+                            if HasMixin(target,"MobileTarget") and (distToTarget < self:GetMinAttackGap()) then
+                                self.toClose = true
+                            end  
                         end
+                        
                     end
-                    
-                     // if its not a structure, dont come to close
-                    if HasMixin(target,"MobileTarget") and (distToTarget < self:GetMinAttackGap()) then
-                        self.toClose = true
-                    else
-                        self.toClose = false
-                    end  
                                 
                     self.timeLastRangeUpdate = Shared.GetTime() 
                    
@@ -618,12 +642,24 @@ function NpcMixin:OnTakeDamage(damage, attacker, doer, point)
         self.lastAttacker = attacker 
         local order = self:GetCurrentOrder()
         // if were getting attacked, attack back
-        if not order or (order and (self.orderType ~= kTechId.Attack or not Shared.GetEntity(order:GetParam()):isa("Player")) ) then
-            self:GiveOrder(kTechId.Attack, attacker:GetId(), self:GetTargetEngagementPoint(attacker), nil, true, true)       
+        if attacker and (not order or (order and (self.orderType ~= kTechId.Attack or not Shared.GetEntity(order:GetParam()):isa("Player")) )) then
+            self:GiveOrder(kTechId.Attack, attacker:GetId(), self:GetTargetEngagementPoint(attacker), nil, true, true)
+            NpcUtility_InformTeam(self, attacker)       
         end
     end
 end
 
+// cheap trick, function is from LOS Mixin, will warn us if somebody sees us
+function NpcMixin:SetIsSighted(sighted, viewer)
+    if sighted and viewer and viewer:isa("Player") then
+        // when enemy sees us and we have no target, attack him
+        local order = self:GetCurrentOrder()
+        if not order or (order and (self.orderType ~= kTechId.Attack or not Shared.GetEntity(order:GetParam()):isa("Player")) ) then
+            self:GiveOrder(kTechId.Attack, viewer:GetId(), self:GetTargetEngagementPoint(viewer), nil, true, true)
+            NpcUtility_InformTeam(self, viewer)       
+        end
+    end
+end
 
 ////////////////////////////////////////////////////////
 //      Pathing-Things
@@ -632,29 +668,58 @@ end
 
 function NpcMixin:GetNextPoint(order, toPoint)
     if (order and self.orderType ~= kTechId.Attack) or (not self.toClose and not self.inTargetRange) then
-    //if order:GetType() ~= kTechId.Attack then
-        // if its the same point, lets look if we can still move there
         if self.oldPoint and self.oldOrigin and self.oldPoint == toPoint then
-        /*
-            if math.abs((self:GetOrigin() - self.oldOrigin):GetLengthXZ()) < NpcMixin.kAntiStuckDistance then
-                // we're still in the same spot
-                self:GeneratePath(toPoint)
-                Print("Unstucking")
+            // if its the same point, lets look if we can still move there
+            if (self.points and not self:CheckTargetReached(self.points[#self.points])) and (not self.timeLastStuckingCheck or (Shared.GetTime() - self.timeLastStuckingCheck > NpcMixin.kStuckingUpdateRate)) then
+                if math.abs((self:GetOrigin() - self.oldOrigin):GetLengthXZ()) < NpcMixin.kAntiStuckDistance then
+                
+                    // we're still in the same spot
+                    // if we already tried to unstuck, maybe jump
+                    if self.unstuckXMove and self:GetCanJump() then   
+                        if math.random(1, 4) == 1 then
+                            self:PressButton(Move.Jump)
+                        end
+                    end
+                    
+                    if math.random(1,2) == 1 then
+                        self.unstuckXMove = -1
+                    else
+                        self.unstuckXMove = 1
+                    end
+
+                else
+                    self.unstuckXMove = nil
+                end
+                self.timeLastStuckingCheck = Shared.GetTime()
+            // no points? create new one
+            elseif not self.points and self.orderPosition then            
+                self:GeneratePath(self.orderPosition)
             end
-*/
         else
-            // delete current path cause its a new point           
-            local location = GetGroundAt(self, toPoint, PhysicsMask.Movement)
-            if self:GetIsFlying() then
-                location = GetHoverAt(self, toPoint, EntityFilterOne(self))
+
+            // check if its still the same target, maybe the target has just moved
+            // then calculate how far are we away, maybe we can keep the path at the moment
+            // will improve performance a bit ( I hope)
+
+            if self.oldPoint and self.points and self.points[self.index] and (toPoint - self.oldPoint):GetLength() < 3 then
+                // just change last path point th the target point 
+                self.points[table.maxn(self.points)] = toPoint
+            else
+                // OK its rly something new, generate a Path
+                local location = GetGroundAt(self, toPoint, PhysicsMask.Movement)
+                if self:GetIsFlying() then
+                    location = GetHoverAt(self, toPoint, EntityFilterOne(self))
+                end
+                if not self:GeneratePath(location) then
+                    // thers no path
+                    self:DeleteCurrentOrder()
+                end  
             end
-            if not self:GeneratePath(location) then
-                // thers no path
-                self:DeleteCurrentOrder()
-            end  
-        end  
-                   
-        self.oldPoint = toPoint 
+            
+            self.oldPoint =  toPoint
+            
+        end                    
+
         self.oldOrigin = self:GetOrigin()
             
         if self.points and #self.points ~= 0 then            
@@ -668,9 +733,10 @@ function NpcMixin:GetNextPoint(order, toPoint)
                 if self:CheckTargetReached(toPoint) then
                     // next point
                     self.index = self.index + 1
+                    self.unstuckXMove = nil
                 end
             else
-                if self.orderType ~= kTechId.Attack then
+                if self.orderType ~= kTechId.Attack and (order:GetType() ~= kTechId.Build and order:GetType() ~= kTechId.Construct)  then
                     // end point is reached
                     self:DeleteCurrentOrder()
                 end
@@ -689,7 +755,7 @@ end
 
 function NpcMixin:GeneratePath(endPoint)
     self:ResetPath()
-    self.points = GeneratePath(self:GetOrigin(), endPoint, false, 0.5, 2, self:GetIsFlying())
+    self.points = GeneratePath(self:GetOrigin(), endPoint, false, 2, 2, self:GetIsFlying())
     if self.points and #self.points > 0 then
         return true
     else

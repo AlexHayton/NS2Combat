@@ -75,12 +75,13 @@ function combatLoadClientFunctions()
     Script.Load("lua/combat_MarineBuyFuncs.lua")
     Script.Load("lua/combat_AlienBuyFuncs.lua")
 	Script.Load("lua/combat_PowerConsumerMixin.lua")
-    Script.Load("lua/combat_TeamMixin.lua")
     Script.Load("lua/combat_Marine_Client.lua")
     Script.Load("lua/Hud/combat_GUIExperienceBar.lua")
 	Script.Load("lua/Hud/combat_GUIGameTimeCountDown.lua")
 	Script.Load("lua/Hud/GUIDevouredPlayer.lua")
 	Script.Load("lua/Hud/GUIDevourOnos.lua")
+	
+    Script.Load("lua/combat_ScoringMixin.lua")
 
 end
 

@@ -54,7 +54,7 @@ function DevouredPlayer:OnDestroy()
     Marine.OnDestroy(self)
     
     if self.guiDevouredPlayer then
-    
+        self.guiDevouredPlayer.background:SetIsVisible(false)
         GetGUIManager():DestroyGUIScriptSingle(self.guiDevouredPlayer)
         self.guiDevouredPlayer = nil
         
@@ -85,19 +85,7 @@ function DevouredPlayer:GetDevourPercentage()
 end
 
 function DevouredPlayer:OnProcessMove(input)
-
-
-    if Client and not Shared.GetIsRunningPrediction() then
-
-        self:UpdateScoreboardDisplay(input)
-        
-        self:UpdateCrossHairTarget()
-        self:UpdateChat(input)     
-        
-    end
-
     self:OnUpdatePlayer(input.time)
-
 end
 
 function DevouredPlayer:GetPlayFootsteps()
@@ -124,7 +112,7 @@ function DevouredPlayer:AdjustGravityForce(input, gravity)
     return 0
 end
 
--- ERASE OR REFACTOR
+-- ERASEÂ ORÂ REFACTOR
 // Handle player transitions to egg, new lifeforms, etc.
 function DevouredPlayer:OnEntityChange(oldEntityId, newEntityId)
 

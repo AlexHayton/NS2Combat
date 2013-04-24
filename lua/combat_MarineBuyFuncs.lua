@@ -89,7 +89,7 @@ function CombatMarineBuy_GetWeaponDescription(techId)
         combatWeaponDescription = {}
         
         combatWeaponDescription[kTechId.MedPack] = "You get Resupply. Ammo and Medpacks will drop for you every " .. kResupplyTimer .. " seconds."
-        combatWeaponDescription[kTechId.Scan] = "You get Scansupply. A scan will appear every " .. kScanTimer .. " seconds, showing all enemies nearby."
+        combatWeaponDescription[kTechId.Scan] = "You get a Scanner. A scan will appear every " .. kScanTimer .. " seconds, showing all enemies nearby."
         combatWeaponDescription[kTechId.Welder] = "You get a Welder. You can repair your team's buildings or your teammates' Armor."
         combatWeaponDescription[kTechId.LayMines] = "You get 1 Mine to use each time you die."
         combatWeaponDescription[kTechId.MACEMP] =  "Your Taunt key will activate a powerful EMP-Blast that cripples enemies' energy reserves. Can be activated once every " .. kEMPTimer .. " seconds."

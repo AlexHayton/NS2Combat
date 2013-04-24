@@ -100,6 +100,8 @@ if kCombatModActive then
 	
 	// new hook style hooks
 	Script.Load("lua/combat_Babbler.lua")
+	Script.Load("lua/combat_Onos.lua")
+	Script.Load("lua/combat_StompMixin.lua")
     
 end
 

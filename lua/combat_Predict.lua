@@ -27,4 +27,6 @@ Script.Load("lua/ExtraEntitiesMod/eem_Shared.lua")
 
 Script.Load("lua/Predict.lua")
 
+Script.Load("lua/combat_ScoringMixin.lua")
+
 Script.Load("lua/PostLoadMod.lua")
