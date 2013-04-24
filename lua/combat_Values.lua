@@ -32,6 +32,7 @@ kCombatAlienBuyMenuUpgradeButtonDistance = 210
 // Set the respawn timer
 kCombatRespawnTimer = 12
 kAlienWaveSpawnInterval = 12
+kCombatOvertimeRespawnTimer = 30
 
 // Rebalancing Intervals (secs)
 kCombatRebalanceInterval = 300
@@ -49,6 +50,7 @@ kArmorySpawnMaxDistance = 60
 // Specified in seconds...
 // Time Limit is now specified in ModSwitcher.
 //kCombatTimeLimit = 1500
+kCombatAllowOvertime = false
 kCombatTimeLeftPlayed = 0
 kCombatTimeReminderInterval = 300
 

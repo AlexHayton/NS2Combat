@@ -311,7 +311,7 @@ function CombatNS2Gamerules:OnUpdate_Hook(self, timePassed)
 			local timeTaken = math.ceil(self.timeSinceGameStateChanged)
 			local timeLeft = math.ceil(exactTimeLeft)
 				
-			if self:GetHasPassedTimelimit() then
+			if self:GetHasPassedTimelimit() and kCombatAllowOvertime == false then
 				team2.combatTeamWon = true
 			else
 			    // spawn Halloweenai after some minutes

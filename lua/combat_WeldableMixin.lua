@@ -19,7 +19,9 @@ function WeldableMixin:OnWeld(doer, elapsedTime, player)
 
     if self:GetCanBeWelded(doer) then
     
-        if self.OnWeldOverride then
+    	if self:isa("Structure") and GetHasTimeLimitPassed() then
+    	 // No effect!
+        elseif self.OnWeldOverride then
             self:OnWeldOverride(doer, elapsedTime)
         elseif doer:isa("MAC") then
             self:AddHealth(MAC.kRepairHealthPerSecond * elapsedTime)
