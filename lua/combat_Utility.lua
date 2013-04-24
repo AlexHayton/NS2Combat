@@ -24,7 +24,7 @@ end
 function GetTimeText(timeInSeconds)
 
 	local timeLeftText = ""
-	timeNumericSeconds = tonumber(timeInSeconds)
+	timeNumericSeconds = math.abs(tonumber(timeInSeconds))
 	ASSERT(timeNumericSeconds >= 0)
 	if (timeNumericSeconds > 60) then
 		timeLeftText = math.floor(timeNumericSeconds/60) .." minutes"
@@ -49,22 +49,25 @@ function GetTimeText(timeInSeconds)
 end
 
 // Gets the time in the format "mm:ss:ms"
-function GetTimeDigital(timeInSeconds)
+function GetTimeDigital(timeInSeconds, showMinutes, showMilliseconds)
 
 	local timeLeftText = ""
 	timeNumericSeconds = tonumber(timeInSeconds)
 	if (timeNumericSeconds < 0) then 
-		timeNumericSeconds = 0
+		timeLeftText = "- "
 	end
+	timeNumericSeconds = math.abs(tonumber(timeInSeconds))
 	
-	local timeLeftMinutes = math.floor(timeNumericSeconds/60)
-	if (timeLeftMinutes < 10) then
-		timeLeftText = "0" .. timeLeftMinutes
-	else
-		timeLeftText = timeLeftMinutes
+	if showMinutes then
+		local timeLeftMinutes = math.floor(timeNumericSeconds/60)
+		if (timeLeftMinutes < 10) then
+			timeLeftText = timeLeftText .. "0" .. timeLeftMinutes
+		else
+			timeLeftText = timeLeftText .. timeLeftMinutes
+		end
+	
+		timeLeftText = timeLeftText .. ":"
 	end
-	
-	timeLeftText = timeLeftText .. ":"
 	
 	timeLeftSeconds = math.floor(timeNumericSeconds % 60)
 	if (timeLeftSeconds < 10) then
@@ -73,16 +76,26 @@ function GetTimeDigital(timeInSeconds)
 		timeLeftText = timeLeftText .. timeLeftSeconds
 	end
 	
-	// Disable milliseconds. They are *really* annoying.
-	/*timeLeftText = timeLeftText .. ":"
+	// Disable milliseconds by default. They are *really* annoying.
+	if showMilliseconds then
+		timeLeftText = timeLeftText .. ":"
 	
-	local timeLeftMilliseconds = math.ceil((timeNumericSeconds * 100) % 100)
-	if (timeLeftMilliseconds < 10) then
-		timeLeftText = timeLeftText .. "0" .. timeLeftMilliseconds
-	else
-		timeLeftText = timeLeftText .. timeLeftMilliseconds
-	end*/
+		local timeLeftMilliseconds = math.ceil((timeNumericSeconds * 100) % 100)
+		if (timeLeftMilliseconds < 10) then
+			timeLeftText = timeLeftText .. "0" .. timeLeftMilliseconds
+		else
+			timeLeftText = timeLeftText .. timeLeftMilliseconds
+		end
+	end
 	
 	return timeLeftText
 
+end
+
+function GetHasTimelimitPassed()
+	if Server then
+		return GetGamerules():GetHasTimelimitPassed()
+	else
+		return PlayerUI_GetHasTimelimitPassed()
+	end
 end

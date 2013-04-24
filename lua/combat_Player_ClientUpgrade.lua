@@ -205,9 +205,19 @@ function PlayerUI_GetTimeRemaining()
 	timeDigital = "00:00:00"
 	if (kCombatTimeLimit ~= nil) then
 		local exactTimeLeft = (kCombatTimeLimit - kCombatTimeSinceGameStart)
-		timeDigital = GetTimeDigital(exactTimeLeft)
+		local showMinutes = math.abs(exactTimeLeft) > 0
+		local showMilliseconds = exactTimeLeft > 0 and exactTimeLeft < 30
+		timeDigital = GetTimeDigital(exactTimeLeft, showMinutes, showMilliseconds)
 	end
 	
 	return timeDigital
 
+end
+
+function PlayerUI_GetHasTimelimitPassed()
+	if kCombatTimeLimit ~= nil and kCombatTimeLimit - kCombatTimeSinceGameStart > 0 then
+		return true
+	else
+		return false
+	end
 end
