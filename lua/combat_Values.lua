@@ -130,7 +130,8 @@ kPlayerHealXpRate = 0
 kPowerPointHealth = 1200	
 kPowerPointArmor = 500	
 kPowerPointPointValue = 0
-kCombatPowerPointsTakeDamage = true
+// Moved to CombatConfig.json
+//kCombatPowerPointsTakeDamage = true
 kCombatPowerPointAutoRepairTime = 30
 
 // Alien vision should be free

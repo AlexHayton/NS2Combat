@@ -18,12 +18,15 @@ kCombatPlayerThresholdDefault = 0
 kCombatLastPlayerCountDefault = 0
 kCombatTimeLimitDefault = 2100
 kCombatGlobalMicDefault = false
+kCombatPowerPointsTakeDamageDefault = true
 
 kCombatModActive = kCombatModActiveDefault
 kCombatPlayerThreshold = kCombatPlayerThresholdDefault
 kCombatLastPlayerCount = kCombatLastPlayerCountDefault
 kCombatTimeLimit = kCombatTimeLimitDefault 
 kCombatGlobalMic = kCombatGlobalMicDefault
+kCombatPowerPointsTakeDamage = kCombatPowerPointsTakeDamage
+
 kCombatModSwitcherPath = "config://CombatMod.cfg"
 
 // load the ModActive value from config://CombatModConfig.json
@@ -78,8 +81,8 @@ function ModSwitcher_Load(changeLocal)
 				settings.ModTimeLimit = kCombatTimeLimitDefault
 			end
 			
-            // there is no string to bool function so we need to do it like this
-            if settings.ModGlobalMic == "true" or settings.ModGlobalMic == true then 
+		    // there is no string to bool function so we need to do it like this
+			if settings.ModGlobalMic == "true" or settings.ModGlobalMic == true then 
                 kCombatGlobalMic = true 
             elseif settings.ModGlobalMic == "false" or  settings.ModGlobalMic == false then
                 kCombatGlobalMic = false 
@@ -89,7 +92,18 @@ function ModSwitcher_Load(changeLocal)
 				kCombatGlobalMic = kCombatGlobalMicDefault
 				settings.ModGlobalMic = kCombatGlobalMicDefault
             end
-			local originalCombatModActive = kCombatModActive
+            
+            // there is no string to bool function so we need to do it like this
+            if settings.ModPowerPointsTakeDamage == "true" or settings.ModPowerPointsTakeDamage == true then 
+                kCombatPowerPointsTakeDamage = true 
+            elseif settings.ModPowerPointsTakeDamage == "false" or  settings.ModPowerPointsTakeDamage == false then
+                kCombatPowerPointsTakeDamage = false 
+            else
+                Shared.Message("For the value ModPowerPointsTakeDamage in " .. kCombatModSwitcherPath .. " only true and false are allowed")
+				Shared.Message("Resetting the value to default (true)")
+				ModPowerPointsTakeDamage = kCombatPowerPointsTakeDamageDefault
+				settings.kCombatPowerPointsTakeDamage = kCombatPowerPointsTakeDamageDefault
+            end
 			
 			// Enable/Disable the mod based on the player threshold if that value is set greater than 0.
 			if kCombatModActive and kCombatPlayerThreshold > 0 then
@@ -126,13 +140,17 @@ function ModSwitcher_Load(changeLocal)
 				settings.ModGlobalMic = kCombatGlobalMicDefault
 			end
 			
+			if settings.ModPowerPointsTakeDamage == nil then
+				settings.ModPowerPointsTakeDamage = kCombatPowerPointsTakeDamageDefault
+			end
+			
             return settings
         end
         
     else
         // file not found, create it
         Shared.Message(kCombatModSwitcherPath .. " not found, will create it now.")
-        newSettings = ModSwitcher_Save(kCombatModActive, kCombatPlayerThreshold, kCombatLastPlayerCount, kCombatTimeLimit, kCombatGlobalMic, true)
+        newSettings = ModSwitcher_Save(kCombatModActive, kCombatPlayerThreshold, kCombatLastPlayerCount, kCombatTimeLimit, kCombatGlobalMic, kCombatPowerPointsTakeDamage, true)
 		ModSwitcher_Output_Status(newSettings)
     end 
     
@@ -140,7 +158,7 @@ end
 
 
 // save it, but change the local variable when the map is changing (will be done via load the value
-function ModSwitcher_Save(ModActiveBool, ThresholdNumber, LastPlayers, TimeLimit, GlobalMic, newlyCreate)
+function ModSwitcher_Save(ModActiveBool, ThresholdNumber, LastPlayers, TimeLimit, GlobalMic, PowerPointsTakeDamage, newlyCreate)
   
 	// Default values in case the file does not exist.
 	local currentSettings = { 
@@ -149,6 +167,7 @@ function ModSwitcher_Save(ModActiveBool, ThresholdNumber, LastPlayers, TimeLimit
 		ModLastPlayerCount = kCombatLastPlayerCountDefault,
 		ModTimeLimit = kCombatTimeLimitDefault,
 		ModGlobalMic = kCombatGlobalMicDefault,
+		ModPowerPointsTakeDamage = kCombatPowerPointsTakeDamageDefault,
 	}
 	// If we're not newly creating the file, fill in any missing values here.
     if not newlyCreate then
@@ -198,6 +217,14 @@ function ModSwitcher_Save(ModActiveBool, ThresholdNumber, LastPlayers, TimeLimit
 	else
 		SendGlobalChatMessage("GlobalMic is now: " .. ModSwitcher_Active_Status(GlobalMic))
 	end
+	
+	if currentSettings.ModPowerPointsTakeDamage == nil then    
+		PowerPointsTakeDamage = kCombatPowerPointsTakeDamageDefault
+	elseif GlobalMic == nil then
+		PowerPointsTakeDamage = currentSettings.ModPowerPointsTakeDamage
+	else
+		SendGlobalChatMessage("PowerPointsTakeDamage is now: " .. ModSwitcher_Active_Status(PowerPointsTakeDamage))
+	end
 
 	// Save to disk.
 	local settingsFile = io.open(kCombatModSwitcherPath, "w+")
@@ -208,6 +235,7 @@ function ModSwitcher_Save(ModActiveBool, ThresholdNumber, LastPlayers, TimeLimit
 						ModLastPlayerCount = LastPlayers,
 						ModTimeLimit = TimeLimit,
 						ModGlobalMic = GlobalMic,
+						ModPowerPointsTakeDamage = PowerPointsTakeDamage,
 						}
 	
 	// if its not exist it will be created automatically                  
@@ -234,6 +262,7 @@ function ModSwitcher_Output_Status(currentSettings)
 	Shared.Message("CombatMod Last Map ended with " .. currentSettings.ModLastPlayerCount .. " players.")
 	Shared.Message("CombatMod is now: " .. ModSwitcher_Active_Status(kCombatModActive)) 
 	Shared.Message("CombatMod Time Limit is now: " .. GetTimeText(currentSettings.ModTimeLimit) .. ".")
+	Shared.Message("CombatMod Power Point Damage is now: " .. ModSwitcher_Active_Status(currentSettings.ModGlobalMic))
 	Shared.Message("CombatMod Global Mic is now: " .. ModSwitcher_Active_Status(currentSettings.ModGlobalMic))
 	Shared.Message("\n")
 	Shared.Message("**********************************")
