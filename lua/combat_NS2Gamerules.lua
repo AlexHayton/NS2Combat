@@ -7,7 +7,7 @@
 
 // combat_NS2Gamerules.lua
 
-function NS2Gamerules:GetHasPassedTimelimit()
+function NS2Gamerules:GetHasTimelimitPassed()
 	if self.timeSinceGameStateChanged >= kCombatTimeLimit then
 		return true
 	else

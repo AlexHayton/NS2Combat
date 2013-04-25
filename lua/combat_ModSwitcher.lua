@@ -88,7 +88,7 @@ function ModSwitcher_Load(changeLocal)
                 kCombatAllowOvertime = false 
             else
                 Shared.Message("For the value ModAllowOvertime in " .. kCombatModSwitcherPath .. " only true and false are allowed")
-				Shared.Message("Resetting the value to default (false)")
+				Shared.Message("Resetting the value to default (true)")
 				kCombatAllowOvertime = kCombatAllowOvertimeDefault
 				settings.ModAllowOvertime = kCombatAllowOvertimeDefault
             end
@@ -150,7 +150,7 @@ function ModSwitcher_Load(changeLocal)
     else
         // file not found, create it
         Shared.Message(kCombatModSwitcherPath .. " not found, will create it now.")
-        newSettings = ModSwitcher_Save(kCombatModActive, kCombatPlayerThreshold, kCombatLastPlayerCount, kCombatTimeLimit, kCombatGlobalMic, kCombatPowerPointsTakeDamage, true)
+        newSettings = ModSwitcher_Save(kCombatModActive, kCombatPlayerThreshold, kCombatLastPlayerCount, kCombatTimeLimit, kCombatAllowOvertime, kCombatPowerPointsTakeDamage, true)
 		ModSwitcher_Output_Status(newSettings)
     end 
     
@@ -166,7 +166,7 @@ function ModSwitcher_Save(ModActiveBool, ThresholdNumber, LastPlayers, TimeLimit
 		ModThreshold = kCombatPlayerThresholdDefault,
 		ModLastPlayerCount = kCombatLastPlayerCountDefault,
 		ModTimeLimit = kCombatTimeLimitDefault,
-		ModAllowOvertime = kCombatAllowOvertimeDefault
+		ModAllowOvertime = kCombatAllowOvertimeDefault,
 		ModPowerPointsTakeDamage = kCombatPowerPointsTakeDamageDefault,
 	}
 	// If we're not newly creating the file, fill in any missing values here.
@@ -211,7 +211,7 @@ function ModSwitcher_Save(ModActiveBool, ThresholdNumber, LastPlayers, TimeLimit
 	end
 	
     if currentSettings.ModAllowOvertime == nil then    
-		AllowOvertime = kCombatGlobalMicDefault
+		AllowOvertime = kCombatAllowOvertimeDefault
 	elseif AllowOvertime == nil then
 		AllowOvertime = currentSettings.ModAllowOvertime
 	else

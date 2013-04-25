@@ -73,6 +73,7 @@ if kCombatModActive then
     // new functions, no hooks
     Script.Load("lua/combat_TechTree.lua")
     Script.Load("lua/combat_TechNode.lua")
+	Script.Load("lua/combat_NS2Gamerules.lua")
     Script.Load("lua/combat_Chat.lua")
 	Script.Load("lua/combat_CustomEffects.lua")
     Script.Load("lua/combat_CommandStructure.lua")

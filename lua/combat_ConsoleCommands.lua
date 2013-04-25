@@ -183,7 +183,7 @@ function OnCommandModActiveAdmin(client, activeBoolean)
 
     if activeBoolean then
         if activeBoolean == "true" or activeBoolean == "false" then
-            ModSwitcher_Save(activeBoolean, nil, nil, nil, nil, false)
+            ModSwitcher_Save(activeBoolean, nil, nil, nil, nil, nil, false)
             Shared.Message("The changes only take effect after the next mapchange")
             
             // send it to every player            
@@ -209,7 +209,7 @@ function OnCommandModThresholdAdmin(client, numPlayers)
 	
     if numPlayers then
         if tonumber(numPlayers) then
-            ModSwitcher_Save(nil, tonumber(numPlayers), nil, nil, nil, false)
+            ModSwitcher_Save(nil, tonumber(numPlayers), nil, nil, nil, nil, false)
             Shared.Message("The changes only take effect after the next mapchange!")
             
             // send it to every player            
@@ -262,7 +262,7 @@ function OnCommandTimeLimitAdmin(client, timeLimit)
 	
     if timeLimit then
         if tonumber(timeLimit) then
-            ModSwitcher_Save(nil, nil, nil, timeLimit, nil, false)
+            ModSwitcher_Save(nil, nil, nil, timeLimit, nil, nil, false)
 			kCombatTimeLimit = tonumber(timeLimit)
             
             // send it to every player            
@@ -281,6 +281,58 @@ function OnCommandTimeLimitAdmin(client, timeLimit)
 	else
 		ModSwitcher_Output_Status_Console()
     end
+end
+
+function OnCommandOvertimeAdmin(client, activeBoolean)
+
+    if activeBoolean then
+        if activeBoolean == "true" or activeBoolean == "false" then
+            ModSwitcher_Save(nil, nil, nil, nil, nil, activeBoolean, false)
+            Shared.Message("The changes only take effect after the next mapchange")
+            
+            // send it to every player            
+            ModSwitcher_Output_Status_All()
+              
+        else
+            Shared.Message("CombatModSwitcher: Only true or false allowed")
+        end
+	else
+		ModSwitcher_Output_Status_Console()
+	end
+end
+
+local function OnCommandOvertime(client, activeBoolean)
+
+    if client == nil or client:GetIsLocalClient() then
+        OnCommandOvertimeAdmin(client, activeBoolean)
+    end
+    
+end
+
+function OnCommandPowerPointDamageAdmin(client, activeBoolean)
+
+    if activeBoolean then
+        if activeBoolean == "true" or activeBoolean == "false" then
+            ModSwitcher_Save(nil, nil, nil, nil, activeBoolean, nil, false)
+            Shared.Message("The changes only take effect after the next mapchange")
+            
+            // send it to every player            
+            ModSwitcher_Output_Status_All()
+              
+        else
+            Shared.Message("CombatModSwitcher: Only true or false allowed")
+        end
+	else
+		ModSwitcher_Output_Status_Console()
+	end
+end
+
+local function OnCommandPowerPointDamage(client, activeBoolean)
+
+    if client == nil or client:GetIsLocalClient() then
+        OnCommandPowerPointDamageAdmin(client, activeBoolean)
+    end
+    
 end
 
 function OnCommandChangeMap(client, mapName)
@@ -365,8 +417,12 @@ end
 Event.Hook("Console_co_mod_active",         OnCommandModActive) 
 Event.Hook("Console_co_mod_threshold",         OnCommandModThreshold) 
 Event.Hook("Console_co_mod_timelimit",         OnCommandTimeLimit) 
+Event.Hook("Console_co_mod_overtime",         OnCommandOvertime) 
+Event.Hook("Console_co_mod_powerpointdamage",         OnCommandPowerPointDamage) 
 Event.Hook("Console_changemap", OnCommandChangeMap)
 CreateServerAdminCommand("Console_sv_co_mod_active", OnCommandModActiveAdmin, "<true/false> Switches between combat and classic mode") 
 CreateServerAdminCommand("Console_sv_co_mod_threshold", OnCommandModThresholdAdmin, "<number of players> Sets the game to classic mode after a certain player threshold") 
-CreateServerAdminCommand("Console_sv_co_mod_timelimit", OnCommandTimeLimitAdmin, "<number of players> Sets the time limit of the game (in seconds)") 
+CreateServerAdminCommand("Console_sv_co_mod_timelimit", OnCommandTimeLimitAdmin, "<number of seconds> Sets the time limit of the game (in seconds)") 
+CreateServerAdminCommand("Console_sv_co_mod_overtime", OnCommandOvertimeAdmin, "<true/false> Sets whether the game can go into overtime") 
+CreateServerAdminCommand("Console_sv_co_mod_powerpointdamage", OnCommandPowerPointDamage, "<true/false> Sets whether power points can take damage") 
 CreateServerAdminCommand("Console_sv_changemap", OnCommandChangeMap, "<map name>, Switches to the map specified") 

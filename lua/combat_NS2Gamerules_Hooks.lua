@@ -311,7 +311,7 @@ function CombatNS2Gamerules:OnUpdate_Hook(self, timePassed)
 			local timeTaken = math.ceil(self.timeSinceGameStateChanged)
 			local timeLeft = math.ceil(exactTimeLeft)
 				
-			if self:GetHasPassedTimelimit() and kCombatAllowOvertime == false then
+			if self:GetHasTimelimitPassed() and kCombatAllowOvertime == false then
 				self:GetTeam(kCombatDefaultWinner).combatTeamWon = true
 			else
 			    // spawn Halloweenai after some minutes
@@ -324,6 +324,7 @@ function CombatNS2Gamerules:OnUpdate_Hook(self, timePassed)
 			    end
 				// send timeleft to all players, but only every few min
                 if 	kCombatTimeLeftPlayed ~= timeLeft and
+					timeLeft > 0 and
 					((timeLeft % kCombatTimeReminderInterval) == 0 or 
 					 (timeLeft == 60) or (timeLeft == 30) or
 					 (timeLeft == 20) or (timeLeft == 10) or
@@ -332,13 +333,24 @@ function CombatNS2Gamerules:OnUpdate_Hook(self, timePassed)
                     local playersTeam2 = GetEntitiesForTeam("Player", kTeam2Index)
 					
 					local timeLeftText = GetTimeText(timeLeft)
-                    for index, player in ipairs(playersTeam1) do
-                        player:SendDirectMessage( timeLeftText .." left until Marines have lost!")
-                    end
-                    
-                    for index, player in ipairs(playersTeam2) do
-                        player:SendDirectMessage( timeLeftText .." left until Aliens have won!")
-                    end
+					local team1Message = " left until Marines have lost!"
+					local team2Message = " left until Marines have lost!"
+					
+				    if timeLeft == 0 and kCombatAllowOvertime then
+						team1Message = " left until overtime!"
+						team2Message = " left until overtime!"
+					elseif kCombatAllowOvertime then
+						team1Message = " OVERTIME!"
+						team2Message = " OVERTIME!"
+					end
+			
+					for index, player in ipairs(playersTeam1) do
+						player:SendDirectMessage( timeLeftText .. team1Message )
+					end
+					
+					for index, player in ipairs(playersTeam2) do
+						player:SendDirectMessage( timeLeftText .. team2Message )
+					end
                     
                     kCombatTimeLeftPlayed = timeLeft                
                 end
