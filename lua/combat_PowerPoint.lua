@@ -16,10 +16,25 @@ end
 function CombatPowerPoint:OnLoad()
     ClassHooker:SetClassCreatedIn("PowerPoint", "lua/PowerPoint.lua") 
     self:ReplaceClassFunction("PowerPoint", "GetCanTakeDamageOverride", "PowerPointGetCanTakeDamageOverride_Hook")
+    self:PostHookClassFunction("PowerPoint", "OnCreate", "OnCreate_Hook")
+    self:PostHookClassFunction("PowerPoint", "OnKill", "OnKill_Hook")
 end
 
 function CombatPowerPoint:PowerPointGetCanTakeDamageOverride_Hook(self)
-    return false
+    return kCombatPowerPointsTakeDamage
+end
+
+function CombatPowerPoint:OnCreate_Hook(self)
+    self.combatCanTakeDamage = kCombatPowerPointsTakeDamage
+end
+
+local function AutoRepair(self)
+	
+	return false
+end
+
+function CombatPowerPoint:OnKill_Hook(self)
+	self:AddTimedCallback(AutoRepair, kCombatPowerPointAutoRepairTime)
 end
 
 if (not HotReload) then
