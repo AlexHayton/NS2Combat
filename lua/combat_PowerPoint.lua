@@ -29,7 +29,7 @@ function CombatPowerPoint:OnCreate_Hook(self)
 end
 
 local function AutoRepair(self)
-	
+	self:SetConstructionComplete()
 	return false
 end
 
