@@ -17,14 +17,14 @@ kCombatModActiveDefault = true
 kCombatPlayerThresholdDefault = 0
 kCombatLastPlayerCountDefault = 0
 kCombatTimeLimitDefault = 2100
-kCombatGlobalMicDefault = false
+kCombatAllowOvertimeDefault = true
 kCombatPowerPointsTakeDamageDefault = true
 
 kCombatModActive = kCombatModActiveDefault
 kCombatPlayerThreshold = kCombatPlayerThresholdDefault
 kCombatLastPlayerCount = kCombatLastPlayerCountDefault
 kCombatTimeLimit = kCombatTimeLimitDefault 
-kCombatGlobalMic = kCombatGlobalMicDefault
+kCombatAllowOvertime = kCombatAllowOvertimeDefault
 kCombatPowerPointsTakeDamage = kCombatPowerPointsTakeDamage
 
 kCombatModSwitcherPath = "config://CombatMod.cfg"
@@ -82,15 +82,15 @@ function ModSwitcher_Load(changeLocal)
 			end
 			
 		    // there is no string to bool function so we need to do it like this
-			if settings.ModGlobalMic == "true" or settings.ModGlobalMic == true then 
-                kCombatGlobalMic = true 
-            elseif settings.ModGlobalMic == "false" or  settings.ModGlobalMic == false then
-                kCombatGlobalMic = false 
+			if settings.ModAllowOvertime == "true" or settings.ModAllowOvertime == true then 
+                kCombatAllowOvertime = true 
+            elseif settings.ModAllowOvertime == "false" or  settings.ModAllowOvertime == false then
+                kCombatAllowOvertime = false 
             else
-                Shared.Message("For the value ModGlobalMic in " .. kCombatModSwitcherPath .. " only true and false are allowed")
+                Shared.Message("For the value ModAllowOvertime in " .. kCombatModSwitcherPath .. " only true and false are allowed")
 				Shared.Message("Resetting the value to default (false)")
-				kCombatGlobalMic = kCombatGlobalMicDefault
-				settings.ModGlobalMic = kCombatGlobalMicDefault
+				kCombatAllowOvertime = kCombatAllowOvertimeDefault
+				settings.ModAllowOvertime = kCombatAllowOvertimeDefault
             end
             
             // there is no string to bool function so we need to do it like this
@@ -101,8 +101,8 @@ function ModSwitcher_Load(changeLocal)
             else
                 Shared.Message("For the value ModPowerPointsTakeDamage in " .. kCombatModSwitcherPath .. " only true and false are allowed")
 				Shared.Message("Resetting the value to default (true)")
-				ModPowerPointsTakeDamage = kCombatPowerPointsTakeDamageDefault
-				settings.kCombatPowerPointsTakeDamage = kCombatPowerPointsTakeDamageDefault
+				kCombatPowerPointsTakeDamage = kCombatPowerPointsTakeDamageDefault
+				settings.ModPowerPointsTakeDamage = kCombatPowerPointsTakeDamageDefault
             end
 			
 			// Enable/Disable the mod based on the player threshold if that value is set greater than 0.
@@ -136,8 +136,8 @@ function ModSwitcher_Load(changeLocal)
 				settings.ModTimeLimit = kCombatTimeLimitDefault
 			end
 			
-			if settings.ModGlobalMic == nil then
-				settings.ModGlobalMic = kCombatGlobalMicDefault
+			if settings.ModAllowOvertime == nil then
+				settings.ModAllowOvertime = kCombatAllowOvertimeDefault
 			end
 			
 			if settings.ModPowerPointsTakeDamage == nil then
@@ -158,7 +158,7 @@ end
 
 
 // save it, but change the local variable when the map is changing (will be done via load the value
-function ModSwitcher_Save(ModActiveBool, ThresholdNumber, LastPlayers, TimeLimit, GlobalMic, PowerPointsTakeDamage, newlyCreate)
+function ModSwitcher_Save(ModActiveBool, ThresholdNumber, LastPlayers, TimeLimit, AllowOvertime, PowerPointsTakeDamage, newlyCreate)
   
 	// Default values in case the file does not exist.
 	local currentSettings = { 
@@ -166,7 +166,7 @@ function ModSwitcher_Save(ModActiveBool, ThresholdNumber, LastPlayers, TimeLimit
 		ModThreshold = kCombatPlayerThresholdDefault,
 		ModLastPlayerCount = kCombatLastPlayerCountDefault,
 		ModTimeLimit = kCombatTimeLimitDefault,
-		ModGlobalMic = kCombatGlobalMicDefault,
+		ModAllowOvertime = kCombatAllowOvertimeDefault
 		ModPowerPointsTakeDamage = kCombatPowerPointsTakeDamageDefault,
 	}
 	// If we're not newly creating the file, fill in any missing values here.
@@ -210,17 +210,17 @@ function ModSwitcher_Save(ModActiveBool, ThresholdNumber, LastPlayers, TimeLimit
 		SendGlobalChatMessage("Time Limit is now: " .. GetTimeText(TimeLimit))
 	end
 	
-    if currentSettings.ModGlobalMic == nil then    
-		GlobalMic = kCombatGlobalMicDefault
-	elseif GlobalMic == nil then
-		GlobalMic = currentSettings.ModGlobalMic
+    if currentSettings.ModAllowOvertime == nil then    
+		AllowOvertime = kCombatGlobalMicDefault
+	elseif AllowOvertime == nil then
+		AllowOvertime = currentSettings.ModAllowOvertime
 	else
-		SendGlobalChatMessage("GlobalMic is now: " .. ModSwitcher_Active_Status(GlobalMic))
+		SendGlobalChatMessage("AllowOvertime is now: " .. ModSwitcher_Active_Status(AllowOvertime))
 	end
 	
 	if currentSettings.ModPowerPointsTakeDamage == nil then    
 		PowerPointsTakeDamage = kCombatPowerPointsTakeDamageDefault
-	elseif GlobalMic == nil then
+	elseif PowerPointsTakeDamage == nil then
 		PowerPointsTakeDamage = currentSettings.ModPowerPointsTakeDamage
 	else
 		SendGlobalChatMessage("PowerPointsTakeDamage is now: " .. ModSwitcher_Active_Status(PowerPointsTakeDamage))
@@ -234,7 +234,7 @@ function ModSwitcher_Save(ModActiveBool, ThresholdNumber, LastPlayers, TimeLimit
 						ModPlayerThreshold = ThresholdNumber,
 						ModLastPlayerCount = LastPlayers,
 						ModTimeLimit = TimeLimit,
-						ModGlobalMic = GlobalMic,
+						ModAllowOvertime = AllowOvertime,
 						ModPowerPointsTakeDamage = PowerPointsTakeDamage,
 						}
 	
@@ -262,8 +262,8 @@ function ModSwitcher_Output_Status(currentSettings)
 	Shared.Message("CombatMod Last Map ended with " .. currentSettings.ModLastPlayerCount .. " players.")
 	Shared.Message("CombatMod is now: " .. ModSwitcher_Active_Status(kCombatModActive)) 
 	Shared.Message("CombatMod Time Limit is now: " .. GetTimeText(currentSettings.ModTimeLimit) .. ".")
-	Shared.Message("CombatMod Power Point Damage is now: " .. ModSwitcher_Active_Status(currentSettings.ModGlobalMic))
-	Shared.Message("CombatMod Global Mic is now: " .. ModSwitcher_Active_Status(currentSettings.ModGlobalMic))
+	Shared.Message("CombatMod Overtime is now: " .. ModSwitcher_Active_Status(currentSettings.ModAllowOvertime))
+	Shared.Message("CombatMod Power Point Damage is now: " .. ModSwitcher_Active_Status(currentSettings.ModPowerPointsTakeDamage))
 	Shared.Message("\n")
 	Shared.Message("**********************************")
 	Shared.Message("**********************************")
