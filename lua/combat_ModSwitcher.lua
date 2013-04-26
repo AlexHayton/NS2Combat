@@ -244,7 +244,7 @@ function ModSwitcher_Save(ModActiveBool, ThresholdNumber, LastPlayers, TimeLimit
 	
 	if currentSettings.ModDefaultWinner == nil then    
 		DefaultWinner = kCombatDefaultWinnerDefault
-	elseif LastPlayers == nil then
+	elseif DefaultWinner == nil then
 		DefaultWinner = currentSettings.ModDefaultWinner	
 	else
 		Shared.Message("ModDefaultWinner is now: " .. DefaultWinner)

@@ -6,6 +6,9 @@
 //________________________________
 
 // combat_PowerPoint.lua
+local kSocketedModelName = PrecacheAsset("models/system/editor/power_node.model")
+local kSocketedAnimationGraph = PrecacheAsset("models/system/editor/power_node.animation_graph")
+local kAuxPowerBackupSound = PrecacheAsset("sound/NS2.fev/marine/power_node/backup")
 
 local HotReload = CombatPowerPoint
 if(not HotReload) then
@@ -28,14 +31,33 @@ function CombatPowerPoint:OnCreate_Hook(self)
     self.combatCanTakeDamage = kCombatPowerPointsTakeDamage
 end
 
+local function PowerUp(self)
+
+	self:SetInternalPowerState(PowerPoint.kPowerState.socketed)
+	self:SetLightMode(kLightMode.Normal)
+	self:StopSound(kAuxPowerBackupSound)
+	self:TriggerEffects("fixed_power_up")
+	self:SetPoweringState(true)
+	
+end
+
 local function AutoRepair(self)
-	Shared.Message("Tried to auto repair a power point!")
-	self:SetConstructionComplete()
+	self.health = kPowerPointHealth
+	self.armor = kPowerPointArmor
+	
+	self.maxHealth = kPowerPointHealth
+	self.maxArmor = kPowerPointArmor
+	
+	self.alive = true
+	
+	PowerUp(self)
 	return false
 end
 
-function CombatPowerPoint:OnKill_Hook(self)
-	self:AddTimedCallback(AutoRepair, kCombatPowerPointAutoRepairTime)
+function CombatPowerPoint:OnKill_Hook(self, attacker, doer, point, direction)
+	if attacker and attacker:isa("Player") then
+		self:AddTimedCallback(AutoRepair, kCombatPowerPointAutoRepairTime)
+	end
 end
 
 if (not HotReload) then

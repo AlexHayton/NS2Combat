@@ -333,10 +333,18 @@ function CombatNS2Gamerules:OnUpdate_Hook(self, timePassed)
                     local playersTeam2 = GetEntitiesForTeam("Player", kTeam2Index)
 					
 					local timeLeftText = GetTimeText(timeLeft)
-					local team1Message = " left until Marines have lost!"
-					local team2Message = " left until Marines have lost!"
+					local team1Message = ""
+					local team2Message = ""
 					
-				    if timeLeft == 0 and kCombatAllowOvertime then
+					if kCombatDefaultWinner == kTeam2Index then
+						team1Message = " left until Marines have lost!"
+						team2Message = " left until Aliens have won!"						
+					else
+						team1Message = " left until Marines have won!"
+						team2Message = " left until Aliens have lost!"											
+					end
+					
+				    if timeLeft >= 0 and kCombatAllowOvertime then
 						team1Message = " left until overtime!"
 						team2Message = " left until overtime!"
 					elseif kCombatAllowOvertime then

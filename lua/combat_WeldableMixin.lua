@@ -7,6 +7,8 @@
 
 // combat_WeldableMixin.lua
 
+Script.Load("lua/Utility.lua")
+
 local function setDecimalPlaces(num, idp)
     local mult = 10^(idp or 0)
     if num >= 0 then return math.floor(num * mult) / mult
@@ -19,8 +21,8 @@ function WeldableMixin:OnWeld(doer, elapsedTime, player)
 
     if self:GetCanBeWelded(doer) then
     
-    	if self:isa("Structure") and GetHasTimeLimitPassed() then
-    	 // No effect!
+    	if self.GetIsBuilt and GetGamerules():GetHasTimelimitPassed() then
+			// Do nothing
         elseif self.OnWeldOverride then
             self:OnWeldOverride(doer, elapsedTime)
         elseif doer:isa("MAC") then
@@ -43,7 +45,9 @@ function WeldableMixin:OnWeld(doer, elapsedTime, player)
         end
 		
 		if player and player.OnWeldTarget then
-            player:OnWeldTarget(self)
+			if not (self.GetIsBuilt and GetHasTimelimitPassed()) then
+				player:OnWeldTarget(self)
+			end
         end
         
     end

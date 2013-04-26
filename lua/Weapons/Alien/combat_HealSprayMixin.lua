@@ -5,6 +5,7 @@
 //
 //________________________________
 
+Script.Load("lua/Utility.lua")
 
 // Players heal by base amount + percentage of max health
 local kHealPlayerPercent = 3
@@ -39,7 +40,7 @@ end
 
 local function HealEntity(self, player, targetEntity)
 
-	if not (targetEntity:isa("Structure") and GetHasTimeLimitPassed()) then
+	if not (targetEntity.GetIsBuilt and GetGamerules():GetHasTimelimitPassed()) then
 	
 		local onEnemyTeam = (GetEnemyTeamNumber(player:GetTeamNumber()) == targetEntity:GetTeamNumber())
 		local isEnemyPlayer = onEnemyTeam and targetEntity:isa("Player")
