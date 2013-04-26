@@ -161,7 +161,11 @@ function CombatPlayingTeam:Update_Hook(self, timePassed)
 	if (#self.respawnQueue > 0) or (#players > 0)  then
 		
 		// Are we ready to spawn? This is based on the time since the last spawn wave...
-		local timeToSpawn = (self.timeSinceLastSpawn >= kCombatRespawnTimer)
+		local respawnTimer = kCombatRespawnTimer
+		if GetHasTimelimitPassed() then
+			respawnTimer = kCombatOvertimeRespawnTimer
+		end
+		local timeToSpawn = (self.timeSinceLastSpawn >= respawnTimer)
 		
 		if timeToSpawn then
 			// Reset the spawn timer.
@@ -239,7 +243,11 @@ function CombatPlayingTeam:ResetSpawnTimer(self)
 
 	// Reset the spawn timer
 	self.timeSinceLastSpawn = 0
-	self.nextSpawnTime = Shared.GetTime() + kCombatRespawnTimer
+	if not GetHasTimelimitPassed() then
+		self.nextSpawnTime = Shared.GetTime() + kCombatRespawnTimer
+	else
+		self.nextSpawnTime = Shared.GetTime() + kCombatOvertimeRespawnTimer
+	end
 			
 end
 
