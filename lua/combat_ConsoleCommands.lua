@@ -183,7 +183,7 @@ function OnCommandModActiveAdmin(client, activeBoolean)
 
     if activeBoolean then
         if activeBoolean == "true" or activeBoolean == "false" then
-            ModSwitcher_Save(activeBoolean, nil, nil, nil, nil, nil, false)
+            ModSwitcher_Save(activeBoolean, nil, nil, nil, nil, nil, nil, false)
             Shared.Message("The changes only take effect after the next mapchange")
             
             // send it to every player            
@@ -209,7 +209,7 @@ function OnCommandModThresholdAdmin(client, numPlayers)
 	
     if numPlayers then
         if tonumber(numPlayers) then
-            ModSwitcher_Save(nil, tonumber(numPlayers), nil, nil, nil, nil, false)
+            ModSwitcher_Save(nil, tonumber(numPlayers), nil, nil, nil, nil, nil, false)
             Shared.Message("The changes only take effect after the next mapchange!")
             
             // send it to every player            
@@ -262,7 +262,7 @@ function OnCommandTimeLimitAdmin(client, timeLimit)
 	
     if timeLimit then
         if tonumber(timeLimit) then
-            ModSwitcher_Save(nil, nil, nil, timeLimit, nil, nil, false)
+            ModSwitcher_Save(nil, nil, nil, timeLimit, nil, nil, nil, false)
 			kCombatTimeLimit = tonumber(timeLimit)
             
             // send it to every player            
@@ -287,7 +287,7 @@ function OnCommandOvertimeAdmin(client, activeBoolean)
 
     if activeBoolean then
         if activeBoolean == "true" or activeBoolean == "false" then
-            ModSwitcher_Save(nil, nil, nil, nil, nil, activeBoolean, false)
+            ModSwitcher_Save(nil, nil, nil, nil, activeBoolean, nil, nil, false)
             Shared.Message("The changes only take effect after the next mapchange")
             
             // send it to every player            
@@ -313,7 +313,7 @@ function OnCommandPowerPointDamageAdmin(client, activeBoolean)
 
     if activeBoolean then
         if activeBoolean == "true" or activeBoolean == "false" then
-            ModSwitcher_Save(nil, nil, nil, nil, activeBoolean, nil, false)
+            ModSwitcher_Save(nil, nil, nil, nil, nil, activeBoolean, nil, false)
             Shared.Message("The changes only take effect after the next mapchange")
             
             // send it to every player            
@@ -334,6 +334,32 @@ local function OnCommandPowerPointDamage(client, activeBoolean)
     end
     
 end
+
+local function OnCommandDefaultWinner(client, defaultWinner)
+
+    if client == nil or client:GetIsLocalClient() then
+        OnCommandDefaultWinnerAdmin(client, defaultWinner)
+    end
+    
+end
+
+function OnCommandDefaultWinnerAdmin(client, defaultWinner)
+	
+    if defaultWinner then
+        if tonumber(defaultWinner) and tonumber(defaultWinner) >= 1 and tonumber(defaultWinner) <= 2 then
+            ModSwitcher_Save(nil, nil, nil, nil, nil, nil, tonumber(defaultWinner), false)
+			kCombatDefaultWinner = tonumber(defaultWinner)
+            
+            // send it to every player            
+            ModSwitcher_Output_Status_All()
+        else
+            Shared.Message("CombatModSwitcher: Only 1 or 2 allowed. (1 = Marines, 2 = Aliens)")
+        end
+	else
+		ModSwitcher_Output_Status_Console()
+    end
+end
+
 
 function OnCommandChangeMap(client, mapName)
     

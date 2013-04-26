@@ -51,7 +51,7 @@ kArmorySpawnMaxDistance = 60
 // Time Limit is now specified in ModSwitcher.
 //kCombatTimeLimit = 1500
 //kCombatAllowOvertime = true
-kCombatDefaultWinner = kTeam2Index
+//kCombatDefaultWinner = kTeam2Index
 kCombatTimeLeftPlayed = 0
 kCombatTimeReminderInterval = 300
 
