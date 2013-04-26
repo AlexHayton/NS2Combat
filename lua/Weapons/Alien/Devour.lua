@@ -95,7 +95,7 @@ local function UpdateDevour(self)
                 
                 if Shared.GetTime() >= self.lastDevourTime then
                     
-                    if player:GetIsAlive() then
+                    if player:GetIsAlive() and player:isa("Marine") then
                         local healRate = 0
                         local damage =  math.min((player:GetMaxHealth() / Devour.devourTime), Devour.damage)
                         self.lastDevourTime = Shared.GetTime() + Devour.waitTime
