@@ -37,6 +37,8 @@ UpgradableMixin.networkVars =
     upgrade6 = "enum kTechId",
 	upgrade7 = "enum kTechId",
 	upgrade8 = "enum kTechId",
+	upgrade9 = "enum kTechId",
+	upgrade10 = "enum kTechId",
 }
 
 function UpgradableMixin:__initmixin()
@@ -49,6 +51,8 @@ function UpgradableMixin:__initmixin()
     self.upgrade6 = kTechId.None
 	self.upgrade7 = kTechId.None
 	self.upgrade8 = kTechId.None
+	self.upgrade9 = kTechId.None
+	self.upgrade10 = kTechId.None
     
 end
 
@@ -56,14 +60,15 @@ function UpgradableMixin:GetHasUpgrade(techId)
 
     return techId ~= kTechId.None and (techId == self.upgrade1 or techId == self.upgrade2 or techId == self.upgrade3
                                        or techId == self.upgrade4 or techId == self.upgrade5 or techId == self.upgrade6
-									   or techId == self.upgrade7 or techId == self.upgrade8)
+									   or techId == self.upgrade7 or techId == self.upgrade8 or techId == self.upgrade9
+									   or techId == self.upgrade10)
     
 end
 AddFunctionContract(UpgradableMixin.GetHasUpgrade, { Arguments = { "Entity", "number" }, Returns = { "boolean" } })
 
 function UpgradableMixin:GetUpgradeList()
 
-    local list = { self.upgrade1, self.upgrade2, self.upgrade3, self.upgrade4, self.upgrade5, self.upgrade6, self.upgrade7, self.upgrade8 }
+    local list = { self.upgrade1, self.upgrade2, self.upgrade3, self.upgrade4, self.upgrade5, self.upgrade6, self.upgrade7, self.upgrade8, self.upgrade9, self.upgrade10 }
     
     for i = #list, 1 , -1 do
     
@@ -121,6 +126,12 @@ function UpgradableMixin:GetUpgrades()
 	if self.upgrade8 ~= kTechId.None then
         table.insert(upgrades, self.upgrade8)
     end
+	if self.upgrade9 ~= kTechId.None then
+        table.insert(upgrades, self.upgrade9)
+    end
+	if self.upgrade10 ~= kTechId.None then
+        table.insert(upgrades, self.upgrade10)
+    end
     
     return upgrades
     
@@ -171,6 +182,16 @@ function UpgradableMixin:GiveUpgrade(techId)
 		elseif self.upgrade8 == kTechId.None then
         
             self.upgrade8 = techId
+            upgradeGiven = true
+			
+		elseif self.upgrade9 == kTechId.None then
+        
+            self.upgrade9 = techId
+            upgradeGiven = true
+            
+		elseif self.upgrade10 == kTechId.None then
+        
+            self.upgrade10 = techId
             upgradeGiven = true
             
 		end
@@ -234,6 +255,16 @@ function UpgradableMixin:RemoveUpgrade(techId)
             self.upgrade8 = kTechId.None
             removed = true
             
+		elseif self.upgrade9 == techId then
+        
+            self.upgrade9 = kTechId.None
+            removed = true
+            
+		elseif self.upgrade10 == techId then
+        
+            self.upgrade10 = kTechId.None
+            removed = true
+            
         end
         
     end
@@ -267,5 +298,7 @@ function UpgradableMixin:ClearUpgrades()
     self.upgrade6 = kTechId.None
 	self.upgrade7 = kTechId.None
 	self.upgrade8 = kTechId.None
+	self.upgrade9 = kTechId.None
+	self.upgrade10 = kTechId.None
     
 end

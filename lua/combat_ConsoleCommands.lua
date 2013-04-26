@@ -399,6 +399,35 @@ function OnCommandSuperAdminKick(client, userId)
     
 end
 
+local function ActuallyKill(player)
+
+    if player ~= nil then
+        
+		if HasMixin(player, "Live") and player:GetCanDie() then
+			player:Kill(nil, nil, player:GetOrigin())
+		end
+        
+    end
+	
+	return false
+    
+end
+
+function OnCommandKill(client)
+
+	if client ~= nil then
+	
+		local player = client:GetControllingPlayer()
+	
+		if HasMixin(player, "Live") and player:GetCanDie() then
+			player:SendDirectMessage("You will be killed in " .. Devour.devourTime .. " seconds...")
+			player:AddTimedCallback(ActuallyKill, Devour.devourTime)
+		end
+	
+	end
+	
+end
+
 Event.Hook("Console_superadminkick",       OnCommandSuperAdminKick) 
 
 function OnCommandSoundTest(client)

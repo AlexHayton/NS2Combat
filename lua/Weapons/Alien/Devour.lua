@@ -19,8 +19,8 @@ Devour.kMapName = "devour"
 local kAnimationGraph = PrecacheAsset("models/alien/onos/onos_view.animation_graph")
 
 Devour.waitTime = 1
-Devour.devourTime = 10
-Devour.damage = 25
+Devour.devourTime = 5
+Devour.damage = 40
 Devour.healingRate = 15
 // when hitting marine his aim is interrupted
 Devour.kAimInterruptDuration = 0.7
