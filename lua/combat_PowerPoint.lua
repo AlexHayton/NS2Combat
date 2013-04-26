@@ -29,6 +29,7 @@ function CombatPowerPoint:OnCreate_Hook(self)
 end
 
 local function AutoRepair(self)
+	Shared.Message("Tried to auto repair a power point!")
 	self:SetConstructionComplete()
 	return false
 end
