@@ -22,7 +22,7 @@ function CombatMarineUpgrade:TeamSpecificLogic(player)
 	
 	// Apply weapons upgrades to a marine.
 	if (player:GetIsAlive() and self:GetType() == kCombatUpgradeTypes.Weapon) then
-		Player.InitWeapons(player)
+		//Player.InitWeapons(player)
 		
 		// if this is a primary weapon, destroy the old one.
 		if GetIsPrimaryWeapon(kMapName) then
