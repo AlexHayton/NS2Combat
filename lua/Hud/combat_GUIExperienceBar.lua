@@ -61,6 +61,7 @@ combat_GUIExperienceBar.kBarFadeInRate = 0.2
 combat_GUIExperienceBar.kBarFadeOutDelay = 0.5
 combat_GUIExperienceBar.kBarFadeOutRate = 0.1
 combat_GUIExperienceBar.kBackgroundBarRate = 90
+combat_GUIExperienceBar.kBackgroundBarFastRate = 250
 combat_GUIExperienceBar.kTextIncreaseRate = 200
 
 local function GetTeamType()
@@ -235,9 +236,13 @@ function combat_GUIExperienceBar:UpdateExperienceBar(deltaTime)
 		calculatedBarWidth = combat_GUIExperienceBar.kExperienceBarWidth
 		self.rankIncreased = false
 	end
-	
-	self.experienceBar:SetSize(Vector(Slerp(currentBarWidth, targetBarWidth, deltaTime*combat_GUIExperienceBar.kBackgroundBarRate), self.experienceBar:GetSize().y, 0))
-	local texCoordX2 = self.experienceData.barPixelCoordsX1 + (Slerp(currentBarWidth, targetBarWidth, deltaTime*combat_GUIExperienceBar.kBackgroundBarRate) / combat_GUIExperienceBar.kExperienceBarWidth * (self.experienceData.barPixelCoordsX2 - self.experienceData.barPixelCoordsX1))
+
+	local increaseRate = combat_GUIExperienceBar.kBackgroundBarRate
+	if currentBarWidth <= targetBarWidth - 50 then
+		increaseRate = combat_GUIExperienceBar.kBackgroundBarFastRate
+	end
+	self.experienceBar:SetSize(Vector(Slerp(currentBarWidth, targetBarWidth, deltaTime*increaseRate), self.experienceBar:GetSize().y, 0))
+	local texCoordX2 = self.experienceData.barPixelCoordsX1 + (Slerp(currentBarWidth, targetBarWidth, deltaTime*increaseRate) / combat_GUIExperienceBar.kExperienceBarWidth * (self.experienceData.barPixelCoordsX2 - self.experienceData.barPixelCoordsX1))
 	self.experienceBar:SetTexturePixelCoordinates(self.experienceData.barPixelCoordsX1, self.experienceData.barPixelCoordsY1, texCoordX2, self.experienceData.barPixelCoordsY2)
 	
 	// Detect and register if the bar is moving
