@@ -39,53 +39,56 @@ end
 
 local function HealEntity(self, player, targetEntity)
 
-    local onEnemyTeam = (GetEnemyTeamNumber(player:GetTeamNumber()) == targetEntity:GetTeamNumber())
-    local isEnemyPlayer = onEnemyTeam and targetEntity:isa("Player")
-    local toTarget = (player:GetEyePos() - targetEntity:GetOrigin()):GetUnit()
+	if not (targetEntity:isa("Structure") and GetHasTimeLimitPassed()) then
+	
+		local onEnemyTeam = (GetEnemyTeamNumber(player:GetTeamNumber()) == targetEntity:GetTeamNumber())
+		local isEnemyPlayer = onEnemyTeam and targetEntity:isa("Player")
+		local toTarget = (player:GetEyePos() - targetEntity:GetOrigin()):GetUnit()
 
-    // Heal players by base amount plus a scaleable amount so it's effective vs. small and large targets            
-    local health = kHealsprayDamage + targetEntity:GetMaxHealth() * kHealPlayerPercent / 100.0
-    
-    // Heal structures by multiple of damage(so it doesn't take forever to heal hives, ala NS1)
-    if GetReceivesStructuralDamage(targetEntity) then
-        health = 60
-    // Don't heal self at full rate - don't want Gorges to be too powerful. Same as NS1.
-    elseif targetEntity == player then
-        health = health * .5
-    end
-    
-    local amountHealed = targetEntity:AddHealth(health)
-    
-    /*
-	 * Addition for Combat Mode to give XP for healing.
-	 */
-	local maxXp = GetXpValue(targetEntity) or 1
-	local healXp = 0
-	if targetEntity:isa("Player") then
-		val = (maxXp * kPlayerHealXpRate * kHealXpRate * amountHealed / targetEntity:GetMaxHealth())
-		healXp = math.floor( (val * 10) + 0.5) / (10)
-	else
-		val = (maxXp * kHealXpRate * amountHealed / targetEntity:GetMaxHealth())
-		healXp = math.floor( (val * 10) + 0.5) / (10)
-	end
+		// Heal players by base amount plus a scaleable amount so it's effective vs. small and large targets            
+		local health = kHealsprayDamage + targetEntity:GetMaxHealth() * kHealPlayerPercent / 100.0
 		
-	// Award XP, but only the player is not the parent
-	if targetEntity:isa("Player") or targetEntity:GetOwner() ~= player then
-	    player:AddXp(healXp)
-    end
+		// Heal structures by multiple of damage(so it doesn't take forever to heal hives, ala NS1)
+		if GetReceivesStructuralDamage(targetEntity) then
+			health = 60
+		// Don't heal self at full rate - don't want Gorges to be too powerful. Same as NS1.
+		elseif targetEntity == player then
+			health = health * .5
+		end
+		
+		local amountHealed = targetEntity:AddHealth(health)
+		
+		/*
+		 * Addition for Combat Mode to give XP for healing.
+		 */
+		local maxXp = GetXpValue(targetEntity) or 1
+		local healXp = 0
+		if targetEntity:isa("Player") then
+			val = (maxXp * kPlayerHealXpRate * kHealXpRate * amountHealed / targetEntity:GetMaxHealth())
+			healXp = math.floor( (val * 10) + 0.5) / (10)
+		else
+			val = (maxXp * kHealXpRate * amountHealed / targetEntity:GetMaxHealth())
+			healXp = math.floor( (val * 10) + 0.5) / (10)
+		end
+			
+		// Award XP, but only the player is not the parent
+		if targetEntity:isa("Player") or targetEntity:GetOwner() ~= player then
+			player:AddXp(healXp)
+		end
 
-    if targetEntity.OnHealSpray then
-        targetEntity:OnHealSpray(player)
-    end         
-    
-    // Put out entities on fire sometimes
-    if HasMixin(targetEntity, "GameEffects") and math.random() < kSprayDouseOnFireChance then
-        targetEntity:SetGameEffectMask(kGameEffect.OnFire, false)
-    end
-    
-    if Server and amountHealed > 0 then
-        targetEntity:TriggerEffects("sprayed")
-    end
+		if targetEntity.OnHealSpray then
+			targetEntity:OnHealSpray(player)
+		end         
+		
+		// Put out entities on fire sometimes
+		if HasMixin(targetEntity, "GameEffects") and math.random() < kSprayDouseOnFireChance then
+			targetEntity:SetGameEffectMask(kGameEffect.OnFire, false)
+		end
+		
+		if Server and amountHealed > 0 then
+			targetEntity:TriggerEffects("sprayed")
+		end
+	end
         
 end
 
