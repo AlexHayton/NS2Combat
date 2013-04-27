@@ -124,8 +124,12 @@ function combat_GUIGameTimeCountDown:Update(deltaTime)
 	local player = Client.GetLocalPlayer()
 	if (self.showTimer and player:GetIsAlive()) then
 		self.timerBackground:SetIsVisible(true)
-		local TimeRemaining = PlayerUI_GetTimeRemaining()
-		self.timeRemainingText:SetText(TimeRemaining)
+        local TimeRemaining = PlayerUI_GetTimeRemaining()
+        if TimeRemaining == "00:00:00" then		    
+            self.timeRemainingText:SetText("Last Stand")
+        else
+            self.timeRemainingText:SetText(TimeRemaining)
+        end
 	else
 		self.timerBackground:SetIsVisible(false)
 	end
