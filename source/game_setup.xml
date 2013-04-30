@@ -1,8 +1,0 @@
-<game>
-    <name>ns2</name>
-    <description>NS2 Combat Mode</description>
-    <client>lua/ModClient.lua</client>
-    <server>lua/ModServer.lua</server>
-    <loading>lua/ModLoading.lua</loading>
-    <soundinfo>sound/NS2.soundinfo</soundinfo>
-</game>
