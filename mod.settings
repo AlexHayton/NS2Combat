@@ -1,4 +1,4 @@
-name        = "NS2 Combat Mode"
+name        = "NS2 Combat Mode Playtest"
 source_dir  = "source"
 output_dir  = "output"
 description = [=[NS2Combat: A Combat-style mod for Natural Selection 2!
@@ -10,4 +10,3 @@ You can level up ten times in a game, getting an upgrade point to spend each tim
 
 We’ve tried to balance support classes with offensive ones. You can specialise as any of the Alien lifeforms and as a Marine can choose to go Jetpack, Exo or some kind of ninja engineer.]=]
 image       = "preview.jpg"
-publish_id = "5F35045"
