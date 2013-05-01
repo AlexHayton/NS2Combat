@@ -60,7 +60,6 @@ local function DevourAttack(self, player, hitTarget, excludeTarget)
                 didHit = true      
                 self.eatingPlayerId = target:GetId()
                 if Server then
-                    target:BlockMove()
                     self:DevourPlayer(target)
                 end
                 break
@@ -275,21 +274,7 @@ function Devour:DevourPlayer(player)
     local devouredPlayer = player:Replace(DevouredPlayer.kMapName , player:GetTeamNumber(), true, Vector(player:GetOrigin()))
     devouredPlayer:SetHealth(oldHealth)
     devouredPlayer.previousMapName = player:GetMapName()
-    
-    // Set all child entities and view model invisible
-    function SetInvisible(childEntity) 
-        childEntity:SetIsVisible(false)
-    end
-    
-    devouredPlayer:SetIsVisible(false)
-    devouredPlayer:ForEachChild(SetInvisible)
-    
-    if devouredPlayer:GetViewModelEntity() then
-        devouredPlayer:GetViewModelEntity():SetModel("")
-    end
-    
-    // Clear game effects on player
-    devouredPlayer:ClearGameEffects()  
+  
     devouredPlayer:SetOffsetAngles(Angles(0, 0, 0)) 
 
     self.eatingPlayerId = devouredPlayer:GetId() 
