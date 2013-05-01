@@ -52,8 +52,10 @@ Script.Load("lua/ExtraEntitiesMod/LogicWorldTooltip.lua")
 Script.Load("lua/ExtraEntitiesMod/LogicWaypoint.lua")
 Script.Load("lua/ExtraEntitiesMod/LogicGiveItem.lua")
 Script.Load("lua/ExtraEntitiesMod/LogicReset.lua")
+Script.Load("lua/ExtraEntitiesMod/LogicBreakable.lua")
 
 Script.Load("lua/ExtraEntitiesMod/MapSettings.lua")
+Script.Load("lua/ExtraEntitiesMod/MapChange.lua")
 Script.Load("lua/ExtraEntitiesMod/NobuildArea.lua")
 
 Script.Load("lua/ExtraEntitiesMod/GravityTrigger.lua")
@@ -69,8 +71,7 @@ Script.Load("lua/ExtraEntitiesMod/npc/NpcSpawnerSkulk.lua")
 Script.Load("lua/ExtraEntitiesMod/npc/NpcWaveManager.lua")
 
 
-// old ns2 alpha entity, made as logic
-Script.Load("lua/ExtraEntitiesMod/LogicTarget.lua")
+
 
 // disable the portal gun, was just 4 fun, maybe make it later better
 // Script.Load("lua/ExtraEntitiesMod/PortalGunTeleport.lua")

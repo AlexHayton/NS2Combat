@@ -79,11 +79,12 @@ function TrainMixin:OnInitialized()
         
     if Server then
         InitMixin(self, ControllerMixin)
-        self:CreateController(PhysicsGroup.WhipGroup)
-        // set a box so it can be triggered, use the trigger scale from the mapEditor
+        self:CreateController(PhysicsGroup.WhipGroup) 
+
         if self:GetPushPlayers() then
-            self:MoveTrigger()        
-        end        
+            self:AddTimedCallback(TrainMixin.MovePlayersInTrigger, 0.0001)
+        end     
+
     end
     
 end
@@ -93,12 +94,9 @@ function TrainMixin:OnUpdate(deltaTime)
     if Server then 
         if self.driving then
             self:UpdatePosition(deltaTime)
-            self:MoveTrigger()
-            if not self.waiting  and self:GetPushPlayers() then
+            if not self.waiting  then
                 self:SetOldOrigin(self:GetOrigin())
                 self:SetOldAngles(self:GetAngles())
-                self:MovePlayersInTrigger(deltaTime)
-
             end
             self:UpdateControllerFromEntity()
         end  
@@ -198,7 +196,8 @@ function TrainMixin:GetDeltaAngles()
     return self.oldAnglesDiff   
 end
 
-function TrainMixin:MovePlayersInTrigger(deltaTime)
+function TrainMixin:MovePlayersInTrigger()
+    self:MoveTrigger()     
     for _, entity in ipairs(self:GetEntitiesInTrigger()) do 
         if self.driving and entity~= self then
             if not entity:GetIsJumping() then
@@ -223,6 +222,7 @@ function TrainMixin:MovePlayersInTrigger(deltaTime)
             end
         end
     end
+    return true
 end
 
     

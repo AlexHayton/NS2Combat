@@ -51,6 +51,25 @@ function LogicGiveItem:OnLogicTrigger(player)
             table.insert(items, Pistol.kMapName)
             table.insert(items, Axe.kMapName)
         elseif self.type == 5 then
+            table.insert(items, Shotgun.kMapName)
+        elseif self.type == 6 then
+            table.insert(items, FlameThrower.kMapName)
+        elseif self.type == 7 then
+            table.insert(items, GrenadeLauncher.kMapName)
+        elseif self.type == 8 then
+            table.insert(items, LayMines.kMapName)
+        elseif self.type == 9 then
+            local exoMarine = player:Replace(Exo.kMapName, player:GetTeamNumber(), false, player:GetOrigin(), { layout = "ClawMinigun" })
+        elseif self.type == 10 then
+            local exoMarine = player:Replace(Exo.kMapName, player:GetTeamNumber(), false, player:GetOrigin(), { layout = "MinigunMinigun" })
+        elseif self.type == 11 then
+            local exoMarine = player:Replace(Exo.kMapName, player:GetTeamNumber(), false, player:GetOrigin(), { layout = "ClawRailgun" })
+        elseif self.type == 12 then
+            local exoMarine = player:Replace(Exo.kMapName, player:GetTeamNumber(), false, player:GetOrigin(), { layout = "RailgunRailgun" })
+        elseif self.type == 13 then
+            local jetpackMarine = self:Replace(JetpackMarine.kMapName, self:GetTeamNumber(), true, Vector(self:GetOrigin()))
+        
+        elseif self.type == 99 then
             player.hudAllowed = true            
         end
         

@@ -94,9 +94,6 @@ function NpcMixin:__initmixin()
             //{self.FilterTarget(self)},
             { CloakTargetFilter(), self.FilterTarget(self)},            
             { function(target) return target:isa("Player") end } )
-
-
-        InitMixin(self, StaticTargetMixin)
         
         // special Mixins
         if self:isa("Marine") then

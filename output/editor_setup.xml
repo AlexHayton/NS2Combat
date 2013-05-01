@@ -1286,12 +1286,30 @@
 	
 	</class>
 	
-	<class name="logic_target">	
-	
-		<parent>target</parent>
-		<parameter name="name" type="string" label="name" help="Name of logic_listener which can be referenced by other entities" />	
-		<!-- <parameter name="enabled" type="boolean" label="enabled" help="You can't weld it if it's disabled" default="true"/> -->
-		<parameter name="output1" type="string" label="Output" help="Name of the triggered entity (after killed)" default=""/>
+	<class name="logic_breakable">		
+		<parent>logic_toggle_base</parent>
+		
+		<model>
+            <file>model</file>
+        </model>
+        
+		<parameter name="model" type="file" label="model" default="models/props/descent/descent_glass_02.model" filter="*.model"/>
+		
+		<parameter name="name" type="string" label="name" help="Name of logic_breakable which can be referenced by other entities" />	
+		<parameter name="health" type="real" label="Health before getting destroyed" default="250.0"/>
+		<parameter name="cinematicName" type="file" label="cinematic" default="cinematics/breakable/breakable_debris.cinematic" filter="*.cinematic" help="Cinematic file triggered after getting desroyed"/>
+		<parameter name="surface" type="choice"  label="surface"  default="0" help="Type of the surface (when attacking)">
+			<choice label="metal" value="0"/>
+			<choice label="rock" value="1"/>
+			<choice label="organic" value="2"/>
+			<choice label="infestation" value="3"/>
+			<choice label="thin_metal" value="4"/>
+			<choice label="electronic" value="5"/>
+			<choice label="armor" value="6"/>
+			<choice label="flesh" value="7"/>
+			<choice label="membrane" value="8"/>
+		</parameter>		
+		<parameter name="output1" type="string" label="Output" help="Name of the triggered entity (after getting destroyed)" default=""/>
 	
 	</class>	
 		
@@ -1322,8 +1340,19 @@
             <choice label="Welder" value="1"/>
             <choice label="Pistol" value="2"/>
 			<choice label="Rifle" value="3"/>
-			<choice label="Rifle, Pistol, Axe" value="4"/>
-			<choice label="Armor-Suit (HUD)" value="5"/>
+			<choice label="Rifle, Pistol, Axe" value="4"/>			
+			<choice label="Shotgun" value="5"/>
+			<choice label="Flamethrower" value="6"/>
+			<choice label="GrenadeLauncher" value="7"/>
+			<choice label="Mines" value="8"/>
+			
+			<choice label="Exo - ClawMinigun" value="9"/>
+			<choice label="Exo - MinigunMinigun" value="10"/>
+			<choice label="Exo - ClawRailgun" value="11"/>
+			<choice label="Exo - RailgunRailgun" value="12"/>
+			<choice label="Jetpack" value="13"/>			
+			
+			<choice label="Armor-Suit (HUD)" value="99"/>
 		</parameter>
 		
     </class>
@@ -1361,6 +1390,19 @@
 		<parameter name="viewDistance" type="real" label="View distance" help="This value changes how far you can see in the map before entities, players etc. disappear (140 should be a good value to see everything in the map)" default="40"/>
 		<parameter name="fallDmg" type="boolean" label="Fall damage" default="false" />
     </class>
+	
+	
+	<class name="map_change" placeable="true">
+		
+		<model>
+            <file>models/system/editor/team_location.model</file>
+        </model>
+
+		<parameter name="name" type="string" label="name" help="Name of map_change which can be referenced by other entities"/>
+		<parameter name="level" type="file" label="Level" filter="*.level" default=""/>
+
+    </class>	
+
 	
 		<!-- NPCs -->	
 
@@ -1454,6 +1496,33 @@
         </parameter>
 		
     </class>	
+	
+	
+	<!-- **************************************** -->
+	<!-- Single Player entities -->
+	<!-- **************************************** -->
+	
+	    <!-- NS2 strategy gameplay rules -->
+    <class name="sp_gamerules" >
+
+        <parent>gamerules</parent>
+        
+        <model>
+            <file>models/system/editor/team_location.model</file>
+        </model>
+		
+		<parameter name="hud" type="boolean" label="Starts with HUD" default="true"/>
+		<parameter name="weapons" type="choice"  label="Starts with Weapon"  default="0">
+            <choice label="Rifle, Pistol, Axe" value="0"/>
+            <choice label="Pistol, Axe" value="1"/>
+            <choice label="Axe" value="2"/>
+			<choice label="Nothing" value="3"/>
+			<choice label="Single-Gun Exo" value="4"/>
+			<choice label="Dual-Gun Exo" value="5"/>
+		</parameter>
+
+    </class>
+	
 	
 </classes>
 

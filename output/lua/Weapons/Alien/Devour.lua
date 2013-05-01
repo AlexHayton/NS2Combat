@@ -271,11 +271,9 @@ end
 function Devour:DevourPlayer(player)
 
     local oldHealth = player:GetHealth()
-    local devouredPlayer = player:Replace(DevouredPlayer.kMapName , player:GetTeamNumber(), true, Vector(player:GetOrigin()))
+    local devouredPlayer = player:Replace(DevouredPlayer.kMapName , player:GetTeamNumber(), false, Vector(player:GetOrigin()))
     devouredPlayer:SetHealth(oldHealth)
     devouredPlayer.previousMapName = player:GetMapName()
-  
-    devouredPlayer:SetOffsetAngles(Angles(0, 0, 0)) 
 
     self.eatingPlayerId = devouredPlayer:GetId() 
     
