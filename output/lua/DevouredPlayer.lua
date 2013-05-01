@@ -1,13 +1,12 @@
-// ======= Copyright (c) 2003-2012, Unknown Worlds Entertainment, Inc. All rights reserved. =====
+//________________________________
 //
-// lua\DevouredPlayer.lua
+//   	NS2 Combat Mod     
+//	Made by JimWest and MCMLXXXIV, 2012
 //
-//    Created by:   Charlie Cleveland (charlie@unknownworlds.com) and
-//                  Max McGuire (max@unknownworlds.com)
-//
-// ========= For more information, visit us at http://www.unknownworlds.com =====================
+//________________________________
 
 Script.Load("lua/Player.lua")
+Script.Load("lua/Weapons/Marines/DevouredViewModel.lua")
 
 class 'DevouredPlayer' (Marine)
 
@@ -17,6 +16,13 @@ local networkVars =
 {
     devouringPercentage = "integer (0 to 100)",
 }
+
+local function UpdateCorrde(self)
+
+    self:SetCorroded()
+    return true
+    
+end
 
 function DevouredPlayer:OnCreate()
 
@@ -35,32 +41,25 @@ function DevouredPlayer:OnInitialized()
     self:DestroyController()    
     // Other players never see a DevouredPlayer.
     self:SetPropagate(Entity.Propagate_Never) 
-    
-    // due to a bug with MarineActionFinder, this need to be called here
-    if Client then
-    
-        self.actionIconGUI = GetGUIManager():CreateGUIScript("GUIActionIcon")
-        self.actionIconGUI:SetColor(kMarineFontColor)
-        self.lastMarineActionFindTime = 0
-        
-    end
-    
+
     self.devouringPercentage = 0
+    
+    if Server then
+        self:AddTimedCallback(UpdateCorrde, 2)
+        self:SetCorroded()      
+        self:TriggerEffects("player_start_gestate")
+    end
     
 end
 
 function DevouredPlayer:OnDestroy()
-
-    Marine.OnDestroy(self)
-    
-    if self.guiDevouredPlayer then
-        self.guiDevouredPlayer.background:SetIsVisible(false)
-        GetGUIManager():DestroyGUIScriptSingle(self.guiDevouredPlayer)
-        self.guiDevouredPlayer = nil
-        
+    Marine.OnDestroy(self) 
+    if Server then
+        self:TriggerEffects("player_end_gestate")
     end
-    
+    self:SetViewModel(nil, nil)    
 end
+
 
 // let the player chat, but but nove
 function DevouredPlayer:OverrideInput(input)
@@ -72,20 +71,18 @@ function DevouredPlayer:OverrideInput(input)
     input.move.y = 0
     input.move.z = 0
     
-    // Only allow some actions like going to menu, chatting and Scoreboard (not jump, use, etc.)
-    input.commands = bit.band(input.commands, Move.Exit) + bit.band(input.commands, Move.TeamChat) + bit.band(input.commands, Move.TextChat) + bit.band(input.commands, Move.Scoreboard) + bit.band(input.commands, Move.ShowMap)
-    
     return input
     
 end
 
 
-function DevouredPlayer:GetDevourPercentage()
-    return self.devouringPercentage
+function DevouredPlayer:InitWeapons()
+    self:GiveItem(DevouredViewModel.kMapName)
+    self:SetActiveWeapon(DevouredViewModel.kMapName)
 end
 
-function DevouredPlayer:OnProcessMove(input)
-    self:OnUpdatePlayer(input.time)
+function DevouredPlayer:GetDevourPercentage()
+    return self.devouringPercentage
 end
 
 function DevouredPlayer:GetPlayFootsteps()
@@ -138,39 +135,22 @@ function DevouredPlayer:GetTechId()
     return kTechId.Marine
 end
 
-if Client then     
+function DevouredPlayer:OnTag(tagName)
+    //Print(tagName)
+end
+
+function DevouredPlayer:OnUpdatePoseParameters()    
         
-    function DevouredPlayer:OnInitLocalClient()    
-        if self:GetTeamNumber() ~=  kTeamReadyRoom then
-            Marine.OnInitLocalClient(self)
-            if self.guiDevouredPlayer then    
-                GetGUIManager():DestroyGUIScriptSingle(self.guiDevouredPlayer)        
-            end
-            
-            self.guiDevouredPlayer = GetGUIManager():CreateGUIScriptSingle("Hud/GUIDevouredPlayer")                
-            // to get chat working
-            GetGUIManager():CreateGUIScriptSingle("GUIChat")
-        end
-    end
-  
-    function DevouredPlayer:UpdateClientEffects(deltaTime, isLocal)
+    local viewModel = self:GetViewModelEntity()
+    if viewModel ~= nil then
     
-        Marine.UpdateClientEffects(self, deltaTime, isLocal)
-        
-        self:SetIsVisible(false)
-        
         local activeWeapon = self:GetActiveWeapon()
-        if activeWeapon ~= nil then
-            activeWeapon:SetIsVisible(false)
-        end
-        
-        local viewModel = self:GetViewModelEntity()
-        if viewModel ~= nil then
-            viewModel:SetIsVisible(false)
+        if activeWeapon and activeWeapon.UpdateViewModelPoseParameters then
+            activeWeapon:UpdateViewModelPoseParameters(viewModel, input)
         end
         
     end
-        
+
 end
 
 Shared.LinkClassToMap("DevouredPlayer", DevouredPlayer.kMapName, networkVars)

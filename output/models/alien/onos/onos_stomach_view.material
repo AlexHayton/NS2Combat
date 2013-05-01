@@ -1,0 +1,7 @@
+shader = "models/alien/alien.surface_shader"
+albedoMap = "models/alien/onos/onos_stomach_view.dds"
+normalMap = "models/alien/onos/onos_stomach_view_normals.dds"
+specularMap = "models/alien/onos/onos_stomach_view_spec.dds"
+emissiveMap = "materials/dev/black.dds"
+//emissiveMap = "models/alien/onos/onos_stomach_view_ilum.dds"
+surface = "organic"
