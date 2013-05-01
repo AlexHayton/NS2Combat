@@ -16,7 +16,7 @@ local kAnimationGraph = PrecacheAsset("models/alien/onos/onos_stomach_view.anima
 local kPunchSoundLeft = PrecacheAsset("sound/NS2.fev/materials/flesh/sprint_left")
 local kPunchSoundRight = PrecacheAsset("sound/NS2.fev/materials/flesh/sprint_right")
 local kWoundSound = PrecacheAsset("sound/NS2.fev/marine/common/wound")
-
+local kRange = 0.0001
 
 local networkVars =
 {

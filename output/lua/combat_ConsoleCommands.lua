@@ -413,21 +413,6 @@ local function ActuallyKill(player)
     
 end
 
-function OnCommandKill(client)
-
-	if client ~= nil then
-	
-		local player = client:GetControllingPlayer()
-	
-		if HasMixin(player, "Live") and player:GetCanDie() then
-			player:SendDirectMessage("You will be killed in " .. Devour.devourTime .. " seconds...")
-			player:AddTimedCallback(ActuallyKill, Devour.devourTime)
-		end
-	
-	end
-	
-end
-
 Event.Hook("Console_superadminkick",       OnCommandSuperAdminKick) 
 
 function OnCommandSoundTest(client)
@@ -462,7 +447,6 @@ if kCombatModActive then
 	Event.Hook("Console_/timeleft",              OnCommandTimeLeft)
     Event.Hook("Console_/status",                OnCommandStatus) 
     //Event.Hook("Console_/stuck",                OnCommandStuck)    
-	Event.Hook("Console_kill",                OnCommandKill)    
     Event.Hook("Console_co_sendupgrades",       OnCommandSendUpgrades) 
 	Event.Hook("Console_co_refundall", 	        OnCommandRefundAllUpgrades)
     

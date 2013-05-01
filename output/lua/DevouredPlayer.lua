@@ -64,14 +64,14 @@ end
 // let the player chat, but but nove
 function DevouredPlayer:OverrideInput(input)
   
-    ClampInputPitch(input)
-    
-    // Completely override movement and commands
-    input.move.x = 0
-    input.move.y = 0
-    input.move.z = 0
-    
-    return input
+		ClampInputPitch(input)
+		
+		// Completely override movement and commands
+		input.move.x = 0
+		input.move.y = 0
+		input.move.z = 0
+		
+	return input
     
 end
 
@@ -102,7 +102,9 @@ function DevouredPlayer:GetCanTakeDamageOverride()
 end
 
 function DevouredPlayer:GetCanDieOverride()
-    return true
+	if self:GetHealth() <= 0 then
+		return true
+	end
 end
 
 function DevouredPlayer:AdjustGravityForce(input, gravity)
