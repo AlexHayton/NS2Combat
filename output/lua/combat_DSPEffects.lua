@@ -33,7 +33,7 @@ function CombatDSPEffects:CreateDSPs_Hook()
 	// Devoured effect echo filter.
 	devouredPlayerEchoId = Client.CreateDSP(SoundSystem.DSP_Echo)
 	Client.SetDSPActive(devouredPlayerEchoId, false)
-    Client.SetDSPFloatParameter(devouredPlayerEchoId, 0, 65)
+    Client.SetDSPFloatParameter(devouredPlayerEchoId, 0, 55)
 	
 end
 

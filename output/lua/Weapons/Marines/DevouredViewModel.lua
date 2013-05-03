@@ -89,6 +89,27 @@ function DevouredViewModel:OnPrimaryAttackEnd(player)
     self.primaryAttacking = false
 end
 
+function DevouredViewModel:GetHasSecondary(player)
+    return true
+end
+
+function DevouredViewModel:GetSecondaryAttackRequiresPress()
+    return true
+end
+
+function DevouredViewModel:OnSecondaryAttack(player)
+
+    if not self.attacking then
+        self.secondaryAttacking = true        
+    end
+
+end
+
+function DevouredViewModel:OnSecondaryAttackEnd(player)
+    self.secondaryAttacking = false
+end
+
+
 function DevouredViewModel:OnTag(tagName)  
     if tagName == "attack_left_start" then
         self:PlaySound(kPunchSoundLeft) 
@@ -109,6 +130,10 @@ function DevouredViewModel:OnUpdateAnimationInput(modelMixin)
     local activity = "idle1"
     if self.primaryAttacking then
         activity = "primary"
+	elseif self.secondaryAttacking then
+		activity = "secondary"
+	elseif self:GetParent():GetIsOnosDying() then 
+		activity = "freedom"
     end
     modelMixin:SetAnimationInput("activity", activity)     
     

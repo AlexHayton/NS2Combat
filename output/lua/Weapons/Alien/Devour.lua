@@ -132,7 +132,7 @@ function Devour:OnCreate()
     self.eatingPlayerId = 0
     
     if Server then
-        self:AddTimedCallback(UpdateDevour, 0.1)
+        self:AddTimedCallback(UpdateDevour, 0.2)
     end
     
     if Client then
@@ -151,16 +151,26 @@ function Devour:OnDestroy()
     end
 end
 
+local function ClearPlayerNow(player)
+
+	if player.Replace then
+		local oldHealth = player:GetHealth()
+		newPlayer = player:Replace(player.previousMapName , player:GetTeamNumber(), false,  onos:GetOrigin())
+		newPlayer.health = oldHealth 
+		// give him his weapons back
+		newPlayer:GiveUpsBack()
+	end
+	return false
+	
+end
+
 function Devour:ClearPlayer()
     local onos = self:GetParent() 
     if onos and self.eatingPlayerId ~= 0 then
         local player = Shared.GetEntity(self.eatingPlayerId)
-        if player and player.Replace then
-            local oldHealth = player:GetHealth()
-            newPlayer = player:Replace(player.previousMapName , player:GetTeamNumber(), false,  onos:GetOrigin())
-            newPlayer.health = oldHealth 
-            // give him his weapons back
-            newPlayer:GiveUpsBack()
+        if player then
+			player:SetIsOnosDying(true)
+            player:AddTimedCallback(ClearPlayerNow, 0.5)
         end 
     end
     self.eatingPlayerId = 0
