@@ -21,7 +21,7 @@ local kAnimationGraph = PrecacheAsset("models/alien/onos/onos_view.animation_gra
 Devour.waitTime = 1
 Devour.devourTime = 5
 Devour.damage = 40
-Devour.healingRate = 15
+Devour.energyRate = kEnergyUpdateRate * 10
 // when hitting marine his aim is interrupted
 Devour.kAimInterruptDuration = 0.7
 
@@ -100,12 +100,8 @@ local function UpdateDevour(self)
                         self.lastDevourTime = Shared.GetTime() + Devour.waitTime
                         player:DeductHealth(damage, onos) 
                         self.devouringPercentage = math.ceil(player:GetMaxHealth() - player:GetHealth())
-                        player.devouringPercentage = self.devouringPercentage
-     
-                        if onos:GetMaxHealth() > onos:GetHealth() then
-                            healRate = math.max(Devour.healingRate, damage)
-                        end
-                        onos:AddHealth(healRate)   
+                        player.devouringPercentage = self.devouringPercentage  
+                        onos:AddEnergy(Devour.energyRate)
                     else
                         self.devouringPercentage = 0
                         self.eatingPlayerId = 0

@@ -19,7 +19,7 @@ local networkVars =
 
 local function UpdateCorrde(self)
 
-    self:SetCorroded()
+    //self:SetCorroded()
     return true
     
 end

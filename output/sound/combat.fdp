@@ -293,7 +293,7 @@
 <volume_randmethod>1</volume_randmethod>
 <volume_random_min>0</volume_random_min>
 <volume_random_max>0</volume_random_max>
-<volume_randomization>0</volume_randomization>
+<volume_randomization>-20</volume_randomization>
 <position_randomization_min>0</position_randomization_min>
 <position_randomization>0</position_randomization>
 <trigger_delay_min>0</trigger_delay_min>
@@ -332,7 +332,7 @@
 <volume_randmethod>1</volume_randmethod>
 <volume_random_min>0</volume_random_min>
 <volume_random_max>0</volume_random_max>
-<volume_randomization>0</volume_randomization>
+<volume_randomization>-20</volume_randomization>
 <position_randomization_min>0</position_randomization_min>
 <position_randomization>0</position_randomization>
 <trigger_delay_min>0</trigger_delay_min>
@@ -1863,7 +1863,7 @@
 <sequentialglobal>0</sequentialglobal>
 <bankname>combat_bank01</bankname>
 <_PC_resamplemode>Off</_PC_resamplemode>
-<_PC_automaticsampleratepercentage>90</_PC_automaticsampleratepercentage>
+<_PC_automaticsampleratepercentage>100</_PC_automaticsampleratepercentage>
 <_PC_fixedsamplerate>48000</_PC_fixedsamplerate>
 <_XBOX360_resamplemode>Off</_XBOX360_resamplemode>
 <_XBOX360_automaticsampleratepercentage>100</_XBOX360_automaticsampleratepercentage>
@@ -2047,7 +2047,7 @@
 <sequentialglobal>0</sequentialglobal>
 <bankname>combat_bank01</bankname>
 <_PC_resamplemode>Off</_PC_resamplemode>
-<_PC_automaticsampleratepercentage>90</_PC_automaticsampleratepercentage>
+<_PC_automaticsampleratepercentage>100</_PC_automaticsampleratepercentage>
 <_PC_fixedsamplerate>48000</_PC_fixedsamplerate>
 <_XBOX360_resamplemode>Off</_XBOX360_resamplemode>
 <_XBOX360_automaticsampleratepercentage>100</_XBOX360_automaticsampleratepercentage>
@@ -2373,7 +2373,7 @@
 <quality_crossplatform>0</quality_crossplatform>
 <quality>-1</quality>
 <_PC_resamplemode>0</_PC_resamplemode>
-<_PC_optimisedratereduction>90</_PC_optimisedratereduction>
+<_PC_optimisedratereduction>100</_PC_optimisedratereduction>
 <_PC_fixedsamplerate>48000</_PC_fixedsamplerate>
 <_XBOX360_resamplemode>0</_XBOX360_resamplemode>
 <_XBOX360_optimisedratereduction>100</_XBOX360_optimisedratereduction>
@@ -2415,7 +2415,7 @@
 <quality_crossplatform>0</quality_crossplatform>
 <quality>-1</quality>
 <_PC_resamplemode>0</_PC_resamplemode>
-<_PC_optimisedratereduction>90</_PC_optimisedratereduction>
+<_PC_optimisedratereduction>100</_PC_optimisedratereduction>
 <_PC_fixedsamplerate>48000</_PC_fixedsamplerate>
 <_XBOX360_resamplemode>0</_XBOX360_resamplemode>
 <_XBOX360_optimisedratereduction>100</_XBOX360_optimisedratereduction>

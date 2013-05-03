@@ -13,8 +13,9 @@ DevouredViewModel.kMapName = "devoured_view_model"
 
 DevouredViewModel.kViewModelName = PrecacheAsset("models/alien/onos/Onos_stomach_view.model")
 local kAnimationGraph = PrecacheAsset("models/alien/onos/onos_stomach_view.animation_graph")
-local kPunchSoundLeft = PrecacheAsset("sound/NS2.fev/materials/flesh/sprint_left")
-local kPunchSoundRight = PrecacheAsset("sound/NS2.fev/materials/flesh/sprint_right")
+local kPunchSoundLeft = PrecacheAsset("sound/combat.fev/combat/abilities/stomach_punch_l")
+local kPunchSoundRight = PrecacheAsset("sound/combat.fev/combat/abilities/stomach_punch_r")
+
 local kWoundSound = PrecacheAsset("sound/NS2.fev/marine/common/wound")
 local kRange = 0.0001
 
