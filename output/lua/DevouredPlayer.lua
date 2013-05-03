@@ -16,6 +16,7 @@ Shared.PrecacheSurfaceShader("cinematics/vfx_materials/devour_goop.surface_shade
 local networkVars =
 {
     devouringPercentage = "integer (0 to 100)",
+	isOnosDying = "boolean",
 }
 
 local function AddCorrodeMaterial(self)

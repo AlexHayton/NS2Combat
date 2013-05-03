@@ -159,6 +159,7 @@ local function ClearPlayerNow(player)
 		newPlayer.health = oldHealth 
 		// give him his weapons back
 		newPlayer:GiveUpsBack()
+		newPlayer:SetCorroded()
 	end
 	return false
 	
