@@ -128,13 +128,14 @@ end
 function DevouredViewModel:OnUpdateAnimationInput(modelMixin)
 
     local activity = "idle1"
-    if self.primaryAttacking then
+	if self:GetParent():GetIsOnosDying() then 
+		activity = "freedom"
+    elseif self.primaryAttacking then
         activity = "primary"
 	elseif self.secondaryAttacking then
 		activity = "secondary"
-	elseif self:GetParent():GetIsOnosDying() then 
-		activity = "freedom"
-    end
+	end
+	
     modelMixin:SetAnimationInput("activity", activity)     
     
 end
