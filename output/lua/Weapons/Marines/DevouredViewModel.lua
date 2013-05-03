@@ -13,8 +13,9 @@ DevouredViewModel.kMapName = "devoured_view_model"
 
 DevouredViewModel.kViewModelName = PrecacheAsset("models/alien/onos/Onos_stomach_view.model")
 local kAnimationGraph = PrecacheAsset("models/alien/onos/onos_stomach_view.animation_graph")
-local kPunchSoundLeft = PrecacheAsset("sound/NS2.fev/materials/flesh/sprint_left")
-local kPunchSoundRight = PrecacheAsset("sound/NS2.fev/materials/flesh/sprint_right")
+local kPunchSoundLeft = PrecacheAsset("sound/combat.fev/combat/abilities/stomach_punch_l")
+local kPunchSoundRight = PrecacheAsset("sound/combat.fev/combat/abilities/stomach_punch_r")
+
 local kWoundSound = PrecacheAsset("sound/NS2.fev/marine/common/wound")
 local kRange = 0.0001
 
@@ -88,6 +89,27 @@ function DevouredViewModel:OnPrimaryAttackEnd(player)
     self.primaryAttacking = false
 end
 
+function DevouredViewModel:GetHasSecondary(player)
+    return true
+end
+
+function DevouredViewModel:GetSecondaryAttackRequiresPress()
+    return true
+end
+
+function DevouredViewModel:OnSecondaryAttack(player)
+
+    if not self.attacking then
+        self.secondaryAttacking = true        
+    end
+
+end
+
+function DevouredViewModel:OnSecondaryAttackEnd(player)
+    self.secondaryAttacking = false
+end
+
+
 function DevouredViewModel:OnTag(tagName)  
     if tagName == "attack_left_start" then
         self:PlaySound(kPunchSoundLeft) 
@@ -108,6 +130,10 @@ function DevouredViewModel:OnUpdateAnimationInput(modelMixin)
     local activity = "idle1"
     if self.primaryAttacking then
         activity = "primary"
+	elseif self.secondaryAttacking then
+		activity = "secondary"
+	elseif self:GetParent():GetIsOnosDying() then 
+		activity = "freedom"
     end
     modelMixin:SetAnimationInput("activity", activity)     
     

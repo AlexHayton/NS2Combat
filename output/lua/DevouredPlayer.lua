@@ -11,16 +11,28 @@ Script.Load("lua/Weapons/Marines/DevouredViewModel.lua")
 class 'DevouredPlayer' (Marine)
 
 DevouredPlayer.kMapName = "DevouredPlayer"
+Shared.PrecacheSurfaceShader("cinematics/vfx_materials/devour_goop.surface_shader")
 
 local networkVars =
 {
     devouringPercentage = "integer (0 to 100)",
 }
 
-local function UpdateCorrde(self)
+local function AddCorrodeMaterial(self)
 
-    self:SetCorroded()
-    return true
+    if self._renderModel and not self.devourMaterial then
+		local material = Client.CreateRenderMaterial()
+		material:SetMaterial("cinematics/vfx_materials/devour_goop.material")
+
+		local viewMaterial = Client.CreateRenderMaterial()
+		viewMaterial:SetMaterial("cinematics/vfx_materials/devour_goop.material")
+		
+		self.devourEntities = {}
+		self.devourMaterial = material
+		self.devourMaterialViewMaterial = viewMaterial
+		AddMaterialEffect(self, material, viewMaterial, self.devourEntities)
+	end
+	return false
     
 end
 
@@ -43,11 +55,12 @@ function DevouredPlayer:OnInitialized()
     self:SetPropagate(Entity.Propagate_Never) 
 
     self.devouringPercentage = 0
+	self.isOnosDying = false
     
     if Server then
-        self:AddTimedCallback(UpdateCorrde, 2)
-        self:SetCorroded()      
         self:TriggerEffects("player_start_gestate")
+	else
+		self:AddTimedCallback(AddCorrodeMaterial, 0.1)
     end
     
 end
@@ -58,6 +71,15 @@ function DevouredPlayer:OnDestroy()
         self:TriggerEffects("player_end_gestate")
     end
     self:SetViewModel(nil, nil)    
+	
+	if Client and self.devourMaterial then
+		RemoveMaterialEffect(self.devourEntities, self.devourMaterial, self.devourMaterialViewMaterial)
+		Client.DestroyRenderMaterial(self.devourMaterial)
+		Client.DestroyRenderMaterial(self.devourMaterialViewMaterial)
+		self.devourMaterial = nil
+		self.devourMaterialViewMaterial = nil
+		self.devourEntities = nil
+	end
 end
 
 
@@ -139,6 +161,14 @@ end
 
 function DevouredPlayer:OnTag(tagName)
     //Print(tagName)
+end
+
+function DevouredPlayer:SetIsOnosDying(newValue)
+	self.isOnosDying = newValue
+end
+
+function DevouredPlayer:GetIsOnosDying()
+	return self.isOnosDying
 end
 
 function DevouredPlayer:OnUpdatePoseParameters()    

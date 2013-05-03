@@ -59,7 +59,7 @@ function CombatPlayerClient:Buy_Hook_Marine(self)
     if Client.GetLocalPlayer() == self then
         if self:GetTeamNumber() ~= 0 then
         
-            if not self.buyMenu then
+            if not self.buyMenu and not self:isa("DevouredPlayer") then
                 // open the buy menu
                 self.combatBuy = true
                 self.buyMenu = GetGUIManager():CreateGUIScript("Hud/Marine/combat_GUIMarineBuyMenu")

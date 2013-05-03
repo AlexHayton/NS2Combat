@@ -29,6 +29,7 @@ Client.SendNetworkMessage("ChatClient", test, true)
 //Script.Load("lua/combat_FileOverrides.lua")
 
 // Loading the Hook classes
+Script.Load("lua/combat_DSPEffects.lua")
 Script.Load("lua/Hud/Marine/combat_GUIMarineHud.lua")
 Script.Load("lua/Hud/Alien/combat_GUIAlienBuyMenu.lua")
 Script.Load("lua/Hud/Alien/combat_GUIAlienSpectatorHUD.lua")
