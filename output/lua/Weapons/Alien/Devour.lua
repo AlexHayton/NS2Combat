@@ -21,7 +21,7 @@ local kAnimationGraph = PrecacheAsset("models/alien/onos/onos_view.animation_gra
 Devour.waitTime = 1
 Devour.devourTime = 5
 Devour.damage = 40
-Devour.energyRate = kEnergyUpdateRate * 10
+Devour.energyRate = kEnergyUpdateRate * 14
 // when hitting marine his aim is interrupted
 Devour.kAimInterruptDuration = 0.7
 
@@ -91,25 +91,30 @@ local function UpdateDevour(self)
             if player then
                 local coords = onos:GetCoords()
                 player:SetCoords(coords)                
-                
-                if Shared.GetTime() >= self.lastDevourTime then
-                    
-                    if player:GetIsAlive() and player:isa("Marine") then
-                        local healRate = 0
-                        local damage =  math.min((player:GetMaxHealth() / Devour.devourTime), Devour.damage)
-                        self.lastDevourTime = Shared.GetTime() + Devour.waitTime
-                        player:DeductHealth(damage, onos) 
-                        self.devouringPercentage = math.ceil(player:GetMaxHealth() - player:GetHealth())
-                        player.devouringPercentage = self.devouringPercentage  
-                        onos:AddEnergy(Devour.energyRate)
-                    else
-                        self.devouringPercentage = 0
-                        self.eatingPlayerId = 0
-                        self.lastDevourTime = 0
+                                    
+                if player:GetIsAlive() and player:isa("Marine") then
+                    if not self.lastDevourTime then
+                         self.lastDevourTime = Shared.GetTime()
                     end
+                    local healRate = 0
+                    local deltaTime = Shared.GetTime() - self.lastDevourTime
+                    local damage = (player:GetMaxHealth() * deltaTime) / Devour.devourTime
+                    onos:AddEnergy(Devour.energyRate * deltaTime )
+
+                    player:DeductHealth(damage, onos) 
+                    self.devouringPercentage = math.ceil(player:GetMaxHealth() - player:GetHealth())
+                    player.devouringPercentage = self.devouringPercentage  
+
+                    self.lastDevourTime = Shared.GetTime()
+                else
+                    self.devouringPercentage = 0
+                    self.eatingPlayerId = 0
+                    self.lastDevourTime = nil
                 end
+
             else
                 self.eatingPlayerId = 0
+                 self.lastDevourTime = nil
             end
         end 
     end   
@@ -127,7 +132,6 @@ function Devour:OnCreate()
     self.eatingPlayerId = 0
     
     if Server then
-        self.lastDevourTime = 0
         self:AddTimedCallback(UpdateDevour, 0.1)
     end
     
@@ -160,6 +164,7 @@ function Devour:ClearPlayer()
         end 
     end
     self.eatingPlayerId = 0
+    self.lastDevourTime = nil
 end
 
 function Devour:GetDeathIconIndex()
