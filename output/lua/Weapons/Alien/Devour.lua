@@ -155,7 +155,7 @@ local function ClearPlayerNow(player)
 
 	if player.Replace then
 		local oldHealth = player:GetHealth()
-		newPlayer = player:Replace(player.previousMapName , player:GetTeamNumber(), false,  onos:GetOrigin())
+		newPlayer = player:Replace(player.previousMapName, player:GetTeamNumber(), false,  player:GetOrigin())
 		newPlayer.health = oldHealth 
 		// give him his weapons back
 		newPlayer:GiveUpsBack()
