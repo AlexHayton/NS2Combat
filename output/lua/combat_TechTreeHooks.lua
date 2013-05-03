@@ -31,11 +31,13 @@ function CombatTechTree:GetHasTech_Hook(callingEntity, techId, silenceError)
 	if callingEntity ~= nil then
        
 		// In combat mode, the tech tree resides on the player not the team
-        local techTree = callingEntity:GetTechTree()
-            
-        if techTree ~= nil then
-          return techTree:GetHasTech(techId, silenceError)
-        end
+		if callingEntity.GetTechTree then
+			local techTree = callingEntity:GetTechTree()
+				
+			if techTree ~= nil then
+			  return techTree:GetHasTech(techId, silenceError)
+			end
+		end
         
     end
     
