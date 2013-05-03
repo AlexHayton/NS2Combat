@@ -171,7 +171,7 @@ function Devour:ClearPlayer()
         local player = Shared.GetEntity(self.eatingPlayerId)
         if player then
 			player:SetIsOnosDying(true)
-            player:AddTimedCallback(ClearPlayerNow, 0.5)
+            player:AddTimedCallback(ClearPlayerNow, 1)
         end 
     end
     self.eatingPlayerId = 0

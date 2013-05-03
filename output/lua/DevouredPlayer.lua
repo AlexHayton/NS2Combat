@@ -32,7 +32,10 @@ local function AddCorrodeMaterial(self)
 		self.devourMaterial = material
 		self.devourMaterialViewMaterial = viewMaterial
 		AddMaterialEffect(self, material, viewMaterial, self.devourEntities)
+	elseif Client then
+		return true
 	end
+	
 	return false
     
 end
