@@ -12,15 +12,29 @@ class 'DevouredPlayer' (Marine)
 
 DevouredPlayer.kMapName = "DevouredPlayer"
 
+Shared.PrecacheSurfaceShader("cinematics/vfx_materials/bilebomb_exoview.surface_shader")
+
 local networkVars =
 {
     devouringPercentage = "integer (0 to 100)",
 }
 
-local function UpdateCorrde(self)
+local function ApplyDevouredMaterial(self)
 
-    self:SetCorroded()
-    return true
+    if self._renderModel then
+	
+		local material = Client.CreateRenderMaterial()
+		material:SetMaterial("cinematics/vfx_materials/bilebomb.material")
+
+		local viewMaterial = Client.CreateRenderMaterial()
+		viewMaterial:SetMaterial("cinematics/vfx_materials/bilebomb_exoview.material")
+		
+		self.devouredEntities = {}
+		self.devouredMaterial = material
+		self.devouredViewMaterial = viewMaterial
+		AddMaterialEffect(self, material, viewMaterial, self.devouredEntities)
+        
+    end
     
 end
 
@@ -45,9 +59,9 @@ function DevouredPlayer:OnInitialized()
     self.devouringPercentage = 0
     
     if Server then
-        self:AddTimedCallback(UpdateCorrde, 2)
-        self:SetCorroded()      
         self:TriggerEffects("player_start_gestate")
+	else
+		self:AddTimedCallback(ApplyDevouredMaterial, 0.2)
     end
     
 end
@@ -58,6 +72,13 @@ function DevouredPlayer:OnDestroy()
         self:TriggerEffects("player_end_gestate")
     end
     self:SetViewModel(nil, nil)    
+	
+    if Client and self.devouredMaterial then
+        Client.DestroyRenderMaterial(self.devouredMaterial)
+		self.devouredMaterial = nil
+		Client.DestroyRenderMaterial(self.devouredViewMaterial)
+		self.devouredViewMaterial = nil
+    end    
 end
 
 
