@@ -1,9 +1,9 @@
-/sound/combat.fdp.bak
-/sound/combat.fdp.autosave
-/sound/fmod_designer.log
-/sound/undo-log.txt
-/sound/.fsbcache
-/sound/.fsbcache
+output/sound/combat.fdp.bak
+output/sound/combat.fdp.autosave
+output/sound/fmod_designer.log
+output/sound/undo-log.txt
+output/sound/.fsbcache
+output/sound/.fsbcache
 /maps/ns2_co_Core_debug.level
 /maps/overviews/ns2_co_Core_debug.hmp
 /maps/overviews/ns2_co_Core_debug.tga
@@ -13,3 +13,4 @@
 /screens/ns2_co_Core_debug/2.jpg
 /screens/ns2_co_Core_debug/3.jpg
 /screens/ns2_co_Core_debug/4.jpg
+/source/sound
