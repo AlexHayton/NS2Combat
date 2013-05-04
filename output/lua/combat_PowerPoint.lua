@@ -19,7 +19,8 @@ end
 function CombatPowerPoint:OnLoad()
     ClassHooker:SetClassCreatedIn("PowerPoint", "lua/PowerPoint.lua") 
     self:ReplaceClassFunction("PowerPoint", "GetCanTakeDamageOverride", "PowerPointGetCanTakeDamageOverride_Hook")
-    self:PostHookClassFunction("PowerPoint", "OnCreate", "OnCreate_Hook")
+    self:PostHookClassFunction("PowerPoint", "OnInitialized", "OnInitialized_Hook")
+	self:PostHookClassFunction("PowerPoint", "Reset", "Reset_Hook")
     self:PostHookClassFunction("PowerPoint", "OnKill", "OnKill_Hook")
 end
 
@@ -27,18 +28,24 @@ function CombatPowerPoint:PowerPointGetCanTakeDamageOverride_Hook(self)
     return kCombatPowerPointsTakeDamage
 end
 
-function CombatPowerPoint:OnCreate_Hook(self)
-    self.combatCanTakeDamage = kCombatPowerPointsTakeDamage
-end
-
 local function PowerUp(self)
 
+	self:SetModel(kSocketedModelName, kSocketedAnimationGraph)
 	self:SetInternalPowerState(PowerPoint.kPowerState.socketed)
+	self:SetConstructionComplete()
 	self:SetLightMode(kLightMode.Normal)
 	self:StopSound(kAuxPowerBackupSound)
 	self:TriggerEffects("fixed_power_up")
 	self:SetPoweringState(true)
 	
+end
+
+function CombatPowerPoint:OnInitialized_Hook(self)
+	PowerUp(self)
+end
+
+function CombatPowerPoint:Reset_Hook()
+	PowerUp(self)
 end
 
 local function AutoRepair(self)
