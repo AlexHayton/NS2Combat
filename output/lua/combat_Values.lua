@@ -203,9 +203,6 @@ kCommandStationHealth = 6000
 // Range for evolving to Onos/Exo from the Hive/CommandStation
 kTechRange = 20.0
 
-// dont Track the CombatMod anylonger (later we could maybe make our own tracking site?
-kStatisticsURL = ""
-
 // EMP energy drain
 kEMPBlastEnergyDamage = 100
 
