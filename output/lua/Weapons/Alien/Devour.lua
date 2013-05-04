@@ -29,6 +29,7 @@ local kAttackRadius = 1.2
 local kAttackOriginDistance = 1.8
 local kAttackRange = 2
 local kDevourEnergyCost = 40
+local kDevourUpdateRate = 0.15
 
 local networkVars =
 {
@@ -132,7 +133,7 @@ function Devour:OnCreate()
     self.eatingPlayerId = 0
     
     if Server then
-        self:AddTimedCallback(UpdateDevour, 0.2)
+        self:AddTimedCallback(UpdateDevour, kDevourUpdateRate)
     end
     
     if Client then
