@@ -365,7 +365,7 @@ function OnCommandChangeMap(client, mapName)
     
     if client == nil or client:GetIsLocalClient() then
 		local playerCount = Shared.GetEntitiesWithClassname("Player"):GetSize()
-		ModSwitcher_Save(nil, nil, playerCount, nil, nil, false)
+		ModSwitcher_Save(nil, nil, playerCount, nil, nil, nil, nil, false)
 	
         MapCycle_ChangeMap(mapName)
     end
