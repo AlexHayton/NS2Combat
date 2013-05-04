@@ -11,6 +11,8 @@ Script.Load("lua/Weapons/Marines/DevouredViewModel.lua")
 class 'DevouredPlayer' (Marine)
 
 DevouredPlayer.kMapName = "DevouredPlayer"
+DevouredPlayer.kMaterialDelay = 0.3
+DevouredPlayer.kDevourGoopMaterial = "cinematics/vfx_materials/devour_goop.material"
 Shared.PrecacheSurfaceShader("cinematics/vfx_materials/devour_goop.surface_shader")
 
 local networkVars =
@@ -19,33 +21,11 @@ local networkVars =
 	isOnosDying = "boolean",
 }
 
-local function AddCorrodeMaterial(self)
-
-    if self._renderModel and not self.devourMaterial then
-		local material = Client.CreateRenderMaterial()
-		material:SetMaterial("cinematics/vfx_materials/devour_goop.material")
-
-		local viewMaterial = Client.CreateRenderMaterial()
-		viewMaterial:SetMaterial("cinematics/vfx_materials/devour_goop.material")
-		
-		self.devourEntities = {}
-		self.devourMaterial = material
-		self.devourMaterialViewMaterial = viewMaterial
-		AddMaterialEffect(self, material, viewMaterial, self.devourEntities)
-	elseif Client and not self._renderModel then
-		return true
-	end
-	
-	return false
-    
-end
-
 function DevouredPlayer:OnCreate()
 
     Marine.OnCreate(self)
     
- end
-
+end
 
 function DevouredPlayer:OnInitialized()
 
@@ -60,13 +40,32 @@ function DevouredPlayer:OnInitialized()
 
     self.devouringPercentage = 0
 	self.isOnosDying = false
+	self.timeDevoured = 0
     
     if Server then
         self:TriggerEffects("player_start_gestate")
-	else
-		self:AddTimedCallback(AddCorrodeMaterial, 0.1)
-    end
+	end
     
+end
+
+if Client then
+	function DevouredPlayer:UpdateClientEffects(deltaTime, isLocal)
+
+		Marine.UpdateClientEffects(self, deltaTime, isLocal)
+		
+		self.timeDevoured = self.timeDevoured + deltaTime
+		
+		if not self.devouredViewMaterial and self.timeDevoured > DevouredPlayer.kMaterialDelay then
+			local viewModel= nil        
+			if self:GetViewModelEntity() then
+				viewModel = self:GetViewModelEntity():GetRenderModel()  
+			end
+				
+			if viewModel then
+				self.devouredViewMaterial = AddMaterial(viewModel, DevouredPlayer.kDevourGoopMaterial)
+			end
+		end
+	end
 end
 
 function DevouredPlayer:OnDestroy()
@@ -75,15 +74,6 @@ function DevouredPlayer:OnDestroy()
         self:TriggerEffects("player_end_gestate")
     end
     self:SetViewModel(nil, nil)    
-	
-	if Client and self.devourMaterial then
-		RemoveMaterialEffect(self.devourEntities, self.devourMaterial, self.devourMaterialViewMaterial)
-		Client.DestroyRenderMaterial(self.devourMaterial)
-		Client.DestroyRenderMaterial(self.devourMaterialViewMaterial)
-		self.devourMaterial = nil
-		self.devourMaterialViewMaterial = nil
-		self.devourEntities = nil
-	end
 end
 
 
