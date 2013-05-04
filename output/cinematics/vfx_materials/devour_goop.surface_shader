@@ -9,7 +9,7 @@
 		<param name="osPosition">true</param>
 		<param name="wsNormal">true</param>
 		<param name="vsNormal">true</param>
-		<param name="twoSided">false</param>
+		<param name="twoSided">true</param>
 		<param name="alphaTest">true</param>
 		<param name="slopeScaleBias">-0.1</param>
 	</params>
