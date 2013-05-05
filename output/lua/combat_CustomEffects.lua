@@ -13,7 +13,7 @@ CombatEffects.kMarineLvlUpSound = PrecacheAsset("sound/combat.fev/combat/upgrade
 CombatEffects.kAlienLvlUpSound = PrecacheAsset("sound/NS2.fev/alien/common/res_received")
 CombatEffects.kMarineXpSound = PrecacheAsset("sound/NS2.fev/marine/common/res_received")
 CombatEffects.kAlienXpSound = PrecacheAsset("sound/combat.fev/combat/upgrades/alien_lvl_up")
-CombatEffects.kLastStandAnnounce = PrecacheAsset("sound/combat.fev/combat/general/last_stand0001")
+CombatEffects.kLastStandAnnounce = PrecacheAsset("sound/combat.fev/combat/general/overtime001")
 
 kCombatEffects =
 {
