@@ -6,16 +6,8 @@
 //________________________________
 
 // combat_ConsoleCommands.lua
-
-// our SteamIds so we can use some commands even when cheats are off
-// Disabled until Xmas. We will integrate this into the config somewhere?
-local kSuperAdmins = {
-//               6303568, // Jimwest 
-//			     18247580, // MCMLXXXIV
-                }
                 
-//testSound = PrecacheAsset("sound/ns2c.fev/ns2c/alien/skulk/bite")
-testSound = PrecacheAsset("sound/combat.fev/combat/general/combat_rules_1")
+testSound = PrecacheAsset("sound/combat.fev/combat/general/overtime001")
                      
 function IsSuperAdmin(steamId)
 
