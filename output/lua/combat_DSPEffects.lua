@@ -28,12 +28,12 @@ function CombatDSPEffects:CreateDSPs_Hook()
     // Devoured effect low-pass filter.
     devouredPlayerLowPassId = Client.CreateDSP(SoundSystem.DSP_LowPassSimple)
     Client.SetDSPActive(devouredPlayerLowPassId, false)
-    Client.SetDSPFloatParameter(devouredPlayerLowPassId, 0, 4000)
+    Client.SetDSPFloatParameter(devouredPlayerLowPassId, 0, 3000)
 	
 	// Devoured effect echo filter.
 	devouredPlayerEchoId = Client.CreateDSP(SoundSystem.DSP_Echo)
 	Client.SetDSPActive(devouredPlayerEchoId, false)
-    Client.SetDSPFloatParameter(devouredPlayerEchoId, 0, 55)
+    Client.SetDSPFloatParameter(devouredPlayerEchoId, 0, 45)
 	
 end
 

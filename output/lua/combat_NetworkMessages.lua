@@ -118,7 +118,6 @@ elseif Client then
 		kCombatTimeLimit =  messageTable.gameTimeLimit
         
     end
-    
     Client.HookNetworkMessage("CombatGameTimeUpdate", GetCombatGameTimeUpdate)
     
 end

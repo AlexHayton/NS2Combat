@@ -323,45 +323,50 @@ function CombatNS2Gamerules:OnUpdate_Hook(self, timePassed)
                     combatXmas_CheckTime(timeTaken)
 			    end
 				// send timeleft to all players, but only every few min
-                if 	kCombatTimeLeftPlayed ~= timeLeft and
-					timeLeft > 0 and
-					((timeLeft % kCombatTimeReminderInterval) == 0 or 
-					 (timeLeft == 60) or (timeLeft == 30) or
-					 (timeLeft == 20) or (timeLeft == 10) or
-					 (timeLeft <= 5)) then
-                    local playersTeam1 = GetEntitiesForTeam("Player", kTeam1Index)
-                    local playersTeam2 = GetEntitiesForTeam("Player", kTeam2Index)
-					
-					local timeLeftText = GetTimeText(timeLeft)
-					local team1Message = ""
-					local team2Message = ""
-					
-					if kCombatDefaultWinner == kTeam2Index then
-						team1Message = " left until Marines have lost!"
-						team2Message = " left until Aliens have won!"						
-					else
-						team1Message = " left until Marines have won!"
-						team2Message = " left until Aliens have lost!"											
+                if 	kCombatTimeLeftPlayed ~= timeLeft then
+					if  timeLeft > 0 and
+						((timeLeft % kCombatTimeReminderInterval) == 0 or 
+						 (timeLeft == 60) or (timeLeft == 30) or
+						 (timeLeft == 20) or (timeLeft == 10) or
+						 (timeLeft <= 5)) then
+						local playersTeam1 = GetEntitiesForTeam("Player", kTeam1Index)
+						local playersTeam2 = GetEntitiesForTeam("Player", kTeam2Index)
+						
+						local timeLeftText = GetTimeText(timeLeft)
+						local team1Message = ""
+						local team2Message = ""
+						
+						if kCombatDefaultWinner == kTeam2Index then
+							team1Message = " left until Marines have lost!"
+							team2Message = " left until Aliens have won!"						
+						else
+							team1Message = " left until Marines have won!"
+							team2Message = " left until Aliens have lost!"											
+						end
+						
+						if timeLeft >= 0 and kCombatAllowOvertime then
+							team1Message = " left until overtime!"
+							team2Message = " left until overtime!"
+						end
+				
+						for index, player in ipairs(playersTeam1) do
+							player:SendDirectMessage( timeLeftText .. team1Message )
+						end
+						
+						for index, player in ipairs(playersTeam2) do
+							player:SendDirectMessage( timeLeftText .. team2Message )
+						end
+						
+						kCombatTimeLeftPlayed = timeLeft                
+					elseif timeLeft == -1 and kCombatAllowOvertime then
+						// Send the last stand sound to every player
+						for i, player in ientitylist(Shared.GetEntitiesWithClassname("Player")) do
+							Server.PlayPrivateSound(player, CombatEffects.kLastStandAnnounce, player, 1.0, Vector(0, 0, 0))
+							player:SendDirectMessage("OVERTIME!!")
+						end
+						kCombatTimeLeftPlayed = timeLeft
 					end
-					
-				    if timeLeft >= 0 and kCombatAllowOvertime then
-						team1Message = " left until overtime!"
-						team2Message = " left until overtime!"
-					elseif kCombatAllowOvertime then
-						team1Message = " OVERTIME!"
-						team2Message = " OVERTIME!"
-					end
-			
-					for index, player in ipairs(playersTeam1) do
-						player:SendDirectMessage( timeLeftText .. team1Message )
-					end
-					
-					for index, player in ipairs(playersTeam2) do
-						player:SendDirectMessage( timeLeftText .. team2Message )
-					end
-                    
-                    kCombatTimeLeftPlayed = timeLeft                
-                end
+				end
 			end
 			
 			// Periodic events...
