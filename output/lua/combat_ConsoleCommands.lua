@@ -15,7 +15,7 @@ local kSuperAdmins = {
                 }
                 
 //testSound = PrecacheAsset("sound/ns2c.fev/ns2c/alien/skulk/bite")
-testSound = PrecacheAsset("sound/combat.fev/combat/general/combat_rules_1")
+testSound = PrecacheAsset("sound/combat.fev/combat/general/last_stand0001")
                      
 function IsSuperAdmin(steamId)
 
