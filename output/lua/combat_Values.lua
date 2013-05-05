@@ -199,6 +199,7 @@ SetCachedTechData(kTechId.BabblerEgg, kTechDataCostKey,kBabblerCost)
 // Make the marine structures slightly less squishy...
 kArmoryHealth = 4000
 kCommandStationHealth = 6000
+kBileBombDamage = 40 // per second
 
 // Range for evolving to Onos/Exo from the Hive/CommandStation
 kTechRange = 20.0
