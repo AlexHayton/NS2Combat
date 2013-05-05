@@ -77,13 +77,15 @@ function ModSwitcher_Load(changeLocal)
 			
 			if tonumber(settings.ModTimeLimit) and tonumber(settings.ModTimeLimit) > -1 then
 				kCombatTimeLimit = tonumber(settings.ModTimeLimit)
-			elseif tonumber(settings.ModTimeLimit) == kCombatTimeLimitOldValue then
-				Shared.Message("Upgrading the default time limit value to new default ("..kCombatTimeLimitDefault..")")
-				kCombatTimeLimit = kCombatTimeLimitDefault
-				settings.ModTimeLimit = kCombatTimeLimitDefault
 			else
 				Shared.Message("For the value ModTimeLimit in " .. kCombatModSwitcherPath .. " only numbers from 0 and above are allowed")
 				Shared.Message("Resetting the value to default ("..kCombatTimeLimitDefault..")")
+				kCombatTimeLimit = kCombatTimeLimitDefault
+				settings.ModTimeLimit = kCombatTimeLimitDefault
+			end
+			
+			if tonumber(settings.ModTimeLimit) == kCombatTimeLimitOldValue then
+				Shared.Message("Upgrading the default time limit value to new default ("..kCombatTimeLimitDefault..")")
 				kCombatTimeLimit = kCombatTimeLimitDefault
 				settings.ModTimeLimit = kCombatTimeLimitDefault
 			end
