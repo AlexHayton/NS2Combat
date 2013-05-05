@@ -126,7 +126,7 @@ function combat_GUIGameTimeCountDown:Update(deltaTime)
 		self.timerBackground:SetIsVisible(true)
         local TimeRemaining = PlayerUI_GetTimeRemaining()
         if TimeRemaining == "00:00:00" then		    
-            self.timeRemainingText:SetText("Last Stand")
+            self.timeRemainingText:SetText("Overtime")
         else
             self.timeRemainingText:SetText(TimeRemaining)
         end
