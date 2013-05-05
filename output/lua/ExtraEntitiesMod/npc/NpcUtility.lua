@@ -5,6 +5,12 @@
 //
 //________________________________
 
+// list that includes every npc
+kNpcList = {}
+kNpcQueue = {}
+kCheckQueueStarted = false
+kMaxNpcs = 30
+
 // only take targets from mates that near that distance
 kSwarmLogicMaxDistance = 10
 kSwarmLogicMaxTime = 6
@@ -125,25 +131,33 @@ function NpcUtility_GetClearSpawn(origin, className)
 end
 
 function NpcUtility_Spawn(origin, className, values, waypoint)
-
-    local spawnOrigin = NpcUtility_GetClearSpawn(origin, className)
-    values.origin = spawnOrigin
-    values.isaNpc = true
-    
-    if values.origin then      
-        local entity = Server.CreateEntity(className, values)
-        entity:DropToFloor()
-        // init the xp mixin for the new npc
-        InitMixin(entity, NpcMixin)	
-        if waypoint then
-            entity:GiveOrder(kTechId.Move , waypoint:GetId(), waypoint:GetOrigin(), nil, true, true)
-            entity.mapWaypoint = waypoint:GetId()
+    if 1 == 1 then
+        local spawnOrigin = NpcUtility_GetClearSpawn(origin, className)
+        values.origin = spawnOrigin
+        values.isaNpc = true
+        
+        if values.origin then      
+            local entity = Server.CreateEntity(className, values)
+            entity:DropToFloor()
+            // init the xp mixin for the new npc
+            InitMixin(entity, NpcMixin)	
+            if waypoint then
+                entity:GiveOrder(kTechId.Move , waypoint:GetId(), waypoint:GetOrigin(), nil, true, true)
+                entity.mapWaypoint = waypoint:GetId()
+            end
+            table.insert(kNpcList, entity:GetId())   
+        else
+            Print("Found no position for npc!")
         end
-
     else
-        Print("Found no position for npc!")
+        if not kCheckQueueStarted then
+            AddTimedCallback(OnConsoleAddNpc , 0.5)
+        end
+        table.insert(kNpcQueue, {oritin = origin, 
+                                 className = className,
+                                 values = values,
+                                 waypoint = aypoint )    
     end
-    
 end
 
 

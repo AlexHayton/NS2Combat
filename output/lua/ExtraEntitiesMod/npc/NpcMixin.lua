@@ -94,7 +94,7 @@ function NpcMixin:__initmixin()
             //{self.FilterTarget(self)},
             { CloakTargetFilter(), self.FilterTarget(self)},            
             { function(target) return target:isa("Player") end } )
-        
+
         // special Mixins
         if self:isa("Marine") then
             InitMixin(self, NpcMarineMixin)   
@@ -174,6 +174,11 @@ end
 function NpcMixin:OnKill()
 end
 
+function NpcMixin:OnDestroy()
+    if kNpcList and #kNpcList > 0 then
+        Print("OnDestroy")
+    end    
+end
 
 function NpcMixin:OnLogicTrigger(player) 
     self.active = not self.active
@@ -667,7 +672,7 @@ function NpcMixin:GetNextPoint(order, toPoint)
     if (order and self.orderType ~= kTechId.Attack) or (not self.toClose and not self.inTargetRange) then
         if self.oldPoint and self.oldOrigin and self.oldPoint == toPoint then
             // if its the same point, lets look if we can still move there
-            if (self.points and not self:CheckTargetReached(self.points[#self.points])) and (not self.timeLastStuckingCheck or (Shared.GetTime() - self.timeLastStuckingCheck > NpcMixin.kStuckingUpdateRate)) then
+            if (self.points and self.points[#self.points] and not self:CheckTargetReached(self.points[#self.points])) and (not self.timeLastStuckingCheck or (Shared.GetTime() - self.timeLastStuckingCheck > NpcMixin.kStuckingUpdateRate)) then
                 if math.abs((self:GetOrigin() - self.oldOrigin):GetLengthXZ()) < NpcMixin.kAntiStuckDistance then
                 
                     // we're still in the same spot
@@ -689,7 +694,7 @@ function NpcMixin:GetNextPoint(order, toPoint)
                 end
                 self.timeLastStuckingCheck = Shared.GetTime()
             // no points? create new one
-            elseif not self.points and self.orderPosition then            
+            elseif (not self.points or not self.points[#self.points]) and self.orderPosition then            
                 self:GeneratePath(self.orderPosition)
             end
         else

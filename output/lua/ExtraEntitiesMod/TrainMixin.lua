@@ -219,7 +219,7 @@ function TrainMixin:MovePlayersInTrigger(deltaTime)
                 local coords = Coords.GetLookIn(newOrigin, self:GetAngles():GetCoords().zAxis)
                 //TransformPlayerCoordsForTrain(entity, entity:GetCoords(), coords)               
                 entity:SetOrigin(newOrigin  + self:GetMovementVector())
-                    
+                entity.pushTime = -1
             end
         end
     end
