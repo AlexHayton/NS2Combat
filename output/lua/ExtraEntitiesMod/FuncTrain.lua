@@ -47,7 +47,6 @@ function FuncTrain:OnCreate()
     InitMixin(self, TrainMixin)
     
     self:SetUpdates(true)  
-    self:SetLagCompensated(true)
     
 end
 

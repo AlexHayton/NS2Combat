@@ -81,14 +81,6 @@ function LogicTarget:GetSendDeathMessageOverride()
 end
 
 
-function LogicTarget:GetOutputNames()
-    return {self.output1}
-end
-
-
-function LogicTarget:OnLogicTrigger(player) 
-end
-
 if (Server) then
   
     function LogicTarget:OnKill(damage, attacker, doer, point, direction)

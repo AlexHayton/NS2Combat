@@ -5,8 +5,6 @@
 //
 //________________________________
 
-Script.Load("lua/ModUtility.lua")
-
 // Adjust values
 Script.Load("lua/ExtraEntitiesMod/eem_Globals.lua")
 
@@ -41,6 +39,7 @@ Script.Load("lua/ExtraEntitiesMod/LogicMultiplier.lua")
 Script.Load("lua/ExtraEntitiesMod/LogicSwitch.lua")
 Script.Load("lua/ExtraEntitiesMod/LogicWeldable.lua")
 Script.Load("lua/ExtraEntitiesMod/LogicFunction.lua")
+Script.Load("lua/ExtraEntitiesMod/LogicDialogue.lua")
 Script.Load("lua/ExtraEntitiesMod/LogicCounter.lua")
 Script.Load("lua/ExtraEntitiesMod/LogicTrigger.lua")
 Script.Load("lua/ExtraEntitiesMod/LogicLua.lua")
@@ -53,6 +52,9 @@ Script.Load("lua/ExtraEntitiesMod/LogicWaypoint.lua")
 Script.Load("lua/ExtraEntitiesMod/LogicGiveItem.lua")
 Script.Load("lua/ExtraEntitiesMod/LogicReset.lua")
 Script.Load("lua/ExtraEntitiesMod/LogicBreakable.lua")
+Script.Load("lua/ExtraEntitiesMod/LogicEventListener.lua")
+Script.Load("lua/ExtraEntitiesMod/LogicCinematic.lua")
+Script.Load("lua/ExtraEntitiesMod/LogicPowerPointListener.lua")
 
 Script.Load("lua/ExtraEntitiesMod/MapSettings.lua")
 Script.Load("lua/ExtraEntitiesMod/MapChange.lua")
@@ -60,6 +62,7 @@ Script.Load("lua/ExtraEntitiesMod/NobuildArea.lua")
 
 Script.Load("lua/ExtraEntitiesMod/GravityTrigger.lua")
 
+Script.Load("lua/ExtraEntitiesMod/GlobalEventListener.lua")
 
 // npc things
 Script.Load("lua/ExtraEntitiesMod/npc/NpcUtility.lua")

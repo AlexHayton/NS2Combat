@@ -97,10 +97,6 @@ function LogicWeldable:GetTechId()
 end
 
 
-function LogicWeldable:GetOutputNames()
-    return {self.output1}
-end
-
 function LogicWeldable:OnWelded()
     self:SetArmor(self:GetMaxArmor())
     self:TriggerOutputs()

@@ -19,15 +19,10 @@ LogicMixin.expectedMixins =
 {
 }
 
-LogicMixin.expectedCallbacks =
-{
-    OnLogicTrigger = "Called when the entity is output of a timer etc."
-}
-
 
 LogicMixin.optionalCallbacks =
 {
-    GetOutputNames = "Gives the names of the output entities back which should be triggered."
+    OnLogicTrigger = "Called when the entity is output of a timer etc."
 }
 
 
@@ -57,10 +52,6 @@ function LogicMixin:__initmixin()
     */  
     if self.name and self.name ~= "" then                              
         kLogicEntityList[self.name] = self:GetId()
-    end
-                                    
-    if self.GetOutputNames and #self:GetOutputNames() == 0 then
-        Print("Error: " .. self.name .. ": No Output-Entity declared")
     end
 end
 
@@ -95,6 +86,12 @@ function LogicMixin:GetLogicEntityWithName(name)
     end  
  
     return entity
+end
+
+
+// normal output, but entities can override it
+function LogicMixin:GetOutputNames()
+    return {self.output1}
 end
 
 
@@ -146,6 +143,11 @@ function LogicMixin:GetUsedOutputs()
     end
     
     return outputs
+end
+
+
+// entities can override this
+function LogicMixin:OnLogicTrigger(player) 
 end
 
 

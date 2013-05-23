@@ -25,10 +25,13 @@ function CombatTeamMessenger:SendTeamMessage_Hook(team, messageType, optionalDat
     local function SendToPlayer(player)
         Server.SendNetworkMessage(player, "TeamMessage", { type = messageType, data = optionalData or 0 }, true)
     end    
-    	// Only intercept NoCommander messages, for now.
+    
+	// Only intercept NoCommander messages, for now.
     if not ((messageType == kTeamMessageTypes.NoCommander) or
-       (messageType == kTeamMessageTypes.CannotSpawn)) then
-		    team:ForEachPlayer(SendToPlayer)
+			(messageType == kTeamMessageTypes.CannotSpawn)) then
+			
+		team:ForEachPlayer(SendToPlayer)
+		
 	end
 	
 end

@@ -36,10 +36,6 @@ function LogicWaypoint:GetExtents()
     return Vector(1,1,1)
 end
 
-function LogicWaypoint:GetOutputNames()
-    return {self.output1}
-end
-
 function LogicWaypoint:OnOrderComplete(player)
     self:TriggerOutputs(player)
 end

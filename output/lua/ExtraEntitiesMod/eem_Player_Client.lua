@@ -5,13 +5,13 @@
 //
 //________________________________
 
-
 local overrideOnClientDisconnected = OnClientDisconnected
 function OnClientDisconnected(reason)    
     if self.gEemToolTipScript then
         GetGUIManager():DestroyGUIScriptSingle(self.gEemToolTipScript)
         self.gEemToolTipScript  = nil
     end
+    
     overrideOnClientDisconnected(reason)
 end
 
@@ -49,15 +49,19 @@ overridePlayerUpdateClientEffects = Class_ReplaceMethod( "Player", "UpdateClient
 
 )
 
-local originalPlayerGetName = Player.GetName
-function Player:GetName(forEntity)
+// no noname for bots
+local originalPlayerGetName
+originalPlayerGetName = Class_ReplaceMethod( "Player", "GetName",
+
+   function(self, forEntity) 
     
-    local name = originalPlayerGetName(self, forEntity)
-    
-    if name == "No Name" then
-        name = " "
+        local name = originalPlayerGetName(self, forEntity)
+
+        if name == "No Name" then
+            name = " "
+        end
+
+        return name
+        
     end
-    
-    return name
-    
-end
+)

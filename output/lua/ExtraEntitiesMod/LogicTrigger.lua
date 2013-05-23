@@ -39,11 +39,6 @@ function LogicTrigger:OnInitialized()
 
 end
 
-function LogicTrigger:GetOutputNames()
-    return {self.output1}
-end
-
-
 function LogicTrigger:Reset()
     self.triggered = false
     self.triggerPlayerList = {}
@@ -55,8 +50,12 @@ if Server then
     
     function LogicTrigger:CheckTrigger(enterEnt)
     
-        local timeOk = ((Shared.GetTime() + self.coolDownTime) >= self.timeLastTriggered)
-        
+        local timeOk = ((Shared.GetTime() + self.coolDownTime) >= self.timeLastTriggered) 
+       
+        if self.disallowNpcs then
+            timeOk = not enterEnt.isaNpc
+        end     
+   
         if self.enabled and timeOk then
         
             local teamNumber = enterEnt:GetTeamNumber()
@@ -87,6 +86,17 @@ if Server then
                 elseif self.teamType == 2 then              // trigger only once 
                     typeOk = not self.triggered
                     self.triggered = true
+                elseif self.teamType == 3 then              // trigger only once per SteamId
+                    // just ignore npcs here
+                    if enterEnt.isaNpc then
+                        typeOk = true
+                    else
+                        local steamid = Server.GetOwner(enterEnt):GetUserId()
+                        if not table.contains(self.triggerPlayerList, steamid) then
+                            typeOk = true
+                            table.insert(self.triggerPlayerList, steamid)                
+                        end
+                    end
                 end
                 
                 if typeOk then

@@ -12,6 +12,8 @@ Script.Load("lua/Player.lua")
 local networkVars =
 {
     gravityTrigger = "entityid",
+    // add this to all players so they see the teleport effect
+    timeOfLastPhase = "private time",
 }
 
 
@@ -51,8 +53,35 @@ if Server then
 				DestroyEntity(self:GetViewModelEntity())
 				self.viewModelId = Entity.invalidId
 			end
+			// call radgdoll mixin so it will be a ragdoll
+			RagdollMixin.OnKill(self, attacker, doer, point, direction)
         end
     end
+    
+    
+    // cheap trick to get rid of an error that appears when npcs are shooting before client is there
+    Player.hitRegEnabled = false
+
+    local originalPlayerGetClient
+    originalPlayerGetClient = Class_ReplaceMethod( "Player", "GetClient", 
+        function(self)     
+            return self.client or self
+        end
+    )
+
+elseif Client then
+
+    // to fix the bug when theres no minimap frame
+    function Player:ShowMap(showMap, showBig, forceReset)
+        
+        if ClientUI.GetScript("GUIMinimapFrame") then        
+            self.minimapVisible = showMap and showBig
+            ClientUI.GetScript("GUIMinimapFrame"):ShowMap(showMap)
+            ClientUI.GetScript("GUIMinimapFrame"):SetBackgroundMode((showBig and GUIMinimapFrame.kModeBig) or GUIMinimapFrame.kModeMini, forceReset)
+        end
+        
+    end
+
 end
 
 

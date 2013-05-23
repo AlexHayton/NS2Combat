@@ -44,8 +44,4 @@ function LogicLua:Reset()
 end
 
 
-function LogicLua:OnLogicTrigger(player)    
-end
-
-
 Shared.LinkClassToMap("LogicLua", LogicLua.kMapName, networkVars)

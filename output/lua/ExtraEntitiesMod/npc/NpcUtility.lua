@@ -5,11 +5,17 @@
 //
 //________________________________
 
+Script.Load("lua/ExtraEntitiesMod/npc/NpcQueueManager.lua")
+
 // list that includes every npc
 kNpcList = {}
-kNpcQueue = {}
-kCheckQueueStarted = false
 kMaxNpcs = 30
+kMaxNpcsSameTime = 4
+kLastSpawnTime = 0
+kDelaySpawnTime = 1
+kSpawnedNpcs = 0
+kQueueManager = nil
+
 
 // only take targets from mates that near that distance
 kSwarmLogicMaxDistance = 10
@@ -131,7 +137,13 @@ function NpcUtility_GetClearSpawn(origin, className)
 end
 
 function NpcUtility_Spawn(origin, className, values, waypoint)
-    if 1 == 1 then
+
+    if NpcUtility_GetCanSpawnNpc() then
+    
+        if (Shared.GetTime() - kLastSpawnTime) >= kDelaySpawnTime  then
+            kSpawnedNpcs = 0
+        end
+        
         local spawnOrigin = NpcUtility_GetClearSpawn(origin, className)
         values.origin = spawnOrigin
         values.isaNpc = true
@@ -145,21 +157,32 @@ function NpcUtility_Spawn(origin, className, values, waypoint)
                 entity:GiveOrder(kTechId.Move , waypoint:GetId(), waypoint:GetOrigin(), nil, true, true)
                 entity.mapWaypoint = waypoint:GetId()
             end
-            table.insert(kNpcList, entity:GetId())   
+            table.insert(kNpcList, entity:GetId()) 
+ 
+            kSpawnedNpcs = kSpawnedNpcs + 1
+            kLastSpawnTime = Shared.GetTime()
+            
+            return true 
+            
         else
             Print("Found no position for npc!")
+            return false
         end
-    else
-        if not kCheckQueueStarted then
-            AddTimedCallback(OnConsoleAddNpc , 0.5)
-        end
-        table.insert(kNpcQueue, {oritin = origin, 
-                                 className = className,
-                                 values = values,
-                                 waypoint = aypoint )    
-    end
+        
+    else   
+        if not kQueueManager then
+            kQueueManager = Server.CreateEntity(NpcQueueManager.kMapName)
+        end 
+        kQueueManager:AddToQueue(   {origin = origin, 
+                                    className = className,
+                                    values = values,
+                                    waypoint = aypoint}  ) 
+    end    
 end
 
+function NpcUtility_GetCanSpawnNpc()
+    return #kNpcList < kMaxNpcs and ((Shared.GetTime() - kLastSpawnTime) >= kDelaySpawnTime  or (kSpawnedNpcs < kMaxNpcsSameTime))
+end
 
 
 if Server then

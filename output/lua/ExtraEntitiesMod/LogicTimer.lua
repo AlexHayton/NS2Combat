@@ -73,11 +73,6 @@ function LogicTimer:CheckTimer()
 end
 
 
-function LogicTimer:GetOutputNames()
-    return {self.output1}
-end
-
-
 function LogicTimer:OnLogicTrigger(player)
     self:OnTriggerAction()     
 end

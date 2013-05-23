@@ -39,11 +39,6 @@ function LogicCounter:Reset()
 end
 
 
-function LogicCounter:GetOutputNames()
-    return {self.output1}
-end
-
-
 function LogicCounter:OnLogicTrigger(player)
 
     self.countAmount = self.countAmount + 1

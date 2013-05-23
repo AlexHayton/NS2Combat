@@ -32,13 +32,5 @@ function LogicListener:OnInitialized()
     end
 end
 
-function LogicListener:GetOutputNames()
-    return {self.output1}
-end
-
-
-function LogicListener:OnLogicTrigger(player) 
-end
-
 
 Shared.LinkClassToMap("LogicListener", LogicListener.kMapName, networkVars)

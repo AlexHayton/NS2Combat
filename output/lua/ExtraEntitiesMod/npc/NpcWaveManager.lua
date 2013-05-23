@@ -46,12 +46,14 @@ if Server then
         self.currentWave = 1
     end
     
-    function NpcManager:GetOutputNames()
-        return {self.output1}
-    end
-
     function NpcManager:OnLogicTrigger(player) 
-        self.active = true
+        if not self.active then
+            self.active = true
+        else
+            if self.onTriggerAction and self.onTriggerAction == 0 then
+                self.active = false
+            end
+        end
     end
     
     function NpcManager:OnUpdate(deltaTime) 
@@ -70,9 +72,14 @@ if Server then
                 self.currentWave = self.currentWave + 1
                 
                 if self.currentWave >= self.maxWaveNumber then
-                    // max wave reached
-                    self:TriggerOutputs()
-                    self:Reset()
+                    if self.maxWaveNumber ~= 99 then
+                        // max wave reached
+                        self:TriggerOutputs()
+                        self:Reset()
+                    else
+                        // infinite wave until triggered
+                        self.currentWave = 1
+                    end
                 end
                 
             end
@@ -114,6 +121,8 @@ if Server then
                         team = self.team,
                         startsActive = true,
                         isaNpc = true,
+                        timedLife = self.timedLife,
+                        baseDifficulty = self.baseDifficulty,
                         }
         return values
     end

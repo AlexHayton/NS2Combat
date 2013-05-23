@@ -70,11 +70,6 @@ function LogicButton:GetTechId()
     return kTechId.Door    
 end
 
-
-function LogicButton:GetOutputNames()
-    return {self.output1}
-end
-
 function LogicButton:GetCanBeUsed(player, useSuccessTable)
     useSuccessTable.useSuccess = true
 end
@@ -100,8 +95,9 @@ function LogicButton:OnUse(player, elapsedTime, useAttachPoint, usePoint, useSuc
                 end
             end
             
-            if teamOk then        
-                local typeOk = false                
+            if teamOk then
+                local typeOk = false
+                
                 if self.teamType == 0 or self.teamType == nil then           // triggers all the time
                     typeOk = true                
                 elseif self.teamType == 1 then              // trigger once per player
@@ -113,13 +109,26 @@ function LogicButton:OnUse(player, elapsedTime, useAttachPoint, usePoint, useSuc
                 elseif self.teamType == 2 then              // trigger only once 
                     typeOk = not self.triggered
                     self.triggered = true
+                elseif self.teamType == 3 then              // trigger only once per SteamId
+                    // just ignore npcs here
+                    if player.isaNpc then
+                        typeOk = true
+                    else
+                        local steamid = Server.GetOwner(player):GetUserId()
+                        if not table.contains(self.triggerPlayerList, steamid) then
+                            typeOk = true
+                            table.insert(self.triggerPlayerList, steamid)                
+                        end
+                    end
                 end
                 
                 if typeOk then
                     self:TriggerOutputs(player)
                     self.timeLastTriggered = Shared.GetTime()
                 end
+                
             end
+            
         end
         
     elseif Client then
