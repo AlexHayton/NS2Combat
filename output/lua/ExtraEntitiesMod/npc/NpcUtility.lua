@@ -9,16 +9,16 @@ Script.Load("lua/ExtraEntitiesMod/npc/NpcQueueManager.lua")
 
 // list that includes every npc
 kNpcList = {}
-kMaxNpcs = 30
+kMaxNpcs = 34
 kMaxNpcsSameTime = 4
 kLastSpawnTime = 0
-kDelaySpawnTime = 1
+kDelaySpawnTime = 0.8
 kSpawnedNpcs = 0
 kQueueManager = nil
 
 
 // only take targets from mates that near that distance
-kSwarmLogicMaxDistance = 10
+kSwarmLogicMaxDistance = 20
 kSwarmLogicMaxTime = 6
 kSwarmLogicTargets = {}
 
@@ -181,7 +181,11 @@ function NpcUtility_Spawn(origin, className, values, waypoint)
 end
 
 function NpcUtility_GetCanSpawnNpc()
-    return #kNpcList < kMaxNpcs and ((Shared.GetTime() - kLastSpawnTime) >= kDelaySpawnTime  or (kSpawnedNpcs < kMaxNpcsSameTime))
+    if #kNpcList < kMaxNpcs then
+        return ((Shared.GetTime() - kLastSpawnTime) >= kDelaySpawnTime  or (kSpawnedNpcs < kMaxNpcsSameTime))
+    else
+        return false
+    end
 end
 
 
@@ -251,8 +255,57 @@ if Server then
     end
 
     Event.Hook("Console_addnpc",         OnConsoleAddNpc)
+	
+	local function TestSpawnNpc(origin, className, values, team)
+		Shared.Message("Spawned a " .. className .. " for team " .. team) 
+		NpcUtility_Spawn(origin, className, values, nil)
+	end
+	
+	function OnConsoleTestNpcs(client)
+	
+		Shared.Message("Testing Npcs")
+		local className = Skulk.kMapName
+        local origin = GetGamerules():GetTeam1():GetInitialTechPoint():GetOrigin()
+        local amount = 1
+	
+		// Spawn one of each NPC.
+		// Make them fight each other. 
+		// This ends up testing most of the other systems :]
+		local waitTime = 1
+		local waitTimeInterval = 0.25
+		for team = 1,2,1 do
+			local values = { 
+				origin = origin,                    
+				team = team,
+				startsActive = true,
+			}
+		
+			className = Lerk.kMapName
+			TestSpawnNpc(origin, className, values, team)
+			className = Gorge.kMapName
+			TestSpawnNpc(origin, className, values, team)
+			className = Fade.kMapName  
+			TestSpawnNpc(origin, className, values, team)
+			className = Onos.kMapName
+			TestSpawnNpc(origin, className, values, team)
+			className = Marine.kMapName
+			TestSpawnNpc(origin, className, values, team)
+			className = Exo.kMapName
+			values.layout = "ClawMinigun"
+			TestSpawnNpc(origin, className, values, team)
+		end
+		
+		// Run some other tests.
+
+		Shared.Message("Testing Complete")
+		
+	end
+	
+	Event.Hook("Console_testnpcs", OnConsoleTestNpcs)
 
 end
+
+
     
 
 

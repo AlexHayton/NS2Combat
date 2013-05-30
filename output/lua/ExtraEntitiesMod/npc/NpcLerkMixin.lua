@@ -36,7 +36,7 @@ function NpcLerkMixin:AiSpecialLogic()
         if not self.inTargetRange then
         
             if not self.nextFlyStop then
-                self.nextFlyStop = Shared.GetTime() + 1.5 
+                self.nextFlyStop = Shared.GetTime() + 1.2 
             end
             
             if Shared.GetTime() < self.nextFlyStop then

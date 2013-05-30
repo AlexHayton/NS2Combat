@@ -1,0 +1,6 @@
+shader = "shaders/Level_alpha.surface_shader"
+albedoMap = "materials/numbers/number0.dds"
+normalMap = "materials/dev/dev_normal.dds"
+opacityMap = "materials/numbers/number0.dds"
+
+surface = "metal"

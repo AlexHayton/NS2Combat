@@ -1,0 +1,2 @@
+shader = "shaders/Emissive.surface_shader"
+emissiveMap = "models/system/editor/telepr.dds"

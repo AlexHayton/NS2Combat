@@ -115,6 +115,7 @@ function LogicDialogue:OnUpdate(deltaTime)
 			self.clientTimeStopped = self.timeToStop
 			
 			if self.showOnScreen then
+				local guiDialogue = ClientUI.GetScript(LogicDialogue.kGUIScript)
 				guiDialogue:StartFadeOut(self.fadeOut)
 			end
 		end

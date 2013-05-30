@@ -1,0 +1,6 @@
+shader = "models/props/water.surface_shader"
+albedoMap = "models/props/water.dds"
+normalMap = "models/props/water_norm.dds"
+specularMap = "models/props/water_spec.dds"
+surface = "organic""
+

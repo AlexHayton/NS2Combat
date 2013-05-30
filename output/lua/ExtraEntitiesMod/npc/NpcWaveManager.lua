@@ -32,7 +32,7 @@ if Server then
         self.waveTime = self.waveTime or 20
         self.maxWaveNumber = self.maxWaveNumber or 5
         self.active = false
-        self.currentWave = 1
+        self.currentWave = 0
         self:SetUpdates(true)
     end    
         
@@ -43,7 +43,7 @@ if Server then
     function NpcManager:Reset() 
         self.active = false
         self.lastWaveSpawn = nil
-        self.currentWave = 1
+        self.currentWave = 0
     end
     
     function NpcManager:OnLogicTrigger(player) 
@@ -78,7 +78,7 @@ if Server then
                         self:Reset()
                     else
                         // infinite wave until triggered
-                        self.currentWave = 1
+                        self.currentWave = 0
                     end
                 end
                 

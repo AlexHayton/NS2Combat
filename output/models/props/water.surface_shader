@@ -1,0 +1,50 @@
+<shader>
+	
+	<inputs>
+		<input name="albedoMap" type="texture" address="wrap" />
+		<input name="normalMap" 		 type="texture" address="wrap" />
+		<input name="specularMap" type="texture" address="wrap" />
+		<input name="transmissionColor"  type="float3">(1, 1, 1)</input>
+		<input name="scale1"             type="float">0.01</input>
+		<input name="scale2"             type="float">0.01</input>
+		<input name="speed1"             type="float">0.01</input>
+		<input name="speed2"             type="float">0.01</input>
+	</inputs>
+	
+	<code>
+	<![CDATA[
+		float3 DecodeNormal(const float4 texNormal)
+		{
+			float4 n = texNormal * 2 - 1;
+			//return float3(n.a, n.g, sqrt(1 - dot(n.ag, n.ag)) );
+			return n.xyz;
+		}
+		void MaterialShader(in Material_Input input, inout Material material)
+		{
+			float2 offset = float2(time*0.7, 0);
+			
+			float3 normal = scale1 * DecodeNormal( tex2D(normalMap, input.texCoord * 2 + offset * speed1) ) + 
+				            scale2 * DecodeNormal( tex2D(normalMap, input.texCoord + offset.yx * speed2) );
+
+			//float3 emissive = scale1 * DecodeNormal( tex2D(albedoMap, input.texCoord * 2 + offset * speed1) ) + 
+				            scale2 * DecodeNormal( tex2D(albedoMap, input.texCoord + offset.yx * speed2) );
+							
+			float3 emissive = tex2D( albedoMap, input.texCoord  * float2( 2, 2) + float2(time * -.01, time * 0.01) ).rgb;
+			float4 specularGloss = tex2D(specularMap, input.texCoord);	
+			
+			material.albedo 	= emissive;
+			material.ssDistortion = normal.xy;
+			material.specular	= tex2D(specularMap, input.texCoord).rgb;
+			material.tsNormal =   tex2D(normalMap, input.texCoord).rgb;
+			material.gloss		= specularGloss.a;
+			material.emissive = emissive;
+			material.transmissionColor = float3(2,1,0.2) / 255;
+			
+			
+			float3 mask = tex2D( albedoMap, input.texCoord *float2(1 , .5)).rgb;
+			material.opacity = mask * 10 ;
+		}
+	]]>		
+	</code>
+
+</shader>

@@ -48,6 +48,10 @@ if Server then
         kNpcList = {}
         self.kNpcQueue = {}
     end
+    
+    function NpcQueueManager:GetIsMapEntity()
+        return true    
+    end
 
 end
 

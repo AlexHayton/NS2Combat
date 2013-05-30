@@ -22,10 +22,10 @@ Script.Load("lua/combat_Shared.lua")
 Script.Load("lua/Shared.lua")
 Script.Load("lua/ClassUtility.lua")
 
+Script.Load("lua/Predict.lua")
+
 // load the extra entities
 Script.Load("lua/ExtraEntitiesMod/eem_Shared.lua")
-
-Script.Load("lua/Predict.lua")
 
 Script.Load("lua/combat_ScoringMixin.lua")
 

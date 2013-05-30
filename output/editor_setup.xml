@@ -1,3 +1,4 @@
+<editor>
 <classes>
     
     <!-- Un-animated prop -->
@@ -7,10 +8,16 @@
             <scale>scale</scale>
 			<casts_shadows>castsShadows</casts_shadows>
             <default_model>models/system/editor/team_location.model</default_model>
+            <static_collider>true</static_collider>
         </model>
         <size>
             <scale>scale</scale>
         </size>
+        <pathing>
+            <include>pathInclude</include>
+            <walkable>pathWalkable</walkable>
+            <file>model</file>
+        </pathing>
         <parameter name="scale" type="vector" label="scale" default="1.0, 1.0, 1.0"/>
         <parameter name="model" type="file" label="model" filter="*.model"/>
 		<parameter name="castsShadows" type="boolean" label="Casts Shadows" default="true"/>
@@ -20,6 +27,7 @@
 
 		<!-- Allow prop to be excluded/included from the nav mesh generation -->
 		<parameter name="pathInclude" type="boolean" label="Pathing Include" help="On will include in NavMesh. Off excludes prop from nav mesh" default="true"/>
+        <parameter name="pathWalkable" type="boolean" label="Pathing Walkable" help="On will be walkable in NavMesh. Off makes prop not walkable in nav mesh" default="true"/>
 		<parameter name="collidable" type="boolean" label="Collidable" help="The prop can be sollided with" default="true"/>
 
     </class>
@@ -538,6 +546,22 @@
 
     </class>
     
+    <class name="ambient_sound_player">
+    
+        <parent>signal_listener</parent>
+        
+        <help>This signal listener will start nearby ambient_sounds when it receives the startsOnMessage.</help>
+        
+        <model>
+            <file>models/system/editor/ambient_sound.model</file>
+        </model>    
+        
+        <parameter name="startsOnMessage" type="string" label="Nearby ambient_sounds will play when this message is received" default="play"/>
+        <sphere><radius>nearbyDistance</radius></sphere>
+        <parameter name="nearbyDistance" type="distance" label="Nearby distance" default="5" help="This player will search for ambient sounds within this distance."/>
+        
+    </class>
+    
     <class name="sound_effect">
     
         <parent>signal_listener</parent>
@@ -556,8 +580,14 @@
     <!-- Tech point for building a Command Station or Hive -->
     <class name="tech_point">
     
+        <pathing>
+            <include></include>
+            <file>models/misc/tech_point/tech_point.model</file>
+        </pathing>
+
         <model>
             <file>models/misc/tech_point/tech_point.model</file>
+            <static_collider>true</static_collider>
         </model>
         
         <parameter name="teamNumber" type="choice" label="Team Number" default="0">
@@ -590,6 +620,18 @@
         <model>
             <file>models/misc/resource_nozzle/resource_nozzle.model</file>
         </model>
+    </class>
+    
+    <!--  -->
+    <class name="spawn_selection_override">
+    
+        <model>
+            <file>models/system/editor/team_location.model</file>
+        </model>
+        
+        <parameter name="alienSpawn" type="string" label="Alien spawn location" help="This is the location where the Alien team will spawn in this configuration." default=""/>
+        <parameter name="marineSpawn" type="string" label="Marine spawn location" help="This is the location where the Marine team will spawn in this configuration." default=""/>
+        
     </class>
 
     <class name="commander_camera">
@@ -675,10 +717,16 @@
             <file>model</file>
             <scale>scale</scale>
         </model>
-        
+
         <size>
             <scale>scale</scale>
         </size>
+
+        <pathing>
+            <include>pathInclude</include>
+            <walkable>pathWalkable</walkable>
+            <file>model</file>
+        </pathing>
         
         <parameter name="scale" type="vector" label="scale" default="1.0, 1.0, 1.0"/>
         <parameter name="model" type="file" label="model" filter="*.model"/>
@@ -686,6 +734,7 @@
         <parameter name="commAlpha" type="real" label="commander alpha" help="0-1. Doesn't collide if less than 1." default="1.0"/>
 		<parameter name="dynamic" type="boolean" label="Dynamic" default="false"/>
         <parameter name="pathInclude" type="boolean" label="Pathing Include" help="On will include in NavMesh. Off excludes prop from nav mesh" default="false"/>
+        <parameter name="pathWalkable" type="boolean" label="Pathing Walkable" help="On will be walkable in NavMesh. Off makes prop not walkable in nav mesh" default="true"/>
 		<parameter name="collidable" type="boolean" label="Collidable" help="The prop can be sollided with" default="true"/>
         <parameter name="emitChannel" type="integer" label="Tag emit channel" help="All animation tags will be emitted as a signal on this channel." default="0"/>
         
@@ -846,6 +895,15 @@
 	<!-- ExtraEntites like teleporter, train etc. -->
 	<!-- **************************************** -->
 	
+	<class name="trigger_without_model" placeable="false">
+		<size>
+            <scale>scale</scale>
+        </size>
+        <parameter name="scale" type="vector" label="scale" default="1.0, 1.0, 1.0" help=""/>        
+        <parameter name="name" type="string" label="name" help="Name of trigger which can be referenced by other entities" />
+		
+	</class>
+	
 	<!-- base entity for entities that can be switched on and off -->
 	<class name="logic_toggle_base" placeable="false">
 		<parameter name="enabled" type="boolean" label="Entity enabled" help="Will not work when disabled (need to be triggered first" default="true"/>
@@ -859,7 +917,13 @@
 	
     <!-- Teleport trigger -->
     <class name="teleport_trigger" placeable="true">
-		<parent>trigger</parent>
+	
+        <model>
+            <file>models/system/editor/pushtrig.model</file>
+            <scale>scale</scale>
+        </model>
+	
+		<parent>trigger_without_model</parent>
 		<parent>logic_toggle_base</parent>
         
         <cone_radius>
@@ -910,14 +974,16 @@
 		</parameter>
 		<parameter name="teamType" type="choice" label="Trigger type" help="Can the trigger getting triggered only once, or everytime etc." default="0">
             <choice label="All the time" value="0"/>
-            <choice label="Once per player" value="1"/>
+            <choice label="Once per live (respawning resets this)" value="1"/>
             <choice label="Only once" value="2"/>
+			<choice label="Once per player (no respawn reset)" value="3"/>
 		</parameter>
 		<parameter name="triggerStyle" type="choice" label="Trigger style" help="When trigger, When the player enters, exits etc." default="0">
             <choice label="OnEnter" value="0"/>
             <choice label="OnExit" value="1"/>
 		</parameter>
 		<parameter name="coolDownTime" type="real" label="Cooldown time" help="The amount of seconds to wait after triggered until it can be triggered again." default="0" />
+		<parameter name="disallowNpcs" type="boolean" label="disallow Npc" help="Will not be triggered by npcs if this is on" default="true"/>
 		<parameter name="output1" type="string" label="Output1" help="Name of the triggered entity" default=""/>
 
     </class>
@@ -1164,8 +1230,9 @@
 		</parameter>
 		<parameter name="teamType" type="choice" label="Trigger type" help="Can the button pressed only once, or everytime etc." default="0">
             <choice label="All the time" value="0"/>
-            <choice label="Once per player" value="1"/>
+            <choice label="Once per live (respawning resets this)" value="1"/>
             <choice label="Only once" value="2"/>
+			<choice label="Once per player (no respawn reset)" value="3"/>
 		</parameter>
 		<parameter name="output1" type="string" label="Output" help="Name of the triggered entity (after pressed)" default=""/>
 
@@ -1197,6 +1264,24 @@
             <choice label="Team 1 win" value="1"/>
             <choice label="Team 2 win" value="2"/>
         </parameter>
+
+    </class>
+	
+	<class name="logic_event_listener" placeable="true">		
+		<parent>logic_toggle_base</parent>
+        <model>
+            <file>models/system/editor/team_join.model</file>
+        </model>
+		
+        <parameter name="name" type="string" label="name" help="Name of logic_event_listener which can be referenced by other entities" />
+        <parameter name="listenEvent" type="choice" label="Event" help="Output will be triggered after this event" default="0">
+            <choice label="Game started" value="0"/>
+            <choice label="Team 1 won" value="1"/>
+            <choice label="Team 2 won" value="2"/>
+			<choice label="Any team won" value="3"/>
+			
+        </parameter>
+		<parameter name="output1" type="string" label="Output" help="Name of the triggered entity (event called)" default=""/>
 
     </class>
 	
@@ -1269,6 +1354,21 @@
 		<parameter name="listenChannel" type="integer" label="Listen channel" help="Messages not on this channel will be ignored." default="0"/>
         <parameter name="startsOnMessage" type="string" label="Will be triggered when this message is received" default="play"/>
 		<parameter name="output1" type="string" label="Output" help="Name of the triggered entity (receiving the message)" default=""/>
+
+    </class>
+	
+	<class name="logic_cinematic" placeable="true">		
+
+        <model>
+            <file>models/system/editor/cinematic.model</file>
+        </model>
+	
+        <parameter name="name" type="string" label="name" help="Name of logic_cinematic which can be referenced by other entities" />
+		
+		
+		<parameter name="cinematicName" type="file" label="cinematic" default="cinematics/breakable/breakable_debris.cinematic" filter="*.cinematic" help="Cinematic file triggered after getting desroyed"/>
+		<!--<parameter name="everyPlayer" type="boolean" label="Shown to every player" help="Will show it to every player or just to the player that triggered the entity" default="false"/ -->
+		<parameter name="output1" type="string" label="Output" help="Name of the triggered entity (after cinematic finished)" default=""/>
 
     </class>
 	
@@ -1357,6 +1457,22 @@
 		
     </class>
 	
+	<class name="logic_power_point_listener" placeable="true">		
+
+		<model>
+            <file>models/system/editor/team_join.model</file>
+		</model>
+		
+        <parameter name="name" type="string" label="name" help="Name of logic_power_point_listener which can be referenced by other entities" />
+		<parameter name="type" type="choice"  label="Type"  default="0" help="Type of Event the listener should hear at">
+            <choice label="Power On" value="0"/>
+            <choice label="Power Off" value="1"/>
+			<choice label="Power On/Off" value="2"/> 
+		</parameter>
+		<parameter name="output1" type="string" label="Output1" help="Name of the triggered entity (after event happened)" default=""/>
+
+    </class>
+	
 		    <!-- Timed Door-->
     <class name="func_door" placeable="true">
 	
@@ -1411,7 +1527,13 @@
 			<file>models/system/editor/player_spawn.model</file>
 		</model>
 		
+		<parameter name="onTriggerAction" type="choice" label="On getting triggered" help="What should the entity do when getting triggered (only if triggered after already started)" default="0">
+            <choice label="Disable (good for wave_managers that have infinite wave numbers)" value="0"/>
+            <choice label="Stay enabled" value="1"/>
+        </parameter>
+		
 		<parameter name="name" type="string" label="name" help="Name of npc_manager which can be referenced by other entities"/>
+		<parameter name="timedLife" type="boolean" label="Timed Lifetime" help="The spawned npc will die after some time if getting lost (to far away from players)" default="true"/>
 		<parameter name="team" type="choice"  label="Team"  default="1" help="Team">
             <choice label="Neutral" value="0"/>
             <choice label="Marine" value="1"/>
@@ -1426,11 +1548,25 @@
 			<choice label="Marine" value="5"/>			
 		</parameter>
 		<parameter name="waveTime" type="real" label="Wave time" help="Time till next wave starts" default="20"/>
-		<parameter name="maxWaveNumber" type="real" label="Wave number" help="How many waves will spawn" default="5"/>
+		<parameter name="maxWaveNumber" type="real" label="Wave number" help="How many waves will spawn (99 for infinite)" default="5"/>
 		<parameter name="npcNumber" type="real" label="Numer of Spawning Npcs" help="How many npcs will spawn" default="5"/>
 		<parameter name="waypoint" type="string" label="Waypoint Name" help="Name of the waypoint the npcs should walk to (use logic_waypoint)" default=""/>
 		<parameter name="output1" type="string" label="Output1" help="Name of the triggered entity (after wave ended)" default=""/>
-		
+		<parameter name="baseDifficulty" type="choice"  label="Base Difficulty" help="Increases general statistics like health, damage etc." default="0">
+            <choice label="0" value="0"/>
+            <choice label="1" value="1"/>
+            <choice label="2" value="2"/>
+			<choice label="3" value="3"/>
+			<choice label="4" value="4"/>
+			<choice label="5" value="5"/>		
+	        <choice label="6" value="6"/>
+            <choice label="7" value="7"/>
+            <choice label="8" value="8"/>
+			<choice label="9" value="9"/>
+			<choice label="10" value="10"/>
+			<choice label="11" value="11"/>	
+		</parameter>
+		<parameter name="npcUpgrades" type="string" label="Upgrades" help="Applies the selected upgrades to the spawned entities. Separate upgrades with commas e.g. 'cara, health^2'. This means different things in different mods and if an upgrade isn't recognised it will be ignored." default=""/>
 	</class>		
 
 	<class name="npc_base" placeable="false">
@@ -1488,7 +1624,9 @@
 		<model>
             <file>models/system/editor/team_location.model</file>
         </model>
-
+				
+		<parameter name="powerNodesStartDestroyed" type="boolean" label="Power Nodes Start Destroyed" hint="Do the power nodes start destroyed?" default="false"/>
+		
         <parameter name="gameType" type="choice" label="Game Type" default="0" help="Only working for the factions mod, other mods will ignore it.">
 			<choice label="Combat Deathmatch" value="1"/>
 			<choice label="Xenoswarm" value="2"/>
@@ -1523,6 +1661,41 @@
 
     </class>
 	
+	<!-- **************************************** -->
+	<!-- Storytelling elements -->
+	<!-- **************************************** -->
+	
+	<class name="logic_dialogue" placeable="true">
+	
+		<model>
+            <file>models/system/editor/ambient_sound.model</file>
+        </model>
+
+		<parameter name="name" type="string" label="name" help="Name of trigger which can be referenced by other entities" />
+		<parameter name="showOnScreen" type="boolean" label="Show on Screen" help="Should we show this dialogue on the screen?" default="true" />
+		<parameter name="characterName" type="string" label="Character Name" help="The name of the person who is talking" default="Unknown" />
+		<parameter name="iconDisplay" type="choice" label="Icon Display Settings" help="Show the icon on the left or the left or right, or not at all" default="right">
+			<choice label="Right" value="right"/>
+            <choice label="Left" value="left"/>
+			<choice label="None" value="none"/>
+		</parameter>
+		<parameter name="iconTexture" type="string" label="Icon Texture" help="The texture of the icon of the person who is talking" default="ui/dialogue/unknown.dds" />
+		<parameter name="text" type="string" label="Text" help="The main text of the dialogue" default="Say something interesting" />
+		<parameter name="sound" type="string" label="Sound (optional)" help="The sound file to play" default="" />
+		<parameter name="displayTime" type="real" label="Display Time" help="The amount of time the dialogue should stay on screen" default="10" />
+		<parameter name="repeats" type="boolean" label="Repeats" help="Can this dialogue entity trigger more than once?" default="false" />
+		<parameter name="fadeOut" type="boolean" label="Fade Out" help="Should the GUI for this dialogue fade out?" default="true" />
+		<parameter name="fadeIn" type="boolean" label="Fade In" help="Should the GUI for this dialogue fade in?" default="false" />
+		<parameter name="output1" type="string" label="Output" help="Name of the triggered entity (after dialogue finished)" default=""/>
+		
+    </class>	
 	
 </classes>
 
+<hole_checker>
+    <exclude_group>OcclusionGeometry</exclude_group>
+    <exclude_group>CommanderBuild</exclude_group>
+    <exclude_group>NonCollisionGeometry</exclude_group>
+</hole_checker>
+
+</editor>

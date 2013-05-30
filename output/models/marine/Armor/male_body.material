@@ -1,0 +1,6 @@
+shader = "models/marine/marine.surface_shader"
+albedoMap = "models/marine/male/male_body.dds"
+normalMap = "models/marine/male/male_body_normal.dds"
+emissiveMap = "models/marine/male/male_body_illum.dds"
+specularMap = "models/marine/male/male_body_spec.dds"
+surface = "organic"

@@ -45,11 +45,11 @@ Script.Load("lua/ClientResources.lua")
 Script.Load("lua/Shared.lua")
 Script.Load("lua/ClassUtility.lua")
 
+// Load the normal Ns2 Client Scripts
+Script.Load("lua/Client.lua")
+
 // load the extra entities
 Script.Load("lua/ExtraEntitiesMod/eem_Shared.lua")
-
-// Load the normal Ns2 Server Scripts
-Script.Load("lua/Client.lua")
 
 // new functions, no hooks
 // to provide the client also with all Ups (for the GUI)
