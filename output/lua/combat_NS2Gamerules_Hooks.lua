@@ -363,6 +363,8 @@ function CombatNS2Gamerules:OnUpdate_Hook(self, timePassed)
 						for i, player in ientitylist(Shared.GetEntitiesWithClassname("Player")) do
 							Server.PlayPrivateSound(player, CombatEffects.kLastStandAnnounce, player, 1.0, Vector(0, 0, 0))
 							player:SendDirectMessage("OVERTIME!!")
+							player:SendDirectMessage("Structures cannot be repaired!")
+							player:SendDirectMessage("Spawn times have been increased!")
 						end
 						kCombatTimeLeftPlayed = timeLeft
 					end
