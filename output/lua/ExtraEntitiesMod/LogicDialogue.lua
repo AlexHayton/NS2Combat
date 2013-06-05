@@ -128,7 +128,7 @@ function LogicDialogue:GetOutputNames()
 end
 
 // Add the dialogue script to all players
-if Client then
+if Client and AddClientUIScriptForTeam then
 	AddClientUIScriptForTeam("all", LogicDialogue.kGUIScript)
 end
 

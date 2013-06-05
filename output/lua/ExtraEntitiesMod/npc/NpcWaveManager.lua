@@ -32,6 +32,7 @@ if Server then
         self.waveTime = self.waveTime or 20
         self.maxWaveNumber = self.maxWaveNumber or 5
         self.active = false
+        self.enabled = true
         self.currentWave = 0
         self:SetUpdates(true)
     end    
@@ -46,8 +47,8 @@ if Server then
         self.currentWave = 0
     end
     
-    function NpcManager:OnLogicTrigger(player) 
-        if not self.active then
+    function NpcManager:OnLogicTrigger(player)
+        if not self.active and self.enabled then
             self.active = true
         else
             if self.onTriggerAction and self.onTriggerAction == 0 then
