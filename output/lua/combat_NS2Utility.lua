@@ -145,7 +145,7 @@ function CombatNS2Utility:UpdateAbilityAvailability_Hook(handle, forAlien, tierT
     end   
  
     // enable new abilities
-    if forAlien:isa("Onos") and forAlien.threeHives then
+    if forAlien:isa("Onos") and forAlien.twoHives then
         // only if we dont got already devour
         local abilities = GetChildEntities(forAlien, "Devour")
         if (abilities ~= nil) and (#abilities == 0) then

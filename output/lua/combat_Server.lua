@@ -38,6 +38,7 @@ if kCombatModActive then
     Script.Load("lua/combat_PlayingTeam.lua")
     Script.Load("lua/combat_MarineTeam.lua")
     Script.Load("lua/combat_AlienTeam.lua")
+	Script.Load("lua/combat_AlienTeamInfo.lua")
     Script.Load("lua/combat_Embryo.lua")
     Script.Load("lua/combat_TeamMessenger.lua")
     Script.Load("lua/combat_PowerPoint.lua")

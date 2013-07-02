@@ -146,7 +146,7 @@ function DevouredPlayer:OnEntityChange(oldEntityId, newEntityId)
 end
 
 function DevouredPlayer:GetPlayerStatusDesc()
-    return kPlayerStatus.Player
+    return kPlayerStatus.Onos
 end
 
 function DevouredPlayer:GetTechId()

@@ -211,3 +211,20 @@ kEMPBlastEnergyDamage = 100
 // disabled this for better balance
 kHeavyTechCooldown = 0
 
+// Minimap blips
+local function AddMinimapBlipType(blipType)
+	
+	// We have to reconstruct the kTechId enum to add values.
+	local enumTable = {}
+	for index, value in ipairs(kMinimapBlipType) do
+		table.insert(enumTable, value)
+	end
+	
+	table.insert(enumTable, blipType)
+	
+	kMinimapBlipType = enum(enumTable)
+	
+end
+
+AddMinimapBlipType("DevouredPlayer")
+

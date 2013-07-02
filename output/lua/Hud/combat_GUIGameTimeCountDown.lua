@@ -99,39 +99,41 @@ function combat_GUIGameTimeCountDown:Update(deltaTime)
     local player = Client.GetLocalPlayer()
 	
 	// Alter the display based on team, status.
-	local newTeam = false
-	if (self.playerTeam ~= GetTeamType()) then
-		self.playerTeam = GetTeamType()
-		newTeam = true
-	end
-	
-	if (newTeam) then
-		if (self.playerTeam == "Marines") then
-			self.timeRemainingText:SetColor(combat_GUIGameTimeCountDown.kMarineTextColor)
-			self.showTimer = true
-		elseif (self.playerTeam == "Aliens") then
-			self.timeRemainingText:SetColor(combat_GUIGameTimeCountDown.kAlienTextColor)
-			self.showTimer = true
+	if player then
+		local newTeam = false
+		if (self.playerTeam ~= GetTeamType()) then
+			self.playerTeam = GetTeamType()
+			newTeam = true
+		end
+		
+		if (newTeam) then
+			if (self.playerTeam == "Marines") then
+				self.timeRemainingText:SetColor(combat_GUIGameTimeCountDown.kMarineTextColor)
+				self.showTimer = true
+			elseif (self.playerTeam == "Aliens") then
+				self.timeRemainingText:SetColor(combat_GUIGameTimeCountDown.kAlienTextColor)
+				self.showTimer = true
+			else
+				self.timerBackground:SetIsVisible(false)
+				self.showTimer = false
+			end
+		end
+		
+		// Update the client-side clock.
+		kCombatTimeSinceGameStart = kCombatTimeSinceGameStart + deltaTime
+		
+		local player = Client.GetLocalPlayer()
+		if (self.showTimer and player:GetIsAlive()) then
+			self.timerBackground:SetIsVisible(true)
+			local TimeRemaining = PlayerUI_GetTimeRemaining()
+			if TimeRemaining == "00:00:00" then		    
+				self.timeRemainingText:SetText("Overtime")
+			else
+				self.timeRemainingText:SetText(TimeRemaining)
+			end
 		else
 			self.timerBackground:SetIsVisible(false)
-			self.showTimer = false
 		end
-	end
-	
-	// Update the client-side clock.
-	kCombatTimeSinceGameStart = kCombatTimeSinceGameStart + deltaTime
-    
-	local player = Client.GetLocalPlayer()
-	if (self.showTimer and player:GetIsAlive()) then
-		self.timerBackground:SetIsVisible(true)
-        local TimeRemaining = PlayerUI_GetTimeRemaining()
-        if TimeRemaining == "00:00:00" then		    
-            self.timeRemainingText:SetText("Overtime")
-        else
-            self.timeRemainingText:SetText(TimeRemaining)
-        end
-	else
-		self.timerBackground:SetIsVisible(false)
 	end
 
 end

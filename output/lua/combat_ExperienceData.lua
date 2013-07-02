@@ -110,10 +110,6 @@ local function TierThree(player, techUpgrade)
 	player.threeHives = true
 end
 
-local function Camouflage(player, techUpgrade)
-    player.combatTable.hasCamouflage = true
-end
-
 local function Scan(player, techUpgrade)
 	player.combatTable.hasScan = true
 	player.combatTable.lastScan = 0
@@ -218,8 +214,7 @@ table.insert(UpsList, BuildUpgrade("Alien", kCombatUpgrades.Onos,					"onos",			
 // Tech                                                                                                                                                                                                                                                         
 table.insert(UpsList, BuildUpgrade("Alien", kCombatUpgrades.Carapace,				"cara",				"Carapace",			kTechId.Carapace, 				nil, 				nil, 						1, 		kCombatUpgradeTypes.Tech,   false,			0,			nil)) 					
 table.insert(UpsList, BuildUpgrade("Alien", kCombatUpgrades.Regeneration,			"regen",			"Regeneration",		kTechId.Regeneration, 			nil, 				nil, 						1, 		kCombatUpgradeTypes.Tech,   false,			0,			nil)) 					
-table.insert(UpsList, BuildUpgrade("Alien", kCombatUpgrades.Silence,				"silence",			"Silence",			kTechId.Silence, 				nil, 				nil, 						1, 		kCombatUpgradeTypes.Tech,   false,			0,			nil)) 					
-table.insert(UpsList, BuildUpgrade("Alien", kCombatUpgrades.Camouflage,				"camo",				"Camouflage",		kTechId.Camouflage, 			Camouflage,			nil, 						1, 		kCombatUpgradeTypes.Tech,   false,			0,			nil)) 					
+table.insert(UpsList, BuildUpgrade("Alien", kCombatUpgrades.Phantom,				"phantom",			"Phantom",			kTechId.Phantom, 				nil,				nil, 						1, 		kCombatUpgradeTypes.Tech,   false,			0,			nil)) 					
 table.insert(UpsList, BuildUpgrade("Alien", kCombatUpgrades.Celerity,				"cele",				"Celerity",			kTechId.Celerity, 				nil, 				nil, 						1, 		kCombatUpgradeTypes.Tech,   false,			0,			nil)) 					
 table.insert(UpsList, BuildUpgrade("Alien", kCombatUpgrades.Adrenaline,				"adrenaline",		"Adrenaline",		kTechId.Adrenaline, 			nil, 				nil, 						1, 		kCombatUpgradeTypes.Tech,   false,			0,			nil)) 					
 
