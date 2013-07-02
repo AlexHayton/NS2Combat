@@ -59,7 +59,7 @@ if Server then
 			end
 		end
 			
-		originalPlayerOnGroundChanged(self, landIntensity, normal, velocity)
+		originalPlayerOnGroundChanged(self, onGround, landIntensity, normal, velocity)
 	end   
     
 end
