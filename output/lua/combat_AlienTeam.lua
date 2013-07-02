@@ -18,6 +18,8 @@ function CombatAlienTeam:OnLoad()
     ClassHooker:SetClassCreatedIn("AlienTeam", "lua/AlienTeam.lua") 
 	self:ReplaceClassFunction("AlienTeam", "SpawnInitialStructures", "SpawnInitialStructures_Hook")
 	self:ReplaceClassFunction("AlienTeam", "GetNumHives","GetNumHives_Hook")
+	self:ReplaceClassFunction("AlienTeam", "GetBioMassLevel","GetBioMassLevel_Hook")
+	self:ReplaceClassFunction("AlienTeam", "GetMaxBioMassLevel","GetMaxBioMassLevel_Hook")
 	
 end
 
@@ -35,10 +37,22 @@ function CombatAlienTeam:SpawnInitialStructures_Hook(self, techPoint)
 end
 
 
-function CombatAlienTeam:GetNumHives_Hook()
+function CombatAlienTeam:GetNumHives_Hook(self)
 
     return 6
     
+end
+
+function CombatAlienTeam:GetBioMassLevel_Hook(self)
+
+	return 12
+	
+end
+
+function CombatAlienTeam:GetMaxBioMassLevel_Hook(self)
+
+	return 12
+	
 end
 
 if (not HotReload) then
