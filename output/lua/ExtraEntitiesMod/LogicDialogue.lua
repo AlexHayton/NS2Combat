@@ -29,7 +29,6 @@ local networkVars =
 	characterName = "string (" .. LogicDialogue.kMaxNameLength .. ")",
 	text = "string (" .. LogicDialogue.kMaxTextLength .. ")",
 	iconDisplay = "string (" .. LogicDialogue.kMaxIconDisplayLength .. ")",
-	
 }
 
 AddMixinNetworkVars(LogicMixin, networkVars)
@@ -63,9 +62,16 @@ function LogicDialogue:Reset()
 	self.timeStarted = 0
 	self.clientTimeStarted = 0
 	self.timeToStop = 0
+	self.displayTime = self.displayTime or 0
 	self.clientTimeStopped = 0
 	self.serverTimeStopped = 0
 	self.triggered = false
+	
+	// Stop the GUI hanging around if it is active between round resets.
+	if g_GUIDialogue then
+		GetGUIManager():DestroyGUIScript(g_GUIDialogue)
+		g_GUIDialogue = nil
+	end
 	
 end
 
@@ -88,13 +94,16 @@ function LogicDialogue:OnUpdate(deltaTime)
 	if Client and self.timeStarted ~= self.clientTimeStarted then
 		self.clientTimeStarted = self.timeStarted 
 	
-		local guiDialogue = ClientUI.GetScript(LogicDialogue.kGUIScript)
+		if not g_GUIDialogue then
+			g_GUIDialogue = GetGUIManager():CreateGUIScript(LogicDialogue.kGUIScript)
+		end
+		
 		// Initialise the GUI part
 		if self.showOnScreen then
-			guiDialogue:SetPortraitText(self.characterName)
-			guiDialogue:SetDialogueText(self.text)
-			guiDialogue:SetPortraitTexture(self.iconDisplay)
-			guiDialogue:StartFadeIn(self.fadeIn)
+			g_GUIDialogue:SetPortraitText(self.characterName)
+			g_GUIDialogue:SetDialogueText(self.text)
+			g_GUIDialogue:SetPortraitTexture(self.portraitTexture)
+			g_GUIDialogue:StartFadeIn(self.fadeIn)
 		end
 		
 		// Play the sound we precached earlier
@@ -115,8 +124,7 @@ function LogicDialogue:OnUpdate(deltaTime)
 			self.clientTimeStopped = self.timeToStop
 			
 			if self.showOnScreen then
-				local guiDialogue = ClientUI.GetScript(LogicDialogue.kGUIScript)
-				guiDialogue:StartFadeOut(self.fadeOut)
+				g_GUIDialogue:StartFadeout(self.fadeOut)
 			end
 		end
 	end
@@ -125,11 +133,6 @@ end
 
 function LogicDialogue:GetOutputNames()
     return {self.output1}
-end
-
-// Add the dialogue script to all players
-if Client and AddClientUIScriptForTeam then
-	AddClientUIScriptForTeam("all", LogicDialogue.kGUIScript)
 end
 
 Shared.LinkClassToMap("LogicDialogue", LogicDialogue.kMapName, networkVars)

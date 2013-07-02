@@ -9,7 +9,7 @@ Script.Load("lua/ExtraEntitiesMod/npc/NpcQueueManager.lua")
 
 // list that includes every npc
 kNpcList = {}
-kMaxNpcs = 34
+kMaxNpcs = 28
 kMaxNpcsSameTime = 4
 kLastSpawnTime = 0
 kDelaySpawnTime = 0.8

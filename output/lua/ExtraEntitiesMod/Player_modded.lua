@@ -42,6 +42,16 @@ function Player:OnInitialized()
     end
 end
 
+local originalScriptActorProcessMove = ScriptActor.OnProcessMove
+function ScriptActor:OnProcessMove(input)
+	if self.isaNpc then
+		// Do nothing
+		// fsfod: Entity_OnProcessMove doesn't actrully do anything atm so its call could be skipped
+	else
+		originalScriptActorProcessMove(self, input)
+	end
+end
+
 if Server then
     // don't call normal OnKill function for bots
     local overridePlayerOnKill = Player.OnKill

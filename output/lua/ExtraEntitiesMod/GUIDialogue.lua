@@ -15,16 +15,30 @@ class 'GUIDialogue' (GUIScript)
 
 local kFadeMode = enum({ 'FadeIn', 'FadeOut', 'Normal' })
 
-GUIDialogue.kAlienBackgroundTexture = "ui/alien_commander_background.dds"
-GUIDialogue.kMarineBackgroundTexture = "ui/marine_commander_background.dds"
-GUIDialogue.kDefaultPortraitTexture = "ui/marine_commander_background.dds"
+GUIDialogue.kDialogBoxTexture = "ui/dialogue/dialog_box.dds"
+GUIDialogue.kPortraitBoxTexture = "ui/dialogue/portrait_box.dds"
+GUIDialogue.kDefaultPortraitTexture = "ui/dialogue/portrait_default.dds"
 
-GUIDialogue.kDialogueBackground = { Width = 256, Height = 128 }
-GUIDialogue.kDialogueBackgroundCoords = { X1 = 0, Y1 = 0, X2 = 256, Y2 = 256 }
-GUIDialogue.kPortraitBackground = { Width = 128, Height = 256 }
-GUIDialogue.kPortraitBackgroundCoords = { X1 = 0, Y1 = 0, X2 = 256, Y2 = 256 }
-GUIDialogue.kPortraitIcon = { Width = 128, Height = 256 }
+GUIDialogue.kRightOffset = GUIScale(50)
+GUIDialogue.kTopOffset = GUIScale(50)
+GUIDialogue.kPortraitBackgroundScale = Vector(GUIScale(200), GUIScale(256), 0)
+GUIDialogue.kPortraitBackgroundPos = Vector( -GUIDialogue.kPortraitBackgroundScale.x -GUIDialogue.kRightOffset, GUIDialogue.kTopOffset, 0 )
+GUIDialogue.kPortraitBackgroundCoords = { X1 = 0, Y1 = 0, X2 = 362, Y2 = 512 }
+GUIDialogue.kDialogueBackgroundScale = Vector(GUIScale(360), GUIScale(180), 0)
+GUIDialogue.kDialogueBackgroundPos = Vector( -GUIDialogue.kDialogueBackgroundScale.x -GUIDialogue.kPortraitBackgroundScale.x -GUIDialogue.kRightOffset, GUIDialogue.kTopOffset, 0 )
+GUIDialogue.kDialogueBackgroundCoords = { X1 = 0, Y1 = 0, X2 = 512, Y2 = 256 }
+GUIDialogue.kDialogueTextPos = Vector( GUIScale(20), GUIScale(20), 0 )
+GUIDialogue.kDialogueTextColor = Color(1.0, 1.0, 1.0, 1.0)
+GUIDialogue.kDialogueTextLineHeight = GUIScale(30)
+GUIDialogue.kDialogueTextLineChars = 42
+GUIDialogue.kDialogueTextLines = 5
+GUIDialogue.kPortraitIconPos = Vector( GUIScale(8), GUIScale(5), 0)
+GUIDialogue.kPortraitIconScale = Vector(GUIScale(196), GUIScale(210), 0)
 GUIDialogue.kPortraitIconCoords = { X1 = 0, Y1 = 0, X2 = 256, Y2 = 256 }
+GUIDialogue.kPortraitTextPos = Vector( GUIScale(25), GUIScale(-25), 0 )
+GUIDialogue.kPortraitTextColor = Color(1.0, 1.0, 1.0, 1.0)
+GUIDialogue.kPortraitTextFontName = "fonts/Arial_17.fnt"
+GUIDialogue.kPortraitTextFontSize = 15
 
 GUIDialogue.kBackgroundExtraXOffset = 20
 GUIDialogue.kBackgroundExtraYOffset = 20
@@ -34,7 +48,7 @@ GUIDialogue.kTextYOffset = 17
 
 GUIDialogue.kMaxAlpha = 0.9
 GUIDialogue.kMinAlpha = 0.1
-GUIDialogue.kFadeOutRate = 0.5
+GUIDialogue.kFadeOutRate = 0.3
 
 function GUIDialogue:Initialize()
 
@@ -42,6 +56,13 @@ function GUIDialogue:Initialize()
     if PlayerUI_IsOnAlienTeam() then
         self.textureName = GUIDialogue.kAlienBackgroundTexture
     end
+    
+    self.background = GUIManager:CreateGraphicItem()
+    self.background:SetSize(Vector(Client.GetScreenWidth(), Client.GetScreenHeight(), 0))
+    self.background:SetAnchor(GUIItem.Left, GUIItem.Top)
+    self.background:SetColor(Color(0, 0, 0, 0))
+    // 1 above main menu,    
+    self.background:SetLayer(kGUILayerMainMenu - 1)
     
     // Initialise the portrait
     self:InitializePortrait()
@@ -58,29 +79,34 @@ function GUIDialogue:InitializePortrait()
 
     self.portraitBackground = GUIManager:CreateGraphicItem()
     self.portraitBackground:SetAnchor(GUIItem.Right, GUIItem.Top)
-    self.portraitBackground:SetSize(Vector(GUIDialogue.kPortraitBackground.Width, GUIDialogue.kPortraitBackground.Height, 0))
-    self.portraitBackground:SetTexture(self.textureName)
+    self.portraitBackground:SetSize(GUIDialogue.kPortraitBackgroundScale)
+    self.portraitBackground:SetPosition(GUIDialogue.kPortraitBackgroundPos)
+    self.portraitBackground:SetTexture(GUIDialogue.kPortraitBoxTexture)
     GUISetTextureCoordinatesTable(self.portraitBackground, GUIDialogue.kPortraitBackgroundCoords)
-    
-    self.portrait = self.portraitBackground
+    self.background:AddChild(self.portraitBackground)
     
     self.portraitIcon = GUIManager:CreateGraphicItem()
-    self.portraitIcon:SetAnchor(GUIItem.Left, GUIItem.Bottom)
-    self.portraitIcon:SetSize(Vector(GUIDialogue.kPortraitIcon.Width, GUIDialogue.kPortraitIcon.Height, 0))
+    self.portraitIcon:SetAnchor(GUIItem.Left, GUIItem.Top)
+	self.portraitIcon:SetPosition(GUIDialogue.kPortraitIconPos)
+    self.portraitIcon:SetSize(GUIDialogue.kPortraitIconScale)
     self.portraitIcon:SetTexture(GUIDialogue.kDefaultPortraitTexture)
 	GUISetTextureCoordinatesTable(self.portraitIcon, GUIDialogue.kPortraitIconCoords)
+	self.portraitIcon:SetInheritsParentAlpha(true)
     self.portraitBackground:AddChild(self.portraitIcon)
     
     self.portraitText = GUIManager:CreateTextItem()
-    self.portraitText:SetAnchor(GUIItem.Middle, GUIItem.Bottom)
-    self.portraitText:SetTextAlignmentX(GUIItem.Align_Min)
+    self.portraitText:SetAnchor(GUIItem.Left, GUIItem.Bottom)
+	self.portraitText:SetPosition(GUIDialogue.kPortraitTextPos)
+    self.portraitText:SetTextAlignmentX(GUIItem.Align_Center)
     self.portraitText:SetTextAlignmentY(GUIItem.Align_Min)
-    self.portraitText:SetColor(Color(1, 0, 0, 1))
+    self.portraitText:SetColor(GUIDialogue.kPortraitTextColor)
+	self.portraitText:SetFontSize(GUIDialogue.kPortraitTextFontSize)
+	self.portraitText:SetFontName(GUIDialogue.kPortraitTextFontName)
     self.portraitText:SetText("Unknown")
     self.portraitText:SetFontIsBold(true)
     self.portraitText:SetIsVisible(true)
     self.portraitText:SetInheritsParentAlpha(true)
-    self.portraitBackground:AddChild(self.portraitText)
+	self.portraitBackground:AddChild(self.portraitText)
 
 end
 
@@ -88,22 +114,30 @@ function GUIDialogue:InitializeDialogue()
 
     self.dialogueBackground = GUIManager:CreateGraphicItem()
     self.dialogueBackground:SetAnchor(GUIItem.Right, GUIItem.Top)
-    self.dialogueBackground:SetSize(Vector(GUIDialogue.kDialogueBackground.Width, GUIDialogue.kDialogueBackground.Height, 0))
-    self.dialogueBackground:SetTexture(self.textureName)
+    self.dialogueBackground:SetSize(GUIDialogue.kDialogueBackgroundScale)
+    self.dialogueBackground:SetPosition(GUIDialogue.kDialogueBackgroundPos)
+    self.dialogueBackground:SetTexture(GUIDialogue.kDialogBoxTexture)
     GUISetTextureCoordinatesTable(self.dialogueBackground, GUIDialogue.kDialogueBackgroundCoords)
+    self.background:AddChild(self.dialogueBackground)
     
-    self.dialogue = self.dialogueBackground
-    
-    self.dialogueText = GUIManager:CreateTextItem()
-    self.dialogueText:SetAnchor(GUIItem.Middle, GUIItem.Bottom)
-    self.dialogueText:SetTextAlignmentX(GUIItem.Align_Min)
-    self.dialogueText:SetTextAlignmentY(GUIItem.Align_Min)
-    self.dialogueText:SetColor(Color(1, 0, 0, 1))
-    self.dialogueText:SetText("Dialogue")
-    self.dialogueText:SetFontIsBold(false)
-    self.dialogueText:SetIsVisible(true)
-    self.dialogueText:SetInheritsParentAlpha(true)
-    self.dialogueBackground:AddChild(self.dialogueText)
+	// Split the dialogue text into lines
+	self.dialogueText = {}
+    for i = 0, GUIDialogue.kDialogueTextLines - 1 do
+    	local dialogueTextLine = GUIManager:CreateTextItem()
+ 	   dialogueTextLine:SetAnchor(GUIItem.Top, GUIItem.Left)
+ 	   local position = GUIDialogue.kDialogueTextPos
+ 	   position.y = position.y + GUIDialogue.kDialogueTextLineHeight * i
+		dialogueTextLine:SetPosition(position)
+	    dialogueTextLine:SetTextAlignmentX(GUIItem.Align_Min)
+	    dialogueTextLine:SetTextAlignmentY(GUIItem.Align_Min)
+	    dialogueTextLine:SetColor(GUIDialogue.kDialogueTextColor)
+	    dialogueTextLine:SetText("Dialogue")
+	    dialogueTextLine:SetFontIsBold(false)
+	    dialogueTextLine:SetIsVisible(true)
+	    dialogueTextLine:SetInheritsParentAlpha(true)
+	    table.insert(self.dialogueText, dialogueTextLine)
+	    self.dialogueBackground:AddChild(dialogueTextLine)
+    end
 
 end
 
@@ -116,7 +150,28 @@ function GUIDialogue:SetPortraitTexture(newTexture)
 end
 
 function GUIDialogue:SetDialogueText(newText)
-	self.dialogueText:SetText(newText)
+
+	local textBuffer = newText
+
+	// Split the buffer into lines, at whitespace
+	for index, line in ipairs(self.dialogueText) do
+		// If we can fit the whole buffer on this line, do so and blank all subsequent lines
+		if string.len(textBuffer) <= GUIDialogue.kDialogueTextLineChars then
+			line:SetText(textBuffer)
+			textBuffer = ""
+		else
+			// Otherwise, read in to the nearest whole word and then display the rest on the next line.
+			local lineBuffer = string.sub(textBuffer, 1, GUIDialogue.kDialogueTextLineChars)
+			// Search backwards and find the nearest whitespace
+			local pattern = ".* "
+			local lastSpace = string.len(lineBuffer) - string.find(lineBuffer:reverse(), " ")
+			if lastSpace ~= nil then
+				lineBuffer = string.sub(lineBuffer, 1, lastSpace + 1)
+			end
+			line:SetText(lineBuffer)
+			textBuffer = string.sub(textBuffer, string.len(lineBuffer) + 1)
+		end
+	end
 end
 
 function GUIDialogue:SetPortraitText(newText)
@@ -125,13 +180,12 @@ end
 
 function GUIDialogue:SetIsVisible(value)
 
-	self.dialogue:SetIsVisible(value)
-    self.portrait:SetIsVisible(value)
+	self.background:SetIsVisible(value)
 
 end
 
 function GUIDialogue:GetAlpha()
-	return self.portrait:GetColor().a
+	return self.portraitBackground:GetColor().a
 end
 
 function GUIDialogue:GetTargetAlpha()
@@ -146,25 +200,21 @@ end
 
 function GUIDialogue:SetAlpha(alphaVal)
 
-	local portraitColor = self.portrait:GetColor()
+	local portraitColor = self.portraitBackground:GetColor()
 	portraitColor.a = alphaVal
-	self.portrait:SetColor(portraitColor)
+	self.portraitBackground:SetColor(portraitColor)
 	
-	local dialogueColor = self.dialogue:GetColor()
+	local dialogueColor = self.dialogueBackground:GetColor()
 	dialogueColor.a = alphaVal
-	self.dialogue:SetColor(dialogueColor)
+	self.dialogueBackground:SetColor(dialogueColor)
 
 end
 
 function GUIDialogue:Uninitialize()
 
     // Everything is attached to the background so uninitializing it will destroy all items.
-    if self.portrait then
-        GUI.DestroyItem(self.portrait)
-    end
-    
-    if self.dialogue then
-        GUI.DestroyItem(self.dialogue)
+    if self.background then
+        GUI.DestroyItem(self.background)
     end
     
 end
@@ -195,7 +245,7 @@ end
 
 function GUIDialogue:GetIsFading()
 
-	return self.fadeMode == kFadeMode.Normal
+	return self.fadeMode ~= kFadeMode.Normal
 	
 end
 

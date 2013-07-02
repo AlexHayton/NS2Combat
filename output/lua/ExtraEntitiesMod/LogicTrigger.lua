@@ -40,9 +40,11 @@ function LogicTrigger:OnInitialized()
 end
 
 function LogicTrigger:Reset()
-    self.triggered = false
-    self.triggerPlayerList = {}
-    self.timeLastTriggered = 0
+	if Server then
+		self.triggered = false
+		self.triggerPlayerList = {}
+		self.timeLastTriggered = 0
+	end
 end
 
 if Server then

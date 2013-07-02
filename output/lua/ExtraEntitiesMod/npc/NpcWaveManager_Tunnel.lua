@@ -15,6 +15,7 @@ NpcManagerTunnel.kModelName = PrecacheAsset("models/alien/tunnel/mouth.model")
 local kAnimationGraph = PrecacheAsset("models/alien/tunnel/mouth.animation_graph")
 
 local networkVars = {
+    timeLastExited = "time",
 }
 
 AddMixinNetworkVars(BaseModelMixin, networkVars)
@@ -55,7 +56,8 @@ function NpcManagerTunnel:OnCreate()
 	InitMixin(self, CatalystMixin)  
 	InitMixin(self, UmbraMixin)
 	InitMixin(self, CombatMixin)
-	InitMixin(self, DigestMixin)
+	InitMixin(self, RagdollMixin)
+	InitMixin(self, DissolveMixin)
 
 	if Server then
 		InitMixin(self, InfestationTrackerMixin)
@@ -67,6 +69,9 @@ function NpcManagerTunnel:OnCreate()
 	self:SetLagCompensated(false)
 	self:SetPhysicsType(PhysicsType.Kinematic)
 	self:SetPhysicsGroup(PhysicsGroup.BigStructuresGroup)
+	
+	self.startsBuilt = true
+	self.timeLastExited = 0
 
 end
 
@@ -81,9 +86,13 @@ function NpcManagerTunnel:OnInitialized()
 		InitMixin(self, SleeperMixin)
 		
 		// This Mixin must be inited inside this OnInitialized() function.
-		if not HasMixin(self, "MapBlip") then
+		if Server and not HasMixin(self, "MapBlip") then
 			InitMixin(self, MapBlipMixin)
 		end
+		
+		self:SetTeamNumber(self.team)
+		
+		self:SetConstructionComplete()
 		
 	elseif Client then
 	
@@ -121,7 +130,6 @@ function NpcManagerTunnel:OnKill(attacker, doer, point, direction)
 
 	ScriptActor.OnKill(self, attacker, doer, point, direction)
 	self:TriggerEffects("death")
-	DestroyEntity(self)
 	self.enabled = false
 
 end
@@ -135,11 +143,20 @@ function NpcManagerTunnel:OnUpdate(deltaTime)
 	if self.active then
 		local time = Shared.GetTime()
 		if not self.lastWaveSpawn or time - self.lastWaveSpawn >= self.waveTime then
+		    self.timeLastExited = Shared.GetTime()
 			self:TriggerEffects("tunnel_exit_3D")
 		end
 	end
 	
 	NpcManager.OnUpdate(self, deltaTime)
+end
+
+function NpcManagerTunnel:OnUpdateAnimationInput(modelMixin)
+
+	modelMixin:SetAnimationInput("built", true)
+    modelMixin:SetAnimationInput("open", true)
+    modelMixin:SetAnimationInput("player_in", self.timeLastExited + 0.2 > Shared.GetTime())
+    
 end
 
 function NpcManagerTunnel:OnUpdateRender()

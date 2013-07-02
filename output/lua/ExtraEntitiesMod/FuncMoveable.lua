@@ -109,6 +109,18 @@ function FuncMoveable:GetCanBeUsed(player, useSuccessTable)
     useSuccessTable.useSuccess = false   
 end
 
+function FuncMoveable:OnUpdate(deltaTime)
+    
+    local physModel = self:GetPhysicsModel()
+    if physModel then
+        local coords = self:GetCoords()
+        coords.origin = self:GetOrigin()
+        physModel:SetCoords(coords)
+        physModel:SetBoneCoords(coords, CoordsArray())
+    end    
+    
+end
+
 // called from OnUpdate when self.driving = true
 function FuncMoveable:UpdatePosition(deltaTime)
    
@@ -146,9 +158,7 @@ function FuncMoveable:CheckBlocking()
         if HasMixin(trace.entity, "Live") then
             trace.entity:Kill()
         end
-    end
-    
-
+    end  
 
 end
 

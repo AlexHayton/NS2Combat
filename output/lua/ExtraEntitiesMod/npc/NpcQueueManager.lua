@@ -10,6 +10,8 @@
 class 'NpcQueueManager' (Entity)
 
 NpcQueueManager.kMapName = "npc_queue_manager"
+
+local kMaxQueueEntries = 30
   
 local networkVars =
 {
@@ -40,6 +42,10 @@ if Server then
     
     function NpcQueueManager:AddToQueue(values)
         table.insert(self.kNpcQueue, values)
+        if #self.kNpcQueue > kMaxQueueEntries then
+            // if there are to many entries, delete the oldest one
+            table.remove(self.kNpcQueue, 1) 
+        end
     end
     
     function NpcQueueManager:Reset()
