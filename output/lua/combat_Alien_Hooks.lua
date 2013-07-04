@@ -23,6 +23,7 @@ function CombatAlien:OnLoad()
    
     if Server then
         self:PostHookClassFunction("Alien", "GetCanTakeDamageOverride", "GetCanTakeDamageOverride_Hook"):SetPassHandle(true)
+		self:PostHookClassFunction("Alien", "CopyPlayerDataFrom","CopyPlayerDataFrom_Hook")
     end
    
 	
@@ -38,7 +39,7 @@ end
 
 function CombatAlien:UpdateArmorAmount_Hook(self, carapaceLevel)
 
-    local level = math.min(self:GetLvl(), 12)
+    local level = math.min(math.max(0, self:GetLvl() - 1), 12)
     local newMaxArmor = (level / 12) * (self:GetArmorFullyUpgradedAmount() - self:GetBaseArmor()) + self:GetBaseArmor()
 
     if newMaxArmor ~= self.maxArmor then
@@ -48,6 +49,21 @@ function CombatAlien:UpdateArmorAmount_Hook(self, carapaceLevel)
         self:SetArmor(self.maxArmor * armorPercent)
     
     end
+
+	// Always set the hives back to false, so that later on we can enable tier 2/3 even after embryo.
+	if self:GetTeamNumber() ~= kTeamReadyRoom then
+		if self.combatTwoHives then
+			self.twoHives = true
+		else
+			self.twoHives = false
+		end
+		
+		if self.combatThreeHives then
+			self.threeHives = true
+		else
+			self.threeHives = false
+		end
+	end
 
 end
 
@@ -98,6 +114,24 @@ if Server then
         handle:SetReturn(canTakeDamage)
 
     end
+	
+	function CombatAlien:CopyPlayerDataFrom_Hook(self, player)
+		
+		self.combatTwoHives = player.combatTwoHives
+		self.combatThreeHives = player.combatThreeHives
+		
+		if player.combatTable then
+			self:CheckCombatData()
+			if self.combatTable.twoHives then
+				self.combatTwoHives = true
+			end
+			
+			if self.combatTable.threeHives then
+				self.combatThreeHives = true
+			end
+		end
+    
+	end
 
 end
 

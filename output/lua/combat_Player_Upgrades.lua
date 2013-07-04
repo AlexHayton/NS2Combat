@@ -425,8 +425,8 @@ function Player:Reset_Lite()
 	self.combatTable.lastTauntTime = 0
 	self.combatTable.hasCamouflage = false
 	
-	self.combatTable.twoHives = false
-	self.combatTable.threeHives = false
+	self.combatTwoHives = false
+	self.combatThreeHives = false
 
 	self.twoHives = false
 	self.threeHives = false

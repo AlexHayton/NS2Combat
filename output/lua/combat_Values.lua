@@ -132,7 +132,7 @@ kPowerPointArmor = 500
 kPowerPointPointValue = 0
 // Moved to CombatConfig.json
 //kCombatPowerPointsTakeDamage = true
-kCombatPowerPointAutoRepairTime = 30
+kCombatPowerPointAutoRepairTime = 60
 
 // Alien vision should be free
 kAlienVisionCost = 0
@@ -146,6 +146,9 @@ kExoPowerUpTime = 3
 
 // decrease the exo dmg a bit (with lvl 3 it will be then a bit above the standard 25)
 kMinigunDamage = 20
+
+// Flamethrower nerf
+kFlamethrowerDamage = 15
 
 // reduce the spike dmg a bit
 kSpikeMaxDamage = 10

@@ -131,14 +131,14 @@ function CombatNS2Utility:UpdateAbilityAvailability_Hook(handle, forAlien, tierT
     
     forAlien:CheckCombatData()
     if tierTwoTechId then
-        if forAlien.twoHives then
+        if forAlien.combatTwoHives then
             UnlockAbility(forAlien, tierTwoTechId)
             handle:BlockOrignalCall()
         end
     end 
         
     if tierThreeTechId then
-        if forAlien.threeHives then
+        if forAlien.combatThreeHives then
             UnlockAbility(forAlien, tierThreeTechId)
             handle:BlockOrignalCall()
         end

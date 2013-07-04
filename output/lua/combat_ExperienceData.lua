@@ -101,12 +101,14 @@ local function GiveExoRailGun(player, techUpgrade)
 end
 
 local function TierTwo(player, techUpgrade)
-    player.combatTable.twoHives = true
+    player.combatTwoHives = true
+	player.combatTable.twoHives = true
 	player.twoHives = true
 end
 
 local function TierThree(player, techUpgrade)
-    player.combatTable.threeHives = true
+    player.combatThreeHives = true
+	player.combatTable.threeHives = true
 	player.threeHives = true
 end
 
@@ -217,6 +219,7 @@ table.insert(UpsList, BuildUpgrade("Alien", kCombatUpgrades.Regeneration,			"reg
 table.insert(UpsList, BuildUpgrade("Alien", kCombatUpgrades.Phantom,				"phantom",			"Phantom",			kTechId.Phantom, 				nil,				nil, 						1, 		kCombatUpgradeTypes.Tech,   false,			0,			nil)) 					
 table.insert(UpsList, BuildUpgrade("Alien", kCombatUpgrades.Celerity,				"cele",				"Celerity",			kTechId.Celerity, 				nil, 				nil, 						1, 		kCombatUpgradeTypes.Tech,   false,			0,			nil)) 					
 table.insert(UpsList, BuildUpgrade("Alien", kCombatUpgrades.Adrenaline,				"adrenaline",		"Adrenaline",		kTechId.Adrenaline, 			nil, 				nil, 						1, 		kCombatUpgradeTypes.Tech,   false,			0,			nil)) 					
+table.insert(UpsList, BuildUpgrade("Alien", kCombatUpgrades.Aura,					"aura",				"Aura",				kTechId.Aura, 					nil, 				nil, 						1, 		kCombatUpgradeTypes.Tech,   false,			0,			nil)) 					
 
 // new ink abilitiy                                                                                                                                                                                                                                             
 table.insert(UpsList, BuildUpgrade("Alien", kCombatUpgrades.ShadeInk,				"ink",		        "Ink-Taunt",		kTechId.ShadeInk, 		   	 	ShadeInk,			nil, 						1, 		kCombatUpgradeTypes.Tech,   false,			0,			nil)) 					
