@@ -54,7 +54,7 @@ end
 function CombatAlien:UpdateHealAmount_Hook(self, bioMassLevel, maxLevel)
 
 	// Cap the health level at the max biomass level
-    local level = math.max(0, math.min(self:GetLvl() - 1, 12))
+    local level = math.max(0, self:GetLvl() - 1)
     local newMaxHealth = self:GetBaseHealth() + level * self:GetHealthPerBioMass()
 
     if newMaxHealth ~= self.maxHealth then
