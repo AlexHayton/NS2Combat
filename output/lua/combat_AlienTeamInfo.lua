@@ -22,9 +22,9 @@ end
 
 function CombatAlienTeamInfo:OnUpdate_Hook(self, deltaTime)
 
-    self.veilLevel = 2
-	self.spurLevel = 2
-	self.shellLevel = 2
+    self.veilLevel = 3
+	self.spurLevel = 3
+	self.shellLevel = 3
     
 end
 
