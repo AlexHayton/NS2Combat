@@ -208,7 +208,7 @@ kBileBombDamage = 40 // per second
 kTechRange = 20.0
 
 // EMP energy drain
-kEMPBlastEnergyDamage = 100
+kEMPBlastEnergyDamage = 75
 
 // Cooldown for buying exo/onos
 // disabled this for better balance
