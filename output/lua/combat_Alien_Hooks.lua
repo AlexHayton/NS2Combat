@@ -39,8 +39,8 @@ end
 
 function CombatAlien:UpdateArmorAmount_Hook(self, carapaceLevel)
 
-    local level = math.min(math.max(0, self:GetLvl() - 1), 12)
-    local newMaxArmor = (level / 12) * (self:GetArmorFullyUpgradedAmount() - self:GetBaseArmor()) + self:GetBaseArmor()
+    local level = GetHasCarapaceUpgrade(self) and carapaceLevel or 0
+    local newMaxArmor = (level / 3) * (self:GetArmorFullyUpgradedAmount() - self:GetBaseArmor()) + self:GetBaseArmor()
 
     if newMaxArmor ~= self.maxArmor then
 
@@ -70,7 +70,7 @@ end
 function CombatAlien:UpdateHealAmount_Hook(self, bioMassLevel, maxLevel)
 
 	// Cap the health level at the max biomass level
-    local level = math.max(0, self:GetLvl() - 1)
+    local level = math.min(10, math.max(0, self:GetLvl() - 1))
     local newMaxHealth = self:GetBaseHealth() + level * self:GetHealthPerBioMass()
 
     if newMaxHealth ~= self.maxHealth then
