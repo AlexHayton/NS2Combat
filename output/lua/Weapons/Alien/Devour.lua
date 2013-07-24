@@ -25,7 +25,7 @@ Devour.energyRate = kEnergyUpdateRate * 14
 // when hitting marine his aim is interrupted
 Devour.kAimInterruptDuration = 0.7
 
-local kAttackRadius = 1.2
+local kAttackRadius = 0.8
 local kAttackOriginDistance = 1.8
 local kAttackRange = 2
 local kDevourEnergyCost = 40

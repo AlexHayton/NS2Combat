@@ -150,6 +150,9 @@ kMinigunDamage = 20
 // Flamethrower nerf
 kFlamethrowerDamage = 15
 
+// Grenade Launcher nerf
+kGrenadeLauncherGrenadeDamage = 135
+
 // reduce the spike dmg a bit
 kSpikeMaxDamage = 10
 kSpikeMinDamage = 8
@@ -200,9 +203,11 @@ SetCachedTechData(kTechId.BabblerEgg, kTechDataCostKey,kBabblerCost)
 
 // Health values
 // Make the marine structures slightly less squishy...
-kArmoryHealth = 4000
+kArmoryHealth = 3500
 kCommandStationHealth = 6000
-kBileBombDamage = 40 // per second
+
+// Fade biomass scaling
+kFadeHealthPerBioMass = 7
 
 // Range for evolving to Onos/Exo from the Hive/CommandStation
 kTechRange = 20.0

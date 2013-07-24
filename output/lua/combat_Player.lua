@@ -467,6 +467,9 @@ if Server then
             
             local LvlName = Experience_GetLvlName(self:GetLvl(), self:GetTeamNumber())
             self:SendDirectMessage( "!! Level UP !! New Lvl: " .. LvlName .. " (" .. self:GetLvl() .. ")")
+			local lvlFree = self:GetLvlFree()
+            local upgradeWord = (lvlFree > 1) and "upgrade points" or "upgrade point"
+            self:SendDirectMessage("You have " .. lvlFree .. " " .. upgradeWord .. " to spend. Use the B key to buy upgrades.")   
 			
 			// Trigger an effect
             self:TriggerEffects("combat_level_up")
