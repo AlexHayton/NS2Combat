@@ -148,7 +148,7 @@ kExoPowerUpTime = 3
 kMinigunDamage = 20
 
 // Flamethrower nerf
-kFlamethrowerDamage = 15
+kFlamethrowerDamage = 20
 
 // Grenade Launcher nerf
 kGrenadeLauncherGrenadeDamage = 135
