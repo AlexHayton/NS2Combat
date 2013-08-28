@@ -203,7 +203,7 @@ table.insert(UpsList, BuildUpgrade("Marine", kCombatUpgrades.Scanner,				"scan",
 table.insert(UpsList, BuildUpgrade("Marine", kCombatUpgrades.Resupply,				"resup",			"Resupply",			kTechId.MedPack , 	       		Resupply,    		nil, 	                    1, 		kCombatUpgradeTypes.Tech,   false,			0,			{ kCombatUpgrades.Exosuit, kCombatUpgrades.DualMinigunExosuit })) 					
 table.insert(UpsList, BuildUpgrade("Marine", kCombatUpgrades.Catalyst,				"cat",				"Catalyst",			kTechId.CatPack , 	       		Catalyst,  			nil, 	                    1, 		kCombatUpgradeTypes.Tech,   false,			0,			{ kCombatUpgrades.Exosuit, kCombatUpgrades.DualMinigunExosuit })) 					
 table.insert(UpsList, BuildUpgrade("Marine", kCombatUpgrades.EMP,   				"emp",			    "EMP-Taunt",		kTechId.MACEMP , 	       		EMP,        		nil, 	                    1, 		kCombatUpgradeTypes.Tech,   false,			0,			nil)) 					
-table.insert(UpsList, BuildUpgrade("Marine", kCombatUpgrades.FastReload,   		    "fastreload",		"Fast Reload",		kTechId.RifleUpgrade , 		    FastReload,   	    nil, 	                    1, 		kCombatUpgradeTypes.Tech,   false,			0,			{ kCombatUpgrades.Exosuit, kCombatUpgrades.DualMinigunExosuit })) 					
+table.insert(UpsList, BuildUpgrade("Marine", kCombatUpgrades.FastReload,   		    "fastreload",		"Fast Reload",		kTechId.AdvancedWeaponry, 		FastReload,   	    nil, 	                    1, 		kCombatUpgradeTypes.Tech,   false,			0,			{ kCombatUpgrades.Exosuit, kCombatUpgrades.DualMinigunExosuit })) 					
 
 // Alien Upgrades
 // Parameters:        				team,	 upgradeId, 							upgradeTextCode, 	upgradeDesc, 		upgradeTechId, 					upgradeFunc, 		requirements, 				levels, upgradeType,                refundUpgrade,	hardCapScale,			mutuallyExclusive		

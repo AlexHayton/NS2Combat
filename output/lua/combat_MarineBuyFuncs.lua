@@ -48,7 +48,7 @@ function CombatMarineBuy_GUISortUps(upgradeList)
         kTechId.Weapons1,
         kTechId.Weapons2,
         kTechId.Weapons3,
-	    kTechId.RifleUpgrade,
+	    kTechId.Rifle,
         "nextRow",
 
         // 3, Armor Upgrades
@@ -105,7 +105,7 @@ function CombatMarineBuy_GetWeaponDescription(techId)
         combatWeaponDescription[kTechId.Weapons1] = "Weapons 1 tech Upgrade. Increases the damage of your weapons."
         combatWeaponDescription[kTechId.Weapons2] = "Weapons 2 tech Upgrade. Increases the damage of your weapons. You need Weapons 1 first..."
         combatWeaponDescription[kTechId.Weapons3] = "Weapons 3 tech Upgrade. Increases the damage of your weapons. You need Weapons 2 first..."
-		combatWeaponDescription[kTechId.RifleUpgrade] = "Doubles the reload speed of all of your weapons."
+		combatWeaponDescription[kTechId.AdvancedWeaponry] = "Doubles the reload speed of all of your weapons."
         
         combatWeaponDescription[kTechId.Armor1] = "Armor 1 tech Upgrade. Substantially increases your armor."
         combatWeaponDescription[kTechId.Armor2] = "Armor 2 tech Upgrade. Substantially increases your armor. You need Armor 1 first..."

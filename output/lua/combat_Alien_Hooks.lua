@@ -18,7 +18,7 @@ function CombatAlien:OnLoad()
     _addHookToTable(self:ReplaceClassFunction("Alien", "GetHasTwoHives","GetHasTwoHives_Hook"))
     _addHookToTable(self:ReplaceClassFunction("Alien", "GetHasThreeHives","GetHasThreeHives_Hook"))
 	_addHookToTable(self:ReplaceClassFunction("Alien", "UpdateArmorAmount","UpdateArmorAmount_Hook"))
-	_addHookToTable(self:ReplaceClassFunction("Alien", "UpdateHealAmount","UpdateHealAmount_Hook"))	
+	_addHookToTable(self:ReplaceClassFunction("Alien", "UpdateHealthAmount","UpdateHealthAmount_Hook"))	
     _addHookToTable(self:PostHookClassFunction("Alien", "OnUpdateAnimationInput","OnUpdateAnimationInput_Hook"))
    
     if Server then
@@ -67,7 +67,7 @@ function CombatAlien:UpdateArmorAmount_Hook(self, carapaceLevel)
 
 end
 
-function CombatAlien:UpdateHealAmount_Hook(self, bioMassLevel, maxLevel)
+function CombatAlien:UpdateHealthAmount_Hook(self, bioMassLevel, maxLevel)
 
 	// Cap the health level at the max biomass level
     local level = math.min(10, math.max(0, self:GetLvl() - 1))

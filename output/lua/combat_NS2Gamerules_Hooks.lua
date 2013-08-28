@@ -401,13 +401,14 @@ function CombatNS2Gamerules:OnUpdate_Hook(self, timePassed)
 end
 
 // let ns2 find a techPoint for team1 and search the nearest techPoint for team2
+local team1TechPoint = nil
 function CombatNS2Gamerules:ChooseTechPoint_Hook(handle, self, techPoints, teamNumber)
 
     //GetLocationName() to get the name
     spawnTeam1Location, spawnTeam2Location = CombatGetSpawns()
     local allTechPoints = EntityListToTable(Shared.GetEntitiesWithClassname("TechPoint"))
         
-    if  spawnTeam1Location ~= nil and  spawnTeam2Location ~=nil  then
+    if  spawnTeam1Location ~= nil and  spawnTeam2Location ~= nil then
     
         for i, techPoint in ipairs(allTechPoints) do
             // find the techPoint that fits to our team and LocationName
@@ -430,16 +431,16 @@ function CombatNS2Gamerules:ChooseTechPoint_Hook(handle, self, techPoints, teamN
 				// if its team1, just search any random techPoint  
 				local randomNumber = math.random(1, table.maxn(allTechPoints))
 				spawnTechPoint = allTechPoints[randomNumber]
+				team1TechPoint = spawnTechPoint
 				
 			else
 			
-				local team1TeachPoint = GetGamerules():GetTeam1():GetInitialTechPoint()
 				local closestRange = nil
 				
 				for i, currentTechPoint in ipairs(allTechPoints) do
 					// skip if we found team1techpoint
-					if currentTechPoint ~= team1TeachPoint then
-						range = GetPathDistance(team1TeachPoint:GetOrigin(), currentTechPoint:GetOrigin())
+					if currentTechPoint ~= team1TechPoint then
+						range = GetPathDistance(team1TechPoint:GetOrigin(), currentTechPoint:GetOrigin())
 						if not closestRange then
 							closestRange = range
 							spawnTechPoint = currentTechPoint                    

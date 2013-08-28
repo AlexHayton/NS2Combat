@@ -31,7 +31,7 @@ function Player:GotFastReload()
         
         if #techTree > 0 then
             for i, upgradeTechId in ipairs(techTree) do
-                if upgradeTechId == kTechId.RifleUpgrade then
+                if upgradeTechId == kTechId.AdvancedWeaponry then
                     fastReload = true
                     break
                 end
