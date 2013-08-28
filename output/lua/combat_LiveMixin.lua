@@ -14,12 +14,13 @@ local OriginalTakeDamage = LiveMixin.TakeDamage
 function LiveMixin:TakeDamage(damage, attacker, doer, point, direction, armorUsed, healthUsed, damageType)
 
 	local entityKilled = false
+	local damageDone = 0
 		
 	// Devoured players should only take damage from the Onos!
 	if (not self:isa("DevouredPlayer")) or (self:isa("DevouredPlayer") and attacker:isa("Onos")) then
-		entityKilled = OriginalTakeDamage(self, damage, attacker, doer, point, direction, armorUsed, healthUsed, damageType)
+		entityKilled, damageDone = OriginalTakeDamage(self, damage, attacker, doer, point, direction, armorUsed, healthUsed, damageType)
 	end
 	
-	return entityKilled
+	return entityKilled, damageDone
     
 end
