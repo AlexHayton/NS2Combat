@@ -17,7 +17,7 @@ function CombatPlayerClient:OnLoad()
 
     ClassHooker:SetClassCreatedIn("Player", "lua/Player.lua") 
 	_addHookToTable(self:ReplaceClassFunction("Player", "Buy", "Buy_Hook_Marine"))
-	_addHookToTable(self:PostHookClassFunction("Alien", "Buy", "Buy_Hook"))
+	_addHookToTable(self:ReplaceClassFunction("Alien", "Buy", "Buy_Hook_Alien"))
 	_addHookToTable(self:HookClassFunction("Player", "OnInitLocalClient", "OnInitLocalClient_Hook"))
 	_addHookToTable(self:HookClassFunction("Player", "AddTakeDamageIndicator", "AddTakeDamageIndicator_Hook"))
 	_addHookToTable(self:ReplaceClassFunction("Marine", "CloseMenu", "CloseMenu_Hook"))
@@ -30,22 +30,44 @@ function CombatPlayerClient:OnLoad()
 	_addHookToTable(self:PostHookClassFunction("Player", "UpdateMisc", "UpdateMisc_Hook"))
 end
 
+// Terrible Terrible hack. Yuck.
+local g_AlienBuyMenu = nil
+
 // starting the custom buy menu for aliens
-function CombatPlayerClient:Buy_Hook(self)
+function CombatPlayerClient:Buy_Hook_Alien(self)
 
    // Don't allow display in the ready room, or as phantom
+   // Don't allow display in the ready room, or as phantom
     if Client.GetLocalPlayer() == self then
-        if self:GetTeamNumber() ~= 0 then
+    
+        // The Embryo cannot use the buy menu in any case.
+        if self:GetTeamNumber() ~= 0 and not self:isa("Embryo") then
+        
             if not self.buyMenu then
-                self.combatBuy = true
+            
+				self.combatBuy = true
+                self.buyMenu = GetGUIManager():CreateGUIScript("GUIAlienBuyMenu")
+				g_AlienBuyMenu = self.buyMenu
+                MouseTracker_SetIsVisible(true, "ui/Cursor_MenuDefault.dds", true)	
+                
             else
-                self.combatBuy = false
+			
+				self.combatBuy = false
+                self:CloseMenu(true)
+				
             end
             
-
+        else
+            self:PlayEvolveErrorSound()
         end
         
     end
+	
+	if not self.buyMenu then
+		self.combatBuy = true
+	else
+		self.combatBuy = false
+	end			
 
 end
 
@@ -102,6 +124,17 @@ end
 function CombatPlayerClient:CloseMenu_Hook(self, closeCombatBuy)
 
 	if self:GetIsLocalPlayer() then
+		if self.buyMenu or g_AlienBuyMenu then
+			// Handle closing the alien buy menu.
+			if closeCombatBuy or not self.combatBuy then
+				GetGUIManager():DestroyGUIScript(g_AlienBuyMenu)
+				g_AlienBuyMenu = nil
+				self.buyMenu = nil
+				MouseTracker_SetIsVisible(false)
+				return true
+			end
+		end
+	
 		if self.buyMenu or g_MarineBuyMenu then
 			// only close it if its not the combatBuy
 			if closeCombatBuy or not self.combatBuy then    

@@ -23,6 +23,7 @@ function Player:GotFastReload()
     local fastReload = false
     
     if Server then
+		self:CheckCombatData()
         if self.combatTable.hasFastReload then
             fastReload = true
         end
@@ -50,6 +51,7 @@ function Player:GotFocus()
     local gotFocus = false
     
     if Server then
+		self:CheckCombatData()
         if self.combatTable.hasFocus then
             // check the weapon
             if self:IsAttackingPrimry() then

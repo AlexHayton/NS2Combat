@@ -500,7 +500,8 @@ function CombatGUIAlienBuyMenu:SendKeyEvent_Hook(self, key, down)
     if closeMenu then
     
         self.closingMenu = true
-        AlienBuy_Close()
+        local player = Client.GetLocalPlayer()
+		player:CloseMenu(true)
         
     end
     

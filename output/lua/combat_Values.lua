@@ -186,6 +186,7 @@ kAuraCost = generalCost
 kSilenceCost = generalCost
 kHydraAbilityCost = generalCost
 kHydraCost = 0
+kWebBuildCost = 0
 kPiercingCost = generalCost
 kAdrenalineCost = generalCost
 kFeintCost = generalCost
@@ -199,7 +200,8 @@ kBabblerCost = 0
 // to get it loaded into the TechData
 SetCachedTechData(kTechId.Hydra, kTechDataCostKey, kHydraCost)
 SetCachedTechData(kTechId.GorgeTunnel, kTechDataCostKey, kGorgeTunnelCost)
-SetCachedTechData(kTechId.BabblerEgg, kTechDataCostKey,kBabblerCost)
+SetCachedTechData(kTechId.BabblerEgg, kTechDataCostKey, kBabblerCost)
+SetCachedTechData(kTechId.Web, kTechDataCostKey, kWebBuildCost)
 
 // Health values
 // Make the marine structures slightly less squishy...
