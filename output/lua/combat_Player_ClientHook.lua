@@ -124,7 +124,7 @@ end
 function CombatPlayerClient:CloseMenu_Hook(self, closeCombatBuy)
 
 	if self:GetIsLocalPlayer() then
-		if self.buyMenu or g_AlienBuyMenu then
+		if self.buyMenu and g_AlienBuyMenu then
 			// Handle closing the alien buy menu.
 			if closeCombatBuy or not self.combatBuy then
 				GetGUIManager():DestroyGUIScript(g_AlienBuyMenu)
@@ -135,7 +135,7 @@ function CombatPlayerClient:CloseMenu_Hook(self, closeCombatBuy)
 			end
 		end
 	
-		if self.buyMenu or g_MarineBuyMenu then
+		if self.buyMenu and g_MarineBuyMenu then
 			// only close it if its not the combatBuy
 			if closeCombatBuy or not self.combatBuy then    
 				GetGUIManager():DestroyGUIScript(g_MarineBuyMenu)
