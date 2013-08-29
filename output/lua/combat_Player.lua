@@ -170,7 +170,7 @@ if Server then
         local position = self:GetOrigin()
         
         CreateEntity(Scan.kMapName, position, self:GetTeamNumber())
-        StartSoundEffectAtOrigin(Observatory.kScanSound, position)  
+        StartSoundEffectAtOrigin(Observatory.kCommanderScanSound, position)  
 
         return true
         
@@ -248,7 +248,7 @@ if Server then
         StartSoundEffectForPlayer(localSound, self)  
         self:ApplyCatPack()
         success = true
-        self:SendDirectMessage("You got now catalyst for " .. CatPack.kDuration .. " sec!")
+        self:SendDirectMessage("You now have catalyst for " .. kCatPackDuration .. " secs!")
         return success
 
     end
