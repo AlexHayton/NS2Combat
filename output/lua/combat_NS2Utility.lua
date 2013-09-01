@@ -109,12 +109,20 @@ end
 // to get tier2 and tier3 working again
 local function UnlockAbility(forAlien, techId)
 
+	//Shared.Message("techId: " .. techId)
     local mapName = LookupTechData(techId, kTechDataMapName)
+	//Shared.Message("mapName: " .. tostring(mapName))
     if mapName and forAlien:GetIsAlive() then
     
         local activeWeapon = forAlien:GetActiveWeapon()
 
         local tierWeapon = forAlien:GetWeapon(mapName)
+		local hasWeapon = false
+		if tierWeapon then
+			local hasWeapon = true
+		end
+		//Shared.Message("hasWeapon: " .. tostring(hasWeapon))
+		
         if not tierWeapon then
         
             forAlien:GiveItem(mapName)
@@ -160,31 +168,31 @@ function CombatNS2Utility:UpdateAbilityAvailability_Hook(forAlien, tierTwoTechId
     forAlien:CheckCombatData()
 	local time = Shared.GetTime()
 	
+	//Shared.Message("tierTwoTechId: " .. tostring(tierTwoTechId))
+	//Shared.Message("tierThreeTechId: " .. tostring(tierThreeTechId))
+	
     if forAlien.timeOfLastNumHivesUpdate == nil or (time > forAlien.timeOfLastNumHivesUpdate + 0.5) then
 
-        local team = forAlien:GetTeam()
-        if team and team.GetTechTree then
+        local hasTwoHivesNow = forAlien.combatTwoHives
+        // Don't lose abilities unless you die.
+        forAlien.twoHives = hasTwoHivesNow
+		
+		//Shared.Message("hasTwoHivesNow: " .. tostring(hasTwoHivesNow))
+        if forAlien.twoHives then
+            UnlockAbility(forAlien, tierTwoTechId)
+        else
+            LockAbility(forAlien, tierTwoTechId)
+        end
         
-            local hasTwoHivesNow = forAlien.combatTwoHives
-            // Don't lose abilities unless you die.
-            forAlien.twoHives = hasTwoHivesNow
+        local hasThreeHivesNow = forAlien.combatThreeHives
+        // Don't lose abilities unless you die.
+        forAlien.threeHives = hasThreeHivesNow
 
-            if forAlien.twoHives then
-                UnlockAbility(forAlien, tierTwoTechId)
-            else
-                LockAbility(forAlien, tierTwoTechId)
-            end
-            
-            local hasThreeHivesNow = forAlien.combatThreeHives
-            // Don't lose abilities unless you die.
-            forAlien.threeHives = hasThreeHivesNow
-
-            if forAlien.threeHives then
-                UnlockAbility(forAlien, tierThreeTechId)
-            else
-                LockAbility(forAlien, tierThreeTechId)
-            end
-            
+		//Shared.Message("hasThreeHivesNow: " .. tostring(hasThreeHivesNow))
+        if forAlien.threeHives then
+            UnlockAbility(forAlien, tierThreeTechId)
+        else
+            LockAbility(forAlien, tierThreeTechId)
         end
 		
 		// enable new abilities

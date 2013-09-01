@@ -121,15 +121,19 @@ if Server then
 		
 		self.combatTwoHives = player.combatTwoHives
 		self.combatThreeHives = player.combatThreeHives
+		//Shared.Message("player.combatTwoHives: " .. tostring(player.combatTwoHives))
+		//Shared.Message("player.combatThreeHives: " .. tostring(player.combatThreeHives))
 		
 		if player.combatTable then
 			self:CheckCombatData()
-			if self.combatTable.twoHives then
+			//Shared.Message("player.combatTable.twoHives: " .. tostring(player.combatTable.twoHives))
+			if player.combatTable.twoHives then
 				self.combatTwoHives = true
 				self.combatTable.twoHives = true
 			end
 			
-			if self.combatTable.threeHives then
+			//Shared.Message("player.combatTable.threeHives: " .. tostring(player.combatTable.threeHives))
+			if player.combatTable.threeHives then
 				self.combatThreeHives = true
 				self.combatTable.threeHives = true
 			end
