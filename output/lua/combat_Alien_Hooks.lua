@@ -126,10 +126,12 @@ if Server then
 			self:CheckCombatData()
 			if self.combatTable.twoHives then
 				self.combatTwoHives = true
+				self.combatTable.twoHives = true
 			end
 			
 			if self.combatTable.threeHives then
 				self.combatThreeHives = true
+				self.combatTable.threeHives = true
 			end
 		end
     

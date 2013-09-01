@@ -16,7 +16,7 @@ end
 function CombatNS2Utility:OnLoad()
     self:ReplaceFunction("GetAreEnemies", "GetAreEnemies_Hook") 
 	self:ReplaceFunction("GetRandomSpawnForCapsule", "GetRandomSpawnForCapsule_Hook")
-    self:PostHookFunction("UpdateAbilityAvailability", "UpdateAbilityAvailability_Hook"):SetPassHandle(true)
+    self:ReplaceFunction("UpdateAbilityAvailability", "UpdateAbilityAvailability_Hook")
 end
 
 function CombatNS2Utility:GetAreEnemies_Hook(entityOne, entityTwo)
@@ -116,42 +116,88 @@ local function UnlockAbility(forAlien, techId)
 
         local tierWeapon = forAlien:GetWeapon(mapName)
         if not tierWeapon then
-            forAlien:GiveItem(mapName)
-        end
         
-        if activeWeapon then
-            forAlien:SetActiveWeapon(activeWeapon:GetMapName())
+            forAlien:GiveItem(mapName)
+            
+            if activeWeapon then
+                forAlien:SetActiveWeapon(activeWeapon:GetMapName())
+            end
+            
         end
     
     end
 
 end
 
-function CombatNS2Utility:UpdateAbilityAvailability_Hook(handle, forAlien, tierTwoTechId, tierThreeTechId)
+local function LockAbility(forAlien, techId)
+
+    local mapName = LookupTechData(techId, kTechDataMapName)    
+    if mapName and forAlien:GetIsAlive() then
+    
+        local tierWeapon = forAlien:GetWeapon(mapName)
+        local activeWeapon = forAlien:GetActiveWeapon()
+        local activeWeaponMapName = nil
+        
+        if activeWeapon ~= nil then
+            activeWeaponMapName = activeWeapon:GetMapName()
+        end
+        
+        if tierWeapon then
+            forAlien:RemoveWeapon(tierWeapon)
+        end
+        
+        if activeWeaponMapName == mapName then
+            forAlien:SwitchWeapon(1)
+        end
+        
+    end    
+    
+end
+
+
+function CombatNS2Utility:UpdateAbilityAvailability_Hook(forAlien, tierTwoTechId, tierThreeTechId)
     
     forAlien:CheckCombatData()
-    if tierTwoTechId then
-        if forAlien.combatTwoHives then
-            UnlockAbility(forAlien, tierTwoTechId)
-            handle:BlockOrignalCall()
-        end
-    end 
+	local time = Shared.GetTime()
+	
+    if forAlien.timeOfLastNumHivesUpdate == nil or (time > forAlien.timeOfLastNumHivesUpdate + 0.5) then
+
+        local team = forAlien:GetTeam()
+        if team and team.GetTechTree then
         
-    if tierThreeTechId then
-        if forAlien.combatThreeHives then
-            UnlockAbility(forAlien, tierThreeTechId)
-            handle:BlockOrignalCall()
+            local hasTwoHivesNow = forAlien.combatTwoHives
+            // Don't lose abilities unless you die.
+            forAlien.twoHives = hasTwoHivesNow
+
+            if forAlien.twoHives then
+                UnlockAbility(forAlien, tierTwoTechId)
+            else
+                LockAbility(forAlien, tierTwoTechId)
+            end
+            
+            local hasThreeHivesNow = forAlien.combatThreeHives
+            // Don't lose abilities unless you die.
+            forAlien.threeHives = hasThreeHivesNow
+
+            if forAlien.threeHives then
+                UnlockAbility(forAlien, tierThreeTechId)
+            else
+                LockAbility(forAlien, tierThreeTechId)
+            end
+            
         end
-    end   
- 
-    // enable new abilities
-    if forAlien:isa("Onos") and forAlien.twoHives then
-        // only if we dont got already devour
-        local abilities = GetChildEntities(forAlien, "Devour")
-        if (abilities ~= nil) and (#abilities == 0) then
-            forAlien:GiveItem(Devour.kMapName)
-            handle:BlockOrignalCall()
-        end
+		
+		// enable new abilities
+		if forAlien:isa("Onos") and forAlien.twoHives then
+			// only if we dont got already devour
+			local abilities = GetChildEntities(forAlien, "Devour")
+			if (abilities ~= nil) and (#abilities == 0) then
+				forAlien:GiveItem(Devour.kMapName)
+			end
+		end
+        
+        forAlien.timeOfLastNumHivesUpdate = time
+        
     end
 
 end
