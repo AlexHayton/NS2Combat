@@ -278,7 +278,7 @@ function CombatNS2Gamerules:OnClientConnect_Hook(self, client)
     local player = client:GetControllingPlayer()
 
 	// Tell the player that Combat Mode is active.
-    SendCombatModeActive(client, kCombatModActive)
+    SendCombatModeActive(client, kCombatModActive, kCombatCompMode)
 	
 	player:CheckCombatData()
     
@@ -490,7 +490,7 @@ function CombatNS2Gamerules:UpdateMapCycle_Hook(self)
 	if self.timeToCycleMap ~= nil and Shared.GetTime() >= self.timeToCycleMap then
 
 		local playerCount = Shared.GetEntitiesWithClassname("Player"):GetSize()
-		ModSwitcher_Save(nil, nil, playerCount, nil, nil, nil, nil, false)
+		ModSwitcher_Save(nil, nil, playerCount, nil, nil, nil, nil, nil, false)
 	
 	end
 

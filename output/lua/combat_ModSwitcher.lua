@@ -21,6 +21,7 @@ kCombatTimeLimitDefault = 1500
 kCombatAllowOvertimeDefault = true
 kCombatPowerPointsTakeDamageDefault = true
 kCombatDefaultWinnerDefault = 2
+kCombatCompModeDefault = false
 
 kCombatModActive = kCombatModActiveDefault
 kCombatPlayerThreshold = kCombatPlayerThresholdDefault
@@ -29,6 +30,7 @@ kCombatTimeLimit = kCombatTimeLimitDefault
 kCombatAllowOvertime = kCombatAllowOvertimeDefault
 kCombatPowerPointsTakeDamage = kCombatPowerPointsTakeDamageDefault
 kCombatDefaultWinner = kCombatDefaultWinnerDefault
+kCombatCompMode = kCombatCompModeDefault
 
 kCombatModSwitcherPath = "config://CombatMod.cfg"
 
@@ -113,6 +115,18 @@ function ModSwitcher_Load(changeLocal)
 				kCombatPowerPointsTakeDamage = kCombatPowerPointsTakeDamageDefault
 				settings.ModPowerPointsTakeDamage = kCombatPowerPointsTakeDamageDefault
             end
+
+            // there is no string to bool function so we need to do it like this
+            if settings.ModCompMode == "true" or settings.ModCompMode == true then
+                kCombatCompMode = true
+            elseif settings.ModCompMode == "false" or  settings.ModCompMode == false then
+                kCombatCompMode = false
+            else
+                Shared.Message("For the value CompMode in " .. kCombatModSwitcherPath .. " only true and false are allowed")
+				Shared.Message("Resetting the value to default (false)")
+				kCombatCompMode = kCombatCompModeDefault
+				settings.ModCompMode = kCombatCompModeDefault
+            end
             
             if tonumber(settings.ModDefaultWinner) and tonumber(settings.ModDefaultWinner) >= 1 and tonumber(settings.ModDefaultWinner) <= 2 then
 				kCombatDefaultWinner = tonumber(settings.ModDefaultWinner)
@@ -165,6 +179,10 @@ function ModSwitcher_Load(changeLocal)
 			if settings.ModDefaultWinner == nil then
 				settings.ModDefaultWinner = kCombatDefaultWinnerDefault
 			end
+
+			if settings.ModCompMode == nil then
+				settings.ModCompMode = kCombatCompModeDefault
+			end
 			
             return settings
         end
@@ -172,7 +190,7 @@ function ModSwitcher_Load(changeLocal)
     else
         // file not found, create it
         Shared.Message(kCombatModSwitcherPath .. " not found, will create it now.")
-        newSettings = ModSwitcher_Save(kCombatModActive, kCombatPlayerThreshold, kCombatLastPlayerCount, kCombatTimeLimit, kCombatAllowOvertime, kCombatPowerPointsTakeDamage, kCombatDefaultWinner, true)
+        newSettings = ModSwitcher_Save(kCombatModActive, kCombatPlayerThreshold, kCombatLastPlayerCount, kCombatTimeLimit, kCombatAllowOvertime, kCombatPowerPointsTakeDamage, kCombatDefaultWinner, kCombatCompMode, true)
 		ModSwitcher_Output_Status(newSettings)
     end 
     
@@ -180,7 +198,7 @@ end
 
 
 // save it, but change the local variable when the map is changing (will be done via load the value
-function ModSwitcher_Save(ModActiveBool, ThresholdNumber, LastPlayers, TimeLimit, AllowOvertime, PowerPointsTakeDamage, DefaultWinner, newlyCreate)
+function ModSwitcher_Save(ModActiveBool, ThresholdNumber, LastPlayers, TimeLimit, AllowOvertime, PowerPointsTakeDamage, DefaultWinner, CompMode, newlyCreate)
   
 	// Default values in case the file does not exist.
 	local currentSettings = { 
@@ -191,6 +209,7 @@ function ModSwitcher_Save(ModActiveBool, ThresholdNumber, LastPlayers, TimeLimit
 		ModAllowOvertime = kCombatAllowOvertimeDefault,
 		ModPowerPointsTakeDamage = kCombatPowerPointsTakeDamageDefault,
 		ModDefaultWinner = kCombatDefaultWinnerDefault,
+		ModCompMode = kCombatCompModeDefault
 	}
 	// If we're not newly creating the file, fill in any missing values here.
     if not newlyCreate then
@@ -257,6 +276,14 @@ function ModSwitcher_Save(ModActiveBool, ThresholdNumber, LastPlayers, TimeLimit
 		Shared.Message("ModDefaultWinner is now: " .. DefaultWinner)
 	end
 
+	if currentSettings.ModCompMode == nil then
+		CompMode = kCombatCompModeDefault
+	elseif CompMode == nil then
+		CompMode = currentSettings.ModCompMode
+	else
+		SendGlobalChatMessage("Competitive mode is now: " .. ModSwitcher_Active_Status(CompMode))
+	end
+
 	// Save to disk.
 	local settingsFile = io.open(kCombatModSwitcherPath, "w+")
 	
@@ -268,6 +295,7 @@ function ModSwitcher_Save(ModActiveBool, ThresholdNumber, LastPlayers, TimeLimit
 						ModAllowOvertime = AllowOvertime,
 						ModPowerPointsTakeDamage = PowerPointsTakeDamage,
 						ModDefaultWinner = DefaultWinner,
+						ModCompMode = CompMode
 						}
 	
 	// if its not exist it will be created automatically                  
@@ -297,6 +325,7 @@ function ModSwitcher_Output_Status(currentSettings)
 	Shared.Message("CombatMod Overtime is now: " .. ModSwitcher_Active_Status(currentSettings.ModAllowOvertime))
 	Shared.Message("CombatMod Power Point Damage is now: " .. ModSwitcher_Active_Status(currentSettings.ModPowerPointsTakeDamage))
 	Shared.Message("CombatMod Default Winner is now: " .. ModSwitcher_Active_Team(currentSettings.ModDefaultWinner))
+	Shared.Message("CombatMod Comp Mode is now: " .. ModSwitcher_Active_Status(currentSettings.ModCompMode))
 	Shared.Message("\n")
 	Shared.Message("**********************************")
 	Shared.Message("**********************************")
