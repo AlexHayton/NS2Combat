@@ -23,3 +23,13 @@ By JimWest and MCMLXXXIV (with support from Jibrail, fsfod and a small army of m
 **Contributing**
 ----------------
 We're welcome for anyone who would like to contribute to the mod. Send us an email or a pull request if you would like to contribute code. Maps can be easily made and shared via the Steam Workshop. Ideas can be brought to us [here](http://www.unknownworlds.com/ns2/forums/index.php?showtopic=119151) on the Unknown Worlds modding forum.
+
+**The following people brought Combat to life for your enjoyment!**
+-------------------------------------------------------------------
+Jibrail
+JimWest
+MCMLXXXIV
+Sphinxter
+Mr.P
+Soul_Rider
+relent
