@@ -85,6 +85,7 @@ function combatLoadClientFunctions()
 	Script.Load("lua/Hud/GUIDevourOnos.lua")
 	
     Script.Load("lua/combat_ScoringMixin.lua")
+    Script.Load("lua/combat_StompMixin.lua")
 
 end
 
