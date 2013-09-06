@@ -48,7 +48,7 @@ function CombatMarineBuy_GUISortUps(upgradeList)
         kTechId.Weapons1,
         kTechId.Weapons2,
         kTechId.Weapons3,
-	    kTechId.Rifle,
+	    kTechId.AdvancedWeaponry,
         "nextRow",
 
         // 3, Armor Upgrades
