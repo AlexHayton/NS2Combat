@@ -178,7 +178,7 @@ function CombatNS2Utility:UpdateAbilityAvailability_Hook(forAlien, tierTwoTechId
         forAlien.twoHives = hasTwoHivesNow
 		
 		//Shared.Message("hasTwoHivesNow: " .. tostring(hasTwoHivesNow))
-        if forAlien.twoHives then
+        if GetIsTechUnlocked(forAlien, tierTwoTechId) then
             UnlockAbility(forAlien, tierTwoTechId)
         else
             LockAbility(forAlien, tierTwoTechId)
@@ -189,7 +189,7 @@ function CombatNS2Utility:UpdateAbilityAvailability_Hook(forAlien, tierTwoTechId
         forAlien.threeHives = hasThreeHivesNow
 
 		//Shared.Message("hasThreeHivesNow: " .. tostring(hasThreeHivesNow))
-        if forAlien.threeHives then
+        if GetIsTechUnlocked(forAlien, tierThreeTechId) then
             UnlockAbility(forAlien, tierThreeTechId)
         else
             LockAbility(forAlien, tierThreeTechId)
