@@ -182,3 +182,26 @@ function CombatUpgrade:DoUpgrade(player)
 	// Do specific stuff for aliens or marines.
     self:TeamSpecificLogic(player)
 end
+
+local origGetIsTechUnlocked = GetIsTechUnlocked
+function GetIsTechUnlocked(player, techId)
+
+	if player:isa("Alien") then
+		// Check for Tier 2 ups
+		for _, v in ipairs(kCombatAlienTierTwoTechIds) do
+	    	if techId == v then
+	    		return player.twoHives
+	    	end
+	    end
+
+	    // Check for Tier 3 ups
+		for _, v in ipairs(kCombatAlienTierThreeTechIds) do
+	    	if techId == v then
+	    		return player.threeHives
+	    	end
+	    end
+	end
+
+	return origGetIsTechUnlocked(player, techId)
+
+end

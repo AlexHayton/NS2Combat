@@ -53,13 +53,13 @@ function CombatAlien:UpdateArmorAmount_Hook(self, carapaceLevel)
 	// Always set the hives back to false, so that later on we can enable tier 2/3 even after embryo.
 	if self:GetTeamNumber() ~= kTeamReadyRoom then
 		if self.combatTwoHives then
-			self.twoHives = true
+			//self.twoHives = true
 		else
 			self.twoHives = false
 		end
 		
 		if self.combatThreeHives then
-			self.threeHives = true
+			//self.threeHives = true
 		else
 			self.threeHives = false
 		end

@@ -216,16 +216,14 @@ end
 
 local fadeHardCapScale = 1/2
 local onosLevels = 5
-local gorgeLevels = 1
 
 if kCombatCompMode then
 	// Remove fade cap
 	fadeHardCapScale = 0
-	// Make gorge and onos unaffordable
-	gorgeLevels = 20
+	// Make onos unaffordable
 	onosLevels = 20
 end
-table.insert(UpsList, BuildUpgrade("Alien", kCombatUpgrades.Gorge,					"gorge",			"Gorge",			kTechId.Gorge, 					nil, 				nil, 						gorgeLevels, 		kCombatUpgradeTypes.Class,  true,			1/2,		nil)) 					
+table.insert(UpsList, BuildUpgrade("Alien", kCombatUpgrades.Gorge,					"gorge",			"Gorge",			kTechId.Gorge, 					nil, 				nil, 						1, 		kCombatUpgradeTypes.Class,  true,			1/2,		nil)) 					
 table.insert(UpsList, BuildUpgrade("Alien", kCombatUpgrades.Lerk,					"lerk",				"Lerk",				kTechId.Lerk, 					nil, 				nil,                 		2, 		kCombatUpgradeTypes.Class,  true,			0,			nil)) 						
 table.insert(UpsList, BuildUpgrade("Alien", kCombatUpgrades.Fade,					"fade",				"Fade",				kTechId.Fade, 					nil, 				nil,                 		4, 		kCombatUpgradeTypes.Class,  true,			fadeHardCapScale,		nil)) 					
 table.insert(UpsList, BuildUpgrade("Alien", kCombatUpgrades.Onos,					"onos",				"Onos",				kTechId.Onos, 					nil, 				nil,                 	    onosLevels, 		kCombatUpgradeTypes.Class,  true,			1/7,	nil))

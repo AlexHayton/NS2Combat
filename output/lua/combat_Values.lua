@@ -238,3 +238,6 @@ end
 
 AddMinimapBlipType("DevouredPlayer")
 
+// Alien Tier to Ability map
+kCombatAlienTierTwoTechIds = { kTechId.Leap, kTechId.BabblerEgg, kTechId.BabblerAbility, kTechId.Umbra, kTechId.Vortex, kTechId.ShadowStep, kTechId.Charge, kTechId.Stomp }
+kCombatAlienTierThreeTechIds = { kTechId.Xenocide, kTechId.BileBomb, kTechId.Web, kTechId.BoneShield, kTechId.Spores, kTechId.Stab }

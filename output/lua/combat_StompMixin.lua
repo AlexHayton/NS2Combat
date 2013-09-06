@@ -7,5 +7,5 @@
 
 // changed it from tierthree to tiertwo
 function StompMixin:GetHasSecondary(player)
-    return player:GetHasTwoHives()
+    return GetIsTechUnlocked(player, kTechId.Stomp)
 end
