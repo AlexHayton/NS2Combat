@@ -9,6 +9,7 @@ Script.Load("lua/ScriptActor.lua")
 Script.Load("lua/Mixins/ModelMixin.lua")
 Script.Load("lua/ExtraEntitiesMod/LogicMixin.lua")
 Script.Load("lua/TeamMixin.lua")
+Script.Load("lua/ExtraEntitiesMod/ScaledModelMixin.lua")
 
 class 'LogicBreakable' (ScriptActor)
 
@@ -30,8 +31,10 @@ local kSurfaceName = {
 
 local networkVars =
 {
+    scale = "vector",
     surface = "integer (0 to 10)",
     cinematicName = "string (128)",
+    team = "integer (0 to 2)",
 }
 
 AddMixinNetworkVars(BaseModelMixin, networkVars)
@@ -52,10 +55,11 @@ end
 function LogicBreakable:OnInitialized()
 
     ScriptActor.OnInitialized(self)
-
-    if(self.model ~= nil) then
+    InitMixin(self, ScaledModelMixin)
+	
+    if not Predict and (self.model ~= nil) then
         PrecacheAsset(self.model)
-        self:SetModel( self.model )
+        self:SetScaledModel(self.model)
     end
     
     if not self.cinematicName then
@@ -66,6 +70,11 @@ function LogicBreakable:OnInitialized()
 
     if Server then
         InitMixin(self, LogicMixin)
+        InitMixin(self, StaticTargetMixin)
+        if (self.team and self.team > 0) then
+            self:SetTeamNumber(self.team)
+        end
+        
     end
     
     self.health = tonumber(self.health)    
@@ -84,7 +93,7 @@ function LogicBreakable:Reset()
     
     if not self:GetRenderModel() then
         if(self.model ~= nil) then
-            self:SetModel( self.model )
+            self:SetScaledModel(self.model)
         end
     end
     
@@ -99,11 +108,14 @@ function LogicBreakable:GetSendDeathMessageOverride()
 end
 
 function LogicBreakable:GetCanBeUsed(player, useSuccessTable)
-    return false
+    useSuccessTable.useSuccess = false
 end   
 
 function LogicBreakable:GetCanTakeDamageOverride()
     return true
+end
+
+function LogicBreakable:OnTakeDamage(damage, attacker, doer, point)
 end
 
 function LogicBreakable:GetShowHitIndicator()
@@ -116,10 +128,15 @@ end
  
 function LogicBreakable:OnKill(damage, attacker, doer, point, direction)
 
+    ScriptActor.OnKill(self, damage, attacker, doer, point, direction)
     BaseModelMixin.OnDestroy(self)
-
+   
+    self:SetPhysicsGroup(PhysicsGroup.DroppedWeaponGroup)
+    self:SetPhysicsGroupFilterMask(PhysicsMask.None)
+    
     if Server then
-        self:TriggerOutputs(player)  
+        self:TriggerOutputs(attacker)  
+        Print("Trigger ouputs")
     end
     
     effectEntity = Shared.CreateEffect(nil, self.cinematicName, nil, Coords.GetTranslation(self:GetOrigin()))
@@ -130,6 +147,8 @@ if (Client) then
 
     function LogicBreakable:OnKillClient()
         BaseModelMixin.OnDestroy(self)
+        self:SetPhysicsType(PhysicsType.None) 
+        // TODO: delete phys model from Client.propList
     end
 
 

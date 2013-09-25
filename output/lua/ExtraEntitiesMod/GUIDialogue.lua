@@ -25,17 +25,17 @@ GUIDialogue.kPortraitBackgroundScale = Vector(GUIScale(200), GUIScale(256), 0)
 GUIDialogue.kPortraitBackgroundPos = Vector( -GUIDialogue.kPortraitBackgroundScale.x -GUIDialogue.kRightOffset, GUIDialogue.kTopOffset, 0 )
 GUIDialogue.kPortraitBackgroundCoords = { X1 = 0, Y1 = 0, X2 = 362, Y2 = 512 }
 GUIDialogue.kDialogueBackgroundScale = Vector(GUIScale(360), GUIScale(180), 0)
+GUIDialogue.kDialogueBackgroundScalePerLine = Vector(GUIScale(360), GUIScale(36), 0)
 GUIDialogue.kDialogueBackgroundPos = Vector( -GUIDialogue.kDialogueBackgroundScale.x -GUIDialogue.kPortraitBackgroundScale.x -GUIDialogue.kRightOffset, GUIDialogue.kTopOffset, 0 )
 GUIDialogue.kDialogueBackgroundCoords = { X1 = 0, Y1 = 0, X2 = 512, Y2 = 256 }
-GUIDialogue.kDialogueTextPos = Vector( GUIScale(20), GUIScale(20), 0 )
+GUIDialogue.kDialogueTextPos = Vector( GUIScale(20), GUIScale(-18), 0 )
 GUIDialogue.kDialogueTextColor = Color(1.0, 1.0, 1.0, 1.0)
-GUIDialogue.kDialogueTextLineHeight = GUIScale(30)
+GUIDialogue.kDialogueTextLineHeight = GUIScale(36)
 GUIDialogue.kDialogueTextLineChars = 42
-GUIDialogue.kDialogueTextLines = 5
 GUIDialogue.kPortraitIconPos = Vector( GUIScale(8), GUIScale(5), 0)
 GUIDialogue.kPortraitIconScale = Vector(GUIScale(196), GUIScale(210), 0)
 GUIDialogue.kPortraitIconCoords = { X1 = 0, Y1 = 0, X2 = 256, Y2 = 256 }
-GUIDialogue.kPortraitTextPos = Vector( GUIScale(25), GUIScale(-25), 0 )
+GUIDialogue.kPortraitTextPos = Vector( GUIScale(52), GUIScale(-28), 0 )
 GUIDialogue.kPortraitTextColor = Color(1.0, 1.0, 1.0, 1.0)
 GUIDialogue.kPortraitTextFontName = "fonts/Arial_17.fnt"
 GUIDialogue.kPortraitTextFontSize = 15
@@ -119,25 +119,10 @@ function GUIDialogue:InitializeDialogue()
     self.dialogueBackground:SetTexture(GUIDialogue.kDialogBoxTexture)
     GUISetTextureCoordinatesTable(self.dialogueBackground, GUIDialogue.kDialogueBackgroundCoords)
     self.background:AddChild(self.dialogueBackground)
-    
-	// Split the dialogue text into lines
+	
 	self.dialogueText = {}
-    for i = 0, GUIDialogue.kDialogueTextLines - 1 do
-    	local dialogueTextLine = GUIManager:CreateTextItem()
- 	   dialogueTextLine:SetAnchor(GUIItem.Top, GUIItem.Left)
- 	   local position = GUIDialogue.kDialogueTextPos
- 	   position.y = position.y + GUIDialogue.kDialogueTextLineHeight * i
-		dialogueTextLine:SetPosition(position)
-	    dialogueTextLine:SetTextAlignmentX(GUIItem.Align_Min)
-	    dialogueTextLine:SetTextAlignmentY(GUIItem.Align_Min)
-	    dialogueTextLine:SetColor(GUIDialogue.kDialogueTextColor)
-	    dialogueTextLine:SetText("Dialogue")
-	    dialogueTextLine:SetFontIsBold(false)
-	    dialogueTextLine:SetIsVisible(true)
-	    dialogueTextLine:SetInheritsParentAlpha(true)
-	    table.insert(self.dialogueText, dialogueTextLine)
-	    self.dialogueBackground:AddChild(dialogueTextLine)
-    end
+	self:MakeDialogueTextLines({"Dialogue"})
+	self:AdjustDialogueBoxHeight(1)
 
 end
 
@@ -149,15 +134,57 @@ function GUIDialogue:SetPortraitTexture(newTexture)
 	end
 end
 
+function GUIDialogue:ClearDialogueTextLines()
+
+	for index, textLine in ipairs(self.dialogueText) do
+		
+		GUI.DestroyItem(textLine)
+		
+	end
+	
+	self.dialogueText = {}
+
+end
+
+function GUIDialogue:MakeDialogueTextLines(newTextLines)
+    
+	for index, line in ipairs(newTextLines) do
+    	local dialogueTextLine = GUIManager:CreateTextItem()
+ 	    dialogueTextLine:SetAnchor(GUIItem.Top, GUIItem.Left)
+ 	    local position = Vector(GUIDialogue.kDialogueTextPos.x, GUIDialogue.kDialogueTextPos.y, GUIDialogue.kDialogueTextPos.z)
+ 	    position.y = position.y + GUIDialogue.kDialogueTextLineHeight * index
+		dialogueTextLine:SetPosition(position)
+	    dialogueTextLine:SetTextAlignmentX(GUIItem.Align_Min)
+	    dialogueTextLine:SetTextAlignmentY(GUIItem.Align_Min)
+	    dialogueTextLine:SetColor(GUIDialogue.kDialogueTextColor)
+	    dialogueTextLine:SetText(line)
+	    dialogueTextLine:SetFontIsBold(false)
+	    dialogueTextLine:SetIsVisible(true)
+	    dialogueTextLine:SetInheritsParentAlpha(true)
+		self.dialogueBackground:AddChild(dialogueTextLine)
+	    table.insert(self.dialogueText, dialogueTextLine)
+    end
+end
+
+function GUIDialogue:AdjustDialogueBoxHeight(lineCount)
+
+	local newScale = Vector(GUIDialogue.kDialogueBackgroundScalePerLine.x, GUIDialogue.kDialogueBackgroundScalePerLine.y, GUIDialogue.kDialogueBackgroundScalePerLine.z)
+	newScale.y = newScale.y * math.min(lineCount + 1, 5)
+	self.dialogueBackground:SetSize(newScale)
+	
+end
+
 function GUIDialogue:SetDialogueText(newText)
 
 	local textBuffer = newText
+	local newLines = {}
+	self:ClearDialogueTextLines()	
 
 	// Split the buffer into lines, at whitespace
-	for index, line in ipairs(self.dialogueText) do
+	while string.len(textBuffer) > 0 do
 		// If we can fit the whole buffer on this line, do so and blank all subsequent lines
 		if string.len(textBuffer) <= GUIDialogue.kDialogueTextLineChars then
-			line:SetText(textBuffer)
+			table.insert(newLines, textBuffer)
 			textBuffer = ""
 		else
 			// Otherwise, read in to the nearest whole word and then display the rest on the next line.
@@ -168,10 +195,14 @@ function GUIDialogue:SetDialogueText(newText)
 			if lastSpace ~= nil then
 				lineBuffer = string.sub(lineBuffer, 1, lastSpace + 1)
 			end
-			line:SetText(lineBuffer)
+			table.insert(newLines, lineBuffer)
 			textBuffer = string.sub(textBuffer, string.len(lineBuffer) + 1)
 		end
 	end
+	
+	self:MakeDialogueTextLines(newLines)
+	self:AdjustDialogueBoxHeight(#newLines)
+	
 end
 
 function GUIDialogue:SetPortraitText(newText)

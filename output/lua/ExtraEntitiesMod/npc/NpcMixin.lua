@@ -66,6 +66,14 @@ NpcMixin.networkVars =
 {
 }
 
+local function HasExtentsFilter()
+
+	return function(target, targetPoint)
+	  return HasMixin(target, "Extents")
+	end
+
+end
+
 
 function NpcMixin:__initmixin() 
 
@@ -97,8 +105,8 @@ function NpcMixin:__initmixin()
             false,
             self:GetTargets(),
             //{self.FilterTarget(self)},
-            { CloakTargetFilter(), self.FilterTarget(self)},            
-            { function(target) return target:isa("Player") end } )
+            { CloakTargetFilter(), HasExtentsFilter(), self.FilterTarget(self)},            
+            { HarmfulPrioritizer() })
 
         // special Mixins
         if self:isa("Marine") then
@@ -115,6 +123,11 @@ function NpcMixin:__initmixin()
             InitMixin(self, NpcOnosMixin)    
         elseif self:isa("Exo") then
             InitMixin(self, NpcExoMixin)   
+        end
+        
+        // give aliens unlimted Energy
+        if self:isa("Alien") then
+            self.unlimtedEnergy = true
         end
         
         self:SetBaseDifficulty()
@@ -210,7 +223,12 @@ function NpcMixin:OnUpdate(deltaTime)
   
     if self.isaNpc then    
 
-        if Server then   
+        if Server then  
+
+            // give aliens unlimted Energy
+            if self.unlimtedEnergy then                
+                self:AddEnergy(self:GetMaxEnergy() - self:GetEnergy())
+            end
         
             // check if its time do die :-)
             if self.timedLife and (Shared.GetTime() - self.createTime > NpcMixin.kLifeTime) then
@@ -224,9 +242,13 @@ function NpcMixin:OnUpdate(deltaTime)
                         local targetRange = (self:GetOrigin() - target:GetOrigin()):GetLengthXZ()                        
                         
                         if ((targetRange <= NpcMixin.kDieRange) or self.inTargetRange) and  pathPoints and #pathPoints > 0 then
-                            kill = false
-                            // let us live a bit longer
-                            self.createTime = Shared.GetTime() - (NpcMixin.kLifeTime / 2)
+                            // only let the npc live if it comes closer
+                            if not self.oldTargetRange or (self.oldTargetRange > targetRange) then
+                                kill = false
+                                // let us live a bit longer
+                                self.oldTargetRange = targetRange
+                                self.createTime = Shared.GetTime() - (NpcMixin.kLifeTime / 4)
+                            end
                         end                        
                     end                
                 end          
@@ -241,7 +263,7 @@ function NpcMixin:OnUpdate(deltaTime)
             local updateOK = true
             self:GenerateMove(deltaTime)
             if self.active and updateOK and self:GetIsAlive() then
-                self:AiSpecialLogic()
+                self:AiSpecialLogic(deltaTime)
                 self:CheckImportantEvents() 
                 self:ChooseOrder()
                 self:ProcessOrder()         
@@ -278,7 +300,7 @@ function NpcMixin:GenerateMove(deltaTime)
 
 end
 
-function NpcMixin:AiSpecialLogic()
+function NpcMixin:AiSpecialLogic(deltaTime)
 end
 
 function NpcMixin:CheckImportantEvents()
@@ -292,14 +314,14 @@ function NpcMixin:ChooseOrder()
 
         if not order or self.orderType ~= kTechId.Attack then    
             // don't search for targets if neutral
-            if self:GetTeam() ~= 0 then
+            if self:GetTeam() ~= 0 and not self.disabledTargets then
                 self:FindVisibleTarget()
             end    
-            if self.mapWaypoint then
+            if self.mapWaypoint and self.mapWaypointType then
                 // try to reach the mapWaypoint
                 local waypoint = Shared.GetEntity(self.mapWaypoint)
                 if waypoint then
-                    self:GiveOrder(kTechId.Move , waypoint:GetId(), waypoint:GetOrigin(), nil, true, true)
+                    self:GiveOrder(self.mapWaypointType , waypoint:GetId(), waypoint:GetOrigin(), nil, true, true)
                 end
             end
         end           
@@ -422,7 +444,7 @@ function NpcMixin:MoveToPoint(toPoint)
         local viewAngles = self:GetViewAngles() 
         local fowardCoords = viewAngles:GetCoords()
         local trace = Shared.TraceRay(startPoint, startPoint + (fowardCoords.zAxis * -5), CollisionRep.LOS, PhysicsMask.AllButPCs, EntityFilterOne(self))        
-        if (trace.endPoint - startPoint):GetLength() >= 1 then
+        if (trace.endPoint - startPoint):GetLengthSquared() >= 1 then
             // enough space, move back
             self.move.move.z = -1     
         else
@@ -682,17 +704,19 @@ function NpcMixin:UpdateOrderLogic()
 end
 
 function NpcMixin:Attack(activeWeapon)
+
     assert(self.move ~= nil)
     if self.AttackOverride then
         self:AttackOverride(activeWeapon)
     else
         self:PressButton(Move.PrimaryAttack)
-    end        
+    end  
+
 end
 
 
 function NpcMixin:OnTakeDamage(damage, attacker, doer, point)
-    if Server then
+    if Server and not self.disabledTargets then
         self.lastAttacker = attacker 
         local order = self:GetCurrentOrder()
         local distanceDifference = 0
@@ -722,10 +746,14 @@ end
 
 // cheap trick, function is from LOS Mixin, will warn us if somebody sees us
 function NpcMixin:SetIsSighted(sighted, viewer)
-    if sighted and viewer and viewer:isa("Player") then
+    if not self.disabledTargets and sighted and viewer and viewer:isa("Player") then
         // when enemy sees us and we have no target, attack him
         local order = self:GetCurrentOrder()
-        if not order or (order and (self.orderType ~= kTechId.Attack or not Shared.GetEntity(order:GetParam()):isa("Player")) ) then
+        local entity = nil
+        if (order and order:GetParam()) then
+            entity = Shared.GetEntity(order:GetParam())
+        end
+        if not order or (order and (self.orderType ~= kTechId.Attack or not (entity and entity:isa("Player"))) ) then
             self:GiveOrder(kTechId.Attack, viewer:GetId(), self:GetTargetEngagementPoint(viewer), nil, true, true)
             NpcUtility_InformTeam(self, viewer)       
         end
@@ -752,7 +780,7 @@ function NpcMixin:GetNextPoint(order, toPoint)
     if (order and self.orderType ~= kTechId.Attack) or (not self.toClose and not self.inTargetRange) then
         if self.oldPoint and self.oldOrigin and self.oldPoint == toPoint then
             // if its the same point, lets look if we can still move there
-            if (self.points and self.points[#self.points] and not self:CheckTargetReached(self.points[#self.points])) and 
+            if (self.points and #self.points > 0 and self.points[#self.points] and not self:CheckTargetReached(self.points[#self.points])) and 
                 (not self.timeLastStuckingCheck or (Shared.GetTime() - self.timeLastStuckingCheck > NpcMixin.kStuckingUpdateRate)) then
                 
                 if math.abs((self:GetOrigin() - self.oldOrigin):GetLengthXZ()) < NpcMixin.kAntiStuckDistance then
@@ -776,7 +804,7 @@ function NpcMixin:GetNextPoint(order, toPoint)
                 end
                 self.timeLastStuckingCheck = Shared.GetTime()
             // no points? create new one
-            elseif (not self.points or not self.points[#self.points]) and self.orderPosition then            
+            elseif (not self.points or #self.points == 0 or (#self.points > 0 and not self.points[#self.points])) and self.orderPosition then            
                 self:GeneratePath(self.orderPosition)
             end
         else
@@ -784,8 +812,7 @@ function NpcMixin:GetNextPoint(order, toPoint)
             // check if its still the same target, maybe the target has just moved
             // then calculate how far are we away, maybe we can keep the path at the moment
             // will improve performance a bit ( I hope)
-
-            if self.oldPoint and self.points and self.points[self.index] and (toPoint - self.oldPoint):GetLength() < 3 then
+            if self.oldPoint and self.points and self.index and #self.points >= self.index and (toPoint - self.oldPoint):GetLengthSquared() < 9 then
                 // just change last path point th the target point
                 if self.target then
                     // also calculate with the velocity to make a bit prediction

@@ -50,12 +50,13 @@ function LogicEventListener:OnEvent(msg, targetEntity)
             if msg == "Game started" then        
                 self:TriggerOutputs()
             end
+        // something strange here in the code but ok lets just flip it
         elseif self.listenEvent == 1 then       // team 1 won
-            if msg == "Marine win" then        
+            if msg == "Alien win" then 
                 self:TriggerOutputs()
             end        
-        elseif self.listenEvent == 2 then       // team 2 won
-            if msg == "Alien win" then        
+        elseif self.listenEvent == 2 then       // team 2 won            
+            if msg == "Marine win" then        
                 self:TriggerOutputs()
             end         
         elseif self.listenEvent == 3 then       // any team won

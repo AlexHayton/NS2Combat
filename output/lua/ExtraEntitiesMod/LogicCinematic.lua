@@ -21,6 +21,7 @@ local networkVars =
     cinematicName = "string (128)",
     everyPlayer = "boolean",
     effectEntityId = "entityid",
+    hasCamera = "boolean",
 }
 
 AddMixinNetworkVars(LogicMixin, networkVars)
@@ -39,8 +40,8 @@ function LogicCinematic:OnInitialized()
     
     if Server then
         InitMixin(self, LogicMixin)
-    end
-    
+    end   
+   
     if self.cinematicName then
         PrecacheAsset(self.cinematicName)
     end
@@ -93,7 +94,7 @@ if Client then
                 local cullingMode = RenderCamera.CullingMode_Occlusion
                 local camera = effect.cinematic:GetCamera()
                 
-                if camera then
+                if camera and self.hasCamera then
                 
                     local player = Client.GetLocalPlayer() 
                     self:DestroyScripts()  

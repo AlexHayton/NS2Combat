@@ -30,7 +30,7 @@ function NpcLerkMixin:__initmixin()
 end
 
 // let lerk hover over the ground
-function NpcLerkMixin:AiSpecialLogic()
+function NpcLerkMixin:AiSpecialLogic(deltaTime)
 
      if self:GetCurrentOrder() then
         if not self.inTargetRange then

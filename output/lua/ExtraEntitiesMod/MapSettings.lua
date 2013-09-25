@@ -32,6 +32,21 @@ function MapSettings:OnInitialized()
         //setFalldmg == true
         kFallDamage = true
     end
+    
+    if Server then
+        if self.maxNpcs then
+            kMaxNpcs = self.maxNpcs
+        end
+        
+        if self.maxNpcsSameTime then
+            kMaxNpcsSameTime = self.maxNpcsSameTime
+        end
+        
+        if self.delaySpawnTime then
+            kDelaySpawnTime = self.delaySpawnTime 
+        end  
+    end
+    
 end
 
 
