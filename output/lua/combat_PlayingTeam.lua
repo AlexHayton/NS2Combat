@@ -197,7 +197,13 @@ function CombatPlayingTeam:Update_Hook(self, timePassed)
 			// If there are any players left, send them a message about why they didn't spawn.
 			if (#self.respawnQueue > 0) then
 				for i, player in ipairs(self.respawnQueue) do
-					player:SendDirectMessage("Could not find a valid spawn location for you... You will spawn in the next wave instead!")
+				    // sanity check if there are ids instead of objects
+				    if (IsNumber(player)) then
+				        player = Shared.GetEntity(player)
+				    end
+				    if (player) then
+					    player:SendDirectMessage("Could not find a valid spawn location for you... You will spawn in the next wave instead!")
+                    end					    
 				end
 			elseif (#players > 0) then
                 for i, player in ipairs(players) do
