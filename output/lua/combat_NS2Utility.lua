@@ -162,48 +162,47 @@ local function LockAbility(forAlien, techId)
     
 end
 
+function CombatNS2Utility:UpdateAbilityAvailability_Hook(forAlien, tierOneTechId, tierTwoTechId, tierThreeTechId)
 
-function CombatNS2Utility:UpdateAbilityAvailability_Hook(forAlien, tierTwoTechId, tierThreeTechId)
-    
     forAlien:CheckCombatData()
-	local time = Shared.GetTime()
-	
-	//Shared.Message("tierTwoTechId: " .. tostring(tierTwoTechId))
-	//Shared.Message("tierThreeTechId: " .. tostring(tierThreeTechId))
-	
+    local time = Shared.GetTime()
     if forAlien.timeOfLastNumHivesUpdate == nil or (time > forAlien.timeOfLastNumHivesUpdate + 0.5) then
 
-        local hasTwoHivesNow = forAlien.combatTwoHives
-        // Don't lose abilities unless you die.
-        forAlien.twoHives = hasTwoHivesNow
-		
-		//Shared.Message("hasTwoHivesNow: " .. tostring(hasTwoHivesNow))
-        if GetIsTechUnlocked(forAlien, tierTwoTechId) then
-            UnlockAbility(forAlien, tierTwoTechId)
-        else
-            LockAbility(forAlien, tierTwoTechId)
-        end
-        
-        local hasThreeHivesNow = forAlien.combatThreeHives
-        // Don't lose abilities unless you die.
-        forAlien.threeHives = hasThreeHivesNow
+        local team = forAlien:GetTeam()
+        if team and team.GetTechTree then
 
-		//Shared.Message("hasThreeHivesNow: " .. tostring(hasThreeHivesNow))
-        if GetIsTechUnlocked(forAlien, tierThreeTechId) then
-            UnlockAbility(forAlien, tierThreeTechId)
-        else
-            LockAbility(forAlien, tierThreeTechId)
+            // B257: ShadowStep and Charge are now "one hive" abilities, so make them available with Tier Two upgrade
+            forAlien.oneHive = forAlien.combatTwoHives
+            if GetIsTechUnlocked(forAlien, tierOneTechId) then
+                UnlockAbility(forAlien, tierOneTechId)
+            else
+                LockAbility(forAlien, tierOneTechId)
+            end
+
+            forAlien.twoHives = forAlien.combatTwoHives
+            if GetIsTechUnlocked(forAlien, tierTwoTechId) then
+                UnlockAbility(forAlien, tierTwoTechId)
+            else
+                LockAbility(forAlien, tierTwoTechId)
+            end
+
+            forAlien.threeHives = forAlien.combatThreeHives
+            if GetIsTechUnlocked(forAlien, tierThreeTechId) then
+                UnlockAbility(forAlien, tierThreeTechId)
+            else
+                LockAbility(forAlien, tierThreeTechId)
+            end
+
+            if forAlien:isa("Onos") and forAlien.twoHives then
+                // only if we dont got already devour
+                local abilities = GetChildEntities(forAlien, "Devour")
+                if (abilities ~= nil) and (#abilities == 0) then
+                    forAlien:GiveItem(Devour.kMapName)
+                end
+            end
+
         end
-		
-		// enable new abilities
-		if forAlien:isa("Onos") and forAlien.twoHives then
-			// only if we dont got already devour
-			local abilities = GetChildEntities(forAlien, "Devour")
-			if (abilities ~= nil) and (#abilities == 0) then
-				forAlien:GiveItem(Devour.kMapName)
-			end
-		end
-        
+
         forAlien.timeOfLastNumHivesUpdate = time
         
     end
