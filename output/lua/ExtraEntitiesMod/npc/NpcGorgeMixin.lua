@@ -46,10 +46,15 @@ function NpcGorgeMixin:CheckImportantEvents()
     local activeWeapon = self:GetActiveWeapon()
 
     if self:GetHealth() < self:GetMaxHealth() then
-        // heal us
-        local activeWeapon = self:GetActiveWeapon()
-        if activeWeapon and activeWeapon:isa("SpitSpray") then
-            self:PressButton(Move.SecondaryAttack)
+        // heal us, but not all the time so we can shoot
+        if not self.onHealing  then
+            local activeWeapon = self:GetActiveWeapon()
+            if activeWeapon and activeWeapon:isa("SpitSpray") then
+                self:PressButton(Move.SecondaryAttack)
+                self.onHealing = true
+            end
+        else
+            self.onHealing  = false
         end
     end    
     

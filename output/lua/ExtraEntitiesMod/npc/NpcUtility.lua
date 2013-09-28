@@ -91,7 +91,7 @@ function NpcUtility_InformTeam(self, attacker)
             target = player:GetTarget()
         end
         
-        if not target or not target:isa("Player") then 
+        if not player.disabledTargets and (not target or not target:isa("Player")) then 
             player:GiveOrder(kTechId.Attack, attacker:GetId(), attacker:GetOrigin(), nil, true, true)
             player.target = attacker:GetId()
         end        
@@ -154,8 +154,7 @@ function NpcUtility_Spawn(origin, className, values, waypoint)
             // init the xp mixin for the new npc
             InitMixin(entity, NpcMixin)	
             if waypoint then
-                entity:GiveOrder(kTechId.Move , waypoint:GetId(), waypoint:GetOrigin(), nil, true, true)
-                entity.mapWaypoint = waypoint:GetId()
+                waypoint:OnLogicTrigger(entity)
             end
             table.insert(kNpcList, entity:GetId()) 
  
@@ -242,6 +241,9 @@ if Server then
                 elseif class == "exo" then
                     className = Exo.kMapName
                     values.layout = "ClawMinigun"
+                elseif class == "dualexo" then
+                    className = Exo.kMapName
+                    values.layout = "MinigunMinigun"
                 else
                     Print("Class: ".. class .. " is unknown, spawning a skulk instead.")
                 end      
@@ -302,6 +304,22 @@ if Server then
 	end
 	
 	Event.Hook("Console_testnpcs", OnConsoleTestNpcs)
+	
+	// this works without cheats to look how many npcs there are
+	function OnConsoleShowNpcs(client)
+	
+	    if not lastTimeShowed or Shared.GetTime() - lastTimeShowed > 2 then
+            Shared.Message("Currently active npcs: " .. #kNpcList)
+            if kQueueManager and kQueueManager.kNpcQueue then
+                Shared.Message("Queued npcs: " .. #kQueueManager.kNpcQueue)
+            end	    
+            
+            lastTimeShowed = Shared.GetTime()
+        end
+        
+	end
+	
+	Event.Hook("Console_shownpcs", OnConsoleShowNpcs)
 
 end
 

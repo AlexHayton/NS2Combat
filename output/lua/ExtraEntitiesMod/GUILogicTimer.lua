@@ -7,7 +7,7 @@
 
 // GUILogicTimer.lua
 
-Script.Load("lua/Factions/Factions_Utility.lua")
+Script.Load("lua/NS2Utility.lua")
 
 class 'GUILogicTimer' (GUIAnimatedScript)
 
@@ -19,7 +19,7 @@ GUILogicTimer.kBackgroundOffsetX = GUIScale(0)
 GUILogicTimer.kBackgroundOffsetY = GUIScale(0)
 
 GUILogicTimer.kTimeOffset = Vector(0, GUIScale(-5), 0)
-GUILogicTimer.kTimeFontName = "fonts/Arial_20.fnt"
+GUILogicTimer.kTimeFontName = "fonts/AgencyFB_small.fnt"
 GUILogicTimer.kTimeFontSize = 20
 GUILogicTimer.kTimeBold = true
 
@@ -35,12 +35,11 @@ local function GetTeamType()
 	
 	if not player:isa("ReadyRoomPlayer") then	
 		local teamnumber = player:GetTeamNumber()
-		local teamType = GetGamerulesInfo():GetTeamType(teamnumber)
-		if teamType == kMarineTeamType then
+		if teamnumber == kMarineTeamType then
 			return "Marines"
-		elseif teamType == kAlienTeamType then
+		elseif teamnumber == kAlienTeamType then
 			return "Aliens"
-		elseif teamType == kNeutralTeamType then 
+		elseif teamnumber == kNeutralTeamType then 
 			return "Spectator"
 		else
 			return "Unknown"
@@ -110,29 +109,37 @@ function GUILogicTimer:GetTimers()
 	return self.timers
 end
 
-function GUILogicTimer:GetTimer(timerName)
-	return self.timers[timerName]
+function GUILogicTimer:GetTimer(timerId)
+    for i, timer in ipairs(self.timers) do
+        if timer.Id == timerId then
+            return self.timers[i] 
+        end
+    end
 end
 
-function GUILogicTimer:AddTimer(timerName, endTime)
-	self.timers[timerName] = { Name = timerName, EndTime = endTime }
+function GUILogicTimer:AddTimer(timerId, endTime)
+    if self.timers  then
+	    table.insert(self.timers, { Id = timerId, EndTime = endTime })
+    end
 end
 
-function GUILogicTimer:GetEndTime(timerName)
-	local timer = self:GetTimer(timerName)
+function GUILogicTimer:GetEndTime(timerId)
+	local timer = self:GetTimer(timerId)
 	local endTime = 0
 	if timer then
 		endTime = timer.EndTime
 	end
 end
 
-function GUILogicTimer:SetEndTime(timerName, newTime)
-	local timer = self:GetTimer(timerName)
-	if timer then
+function GUILogicTimer:SetEndTime(timerId, newTime)
+	local timer = self:GetTimer(timerId)
+	if not timer then
+	    self:AddTimer(timerId, endTime)
+    end
+    
+    if timer then	    
 		timer.EndTime = newTime
-	else
-		self:AddTimer(timerName, endTime)
-	end
+    end
 end
 
 // Gets the time in the format "mm:ss:ms"
@@ -180,10 +187,18 @@ local function GetTimeDigital(timeInSeconds, showMinutes, showMilliseconds)
 end
 
 function GUILogicTimer:GetTimeRemainingDigital()
-	local timer = self:GetTimer(timerName)
+	local timer = self:GetTimer(timerId)
 	local timeRemaining = "-"
-	if timer then
-		timeRemaining = GetTimeDigital(timer.EndTime - Shared.GetTime(), true, false)
+	// for Debug, just 1st timer
+	if (#self.timers > 0) then
+	    timer = self.timers[1]
+	end
+	if timer and timer.EndTime then
+	    local time = timer.EndTime - Shared.GetTime() 
+	    if time < 0 then
+            time = 0
+	    end	    
+		timeRemaining = GetTimeDigital(time, true, false)
 	end
 	return timeRemaining
 end
@@ -213,7 +228,7 @@ function GUILogicTimer:Update(deltaTime)
 	end
     
 	local player = Client.GetLocalPlayer()
-	if (self.showTimer and player:GetIsAlive()) then
+	if #self.timers > 0 and (self.showTimer and player:GetIsAlive()) then
 		self.timerBackground:SetIsVisible(true)
 		local TimeRemaining = self:GetTimeRemainingDigital()
 		self.timeRemainingText:SetText(TimeRemaining)
@@ -221,6 +236,10 @@ function GUILogicTimer:Update(deltaTime)
 		self.timerBackground:SetIsVisible(false)
 	end
 
+end
+
+function GUILogicTimer:SetIsVisible(visible)
+    self.background:SetIsVisible(visible)
 end
 
 

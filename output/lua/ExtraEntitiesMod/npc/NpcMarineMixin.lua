@@ -34,7 +34,7 @@ function NpcMarineMixin:__initmixin()
 end
 
 
-function NpcMarineMixin:AiSpecialLogic()
+function NpcMarineMixin:AiSpecialLogic(deltaTime)
     // just sprint all the time
     //self:PressButton(Move.MovementModifier)
 end
