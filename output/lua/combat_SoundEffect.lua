@@ -31,7 +31,7 @@ local kTauntSounds =
 // Hooks for Ink and EMP are in here.
 function CombatSoundEffect:StartSoundEffectOnEntity_Hook(soundEffectName, onEntity)
 
-	if onEntity:isa("Player") then
+	if onEntity and onEntity:isa("Player") then
 		onEntity:CheckCombatData()
 		
 		// Check whether the sound is a taunt sound

@@ -414,6 +414,25 @@ function Player:GiveUpsBack()
 	
 end
 
+    
+function Player:ResetCombatData()
+		// don't initialise the Combat Data !!! we need to reset it
+	self.combatTable = {} 
+
+	// that we don't have to write everything in 3 different functions
+	self:Reset_Lite() 
+
+	self.combatTable.lvl = 1
+	self:AddLvlFree(kCombatStartUpgradePoints)
+	
+	// getAvgXP is called before giving the score, so this needs to be implemented here
+	self.score = 0
+	
+	// Set it to -kHeavyTechCooldown for buying exo/onos at the beginning
+	self.combatTable.timeLastHeavyTech = -kHeavyTechCooldown
+end      
+
+
 // resetting some things, for team change
 function Player:Reset_Lite()
 

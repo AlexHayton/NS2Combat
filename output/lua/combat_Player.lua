@@ -340,7 +340,7 @@ if Server then
 
         self.resources = 0
 
-    end
+    end 
 
     function Player:ClearCombatData()
 
@@ -355,7 +355,7 @@ if Server then
 
         // Initialise the Combat Tech Tree
         if not self.combatTable then
-            self:Reset()
+            self:ResetCombatData()
         end
         
         if not self.combatTechTree then
