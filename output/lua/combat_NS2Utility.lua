@@ -193,6 +193,7 @@ function CombatNS2Utility:UpdateAbilityAvailability_Hook(forAlien, tierOneTechId
                 LockAbility(forAlien, tierThreeTechId)
             end
 
+            /* disabling devour, give him bone shield now
             if forAlien:isa("Onos") and forAlien.twoHives then
                 // only if we dont got already devour
                 local abilities = GetChildEntities(forAlien, "Devour")
@@ -200,6 +201,7 @@ function CombatNS2Utility:UpdateAbilityAvailability_Hook(forAlien, tierOneTechId
                     forAlien:GiveItem(Devour.kMapName)
                 end
             end
+            */
 
         end
 

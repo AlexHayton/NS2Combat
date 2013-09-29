@@ -7,6 +7,7 @@
 
 if Server then
 
+/*
     // changed stomp to tierTwo to get stomp back again
     function Onos:GetTierTwoTechId()
         return kTechId.Stomp
@@ -15,5 +16,6 @@ if Server then
     function Onos:GetTierThreeTechId()
         return kTechId.BoneShield
     end
+    */
     
 end
