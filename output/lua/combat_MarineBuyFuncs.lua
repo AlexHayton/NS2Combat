@@ -68,7 +68,7 @@ function CombatMarineBuy_GUISortUps(upgradeList)
 	    // 5, grenades
         kTechId.ClusterGrenade,
         kTechId.GasGrenade,
-        kTechId.PulseGrenade
+        kTechId.PulseGrenade,
 
     }
     
