@@ -18,6 +18,7 @@ function CombatMarineBuy_GetHeadlines()
         "Weapon Ups",
         "Armor Ups",
         "Class Ups",
+        "Grenades",
     }
     
     return headlines
@@ -62,6 +63,13 @@ function CombatMarineBuy_GUISortUps(upgradeList)
         kTechId.Jetpack,     
 	    kTechId.DualMinigunExosuit,
 	    kTechId.ClawRailgunExosuit,
+	    "nextRow",
+	    
+	    // 5, grenades
+        kTechId.ClusterGrenade,
+        kTechId.GasGrenade,
+        kTechId.PulseGrenade
+
     }
     
     local sortedList = {}    
@@ -115,6 +123,10 @@ function CombatMarineBuy_GetWeaponDescription(techId)
         combatWeaponDescription[kTechId.Exosuit] = "Suit up! You will need Armor 2 first..."
 		combatWeaponDescription[kTechId.DualMinigunExosuit] = "Dual Miniguns for the Exosuit."
 		combatWeaponDescription[kTechId.ClawRailgunExosuit] = "RailGun with a Claw for the Exosuit."
+		
+		combatWeaponDescription[kTechId.ClusterGrenade] = "You get 1 ClusterGrenade"
+        combatWeaponDescription[kTechId.GasGrenade] = "You get 1 GasGrenade"
+        combatWeaponDescription[kTechId.PulseGrenade] =  "You get 1 PulseGrenade"
     
     end
     

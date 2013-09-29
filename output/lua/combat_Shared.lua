@@ -36,6 +36,7 @@ LoadTracker:LoadScriptAfter("lua/Shared.lua", "lua/Weapons/Alien/Devour.lua", ni
 //LoadTracker:LoadScriptAfter("lua/Shared.lua", "lua/Weapons/Alien/WebShot.lua", nil)
 LoadTracker:LoadScriptAfter("lua/Shared.lua", "lua/DevouredPlayer.lua", nil)
 LoadTracker:LoadScriptAfter("lua/Shared.lua", "lua/combat_DisorientableMixin.lua", nil)
+LoadTracker:LoadScriptAfter("lua/Shared.lua", "lua/combat_Exo.lua", nil)
 
 // Register Network Messages here.
 Script.Load("lua/combat_NetworkMessages.lua")

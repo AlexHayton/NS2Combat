@@ -160,6 +160,9 @@ kSpikeMinDamage = 8
 // Ammo for mines
 kNumMines = 1
 
+// number of handgrenaeds
+kMaxHandGrenades = 1
+
 // Override the costs of each of our entries.
 // These won't take effect on the client side until we import this file into the client side mods
 
@@ -207,9 +210,6 @@ SetCachedTechData(kTechId.Web, kTechDataCostKey, kWebBuildCost)
 // Make the marine structures slightly less squishy...
 kArmoryHealth = 3500
 kCommandStationHealth = 6000
-
-// Fade biomass scaling
-kFadeHealthPerBioMass = 7
 
 // Range for evolving to Onos/Exo from the Hive/CommandStation
 kTechRange = 20.0
