@@ -241,11 +241,8 @@ function CombatPlayingTeam:SpawnPlayer(player)
 		//give him spawn Protect (dont set the time here, just that spawn protect is active)
 		newPlayer:SetSpawnProtect()
 		
-		// Try to fix the welder bug
-		if newPlayer.combatTable.justGotWelder then
-			newPlayer.combatTable.justGotWelder = false
-			newPlayer:SwitchWeapon(1)
-		end
+		// always switch to first weapon
+		newPlayer:SwitchWeapon(1)
 		
 		// Send timer updates
 		SendCombatGameTimeUpdate(newPlayer)
@@ -273,7 +270,7 @@ function CombatPlayingTeam:RespawnPlayer_Hook(self, player, origin, angles)
 		
 		// Try it 10 times here
 		for index = 1, 10 do
-			local spawnOrigin = GetRandomSpawnForCapsule(capsuleHeight, capsuleRadius, initialTechPoint:GetOrigin(), kSpawnMinDistance, kSpawnMaxDistance, EntityFilterAll())
+			spawnOrigin = GetRandomSpawnForCapsule(capsuleHeight, capsuleRadius, initialTechPoint:GetOrigin(), kSpawnMinDistance, kSpawnMaxDistance, EntityFilterAll())
 			if spawnOrigin ~= nil then
 				break
 			end
