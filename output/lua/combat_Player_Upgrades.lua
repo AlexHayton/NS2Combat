@@ -245,7 +245,8 @@ function Player:ApplyAllUpgrades(upgradeTypes, singleUpgrade)
             end            
                 
             // send the Ups to the GUI
-            self:SendAllUpgrades()  
+			// not necessary here, seems like working without
+            // self:SendAllUpgrades()  
             
         else
             if type(singleUpgrade) == "table" then			

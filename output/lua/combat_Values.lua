@@ -19,6 +19,17 @@ combatWelcomeMessage = {combatModifiedMessage,
                         "Score = XP and Resources = Upgrade Points to use.",
                         "For more information type /help in the chat or console."
                         }
+
+                        
+// How often to send kills, deaths, nick name changes, etc. for scoreboard
+kScoreboardUpdateInterval = 2
+
+// How often to send ping updates to individual players
+kUpdatePingsIndividual = 5
+
+// How often to send ping updates to all players.
+kUpdatePingsAll = 12
+
 						
 kCombatUpgradeNotifyInterval = 20
 kCombatReminderNotifyInterval = 45

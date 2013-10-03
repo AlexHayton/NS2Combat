@@ -45,6 +45,7 @@ function CombatTechTree:GetHasTech_Hook(callingEntity, techId, silenceError)
     
 end
 
+
 if (not HotReload) then
 	CombatTechTree:OnLoad()
 end

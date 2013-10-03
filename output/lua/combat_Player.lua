@@ -259,7 +259,7 @@ if Server then
 
         if self.combatTable.hasCatalyst and self:isa("Marine") then
             
-            if (self.combatTable.lastCatalyst == 0) or (timeNow - self.combatTable.lastCatalyst >= kCatalystTimer) then            
+            if (self.combatTable.lastCatalyst == 0) or (timeNow >= self.combatTable.lastCatalyst + kCatalystTimer + kCatPackDuration) then            
                 local success = self:CatalystNow()            
                 if success then
                     self.combatTable.lastCatalyst = timeNow

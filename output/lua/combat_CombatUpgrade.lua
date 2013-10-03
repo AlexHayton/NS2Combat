@@ -139,7 +139,7 @@ function CombatUpgrade:ExecuteTechUpgrade(player)
 	techTree:SetTechNodeChanged(node)
 	techTree:SetTechChanged()
 	// Update the tech tree and send updates to the client. Don't know why, but it's only working when we send it here.
-    techTree:SendTechTreeBase(player)
+    //techTree:SendTechTreeBase(player)
 
     // Update the hard cap count, if necessary
 	if (self:GetHardCapScale() > 0) then
