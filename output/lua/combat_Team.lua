@@ -30,12 +30,6 @@ end
 function CombatTeam:RemovePlayer_Hook(self, player)
 
     assert(player)
-    
-    if not table.removevalue(self.playerIds, player:GetId()) then
-        //Print("Player %s with Id %d not in playerId list.", player:GetClassName(), player:GetName(), player:GetId())
-        //table.insertunique(self.playerIds, player:GetId())
-    end
-    
     self:RemovePlayerFromRespawnQueue(player)   
 	
 end
