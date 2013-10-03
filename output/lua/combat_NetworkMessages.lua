@@ -30,6 +30,13 @@ local kCombatGameTimeMessage =
 }
 Shared.RegisterNetworkMessage("CombatGameTimeUpdate", kCombatGameTimeMessage)
 
+local kCombatSetUpgradeMessage =
+{
+	upgradeId = "integer"
+}
+Shared.RegisterNetworkMessage("CombatSetUpgrade", kCombatSetUpgradeMessage)
+
+
 if Server then
 
     function SendCombatModeActive(client, activeBool, compActiveBool)
@@ -69,6 +76,21 @@ if Server then
 			local timeSinceGameStart = GetGamerules():GetGameTimeChanged()
 			local message = BuildCombatGameTimeMessage(timeSinceGameStart, tonumber(kCombatTimeLimit))
             Server.SendNetworkMessage(player, "CombatGameTimeUpdate", message, true)
+        end
+     
+    end
+	
+	function BuildCombatSetUpgradeMessage(messageUpgradeId)
+	
+		return { upgradeId = messageUpgradeId, }
+	
+	end
+	
+	function SendCombatSetUpgrade(player, upgradeId)
+		
+        if player then
+			local message = BuildCombatSetUpgradeMessage(upgradeId)
+            Server.SendNetworkMessage(player, "CombatSetUpgrade", message, true)
         end
      
     end
@@ -121,5 +143,19 @@ elseif Client then
         
     end
     Client.HookNetworkMessage("CombatGameTimeUpdate", GetCombatGameTimeUpdate)
+	
+	function GetCombatSetUpgrade(messageTable)
+
+		// insert the ids in the personal player table
+		local player = Client.GetLocalPlayer()
+		
+		if not player.combatUpgrades then
+			player.combatUpgrades = {}
+		end
+		
+		table.insert(player.combatUpgrades, messageTable.upgradeId)
+        
+    end
+    Client.HookNetworkMessage("CombatSetUpgrade", GetCombatSetUpgrade)
     
 end

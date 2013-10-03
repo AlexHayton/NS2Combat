@@ -507,7 +507,7 @@ end
 
 // sends all upgrades to the player
 function Player:SendAllUpgrades()
-  
+
 	self:CheckCombatData()    
     local combatTechTree = self:GetCombatTechTree()
 
@@ -517,7 +517,7 @@ function Player:SendAllUpgrades()
     if combatTechTree then    
         for _, upgrade in pairs(combatTechTree) do
             if upgrade then
-                Server.SendCommand(self, "co_setupgrades " .. tostring(upgrade:GetId()))
+				SendCombatSetUpgrade(self, upgrade:GetId())
             end
         end
     end
@@ -535,11 +535,11 @@ function Player:SendUpgrades(upgrades)
         if (type(upgrades) == "table") then  
             for _, upgrade in pairs(upgrades) do
                 if upgrade then
-                    Server.SendCommand(self, "co_setupgrades " .. tostring(upgrade:GetId()))
+					SendCombatSetUpgrade(self, upgrade:GetId())
                 end
             end
         else
-            Server.SendCommand(self, "co_setupgrades " .. tostring(upgrades:GetId()))
+			SendCombatSetUpgrade(self, upgrades:GetId())
         end
     end
       
@@ -547,7 +547,8 @@ end
 
 // clear all Combat Upgrades
 function Player:ClearCoUpgrades()
-    Server.SendCommand(self, "co_clearupgrades")
+	// seems like it works also without this, saves a lot network traffic
+    //Server.SendCommand(self, "co_clearupgrades")
 end
 
 function Player:BalanceXp(avgXp)
