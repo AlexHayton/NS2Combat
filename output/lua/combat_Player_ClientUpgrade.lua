@@ -193,6 +193,19 @@ function Player:GetLevelProgression()
 
 end
 
+
+function Player:LevelUpMessage()
+
+    local lvl = Experience_GetLvl(player:GetScore())
+    local LvlName = Experience_GetLvlName(lvl  , self:GetTeamNumber())
+    ChatUI_AddSystemMessage( "!! Level UP !! New Lvl: " .. LvlName .. " (" .. lvl .. ")")
+    local lvlFree = self.resources
+    local upgradeWord = (lvlFree > 1) and "upgrade points" or "upgrade point"
+    ChatUI_AddSystemMessage("You have " .. lvlFree .. " " .. upgradeWord .. " to spend. Use the B key to buy upgrades.") 
+    
+end
+
+
 function PlayerUI_TriggerInvalidSound()
 
 	local player = Client.GetLocalPlayer()

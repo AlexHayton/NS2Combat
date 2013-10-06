@@ -36,6 +36,11 @@ local kCombatSetUpgradeMessage =
 }
 Shared.RegisterNetworkMessage("CombatSetUpgrade", kCombatSetUpgradeMessage)
 
+local kCombatSetLvlUpMessage =
+{
+}
+Shared.RegisterNetworkMessage("CombatLvlUp", kCombatSetLvlUpMessage)
+
 
 if Server then
 
@@ -91,6 +96,15 @@ if Server then
         if player then
 			local message = BuildCombatSetUpgradeMessage(upgradeId)
             Server.SendNetworkMessage(player, "CombatSetUpgrade", message, true)
+        end
+     
+    end
+    
+    function SendCombatLvlUp(player)
+		
+        if player then
+			local message = {}
+            Server.SendNetworkMessage(player, "CombatLvlUp", message, true)
         end
      
     end
@@ -157,5 +171,11 @@ elseif Client then
         
     end
     Client.HookNetworkMessage("CombatSetUpgrade", GetCombatSetUpgrade)
+    
+    function GetCombatLvlUp(messageTable)
+		local player = Client.GetLocalPlayer()
+        player:LevelUpMessage()
+    end
+    Client.HookNetworkMessage("CombatLvlUp", GetCombatLvlUp)
     
 end
