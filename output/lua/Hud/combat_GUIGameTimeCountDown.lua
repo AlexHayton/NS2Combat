@@ -131,11 +131,61 @@ function combat_GUIGameTimeCountDown:Update(deltaTime)
 			else
 				self.timeRemainingText:SetText(TimeRemaining)
 			end
+			
+			self:RemindTime(player)
+			
 		else
 			self.timerBackground:SetIsVisible(false)
 		end
+		
 	end
 
+end
+
+
+function combat_GUIGameTimeCountDown:RemindTime(player)
+		
+    // send timeleft chat things now here, all client sided
+    if (kCombatTimeLimit ~= nil) then
+        local timeLeft = math.ceil((kCombatTimeLimit - kCombatTimeSinceGameStart))
+        if  timeLeft > 0 and
+            ((timeLeft % kCombatTimeReminderInterval) == 0 or 
+             (timeLeft == 60) or (timeLeft == 30) or
+             (timeLeft == 20) or (timeLeft == 10) or
+             (timeLeft <= 5)) then
+            
+            local timeLeftText = GetTimeText(timeLeft)
+            local team1Message = ""
+            local team2Message = ""
+            
+            if not lastTimeLeftText or timeLeftText ~= lastTimeLeftText then
+            
+                if kCombatDefaultWinner == kTeam2Index then
+                    team1Message = " left until Marines have lost!"
+                    team2Message = " left until Aliens have won!"						
+                else
+                    team1Message = " left until Marines have won!"
+                    team2Message = " left until Aliens have lost!"											
+                end
+                
+                if timeLeft >= 0 and kCombatAllowOvertime then
+                    team1Message = " left until overtime!"
+                    team2Message = " left until overtime!"
+                end
+
+                if player:GetTeamNumber() == 1 then
+                    ChatUI_AddSystemMessage(timeLeftText .. team1Message)
+                else
+                    ChatUI_AddSystemMessage(timeLeftText .. team2Message)
+                end
+                
+                lastTimeLeftText = timeLeftText
+                
+            end
+            
+        end	
+    end
+    
 end
 
 
