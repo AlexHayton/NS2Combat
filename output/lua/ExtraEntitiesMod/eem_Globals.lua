@@ -21,4 +21,4 @@ local function AddMinimapBlipType(blipType)
 	
 end
 
-AddMinimapBlipType("NpcManagerTunnel")
+//AddMinimapBlipType("NpcManagerTunnel")

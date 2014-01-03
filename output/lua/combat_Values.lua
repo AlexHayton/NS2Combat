@@ -247,7 +247,7 @@ local function AddMinimapBlipType(blipType)
 	
 end
 
-AddMinimapBlipType("DevouredPlayer")
+//AddMinimapBlipType("DevouredPlayer")
 
 // Alien Tier to Ability map
 kCombatAlienTierTwoTechIds = { kTechId.Leap, kTechId.BabblerEgg, kTechId.BabblerAbility, kTechId.Umbra, kTechId.Vortex, kTechId.ShadowStep, kTechId.Charge, kTechId.BoneShield }

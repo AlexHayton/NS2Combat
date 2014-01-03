@@ -5,7 +5,7 @@
 //
 //________________________________
 
-
+/*
 Script.Load("lua/Class.lua")
 
 local originalSpitProcessHit
@@ -32,8 +32,8 @@ originalSpitProcessHit = Class_ReplaceMethod( "Spit", "ProcessHit",
 
         end
 		*/
-		originalSpitProcessHit(self, targetHit, surface, normal)
+/*		//originalSpitProcessHit(self, targetHit, surface, normal)
 	end
-)
+)*/
 
 
