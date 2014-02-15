@@ -1,3 +1,0 @@
-shader = "shaders/Model.surface_shader"
-albedoMap = "models/props/test_ice.dds"
-surface = "metal"

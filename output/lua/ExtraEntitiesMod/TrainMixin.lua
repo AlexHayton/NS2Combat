@@ -378,3 +378,11 @@ function TrainMixin:CheckTrainTarget(endPoint)
     return true
     
 end
+
+function TrainMixin:OnMapPostLoad()
+    self:CreatePath()
+end
+
+function TrainMixin:GetControllerPhysicsGroup()
+    return PhysicsGroup.WhipGroup
+end   
