@@ -397,7 +397,7 @@ if Server then
             // show the cool effect, no direct Message is needed anymore
             self:XpEffect(amount)
             self:CheckLvlUp(self.score) 
-            self:SetScoreboardChanged(true)
+            //self:SetScoreboardChanged(true)
         end   
     end
 
