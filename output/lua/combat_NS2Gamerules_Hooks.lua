@@ -278,7 +278,7 @@ function CombatNS2Gamerules:OnClientConnect_Hook(self, client)
     local player = client:GetControllingPlayer()
 
 	// Tell the player that Combat Mode is active.
-    SendCombatModeActive(client, kCombatModActive, kCombatCompMode)
+    SendCombatModeActive(client, kCombatModActive, kCombatCompMode, kCombatAllowOvertime)
 	
 	player:CheckCombatData()
     

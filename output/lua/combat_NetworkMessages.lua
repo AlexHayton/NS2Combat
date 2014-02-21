@@ -12,7 +12,8 @@ Script.Load("lua/combat_ExperienceEnums.lua")
 local kCombatModeActiveMessage =
 {
     combatMode = "boolean",
-    combatCompMode = "boolean"
+    combatCompMode = "boolean",
+    combatAllowOvertime = "boolean"
 }
 Shared.RegisterNetworkMessage("CombatModeActive", kCombatModeActiveMessage)
 
@@ -44,10 +45,10 @@ Shared.RegisterNetworkMessage("CombatLvlUp", kCombatSetLvlUpMessage)
 
 if Server then
 
-    function SendCombatModeActive(client, activeBool, compActiveBool)
+    function SendCombatModeActive(client, activeBool, compActiveBool, overtimeActiveBool)
 
         if client then       
-            Server.SendNetworkMessage(client:GetControllingPlayer(), "CombatModeActive", { combatMode = activeBool, combatCompMode = compActiveBool }, true)
+            Server.SendNetworkMessage(client:GetControllingPlayer(), "CombatModeActive", { combatMode = activeBool, combatCompMode = compActiveBool, combatAllowOvertime = overtimeActiveBool }, true)
         end   
      
     end
@@ -115,6 +116,7 @@ elseif Client then
 
         kCombatModActive = messageTable.combatMode
         kCombatCompMode = messageTable.combatCompMode
+        kCombatAllowOvertime = messageTable.combatAllowOvertime
         
         if kCombatModActive == false or kCombatModActive == nil then
             // remove all hooks so we got a classic ns
