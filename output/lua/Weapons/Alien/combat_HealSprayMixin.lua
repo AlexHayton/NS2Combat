@@ -5,87 +5,16 @@
 //
 //________________________________
 
-HealSprayMixin = CreateMixin( HealSprayMixin )
-HealSprayMixin.type = "HealSpray"
-
 // Players heal by base amount + percentage of max health
 local kHealPlayerPercent = 3
 
 local kRange = 6
 local kHealCylinderWidth = 3
-
+ 
 local kHealScoreAdded = 2
 // Every kAmountHealedForPoints points of damage healed, the player gets
 // kHealScoreAdded points to their score.
 local kAmountHealedForPoints = 400
-
-// HealSprayMixin:GetHasSecondary should completely override any existing
-// GetHasSecondary function defined in the object.
-HealSprayMixin.overrideFunctions =
-{
-    "GetHasSecondary",
-    "GetSecondaryEnergyCost"
-}
-
-HealSprayMixin.networkVars =
-{
-    lastSecondaryAttackTime = "float"
-}
-
-function HealSprayMixin:__initmixin()
-
-    self.secondaryAttacking = false
-    self.lastSecondaryAttackTime = 0
-    self.lastSprayAttacked = false
-
-end
-
-function HealSprayMixin:GetHasSecondary(player)
-    return true
-end
-
-function HealSprayMixin:GetSecondaryAttackDelay()
-    return kHealsprayFireDelay
-end
-
-function HealSprayMixin:GetSecondaryEnergyCost(player)
-    return kHealsprayEnergyCost
-end
-
-function HealSprayMixin:GetDeathIconIndex()
-    return kDeathMessageIcon.Spray 
-end
-
-function HealSprayMixin:OnSecondaryAttack(player)
-
-    local enoughTimePassed = (Shared.GetTime() - self.lastSecondaryAttackTime) > self:GetSecondaryAttackDelay()
-    if player:GetSecondaryAttackLastFrame() and enoughTimePassed then
-    
-        if player:GetEnergy() >= self:GetSecondaryEnergyCost(player) then
-        
-            self.lastSprayAttacked = true
-            self:PerformSecondaryAttack(player)
-            
-            if self.OnHealSprayTriggered then
-                self:OnHealSprayTriggered()
-            end
-        end
-
-    end
-    
-end
-
-function HealSprayMixin:PerformSecondaryAttack(player)
-    self.secondaryAttacking = true
-end
-
-function HealSprayMixin:OnSecondaryAttackEnd(player)
-
-    Ability.OnSecondaryAttackEnd(self, player)
-    
-    self.secondaryAttacking = false
-
-end
 
 local function GetHealOrigin(self, player)
 
@@ -98,18 +27,6 @@ local function GetHealOrigin(self, player)
     
 end
 
-function HealSprayMixin:GetDamageType()
-    return kHealsprayDamageType
-end
-
-function HealSprayMixin:OnPrimaryAttack()
-    self.lastSprayAttacked = false
-end
-
-function HealSprayMixin:GetWasSprayAttack()
-    return self.lastSprayAttacked
-end
-
 local function DamageEntity(self, player, targetEntity)
 
     local healthScalar = targetEntity:GetHealthScalar()
@@ -118,7 +35,7 @@ local function DamageEntity(self, player, targetEntity)
 end
 
 local function HealEntity(self, player, targetEntity)
-
+	
     local onEnemyTeam = (GetEnemyTeamNumber(player:GetTeamNumber()) == targetEntity:GetTeamNumber())
     local isEnemyPlayer = onEnemyTeam and targetEntity:isa("Player")
     local toTarget = (player:GetEyePos() - targetEntity:GetOrigin()):GetUnit()
@@ -139,6 +56,22 @@ local function HealEntity(self, player, targetEntity)
     // Do not count amount self healed.
     if targetEntity ~= player then
         player:AddContinuousScore("HealSpray", amountHealed, kAmountHealedForPoints, kHealScoreAdded)
+		
+		/*
+		 * Addition for Combat Mode to give XP for healing.
+		 */
+		local maxXp = GetXpValue(targetEntity) or 1
+		local healXp = 0
+		if targetEntity:isa("Player") then
+			val = (maxXp * kPlayerHealXpRate * kHealXpRate * amountHealed / targetEntity:GetMaxHealth())
+			healXp = math.floor( (val * 10) + 0.5) / (10)
+		else
+			val = (maxXp * kHealXpRate * amountHealed / targetEntity:GetMaxHealth())
+			healXp = math.floor( (val * 10) + 0.5) / (10)
+		end
+			
+		player:AddXp(healXp)
+		
     end
     
     if targetEntity.OnHealSpray then
@@ -156,75 +89,27 @@ local function HealEntity(self, player, targetEntity)
     
 end
 
-local kConeWidth = 0.6
-local function GetEntitiesWithCapsule(self, player)
+local function PerformHealSpray(self, player)
 
-    local fireDirection = player:GetViewCoords().zAxis
-    // move a bit back for more tolerance, healspray does not need to be 100% exact
-    local startPoint = player:GetEyePos() + player:GetViewCoords().yAxis * 0.2
-
-    local extents = Vector(kConeWidth, kConeWidth, kConeWidth)
-    local remainingRange = kRange
- 
-    local ents = {}
+    for _, entity in ipairs(GetEntitiesInCone(self, player)) do
     
-    // always heal self as well
-    HealEntity(self, player, player)
-    
-    for i = 1, 4 do
-    
-        if remainingRange <= 0 then
-            break
-        end
+        if HasMixin(entity, "Team") then
         
-        local trace = TraceMeleeBox(self, startPoint, fireDirection, extents, remainingRange, PhysicsMask.Melee, EntityFilterOne(player))
-        
-        if trace.fraction ~= 1 then
-        
-            if trace.entity then
-            
-                if HasMixin(trace.entity, "Live") then
-                    table.insertunique(ents, trace.entity)
-                end
-        
-            else
-            
-                // Make another trace to see if the shot should get deflected.
-                local lineTrace = Shared.TraceRay(startPoint, startPoint + remainingRange * fireDirection, CollisionRep.LOS, PhysicsMask.Melee, EntityFilterOne(player))
-                
-                if lineTrace.fraction < 0.8 then
-                
-                    local dotProduct = trace.normal:DotProduct(fireDirection) * -1
-
-                    if dotProduct > 0.6 then
-                        player:TriggerEffects("healspray_collide",  {effecthostcoords = Coords.GetTranslation(lineTrace.endPoint)})
-                        break
-                    else                    
-                        fireDirection = fireDirection + trace.normal * dotProduct
-                        fireDirection:Normalize()
-                    end    
-                        
-                end
-                
+            if entity:GetTeamNumber() == player:GetTeamNumber() then
+                HealEntity(self, player, entity)
+            elseif GetAreEnemies(entity, player) then
+                DamageEntity(self, player, entity)
             end
             
-            remainingRange = remainingRange - (trace.endPoint - startPoint):GetLength() - kConeWidth
-            startPoint = trace.endPoint + fireDirection * kConeWidth + trace.normal * 0.05
-        
-        else
-            break
         end
-
+        
     end
     
-    return ents
-
 end
-
 
 local function GetEntitiesInCylinder(self, player, viewCoords, range, width)
 
-    // gorge always heals itself    
+    // gorge always heals itself
     local ents = { player }
     local startPoint = viewCoords.origin
     local fireDirection = viewCoords.zAxis
@@ -269,13 +154,13 @@ local function GetEntitiesInCone(self, player)
     end
 
     startPoint = viewCoords.origin - viewCoords.yAxis * kHealCylinderWidth * 0.2
-    local lineTrace2 = Shared.TraceRay(startPoint, startPoint + kRange * fireDirection, CollisionRep.LOS, PhysicsMask.Melee, EntityFilterAll())    
+    local lineTrace2 = Shared.TraceRay(startPoint, startPoint + kRange * fireDirection, CollisionRep.LOS, PhysicsMask.Melee, EntityFilterAll())
     if (lineTrace2.endPoint - startPoint):GetLength() > range then
         range = (lineTrace2.endPoint - startPoint):GetLength()
     end
     
     startPoint = viewCoords.origin - viewCoords.xAxis * kHealCylinderWidth * 0.2
-    local lineTrace3 = Shared.TraceRay(startPoint, startPoint + kRange * fireDirection, CollisionRep.LOS, PhysicsMask.Melee, EntityFilterAll())    
+    local lineTrace3 = Shared.TraceRay(startPoint, startPoint + kRange * fireDirection, CollisionRep.LOS, PhysicsMask.Melee, EntityFilterAll())
     if (lineTrace3.endPoint - startPoint):GetLength() > range then
         range = (lineTrace3.endPoint - startPoint):GetLength()
     end
@@ -317,7 +202,7 @@ function HealSprayMixin:OnTag(tagName)
         local player = self:GetParent()
         if player and player:GetEnergy() >= self:GetSecondaryEnergyCost(player) then
         
-            PerformHealSpray(self, player)            
+            PerformHealSpray(self, player)
             player:DeductAbilityEnergy(self:GetSecondaryEnergyCost(player))
             
             local effectCoords = Coords.GetLookIn(GetHealOrigin(self, player), player:GetViewCoords().zAxis)
@@ -331,13 +216,3 @@ function HealSprayMixin:OnTag(tagName)
     
 end
 
-function HealSprayMixin:OnUpdateAnimationInput(modelMixin)
-
-    PROFILE("HealSprayMixin:OnUpdateAnimationInput")
-
-    local player = self:GetParent()
-    if player and self.secondaryAttacking and player:GetEnergy() >= self:GetSecondaryEnergyCost(player) then
-        modelMixin:SetAnimationInput("activity", "secondary")
-    end
-    
-end
