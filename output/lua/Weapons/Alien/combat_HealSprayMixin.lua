@@ -35,7 +35,7 @@ local function DamageEntity(self, player, targetEntity)
 end
 
 local function HealEntity(self, player, targetEntity)
-    if targetEntity.GetIsBuilt or GetGamerules():GetHasTimelimitPassed()) then return end
+    if targetEntity.GetIsBuilt or GetGamerules():GetHasTimelimitPassed() then return end
     
     local onEnemyTeam = (GetEnemyTeamNumber(player:GetTeamNumber()) == targetEntity:GetTeamNumber())
     local isEnemyPlayer = onEnemyTeam and targetEntity:isa("Player")
