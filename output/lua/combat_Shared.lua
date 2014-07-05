@@ -25,7 +25,7 @@ Script.Load("lua/Weapons/Marines/combat_ClipWeapon.lua")
 Script.Load("lua/combat_Alien_Hooks.lua")
 
 // add every new class (entity based) here
-LoadTracker:LoadScriptAfter("lua/Shared.lua", "lua/AITEST.lua", nil)
+LoadTracker:LoadScriptAfter("lua/Shared.lua", "lua/AiTest.lua", nil)
 LoadTracker:LoadScriptAfter("lua/Shared.lua", "lua/combat_Player.lua", nil)
 LoadTracker:LoadScriptAfter("lua/Shared.lua", "lua/combat_SpawnProtectClass.lua", nil)
 LoadTracker:LoadScriptAfter("lua/Shared.lua", "lua/combat_Xmas.lua", nil)
