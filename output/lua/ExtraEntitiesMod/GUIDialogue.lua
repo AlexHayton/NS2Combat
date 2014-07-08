@@ -37,7 +37,7 @@ GUIDialogue.kPortraitIconScale = Vector(GUIScale(196), GUIScale(210), 0)
 GUIDialogue.kPortraitIconCoords = { X1 = 0, Y1 = 0, X2 = 256, Y2 = 256 }
 GUIDialogue.kPortraitTextPos = Vector( GUIScale(52), GUIScale(-28), 0 )
 GUIDialogue.kPortraitTextColor = Color(1.0, 1.0, 1.0, 1.0)
-GUIDialogue.kPortraitTextFontName = "fonts/Arial_17.fnt"
+GUIDialogue.kPortraitTextFontName = Fonts.kArial_17
 GUIDialogue.kPortraitTextFontSize = 15
 
 GUIDialogue.kBackgroundExtraXOffset = 20

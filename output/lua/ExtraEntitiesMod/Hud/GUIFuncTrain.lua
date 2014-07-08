@@ -17,7 +17,7 @@ GUIFuncTrain.kBackgroundOffsetX = 0
 GUIFuncTrain.kBackgroundOffsetY = 0
 
 GUIFuncTrain.kTimeOffset = Vector(0, -10, 0)
-GUIFuncTrain.kTimeFontName = "fonts/AgencyFB_large.fnt"
+GUIFuncTrain.kTimeFontName = Fonts.kAgencyFB_Large
 GUIFuncTrain.kTimeFontSize = 25
 GUIFuncTrain.kTimeBold = true
 

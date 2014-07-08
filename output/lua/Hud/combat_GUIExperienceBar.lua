@@ -13,7 +13,7 @@ combat_GUIExperienceBar.kMarineBarTextureName = "ui/combat_xpbar_marine.png"
 combat_GUIExperienceBar.kMarineBackgroundTextureName = "ui/combat_xpbarbg_marine.png"
 combat_GUIExperienceBar.kAlienBarTextureName = "ui/combat_xpbar_alien.png"
 combat_GUIExperienceBar.kAlienBackgroundTextureName = "ui/combat_xpbarbg_alien.png"
-combat_GUIExperienceBar.kTextFontName = "fonts/Arial_17.fnt"
+combat_GUIExperienceBar.kTextFontName = Fonts.kArial_17
 
 combat_GUIExperienceBar.kExperienceBackgroundWidth = 450
 combat_GUIExperienceBar.kExperienceBackgroundHeight = 30

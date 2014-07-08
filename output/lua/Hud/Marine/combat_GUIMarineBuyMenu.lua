@@ -24,10 +24,10 @@ combat_GUIMarineBuyMenu.kMenuSelectionTexture = "ui/marine_buymenu_selector.dds"
 combat_GUIMarineBuyMenu.kScanLineTexture = "ui/menu/scanLine_big.dds"
 combat_GUIMarineBuyMenu.kArrowTexture = "ui/menu/arrow_horiz.dds"
 
-combat_GUIMarineBuyMenu.kFont = "fonts/AgencyFB_small.fnt"
-combat_GUIMarineBuyMenu.kFont2 = "fonts/AgencyFB_small.fnt"
+combat_GUIMarineBuyMenu.kFont = Fonts.kAgencyFB_Small
+combat_GUIMarineBuyMenu.kFont2 = Fonts.kAgencyFB_Small
 
-combat_GUIMarineBuyMenu.kDescriptionFontName = "fonts/AgencyFB_tiny.fnt"
+combat_GUIMarineBuyMenu.kDescriptionFontName = Fonts.kAgencyFB_Tiny
 combat_GUIMarineBuyMenu.kDescriptionFontSize = GUIScale(20)
 
 combat_GUIMarineBuyMenu.kScanLineHeight = GUIScale(256)
