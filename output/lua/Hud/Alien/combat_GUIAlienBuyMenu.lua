@@ -13,6 +13,8 @@ if(not HotReload) then
   ClassHooker:Mixin("CombatGUIAlienBuyMenu")
 end
 
+Script.Load("lua/GUIAssets.lua")
+
 local kLargeFont = Fonts.kAgencyFB_Large
 local kFont = Fonts.kAgencyFB_Small
 local cannotSelectSound = "sound/NS2.fev/alien/common/vision_off"
