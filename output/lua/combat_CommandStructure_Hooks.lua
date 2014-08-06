@@ -31,15 +31,13 @@ end
 function CombatCommandStructure:OnKill_Hook(self, attacker, doer, point, direction)
 
     if not Shared.GetCheatsEnabled() and GetGamerules():GetGameStarted() then
-		local team = self:GetTeam()
-		local losingTeam = attacker:GetTeam()
-		if team == GetGamerules().team1 then
-			losingTeam = GetGamerules().team2 
-		else
-			losingTeam = GetGamerules().team1
+		local losingTeam = self:GetTeam()
+		local winner = GetGamerules().team1
+		if team == winner then
+			winner = GetGamerules().team2 
 		end
 		
-		GetGamerules():EndGame(losingTeam)
+		GetGamerules():EndGame(winner)
     end
 
 end
