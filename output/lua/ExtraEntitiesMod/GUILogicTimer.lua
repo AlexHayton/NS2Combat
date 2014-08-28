@@ -19,7 +19,7 @@ GUILogicTimer.kBackgroundOffsetX = GUIScale(0)
 GUILogicTimer.kBackgroundOffsetY = GUIScale(0)
 
 GUILogicTimer.kTimeOffset = Vector(0, GUIScale(-5), 0)
-GUILogicTimer.kTimeFontName = "fonts/AgencyFB_small.fnt"
+GUILogicTimer.kTimeFontName = Fonts.kAgencyFB_Small
 GUILogicTimer.kTimeFontSize = 20
 GUILogicTimer.kTimeBold = true
 

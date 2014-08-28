@@ -260,8 +260,6 @@ function CombatPlayingTeam:RespawnPlayer_Hook(self, player, origin, angles)
 		
 		// Try it 10 times here
 		for index = 1, 10 do
-			//70 as a max distance... uh?
-			//10 Tries here plus the 10 in RSFC = 100 tries per player :/
 			spawnOrigin = GetRandomSpawnForCapsule(capsuleHeight, capsuleRadius, initialTechPoint:GetOrigin(), kSpawnMinDistance, 25, EntityFilterAll())
 			if spawnOrigin ~= nil then
 				break

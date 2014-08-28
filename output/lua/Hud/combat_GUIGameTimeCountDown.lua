@@ -19,7 +19,7 @@ combat_GUIGameTimeCountDown.kBackgroundOffsetX = GUIScale(0)
 combat_GUIGameTimeCountDown.kBackgroundOffsetY = GUIScale(0)
 
 combat_GUIGameTimeCountDown.kTimeOffset = Vector(0, GUIScale(-5), 0)
-combat_GUIGameTimeCountDown.kTimeFontName = "fonts/AgencyFB_small.fnt"
+combat_GUIGameTimeCountDown.kTimeFontName = Fonts.kAgencyFB_Small
 combat_GUIGameTimeCountDown.kTimeFontSize = 16
 combat_GUIGameTimeCountDown.kTimeBold = true
 

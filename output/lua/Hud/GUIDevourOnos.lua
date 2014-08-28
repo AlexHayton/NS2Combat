@@ -13,8 +13,7 @@ Script.Load("lua/combat_Utility.lua")
 class 'GUIDevourOnos' (GUIScript)
 
 GUIDevourOnos.kJetpackFuelTexture = "ui/devour_meter.png"
-GUIDevourOnos.kFont = "fonts/AgencyFB_small.fnt"
-
+GUIDevourOnos.kFont = Fonts.kAgencyFB_Small
 GUIDevourOnos.kBackgroundWidth = GUIScale(172)
 GUIDevourOnos.kBackgroundHeight = GUIScale(34)
 GUIDevourOnos.kBackgroundOffsetX = -20
