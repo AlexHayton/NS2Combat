@@ -33,6 +33,7 @@ end
 function NpcFadeMixin:AiSpecialLogic(deltaTime)
     local order = self:GetCurrentOrder()
     if order then
+		/*
         if self.points and self.index and #self.points >= self.index then
             if ((self:GetOrigin() - self.points[self.index]):GetLengthXZ() > 2) and not self.usedShadowStep then
                 // shadow step will bring you faster forward
@@ -51,7 +52,7 @@ function NpcFadeMixin:AiSpecialLogic(deltaTime)
         if self.usedShadowStep and not self.inTargetRange then
             self:PressButton(Move.SecondaryAttack)
         end
-        
+        */
     end
 end
 

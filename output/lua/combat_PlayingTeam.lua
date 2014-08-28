@@ -17,7 +17,6 @@ function CombatPlayingTeam:OnLoad()
 
     ClassHooker:SetClassCreatedIn("PlayingTeam", "lua/PlayingTeam.lua") 
     self:ReplaceClassFunction("PlayingTeam", "SpawnInitialStructures", "SpawnInitialStructures_Hook")
-	self:ReplaceClassFunction("PlayingTeam", "GetHasTeamWon", "GetHasTeamWon_Hook")
     self:ReplaceClassFunction("PlayingTeam", "GetHasTeamLost", "GetHasTeamLost_Hook")
 	self:ReplaceClassFunction("PlayingTeam", "UpdateTechTree", function() return true end)
 	self:ReplaceClassFunction("PlayingTeam", "Update", "Update_Hook")
@@ -48,15 +47,6 @@ function CombatPlayingTeam:GetHasTeamLost_Hook(self)
 
     return false
 
-end
-
-function CombatPlayingTeam:GetHasTeamWon_Hook(self)
-	// Usually this will be nil - only set it when a team wins by default (e.g. time out).
-	if self.combatTeamWon ~= nil then
-		return true
-	else
-		return false
-	end
 end
 
 function CombatPlayingTeam:SpawnInitialStructures_Hook(self, techPoint)
@@ -270,7 +260,9 @@ function CombatPlayingTeam:RespawnPlayer_Hook(self, player, origin, angles)
 		
 		// Try it 10 times here
 		for index = 1, 10 do
-			spawnOrigin = GetRandomSpawnForCapsule(capsuleHeight, capsuleRadius, initialTechPoint:GetOrigin(), kSpawnMinDistance, kSpawnMaxDistance, EntityFilterAll())
+			//70 as a max distance... uh?
+			//10 Tries here plus the 10 in RSFC = 100 tries per player :/
+			spawnOrigin = GetRandomSpawnForCapsule(capsuleHeight, capsuleRadius, initialTechPoint:GetOrigin(), kSpawnMinDistance, 25, EntityFilterAll())
 			if spawnOrigin ~= nil then
 				break
 			end

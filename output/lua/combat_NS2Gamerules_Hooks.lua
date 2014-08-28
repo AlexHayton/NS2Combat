@@ -31,45 +31,14 @@ function CombatNS2Gamerules:OnLoad()
 	
 end
 
-// Returns bool for success and bool if we've played in the game already.
-local function GetUserPlayedInGame(self, player)
-
-	local success = false
-	local played = false
-	
-	local owner = Server.GetOwner(player)
-	if owner then
-	
-		local userId = tonumber(owner:GetUserId())
-		
-		// Could be invalid if we're still connecting to Steam
-		played = table.find(self.userIdsInGame, userId) ~= nil
-		success = true
-		
-	end
-	
-	return success, played
-	
-end
-
-local function SetUserPlayedInGame(self, player)
-
-	local owner = Server.GetOwner(player)
-	if owner then
-	
-		local userId = tonumber(owner:GetUserId())
-		
-		// Could be invalid if we're still connecting to Steam.
-		return table.insertunique(self.userIdsInGame, userId)
-		
-	end
-	
-	return false
-	
-end
-
 function UpdateUpgradeCountsForTeam(gameRules, teamIndex)
 
+	//Seems these are occasionally invalid? idk..
+	if teamIndex < 0 or teamIndex > 3 then
+		//Invalid
+		return
+	end
+	
 	// Get the number of players on the team who have the upgrade
 	local oldCounts = gameRules.UpgradeCounts[teamIndex]
 	local teamPlayers = GetEntitiesForTeam("Player", teamIndex)
@@ -149,41 +118,59 @@ end
      */
 function CombatNS2Gamerules:JoinTeam_Hook(self, player, newTeamNumber, force)
 
-	// The PostHook doesn't work because this function returns two values
-	// So we need to replace instead. Sorry!
+	local client = Server.GetOwner(player)
+	if not client then return end
+	
 	local success = false
-        
-		// Join new team
-        if player and player:GetTeamNumber() ~= newTeamNumber or force then
+	local oldPlayerWasSpectating = client and client:GetSpectatingPlayer()
+	local oldTeamNumber = player:GetTeamNumber()
+	
+	// Join new team
+	if oldTeamNumber ~= newTeamNumber or force then        
 		
-			local team = self:GetTeam(newTeamNumber)
-			local oldTeam = self:GetTeam(player:GetTeamNumber())
+		if player:isa("Commander") then
+			OnCommanderLogOut(player)
+		end        
+		
+		if not Shared.GetCheatsEnabled() and self:GetGameStarted() and newTeamNumber ~= kTeamReadyRoom then
+			player.spawnBlockTime = Shared.GetTime() + kSuicideDelay
+		end
+	
+		local team = self:GetTeam(newTeamNumber)
+		local oldTeam = self:GetTeam(oldTeamNumber)
+		
+		// Remove the player from the old queue if they happen to be in one
+		if oldTeam then
+			oldTeam:RemovePlayerFromRespawnQueue(player)
+		end
+		
+		// Spawn immediately if going to ready room, game hasn't started, cheats on, or game started recently
+		if newTeamNumber == kTeamReadyRoom or self:GetCanSpawnImmediately() or force then
+		
+			success, newPlayer = team:ReplaceRespawnPlayer(player, nil, nil)
 			
-			// Remove the player from the old queue if they happen to be in one
-			if oldTeam ~= nil then
-				oldTeam:RemovePlayerFromRespawnQueue(player)
+			local teamTechPoint = team.GetInitialTechPoint and team:GetInitialTechPoint()
+			if teamTechPoint then
+				newPlayer:OnInitialSpawn(teamTechPoint:GetOrigin())
 			end
 			
-			// Spawn immediately if going to ready room, game hasn't started, cheats on, or game started recently
-			if newTeamNumber == kTeamReadyRoom or self:GetCanSpawnImmediately() or force then
-				
-				success, newPlayer = team:ReplaceRespawnPlayer(player, nil, nil)
-					
-				local teamTechPoint = team.GetInitialTechPoint and team:GetInitialTechPoint()
-				if teamTechPoint then
-					newPlayer:OnInitialSpawn(teamTechPoint:GetOrigin())
-				end
-                
 		else
 		
 			// Destroy the existing player and create a spectator in their place.
-            newPlayer = player:Replace(team:GetSpectatorMapName(), newTeamNumber)
+			newPlayer = player:Replace(team:GetSpectatorMapName(), newTeamNumber)
 			
 			// Queue up the spectator for respawn.
-			team:PutPlayerInRespawnQueue(newPlayer, Shared.GetTime())
+			team:PutPlayerInRespawnQueue(newPlayer)
 			
 			success = true
 			
+		end
+		
+		local clientUserId = client:GetUserId()
+		//Save old pres 
+		if oldTeam == self.team1 or oldTeam == self.team2 then
+			if not self.clientpres[clientUserId] then self.clientpres[clientUserId] = {} end
+			self.clientpres[clientUserId][oldTeamNumber] = player:GetResources()
 		end
 		
 		// Update frozen state of player based on the game state and player team.
@@ -195,6 +182,9 @@ function CombatNS2Gamerules:JoinTeam_Hook(self, player, newTeamNumber, force)
 				newPlayer.frozen = true
 			end
 			
+			local pres = self.clientpres[clientUserId] and self.clientpres[clientUserId][newTeamNumber]
+			newPlayer:SetResources( pres or ConditionalValue(team == self.team1, kMarineInitialIndivRes, kAlienInitialIndivRes) )
+		
 		else
 		
 			// Ready room or spectator players should never be frozen
@@ -202,31 +192,34 @@ function CombatNS2Gamerules:JoinTeam_Hook(self, player, newTeamNumber, force)
 			
 		end
 		
-		local client = Server.GetOwner(newPlayer)
-		local clientUserId = client and client:GetUserId() or 0
-		local disconnectedPlayerRes = self.disconnectedPlayerResources[clientUserId]
-		if disconnectedPlayerRes then
+		newPlayer:TriggerEffects("join_team")
 		
-			newPlayer:SetResources(disconnectedPlayerRes)
-			self.disconnectedPlayerResources[clientUserId] = nil
+		if success then
+                
+			self.sponitor:OnJoinTeam(newPlayer, team)
 			
-		else
-		
-			// Give new players starting resources. Mark players as "having played" the game (so they don't get starting res if
-			// they join a team again, etc.)
-			local success, played = GetUserPlayedInGame(self, newPlayer)
-			if success and not played then
-				newPlayer:SetResources(kPlayerInitialIndivRes)
+			local newPlayerClient = Server.GetOwner(newPlayer)
+			if oldPlayerWasSpectating then
+				newPlayerClient:SetSpectatingPlayer(nil)
+			end
+			
+			if newPlayer.OnJoinTeam then
+				newPlayer:OnJoinTeam()
+			end    
+			
+			if newTeamNumber == kTeam1Index or newTeamNumber == kTeam2Index then
+				newPlayer:SetEntranceTime()
+			elseif newPlayer:GetEntranceTime() then
+				newPlayer:SetExitTime()
+			end
+			
+			Server.SendNetworkMessage(newPlayerClient, "SetClientTeamNumber", { teamNumber = newPlayer:GetTeamNumber() }, true)
+			
+			if newTeamNumber == kSpectatorIndex then
+				newPlayer:SetSpectatorMode(kSpectatorMode.Overhead)
 			end
 			
 		end
-		
-		if self:GetGameStarted() then
-			SetUserPlayedInGame(self, newPlayer)
-		end
-            
-		
-		newPlayer:TriggerEffects("join_team")
 		
 	end
 	
@@ -263,6 +256,8 @@ function CombatNS2Gamerules:JoinTeam_Hook(self, player, newTeamNumber, force)
 		
 		// Send timer updates
 		SendCombatGameTimeUpdate(newPlayer)
+		
+		return success, newPlayer
 		
 	end
 	
