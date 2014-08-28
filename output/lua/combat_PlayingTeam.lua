@@ -92,7 +92,7 @@ function CombatPlayingTeam:Update_Hook(self, timePassed)
 	local players = GetEntitiesForTeam("Spectator", self:GetTeamNumber())
 	
 	// Spawn all players in the queue once every 10 seconds or so.
-	if (#self.respawnQueue > 0) or (#players > 0)  then
+	if #self.respawnQueue > 0 or #players > 0  then
 		
 		// Are we ready to spawn? This is based on the time since the last spawn wave...
 		local respawnTimer = kCombatRespawnTimer
@@ -129,17 +129,17 @@ function CombatPlayingTeam:Update_Hook(self, timePassed)
             end
 			
 			// If there are any players left, send them a message about why they didn't spawn.
-			if (#self.respawnQueue > 0) then
+			if #self.respawnQueue > 0 then
 				for i, player in ipairs(self.respawnQueue) do
 				    // sanity check if there are ids instead of objects
-				    if (IsNumber(player)) then
+				    if IsNumber(player) then
 				        player = Shared.GetEntity(player)
 				    end
-				    if (player) then
+				    if player then
 					    player:SendDirectMessage("Could not find a valid spawn location for you... You will spawn in the next wave instead!")
                     end					    
 				end
-			elseif (#players > 0) then
+			elseif #players > 0 then
                 for i, player in ipairs(players) do
 					player:SendDirectMessage("Could not find a valid spawn location for you... You will spawn in the next wave instead!")
 				end
@@ -155,14 +155,13 @@ function CombatPlayingTeam:Update_Hook(self, timePassed)
 
 						// TODO: Update the GUI so that marines can get the 'ready to spawn in ... ' message too.
 						// After that is done, remove the AlienSpectator check here.
-						if (player:isa("AlienSpectator")) then
+						if player:isa("AlienSpectator") then
 							player.timeWaveSpawnEnd = nextSpawnTime
 						end
 					end
 				end
 			end
 		end
-	
 	end
 	
 	if not self.timeSincePropEffect then
@@ -293,6 +292,6 @@ function CombatPlayingTeam:RespawnPlayer_Hook(self, player, origin, angles)
     
 end
 
-if (not HotReload) then
+if not HotReload then
 	CombatPlayingTeam:OnLoad()
 end
