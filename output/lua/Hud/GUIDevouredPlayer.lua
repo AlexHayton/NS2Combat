@@ -21,7 +21,7 @@ GUIDevouredPlayer.kBackgroundOffsetX = GUIScale(0)
 GUIDevouredPlayer.kBackgroundOffsetY = GUIScale(0)
 
 GUIDevouredPlayer.kTimeOffset = Vector(0, GUIScale(-10), 0)
-GUIDevouredPlayer.kTimeFontName = "fonts/AgencyFB_large.fnt"
+GUIDevouredPlayer.kTimeFontName = Fonts.kAgencyFB_Large
 GUIDevouredPlayer.kTimeFontSize = 25
 GUIDevouredPlayer.kTimeBold = true
 

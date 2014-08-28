@@ -5,21 +5,21 @@
 //
 //________________________________
 
-// Players heal by base amount + percentage of max health
+-- Players heal by base amount + percentage of max health
 local kHealPlayerPercent = 3
 
 local kRange = 6
 local kHealCylinderWidth = 3
  
 local kHealScoreAdded = 2
-// Every kAmountHealedForPoints points of damage healed, the player gets
-// kHealScoreAdded points to their score.
+-- Every kAmountHealedForPoints points of damage healed, the player gets
+-- kHealScoreAdded points to their score.
 local kAmountHealedForPoints = 400
 
 local function GetHealOrigin(self, player)
 
-    // Don't project origin the full radius out in front of Gorge or we have edge-case problems with the Gorge 
-    // not being able to hear himself
+    -- Don't project origin the full radius out in front of Gorge or we have edge-case problems with the Gorge 
+    -- not being able to hear himself
     local startPos = player:GetEyePos()
     local endPos = startPos + (player:GetViewAngles():GetCoords().zAxis * kHealsprayRadius * .9)
     local trace = Shared.TraceRay(startPos, endPos, CollisionRep.Damage, PhysicsMask.Bullets, EntityFilterOne(player))
@@ -35,29 +35,27 @@ local function DamageEntity(self, player, targetEntity)
 end
 
 local function HealEntity(self, player, targetEntity)
-    if targetEntity.GetIsBuilt and not GetGamerules():GetHasTimelimitPassed() then return end
-    
+
     local onEnemyTeam = (GetEnemyTeamNumber(player:GetTeamNumber()) == targetEntity:GetTeamNumber())
     local isEnemyPlayer = onEnemyTeam and targetEntity:isa("Player")
     local toTarget = (player:GetEyePos() - targetEntity:GetOrigin()):GetUnit()
     
-    // Heal players by base amount plus a scaleable amount so it's effective vs. small and large targets.
+    -- Heal players by base amount plus a scaleable amount so it's effective vs. small and large targets.
     local health = kHealsprayDamage + targetEntity:GetMaxHealth() * kHealPlayerPercent / 100.0
     
-    // Heal structures by multiple of damage(so it doesn't take forever to heal hives, ala NS1)
+    -- Heal structures by multiple of damage(so it doesn't take forever to heal hives, ala NS1)
     if GetReceivesStructuralDamage(targetEntity) then
         health = 60
-    // Don't heal self at full rate - don't want Gorges to be too powerful. Same as NS1.
+    -- Don't heal self at full rate - don't want Gorges to be too powerful. Same as NS1.
     elseif targetEntity == player then
         health = health * 0.5
     end
     
     local amountHealed = targetEntity:AddHealth(health, true, false, true, player)
     
-    // Do not count amount self healed.
+    -- Do not count amount self healed.
     if targetEntity ~= player then
-        player:AddContinuousScore("HealSpray", amountHealed, kAmountHealedForPoints, kHealScoreAdded)
-		
+	
 		/*
 		 * Addition for Combat Mode to give XP for healing.
 		 */
@@ -79,7 +77,7 @@ local function HealEntity(self, player, targetEntity)
         targetEntity:OnHealSpray(player)
     end
     
-    // Put out entities on fire sometimes.
+    -- Put out entities on fire sometimes.
     if HasMixin(targetEntity, "GameEffects") and math.random() < kSprayDouseOnFireChance then
         targetEntity:SetGameEffectMask(kGameEffect.OnFire, false)
     end
@@ -110,7 +108,7 @@ end
 
 local function GetEntitiesInCylinder(self, player, viewCoords, range, width)
 
-    // gorge always heals itself
+    -- gorge always heals itself
     local ents = { player }
     local startPoint = viewCoords.origin
     local fireDirection = viewCoords.zAxis
@@ -128,7 +126,7 @@ local function GetEntitiesInCylinder(self, player, viewCoords, range, width)
 
             local xyDistance = math.sqrt(yDistance * yDistance + xDistance * xDistance)
 
-            // could perform a LOS check here or simply keeo the code a bit more tolerant. healspray is kinda gas and it would require complex calculations to make this check be exact
+            -- could perform a LOS check here or simply keeo the code a bit more tolerant. healspray is kinda gas and it would require complex calculations to make this check be exact
             if xyDistance <= width and zDistance >= 0 then
                 table.insert(ents, entity)
             end
