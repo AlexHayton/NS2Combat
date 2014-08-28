@@ -65,6 +65,8 @@ local function GiveJetpack(player, techUpgrade)
 	local jetpackMarine = player:GiveJetpack()
 	// get jp back after respawn
 	jetpackMarine.combatTable.giveClassAfterRespawn = JetpackMarine.kMapName
+	jetpackMarine:GiveUpsBack()
+	jetpackMarine:UpdateArmorAmount()
 	return jetpackMarine
 end
 
@@ -75,6 +77,8 @@ local function GiveExo(player, techUpgrade)
 	exoMarine:SetCameraDistance(4)
     exoMarine:SendDirectMessage("Powering up. You have to wait " .. kExoPowerUpTime .. " sec till you can move again.")
     exoMarine.poweringUpFinishedTime = Shared.GetTime() + kExoPowerUpTime
+	exoMarine:GiveUpsBack()
+	exoMarine:UpdateArmorAmount()
 	return exoMarine
 end
 
@@ -85,7 +89,9 @@ local function GiveExoDualMinigun(player, techUpgrade)
 	exoMarine:SetCameraDistance(4)
     exoMarine:SendDirectMessage("Powering up. You have to wait " .. kExoPowerUpTime .. " sec till you can move again.")
     exoMarine.poweringUpFinishedTime = Shared.GetTime() + kExoPowerUpTime
-    
+    exoMarine:GiveUpsBack()
+	exoMarine:UpdateArmorAmount()
+
 	return exoMarine
 end
 
@@ -96,7 +102,9 @@ local function GiveExoRailGun(player, techUpgrade)
 	exoMarine:SetCameraDistance(4)
     exoMarine:SendDirectMessage("Powering up. You have to wait " .. kExoPowerUpTime .. " sec till you can move again.")
     exoMarine.poweringUpFinishedTime = Shared.GetTime() + kExoPowerUpTime
-    
+    exoMarine:GiveUpsBack()
+	exoMarine:UpdateArmorAmount()
+	
 	return exoMarine
 end
 

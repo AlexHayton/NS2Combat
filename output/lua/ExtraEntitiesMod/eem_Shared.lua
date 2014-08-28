@@ -16,14 +16,11 @@ Script.Load("lua/ExtraEntitiesMod/PathingUtility_Modded.lua")
 Script.Load("lua/ExtraEntitiesMod/OrdersMixin_Modded.lua")
 Script.Load("lua/ExtraEntitiesMod/DamageTypes_modded.lua")
 Script.Load("lua/ExtraEntitiesMod/Player_modded.lua")
-Script.Load("lua/ExtraEntitiesMod/Spit_modded.lua")
-Script.Load("lua/ExtraEntitiesMod/Team_modded.lua")
 Script.Load("lua/ExtraEntitiesMod/eem_ParticleEffect.lua")
 Script.Load("lua/ExtraEntitiesMod/Exo_modded.lua")
 Script.Load("lua/ExtraEntitiesMod/RagdollMixin_modded.lua")
 Script.Load("lua/ExtraEntitiesMod/NS2Utiliy_modded.lua")
 Script.Load("lua/ExtraEntitiesMod/BaseMoveMixin_modded.lua")
-Script.Load("lua/ExtraEntitiesMod/Order_modded.lua")
 Script.Load("lua/ExtraEntitiesMod/ProjectedProjectile_modded.lua")
 
 // New classes
@@ -75,7 +72,7 @@ Script.Load("lua/ExtraEntitiesMod/npc/NpcWaveManager.lua")
 Script.Load("lua/ExtraEntitiesMod/npc/NpcWaveManager_Tunnel.lua")
 
 // disable the portal gun, was just 4 fun, maybe make it later better
-// Script.Load("lua/ExtraEntitiesMod/PortalGunTeleport.lua")
+//Script.Load("lua/ExtraEntitiesMod/PortalGunTeleport.lua")
 //Script.Load("lua/ExtraEntitiesMod/PortalGun.lua")
 
 

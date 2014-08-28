@@ -32,44 +32,13 @@ function CombatNS2Gamerules:OnLoad()
 	
 end
 
--- Returns bool for success and bool if we've played in the game already.
-local function GetUserPlayedInGame(self, player)
-
-	local success = false
-	local played = false
-	
-	local owner = Server.GetOwner(player)
-	if owner then
-	
-		local userId = tonumber(owner:GetUserId())
-		
-		-- Could be invalid if we're still connecting to Steam
-		played = table.find(self.userIdsInGame, userId) ~= nil
-		success = true
-		
-	end
-	
-	return success, played
-	
-end
-
-local function SetUserPlayedInGame(self, player)
-
-	local owner = Server.GetOwner(player)
-	if owner then
-	
-		local userId = tonumber(owner:GetUserId())
-		
-		-- Could be invalid if we're still connecting to Steam.
-		return table.insertunique(self.userIdsInGame, userId)
-		
-	end
-	
-	return false
-	
-end
-
 function UpdateUpgradeCountsForTeam(gameRules, teamIndex)
+	
+	//Seems these are occasionally invalid? idk..
+	if teamIndex < 0 or teamIndex > 3 then
+		//Invalid
+		return
+	end
 
 	-- Get the number of players on the team who have the upgrade
 	local oldCounts = gameRules.UpgradeCounts[teamIndex]
@@ -215,25 +184,6 @@ function CombatNS2Gamerules:JoinTeam_Hook(self, player, newTeamNumber, force)
 		
 			-- Ready room or spectator players should never be frozen
 			newPlayer.frozen = false
-			
-		end
-		
-		local newPlayerClient = Server.GetOwner(newPlayer)
-		local clientUserId = newPlayerClient and newPlayerClient:GetUserId() or 0
-		local disconnectedPlayerRes = self.disconnectedPlayerResources[clientUserId]
-		if disconnectedPlayerRes then
-		
-			newPlayer:SetResources(disconnectedPlayerRes)
-			self.disconnectedPlayerResources[clientUserId] = nil
-			
-		elseif not player:isa("Commander") then
-		
-			-- Give new players starting resources. Mark players as "having played" the game (so they don't get starting res if
-			-- they join a team again, etc.) Also, don't award initial resources to any client marked as blockPersonalResources (previous Commanders).
-			local success, played = GetUserPlayedInGame(self, newPlayer)
-			if success and not played and not newPlayerClient.blockPersonalResources then
-				newPlayer:SetResources(kPlayerInitialIndivRes)
-			end
 			
 		end
 		

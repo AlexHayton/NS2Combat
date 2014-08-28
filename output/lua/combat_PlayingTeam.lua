@@ -237,7 +237,7 @@ function CombatPlayingTeam:RespawnPlayer_Hook(self, player, origin, angles)
 		
 		// Try it 10 times here
 		for index = 1, 10 do
-			spawnOrigin = GetRandomSpawnForCapsule(capsuleHeight, capsuleRadius, initialTechPoint:GetOrigin(), kSpawnMinDistance, kSpawnMaxDistance, EntityFilterAll())
+			spawnOrigin = GetRandomSpawnForCapsule(capsuleHeight, capsuleRadius, initialTechPoint:GetOrigin(), kSpawnMinDistance, 25, EntityFilterAll())
 			if spawnOrigin ~= nil then
 				break
 			end

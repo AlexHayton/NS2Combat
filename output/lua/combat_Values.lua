@@ -250,7 +250,7 @@ end
 //AddMinimapBlipType("DevouredPlayer")
 
 // Alien Tier to Ability map
-kCombatAlienTierTwoTechIds = { kTechId.Leap, kTechId.BabblerEgg, kTechId.BabblerAbility, kTechId.Umbra, kTechId.Vortex, kTechId.ShadowStep, kTechId.Charge, kTechId.BoneShield }
+kCombatAlienTierTwoTechIds = { kTechId.Leap, kTechId.BabblerEgg, kTechId.BabblerAbility, kTechId.Umbra, kTechId.MetabolizeEnergy, kTechId.MetabolizeHealth, kTechId.Charge, kTechId.BoneShield }
 kCombatAlienTierThreeTechIds = { kTechId.BileBomb, kTechId.Web, kTechId.BoneShield, kTechId.Spores, kTechId.Stab, kTechId.Stomp }
 if not kCombatCompMode then
 	// Add Xenocide only if not competitive mode
