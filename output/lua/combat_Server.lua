@@ -96,7 +96,7 @@ if kCombatModActive then
     Script.Load("lua/combat_WeldableMixin.lua")
 	Script.Load("lua/combat_LiveMixin.lua")
     Script.Load("lua/Weapons/Alien/combat_HealSprayMixin.lua")
-	Script.Load("lua/combat_ScoringMixin.lua")
+    Script.Load("lua/combat_ScoringMixin.lua")
 	
 	// new hook style hooks
 	Script.Load("lua/combat_Babbler.lua")
