@@ -31,8 +31,7 @@ function ReadyRoomTeam:GetRespawnMapName(player)
     end
     
     // need to set embryos to ready room players, otherwise they wont be able to move
-    if mapName == Embryo.kMapName 
-		or mapName == DevouredPlayer.kMapName then
+    if mapName == Embryo.kMapName then
         mapName = ReadyRoomPlayer.kMapName
     end
     return mapName
