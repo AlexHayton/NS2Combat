@@ -89,8 +89,6 @@ if kCombatModActive then
     Script.Load("lua/combat_Values.lua")
 
     Script.Load("lua/combat_Props.lua")
-    // halloween special
-    Script.Load("lua/combat_Halloween.lua")
 
     // due to a bug, this needs to be loaded here
 	Script.Load("lua/combat_PowerConsumerMixin.lua")
