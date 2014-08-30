@@ -121,17 +121,15 @@ function CombatNS2Gamerules:JoinTeam_Hook(self, player, newTeamNumber, force)
 
 	-- The PostHook doesn't work because this function returns two values
 	-- So we need to replace instead. Sorry!
+	local client = Server.GetOwner(player)
+	if not client then return end
+	
 	local success = false
-	local oldPlayerWasSpectating = false
-	if player then
+	local oldPlayerWasSpectating = client and client:GetSpectatingPlayer()
+	local oldTeamNumber = player:GetTeamNumber()
 	
-		local ownerClient = Server.GetOwner(player)
-		oldPlayerWasSpectating = ownerClient ~= nil and ownerClient:GetSpectatingPlayer() ~= nil
-		
-	end
-	
-	-- Join new team
-	if player and player:GetTeamNumber() ~= newTeamNumber or force then        
+	// Join new team
+	if oldTeamNumber ~= newTeamNumber or force then        
 		
 		if player:isa("Commander") then
 			OnCommanderLogOut(player)
@@ -142,14 +140,14 @@ function CombatNS2Gamerules:JoinTeam_Hook(self, player, newTeamNumber, force)
 		end
 	
 		local team = self:GetTeam(newTeamNumber)
-		local oldTeam = self:GetTeam(player:GetTeamNumber())
+		local oldTeam = self:GetTeam(oldTeamNumber)
 		
-		-- Remove the player from the old queue if they happen to be in one
-		if oldTeam ~= nil then
+		// Remove the player from the old queue if they happen to be in one
+		if oldTeam then
 			oldTeam:RemovePlayerFromRespawnQueue(player)
 		end
 		
-		-- Spawn immediately if going to ready room, game hasn't started, cheats on, or game started recently
+		// Spawn immediately if going to ready room, game hasn't started, cheats on, or game started recently
 		if newTeamNumber == kTeamReadyRoom or self:GetCanSpawnImmediately() or force then
 		
 			success, newPlayer = team:ReplaceRespawnPlayer(player, nil, nil)
@@ -161,17 +159,24 @@ function CombatNS2Gamerules:JoinTeam_Hook(self, player, newTeamNumber, force)
 			
 		else
 		
-			-- Destroy the existing player and create a spectator in their place.
+			// Destroy the existing player and create a spectator in their place.
 			newPlayer = player:Replace(team:GetSpectatorMapName(), newTeamNumber)
 			
-			-- Queue up the spectator for respawn.
+			// Queue up the spectator for respawn.
 			team:PutPlayerInRespawnQueue(newPlayer)
 			
 			success = true
 			
 		end
 		
-		-- Update frozen state of player based on the game state and player team.
+		local clientUserId = client:GetUserId()
+		//Save old pres 
+		if oldTeam == self.team1 or oldTeam == self.team2 then
+			if not self.clientpres[clientUserId] then self.clientpres[clientUserId] = {} end
+			self.clientpres[clientUserId][oldTeamNumber] = player:GetResources()
+		end
+		
+		// Update frozen state of player based on the game state and player team.
 		if team == self.team1 or team == self.team2 then
 		
 			local devMode = Shared.GetDevMode()
@@ -180,23 +185,23 @@ function CombatNS2Gamerules:JoinTeam_Hook(self, player, newTeamNumber, force)
 				newPlayer.frozen = true
 			end
 			
+			local pres = self.clientpres[clientUserId] and self.clientpres[clientUserId][newTeamNumber]
+			newPlayer:SetResources( pres or ConditionalValue(team == self.team1, kMarineInitialIndivRes, kAlienInitialIndivRes) )
+		
 		else
 		
-			-- Ready room or spectator players should never be frozen
+			// Ready room or spectator players should never be frozen
 			newPlayer.frozen = false
 			
-		end
-		
-		if self:GetGameStarted() then
-			SetUserPlayedInGame(self, newPlayer)
 		end
 		
 		newPlayer:TriggerEffects("join_team")
 		
 		if success then
-		
+                
 			self.sponitor:OnJoinTeam(newPlayer, team)
 			
+			local newPlayerClient = Server.GetOwner(newPlayer)
 			if oldPlayerWasSpectating then
 				newPlayerClient:SetSpectatingPlayer(nil)
 			end
@@ -211,47 +216,55 @@ function CombatNS2Gamerules:JoinTeam_Hook(self, player, newTeamNumber, force)
 				newPlayer:SetExitTime()
 			end
 			
-			-- This is the new bit for Combat
-			-- Only reset things like techTree, scan, camo etc.		
-			newPlayer:CheckCombatData()	
-			local lastTeamNumber = newPlayer.combatTable.lastTeamNumber
-			newPlayer:Reset_Lite()
-
-			--newPlayer.combatTable.xp = player:GetXp()
-			-- if the player joins the same team, subtract one level
-			if lastTeamNumber == newTeamNumber then
-				if newPlayer:GetLvl() >= kCombatPenaltyLevel + 1 then
-					local newXP = Experience_XpForLvl(newPlayer:GetLvl()-1)
-					newPlayer.score = newXP
-					newPlayer.combatTable.lvl = newPlayer:GetLvl()
-					newPlayer:SendDirectMessage( "You lost " .. kCombatPenaltyLevel .. " level for rejoining the same team!")
-				end
-			end
-			newPlayer:AddLvlFree(newPlayer:GetLvl() - 1 + kCombatStartUpgradePoints)
-			
-			--set spawn protect
-			newPlayer:SetSpawnProtect()
-			
-			-- Send upgrade updates for each player.
-			if newTeamNumber == kTeam1Index or newTeamNumber == kTeam2Index then
-				for upgradeId, upgradeCount in pairs(self.UpgradeCounts[newTeamNumber]) do
-					-- Send all upgrade counts to this player
-					SendCombatUpgradeCountUpdate(newPlayer, upgradeId, upgradeCount)
-				end
-			end
-			
-			-- Send timer updates
-			SendCombatGameTimeUpdate(newPlayer)
-	
 			Server.SendNetworkMessage(newPlayerClient, "SetClientTeamNumber", { teamNumber = newPlayer:GetTeamNumber() }, true)
 			
+			if newTeamNumber == kSpectatorIndex then
+				newPlayer:SetSpectatorMode(kSpectatorMode.Overhead)
+			end
+			
 		end
+		
+	end
+	
+	// This is the new bit for Combat
+	if (success) then
+        
+        // Only reset things like techTree, scan, camo etc.		
+		newPlayer:CheckCombatData()	
+		local lastTeamNumber = newPlayer.combatTable.lastTeamNumber
+		newPlayer:Reset_Lite()
 
+		//newPlayer.combatTable.xp = player:GetXp()
+		// if the player joins the same team, subtract one level
+		if lastTeamNumber == newTeamNumber then
+			if newPlayer:GetLvl() >= kCombatPenaltyLevel + 1 then
+			    local newXP = Experience_XpForLvl(newPlayer:GetLvl()-1)
+				newPlayer.score = newXP
+				newPlayer.combatTable.lvl = newPlayer:GetLvl()
+				newPlayer:SendDirectMessage( "You lost " .. kCombatPenaltyLevel .. " level for rejoining the same team!")
+			end
+		end
+		newPlayer:AddLvlFree(newPlayer:GetLvl() - 1 + kCombatStartUpgradePoints)
+		
+		//set spawn protect
+		newPlayer:SetSpawnProtect()
+		
+		// Send upgrade updates for each player.
+		if newTeamNumber == kTeam1Index or newTeamNumber == kTeam2Index then
+			for upgradeId, upgradeCount in pairs(self.UpgradeCounts[newTeamNumber]) do
+				// Send all upgrade counts to this player
+				SendCombatUpgradeCountUpdate(newPlayer, upgradeId, upgradeCount)
+			end
+		end
+		
+		// Send timer updates
+		SendCombatGameTimeUpdate(newPlayer)
+		
 		return success, newPlayer
 		
 	end
 	
-	-- Return old player
+	// Return old player
 	return success, player
 end
 
