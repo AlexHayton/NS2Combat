@@ -256,3 +256,9 @@ if not kCombatCompMode then
 	// Add Xenocide only if not competitive mode
 	table.insert(kCombatAlienTierThreeTechIds, kTechId.Xenocide)
 end
+
+
+//ovewrite balances.lua values
+//set starting personal resources
+kMarineInitialIndivRes = 0
+kAlienInitialIndivRes = 0

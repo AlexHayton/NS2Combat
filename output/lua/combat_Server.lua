@@ -69,6 +69,9 @@ Script.Load("lua/ExtraEntitiesMod/eem_Shared.lua")
 // Load the normal Ns2 Server Scripts
 Script.Load("lua/Server.lua")
 
+//disable the ranking system:
+Server.SetConfigSetting("hiveranking", false)
+
 if kCombatModActive then
 
     // new functions, no hooks

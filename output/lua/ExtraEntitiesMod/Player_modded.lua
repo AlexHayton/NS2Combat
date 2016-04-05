@@ -71,13 +71,13 @@ if Server then
     
     // cheap trick to get rid of an error that appears when npcs are shooting before client is there
     Player.hitRegEnabled = false
-
+	--[[
     local originalPlayerGetClient
     originalPlayerGetClient = Class_ReplaceMethod( "Player", "GetClient", 
         function(self)     
             return self.client or self
         end
-    )
+    ) --]]
 
 elseif Client then
 

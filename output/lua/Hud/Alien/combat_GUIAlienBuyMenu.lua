@@ -435,7 +435,8 @@ function CombatGUIAlienBuyMenu:SendKeyEvent_Hook(self, key, down)
                         
                 end
                 
-                self:_DeselectAllUpgrades()
+				//function not defined in current ns2 build 04/04/2016?
+                //self:_DeselectAllUpgrades()
                 
                 closeMenu = true
                 inputHandled = true
