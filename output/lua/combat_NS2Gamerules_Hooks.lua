@@ -187,9 +187,10 @@ function CombatNS2Gamerules:JoinTeam_Hook(self, player, newTeamNumber, force)
 			
 		end
 		
-		if self:GetGameStarted() then
-			SetUserPlayedInGame(self, newPlayer)
-		end
+		//if self:GetGameStarted() then
+		//no longer exist ==> disabled?
+		//	SetUserPlayedInGame(self, newPlayer)
+		//end
 		
 		newPlayer:TriggerEffects("join_team")
 		

@@ -288,8 +288,8 @@ function CombatPlayingTeam:RespawnPlayer_Hook(self, player, origin, angles)
     end
     
     return success
-    
-end
+
+end 
 
 if (not HotReload) then
 	CombatPlayingTeam:OnLoad()

@@ -1,0 +1,149 @@
+
+renamed:    output/lua/PlayerRanking.lua -> output/lua/PlayerRanking.lua.txt
+modified:   output/lua/combat_Server.lua
+-----------------------------------------------------------
+
+Why? PlayerRanking.lua cause following error:
+
+[ 48.333] ServerUpdate : Error: lua/PlayerRanking.lua:434: attempt to call method 'SetReinforcedTier' (a nil value)
+[Server] Script Error #1: lua/PlayerRanking.lua:434: attempt to call method 'SetReinforcedTier' (a nil value)
+    Call stack:
+    #1: lua/PlayerRanking.lua:434
+        gameRules = NS2Gamerules-3884 { }
+        (for generator) = function
+        (for state) =  {1=ReadyRoomPlayer-2256 {activeWeaponId=-1, alive=true, animateAngles=false, animateDistance=false, animatePosition=false, animateYOffset=false, animationBlend=0.20000000298023, animationGraphIndex=42, animationGraphNode=12, animationSequence2=-1, animationSequence=0, animationSpeed2=1, animationSpeed=1, animationStart2=0, animationStart=13.234227180481, armor=0, baseYaw=0, bodyYaw=0, bodyYawRun=0, cameraDistance=0, cameraYOffset=0, clientIndex=1, collisionRep=0, communicationStatus=1, countingDown=false, crouching=false, currentOrderId=-1, darwinMode=false, desiredCameraAngles=cdata, desiredCameraDistance=0, desiredCameraPosition=cdata, desiredCameraYOffset=0, desiredYOffset=0, flinchIntensity=0, followingTransition=false, fov=90, frozen=false, fullPrecisionOrigin=cdata, gameEffectsFlags=0, gameStarted=false, giveDamageTime=0, gravityTrigger=0, health=100, healthIgnored=false, isMale=true, isMoveBlocked=false, isOnEntity=false, isUsing=false, jumpHandled=false, jumping=false, layer1AnimationBlend=0, layer1AnimationGraphNode=134, layer1AnimationSequence2=-1, layer1AnimationSequence=-1, layer1AnimationSpeed2=1, layer1AnimationSpeed=1, layer1AnimationStart2=0, layer1AnimationStart=0, locationId=1, maxArmor=0, maxHealth=100, mode=1, modeTime=-1, modelIndex=64, moveButtonPressed=false, moveTransition=false, onGround=true, onGroundSurface=3, onLadder=false, physicsGroup=8, physicsGroupFilterMask=0, physicsType=1, playerLevel=0, playerSkill=0, primaryAttackLastFrame=false, processMove=true, pushImpulse=cdata, pushTime=0, quickSwitchSlot=1, resetMouse=0, resources=0, runningBodyYaw=0, secondaryAttackLastFrame=false, shoulderPadIndex=0, slowAmount=0, standingBodyYaw=0, startCameraAngles=cdata, startCameraDistance=0, startCameraPosition=cdata, startCameraYOffset=0, teamNumber=0, teamResources=0, techId=43, timeGroundAllowed=0, timeGroundTouched=0, timeLastHealed=0, timeLastMenu=0, timeOfCrouchChange=0, timeOfLastJump=0, timeOfLastPhase=0, timeOfLastUse=0, timeOfLastWeaponSwitch=0, timeUntilPlayerCollisionsIgnored=0, transiti... }
+        (for control) = 1
+        _ = 1
+        player = ReadyRoomPlayer-2256 {activeWeaponId=-1, alive=true, animateAngles=false, animateDistance=false, animatePosition=false, animateYOffset=false, animationBlend=0.20000000298023, animationGraphIndex=42, animationGraphNode=12, animationSequence2=-1, animationSequence=0, animationSpeed2=1, animationSpeed=1, animationStart2=0, animationStart=13.234227180481, armor=0, baseYaw=0, bodyYaw=0, bodyYawRun=0, cameraDistance=0, cameraYOffset=0, clientIndex=1, collisionRep=0, communicationStatus=1, countingDown=false, crouching=false, currentOrderId=-1, darwinMode=false, desiredCameraAngles=cdata, desiredCameraDistance=0, desiredCameraPosition=cdata, desiredCameraYOffset=0, desiredYOffset=0, flinchIntensity=0, followingTransition=false, fov=90, frozen=false, fullPrecisionOrigin=cdata, gameEffectsFlags=0, gameStarted=false, giveDamageTime=0, gravityTrigger=0, health=100, healthIgnored=false, isMale=true, isMoveBlocked=false, isOnEntity=false, isUsing=false, jumpHandled=false, jumping=false, layer1AnimationBlend=0, layer1AnimationGraphNode=134, layer1AnimationSequence2=-1, layer1AnimationSequence=-1, layer1AnimationSpeed2=1, layer1AnimationSpeed=1, layer1AnimationStart2=0, layer1AnimationStart=0, locationId=1, maxArmor=0, maxHealth=100, mode=1, modeTime=-1, modelIndex=64, moveButtonPressed=false, moveTransition=false, onGround=true, onGroundSurface=3, onLadder=false, physicsGroup=8, physicsGroupFilterMask=0, physicsType=1, playerLevel=0, playerSkill=0, primaryAttackLastFrame=false, processMove=true, pushImpulse=cdata, pushTime=0, quickSwitchSlot=1, resetMouse=0, resources=0, runningBodyYaw=0, secondaryAttackLastFrame=false, shoulderPadIndex=0, slowAmount=0, standingBodyYaw=0, startCameraAngles=cdata, startCameraDistance=0, startCameraPosition=cdata, startCameraYOffset=0, teamNumber=0, teamResources=0, techId=43, timeGroundAllowed=0, timeGroundTouched=0, timeLastHealed=0, timeLastMenu=0, timeOfCrouchChange=0, timeOfLastJump=0, timeOfLastPhase=0, timeOfLastUse=0, timeOfLastWeaponSwitch=0, timeUntilPlayerCollisionsIgnored=0, transitionDuration=0, transitionStart=0, tweeningFunction=1, upgrade10=1, upgrade1=1, upgrade2=1, upgrade3=1, upgrade4=1, upgrade5=1, upgrade6=1, upgrade7=1, upgrade8=1, upgrade9=1, variant=1, velocity=cdata, velocityLength=0, velocityPitch=0, velocityYaw=0, viewModelId=1763, viewPitch=-0, viewRoll=0, viewYaw=0, weaponsWeight=0 }
+        client = ServerClient { }
+        steamId = 2764363
+        playerData =  {assists=0, deaths=0, kills=0, level=0, playTime=0, score=0, skill=0 }
+
+Solution:		
+The script is outdated, I guess/assume that the only major change for the mod is:  local gRankingDisabled set to true for the mod.
+Solution rename the file to keep tract of historic changes, in case my assumption was wrong.
+Insert (l72) in the combat_Server a line to change the server setting equivalent to gRankingDisabled
+//disable the ranking system:
+Server.SetConfigSetting("hiveranking", false)
+
+
+modified:   output/lua/ExtraEntitiesMod/Player_modded.lua
+-----------------------------------------------------------
+     // cheap trick to get rid of an error that appears when npcs are shooting before client is there
+     Player.hitRegEnabled = false
+-
++       --[[
+     local originalPlayerGetClient
+     originalPlayerGetClient = Class_ReplaceMethod( "Player", "GetClient",
+         function(self)
+             return self.client or self
+         end
+-    )
++    ) --]]
+
+The Error?
+called to function like client.GetIsVirtual or GetIsLocalClient of the ns2 vanilla code failed with a "function is nil error"
+The cause is that at some point the player was replaced by his Class.
+The workaround was to comment the function that provoke that strange behavior in player_modded.
+However it might provoke another bug later.
+
+
+modified:   output/lua/combat_Values.lua
+-----------------------------------------------------------
+Aliens and marines were joining team with 15 or 20 personnal res.
+
+Solution is to override default values (the source of the value is in balance.lua, but the overwrite is made in combat_values)
++//ovewrite balances.lua values
++//set starting personal resources
++kMarineInitialIndivRes = 0
++kAlienInitialIndivRes = 0
+
+
+
+modified:   output/lua/Hud/Alien/combat_GUIAlienBuyMenu.lua
+-----------------------------------------------------------
+The Aliens cannot choose their evlovution in the buymenu.
+The //self:_DeselectAllUpgrades() seems to not exist in vanilla ns2 and has been commented.
+The aliens are now able to choose their upgrades, however they must refund if they want to switch traits like celerety to carapace.
+
+
+
+
+ 
+ lua/combat_NS2Gamerules_Hooks.lua:192: attempt to call global 'SetUserPlayedInGame' (a nil value)
+ On switching to RR
+ ------------------------------------------------------------------------------------------------------
+ 1446.637] ServerUpdate : Error: lua/combat_NS2Gamerules_Hooks.lua:192: attempt to call global 'SetUserPlayedInGame' (a nil value)
+[Server] Script Error #2: lua/combat_NS2Gamerules_Hooks.lua:192: attempt to call global 'SetUserPlayedInGame' (a nil value)
+    Call stack:
+    #1: JoinTeamOne lua/combat_NS2Gamerules_Hooks.lua:192
+        self =  {CheckGameEnd_Hook=function, CheckGameStart_Hook=function, ChooseTechPoint_Hook=function, ClassHooker_Hooks= {1= {1=function, 2= {CheckGameEnd_Hook=function, CheckGameStart_Hook=function, ChooseTechPoint_Hook=function, ClassHooker_Hooks= {10= {1=function, 2= {CheckGameEnd_Hook=function, CheckGameStart_Hook=function, ChooseTechPoint_Hook=function, ClassHooker_Hooks= {10=..., 1=..., 2=..., 3=..., 4=..., 5=..., 6=..., 7=..., 8=..., 9=... }, HookClassFunction=function, HookFunction=function, HookLibraryFunction=function, JoinTeam_Hook=function, NS2Gamerules_GetUpgradedDamage_Hook=function, OnClientConnect_Hook=function, OnCreate_Hook=function, OnLoad=function, OnUpdate_Hook=function, PostHookClassFunction=function, PostHookFunction=function, RawHookClassFunction=function, RawHookFunction=function, RemoveAllHooks=function, ReplaceClassFunction=function, ReplaceFunction=function, ResetGame_Hook=function, UpdateMapCycle_Hook=function }, 3= {Dispatcher=function, Name="NS2Gamerules_GetUpgradedDamage", Orignal= {1=..., 2=..., 3=... }, RealOrignal=function, ReplacedOrignal= {1=..., 2=..., 3=... } } }, 1= {1=function, 2= {CheckGameEnd_Hook=function, CheckGameStart_Hook=function, ChooseTechPoint_Hook=function, ClassHooker_Hooks= {10=..., 1=..., 2=..., 3=..., 4=..., 5=..., 6=..., 7=..., 8=..., 9=... }, HookClassFunction=function, HookFunction=function, HookLibraryFunction=function, JoinTeam_Hook=function, NS2Gamerules_GetUpgradedDamage_Hook=function, OnClientConnect_Hook=function, OnCreate_Hook=function, OnLoad=function, OnUpdate_Hook=function, PostHookClassFunction=function, PostHookFunction=function, RawHookClassFunction=function, RawHookFunction=function, RemoveAllHooks=function, ReplaceClassFunction=function, ReplaceFunction=function, ResetGame_Hook=function, UpdateMapCycle_Hook=function }, 3= {Class="NS2Gamerules", Dispatcher=function, Name="OnCreate", Orignal=function, Post= {1=... }, RealOrignal=function } }, 2= {1=function, 2= {CheckGameEnd_Hook=function, CheckGameStart_Hook=function, ChooseTechPoint_Hook=function, ClassHooker_Hooks= {10=..., 1=..., 2=..., 3=..., 4=..., 5=..., 6=..., 7=..., 8=..., 9=... }, HookClassFunction=..., HookClassFunction=function, HookFunction=function, HookLibraryFunction=function, JoinTeam_Hook=function, NS2Gamerules_GetUpgradedDamage_Hook=function, OnClientConnect_Hook=function, OnCreate_Hook=function, OnLoad=function, OnUpdate_Hook=function, PostHookClassFunction=function, PostHookFunction=function, RawHookClassFunction=function, RawHookFunction=function, RemoveAllHooks=function, ReplaceClassFunction=function, ReplaceFunction=function, ResetGame_Hook=function, UpdateMapCycle_Hook=function }
+        self = NS2Gamerules-3884 { }
+        player = Skulk-3337 {abilityEnergyOnChange=100, activeWeaponId=1434, alive=true, animateAngles=false, animateDistance=false, animatePosition=false, animateYOffset=false, animationBlend=0.099999994039536, animationGraphIndex=58, animationGraphNode=1, animationSequence2=1, animationSequence=0, animationSpeed2=1, animationSpeed=1, animationStart2=1409.82421875, animationStart=1410.90234375, armor=10, baseYaw=0, bodyYaw=0, bodyYawRun=0, cameraDistance=0, cameraYOffset=0, canUseTunnel=true, celeritySpeedScalar=0, clientIndex=1, cloakRate=0, cloakingDesired=false, collisionRep=0, communicationStatus=1, countingDown=false, creationTime=160.91760253906, crouching=false, currentOrderId=-1, darkVisionSpectatorOn=false, darwinMode=false, dashing=false, desiredCameraAngles=cdata, desiredCameraDistance=0, desiredCameraPosition=cdata, desiredCameraYOffset=0, desiredYOffset=0, detected=false, dragsUmbra=false, electrified=false, enableTunnelEntranceCheck=false, energizeLevel=0, enzymed=false, flinchIntensity=0, followingTransition=false, fov=105, frozen=false, fullPrecisionOrigin=cdata, fullyCloaked=false, gameEffectsFlags=0, gameStarted=true, giveDamageTime=0, gravityTrigger=0, hallucinatedClientIndex=0, hasAdrenalineUpgrade=false, hatched=false, health=70, healthIgnored=false, hotGroupNumber=0, inCombat=false, infestationSpeedScalar=0, infestationSpeedUpgrade=false, isCatalysted=false, isHallucination=false, isMoveBlocked=false, isOnEntity=false, isOnFire=false, isUsing=false, jumpHandled=false, jumpLandSpeed=0, jumping=false, lastTakenDamageAmount=0, lastTakenDamageOrigin=cdata, lastTakenDamageTime=0, lastTargetId=-1, layer1AnimationBlend=0, layer1AnimationGraphNode=15, layer1AnimationSequence2=-1, layer1AnimationSequence=-1, layer1AnimationSpeed2=1, layer1AnimationSpeed=1, layer1AnimationStart2=0, layer1AnimationStart=0, leaping=false, locationId=1, maxArmor=10, maxHealth=70, mode=1, modeTime=-1, modelIndex=104, moveButtonPressed=false, moveTransition=false, movementModiferState=false, mucousShield=false, numBabblers=0, onGround=true, onGroundSurface=3, oneHive=false, physicsGroup=8, physicsGroupFilterMask=0, physicsType=1, playIdleSound=false, playerLevel=182, playerSkill=2393, primaryAttackLastFrame=false, processMove=true, pushImpulse=cdata, pushTime=0, quickSwitchSlot=1, resetMouse=0, resources=0, runningBodyYaw=3.1635000705719, secondaryAttackLastFrame=false, selectionMask=0, shieldRemaining=0, sighted=false, silenceLevel=0, slowAmount=0, sneakOffset=0, standingBodyYaw=3.1635000705719, startCameraAngles=cdata, startCameraDistance=0, startCameraPosition=cdata, startCameraYOffset=0, storedHyperMutationCost=0, storedHyperMutationTime=0, stormCloudSpeed=false, teamNumber=0, teamResources=60, techId=203, threeHives=false, timeAbilityEnergyChanged=0, timeGroundAllowed=0, timeGroundTouched=0, timeLastHealed=0, timeLastMenu=0, timeLastWallJump=0, timeLastWallWalkCheck=0, timeOfCrouchChange=0, timeOfLastJump=159.58729553223, timeOfLastJumpLand=0, timeOfLastPhase=0, timeOfLastUse=0, timeOfLastWeaponSwitch=160.91760253906, timeOfLeap=0, timeUntilPlayerCollisionsIgnored=0, transitionDuration=0, transitionStart=0, tunnelNearby=false, tweeningFunction=1, twoHives=false, upgrade10=1, upgrade1=1, upgrade2=1, upgrade3=1, upgrade4=1, upgrade5=1, upgrade6=1, upgrade7=1, upgrade8=1, upgrade9=1, variant=2, velocity=cdata, velocityLength=0, velocityPitch=0, velocityYaw=0, viewModelId=3722, viewPitch=6.0430884361267, viewRoll=0, viewYaw=3.1634547710419, visibleClient=false, wallWalking=false, weaponsWeight=0 }
+        newTeamNumber = 1
+        force = nil
+        success = true
+        oldPlayerWasSpectating = false
+        team = MarineTeam { }
+        oldTeam = ReadyRoomTeam { }
+    #2: lua/NS2ConsoleCommands_Server.lua:66
+        client = ServerClient { }
+        player = Skulk-3337 {abilityEnergyOnChange=100, activeWeaponId=1434, alive=true, animateAngles=false, animateDistance=false, animatePosition=false, animateYOffset=false, animationBlend=0.099999994039536, animationGraphIndex=58, animationGraphNode=1, animationSequence2=1, animationSequence=0, animationSpeed2=1, animationSpeed=1, animationStart2=1409.82421875, animationStart=1410.90234375, armor=10, baseYaw=0, bodyYaw=0, bodyYawRun=0, cameraDistance=0, cameraYOffset=0, canUseTunnel=true, celeritySpeedScalar=0, clientIndex=1, cloakRate=0, cloakingDesired=false, collisionRep=0, communicationStatus=1, countingDown=false, creationTime=160.91760253906, crouching=false, currentOrderId=-1, darkVisionSpectatorOn=false, darwinMode=false, dashing=false, desiredCameraAngles=cdata, desiredCameraDistance=0, desiredCameraPosition=cdata, desiredCameraYOffset=0, desiredYOffset=0, detected=false, dragsUmbra=false, electrified=false, enableTunnelEntranceCheck=false, energizeLevel=0, enzymed=false, flinchIntensity=0, followingTransition=false, fov=105, frozen=false, fullPrecisionOrigin=cdata, fullyCloaked=false, gameEffectsFlags=0, gameStarted=true, giveDamageTime=0, gravityTrigger=0, hallucinatedClientIndex=0, hasAdrenalineUpgrade=false, hatched=false, health=70, healthIgnored=false, hotGroupNumber=0, inCombat=false, infestationSpeedScalar=0, infestationSpeedUpgrade=false, isCatalysted=false, isHallucination=false, isMoveBlocked=false, isOnEntity=false, isOnFire=false, isUsing=false, jumpHandled=false, jumpLandSpeed=0, jumping=false, lastTakenDamageAmount=0, lastTakenDamageOrigin=cdata, lastTakenDamageTime=0, lastTargetId=-1, layer1AnimationBlend=0, layer1AnimationGraphNode=15, layer1AnimationSequence2=-1, layer1AnimationSequence=-1, layer1AnimationSpeed2=1, layer1AnimationSpeed=1, layer1AnimationStart2=0, layer1AnimationStart=0, leaping=false, locationId=1, maxArmor=10, maxHealth=70, mode=1, modeTime=-1, modelIndex=104, moveButtonPressed=false, moveTransition=false, movementModiferState=false, mucousShield=false, numBabblers=0, onGround=true, onGroundSurface=3, oneHive=false, physicsGroup=8, physicsGroupFilterMask=0, physicsType=1, playIdleSound=false, playerLevel=182, playerSkill=2393, primaryAttackLastFrame=false, processMove=true, pushImpulse=cdata, pushTime=0, quickSwitchSlot=1, resetMouse=0, resources=0, runningBodyYaw=3.1635000705719, secondaryAttackLastFrame=false, selectionMask=0, shieldRemaining=0, sighted=false, silenceLevel=0, slowAmount=0, sneakOffset=0, standingBodyYaw=3.1635000705719, startCameraAngles=cdata, startCameraDistance=0, startCameraPosition=cdata, startCameraYOffset=0, storedHyperMutationCost=0, storedHyperMutationTime=0, stormCloudSpeed=false, teamNumber=0, teamResources=60, techId=203, threeHives=false, timeAbilityEnergyChanged=0, timeGroundAllowed=0, timeGroundTouched=0, timeLastHealed=0, timeLastMenu=0, timeLastWallJump=0, timeLastWallWalkCheck=0, timeOfCrouchChange=0, timeOfLastJump=159.58729553223, timeOfLastJumpLand=0, timeOfLastPhase=0, timeOfLastUse=0, timeOfLastWeaponSwitch=160.91760253906, timeOfLeap=0, timeUntilPlayerCollisionsIgnored=0, transitionDuration=0, transitionStart=0, tunnelNearby=false, tweeningFunction=1, twoHives=false, upgrade10=1, upgrade1=1, upgrade2=1, upgrade3=1, upgrade4=1, upgrade5=1, upgrade6=1, upgrade7=1, upgrade8=1, upgrade9=1, variant=2, velocity=cdata, velocityLength=0, velocityPitch=0, velocityYaw=0, viewModelId=3722, viewPitch=6.0430884361267, viewRoll=0, viewYaw=3.1634547710419, visibleClient=false, wallWalking=false, weaponsWeight=0 }
+
+the function seems to have disappear from the NS2 vanilla ==> disabling the command in the combat mode:
+//if self:GetGameStarted() then
+		//no longer exist ==> disabled?
+		//	SetUserPlayedInGame(self, newPlayer)
+		//end
+ 
+ Other known Bugs, not fixed
+ ------------------------------------------------------------
+ -	Aliens can no longer change their skills without refund
+ -	Catalyst, "Energizer", ink don't work
+ - bots don't work (they spawn and that's all)
+- When using shotgun [1223.777] ServerUpdate : Error: ParticleEffect::SetAttachPoint(fxnode_shotgunmuzzle) - Attach point not found
+- On game start: Error: DdsReader failed to load dds file 'ui/menu/logo.dds' : DXT compressed texture resolution must be multiple of 4
+
+ServerUpdate : Error: lua/PlayingTeam.lua:654: attempt to index local 'player' (a nil value)
+----------------------------------------------------------
+Happends when client go to RR, with bots only?
+
+ComprendPas killed Command Station with Bite
+[196.596] ServerUpdate : Error: lua/PlayingTeam.lua:654: attempt to index local 'player' (a nil value)
+[Server] Script Error #1: lua/PlayingTeam.lua:654: attempt to index local 'player' (a nil value)
+    Call stack:
+    #1: ReplaceRespawnPlayer lua/PlayingTeam.lua:654
+        self = AlienTeam { }
+        player = nil
+        origin = nil
+        angles = nil
+        mapName = nil
+        spawnMapName = "skulk"
+    #2: ReplaceRespawnAllPlayers lua/PlayingTeam.lua:682
+        self = AlienTeam { }
+        playerIds =  {1=2635 }
+        (for index) = 1
+        (for limit) = 1
+        (for step) = 1
+        i = 1
+        playerId = 2635
+        player = nil
+    #3: Orignal lua/NS2Gamerules.lua:592
+        self = NS2Gamerules-3884 { }
+        team1CommanderClient = nil
+        team2CommanderClient = nil
+        techPoints =  {1=TechPoint-1804 {animationGraphIndex=3, attachedId=-1, collisionRep=0, extendAmount=0, locationId=5, modelIndex=7, occupiedTeam=0, physicsGroup=14, physicsGroupFilterMask=0, physicsType=4, showObjective=false, smashScouted=false, smashed=false, techId=52 }, 2=TechPoint-1340 {animationGraphIndex=3, attachedId=-1, collisionRep=0, extendAmount=0, locationId=4, modelIndex=7, occupiedTeam=0, physicsGroup=14, physicsGroupFilterMask=0, physicsType=4, showObjective=false, smashScouted=false, smashed=false, techId=52 }, 3=TechPoint-2091 {animationGraphIndex=3, attachedId=-1, collisionRep=0, extendAmount=0, locationId=2, modelIndex=7, occupiedTeam=0, physicsGroup=14, physicsGroupFilterMask=0, physicsType=4, showObjective=false, smashScouted=false, smashed=false, techId=52 }, 4=TechPoint-226 {animationGraphIndex=3, attachedId=-1, collisionRep=0, extendAmount=0, locationId=3, modelIndex=7, occupiedTeam=0, physicsGroup=14, physicsGroupFilterMask=0, physicsType=4, showObjective=false, smashScouted=false, smashed=false, techId=52 }, 5=TechPoint-2667 {animationGraphIndex=3, attachedId=-1, collisionRep=0, extendAmount=0, locationId=10, modelIndex=7, occupiedTeam=0, physicsGroup=14, physicsGroupFilterMask=0, physicsType=4, showObjective=false, smashScouted=false, smashed=false, techId=52 } }
+        resourcePoints = ClassEntityList { }
+        team1TechPoint = TechPoint-2091 {animationGraphIndex=3, attachedId=-1, collisionRep=0, extendAmount=0, locationId=2, modelIndex=7, occupiedTeam=0, physicsGroup=14, physicsGroupFilterMask=0, physicsType=4, showObjective=false, smashScouted=false, smashed=false, techId=52 }
+        team2TechPoint = TechPoint-226 {animationGraphIndex=3, attachedId=-1, collisionRep=0, extendAmount=0, locationId=3, modelIndex=7, occupiedTeam=0, physicsGroup=14, physicsGroupFilterMask=0, physicsType=4, showObjective=false, smashScouted=false, smashed=false, techId=52 }
+    #4: ResetGame lua/DispatchBuilder.lua:62
+        self = NS2Gamerules-3884 { }
+    #5: UpdateToReadyRoom lua/NS2Gamerules.lua:825
+        self = NS2Gamerules-3884 { }
+        state = 5
+        SetReadyRoomTeam = function
+    #6: Orignal lua/NS2Gamerules.lua:1109
+        self = NS2Gamerules-3884 { }
+        timePassed = 0.02839014865458
+    #7: lua/DispatchBuilder.lua:134
+ killed Power node with None
